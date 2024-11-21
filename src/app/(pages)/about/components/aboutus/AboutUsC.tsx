@@ -1,12 +1,10 @@
-// React
+'use client'; // Tells next its a client component not server if you look at my other page layouts they all do this for a reason :wink:
+
 import { FC } from "react";
-// Styles
 import s from "./styles/aboutUs.module.scss";
-// Animations
 import { motion } from "framer-motion";
 
-export const AboutUs: FC = ({ }) => {
-  // Animation
+export const AboutUs: FC = () => {
   const animation = {
     hidden: {
       y: 30,
@@ -18,10 +16,9 @@ export const AboutUs: FC = ({ }) => {
       transition: { delay: custom * 0.1, duration: 0.3, ease: "easeOut" },
     }),
   };
+
   return (
-    <section
-      className={`${s.Advantages} bg-dark`}
-    >
+    <section className={`${s.Advantages} bg-dark`}>
       <div className="container">
         <section className={s.Wrapper}>
           <motion.section
