@@ -20,15 +20,16 @@ export const Services: FC = ({ }) => {
       info: "Grab yourself a Minecraft server and start playing with your friends.",
       features: [
         {
-          text: "99.9% Uptime SLA",
+          text: "99.6% Uptime SLA",
         },
         {
-          text: "Pterodactyl Panel",
+          text: "Highly Modified Pterodactyl Panel",
         },
         {
           text: "NeoProtect DDoS Protection",
         }
       ],
+      link: "https://billing.nodebyte.host/store/minecraft-server-hosting"
     },
     {
       title: "Virtual Private Servers",
@@ -44,6 +45,7 @@ export const Services: FC = ({ }) => {
           text: "DDoS Protection",
         },
       ],
+      link: "https://billing.nodebyte.host/store/vps-hosting"
     }
   ];
   const DATA_ITEMS_MARQUEE = [
@@ -124,7 +126,12 @@ export const Services: FC = ({ }) => {
                       </li>
                     ))}
                   </ul>
-                  
+                  <ButtonGradient
+                    radius="sm"
+                    size="md"
+                    value="Grab one now!"
+                    href={card.link}
+                  />
                 </motion.article>
               </Atropos>
             ))}

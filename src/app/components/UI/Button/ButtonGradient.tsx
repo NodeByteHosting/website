@@ -7,7 +7,7 @@ type TButton = {
   size: "sm" | "md" | "lg";
   radius: "sm" | "md" | "lg" | "none" | "full";
   href?: string;
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export const ButtonGradient: FC<TButton> = ({
