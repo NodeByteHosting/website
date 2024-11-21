@@ -15,4 +15,4 @@ jobs:
           node-version: 20.18.0
       - run: bun install
       - run: bun run build
-      - run: pm2 restart NodeByteWebsite
+      - run: pm2 restart NodeByteMain
