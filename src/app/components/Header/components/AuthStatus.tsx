@@ -95,13 +95,13 @@ const AuthStatus = () => {
                                 Billing Portal
                             </a>
                             <a
-                                href="https://panel.nodebyte.host"
+                                href="https://panel.nodebyte.host" target='_blank'
                                 className="block px-4 py-2 text-white hover:text-blue"
                             >
                                 Game Panel
                             </a>
                             <a
-                                href="https://vps.nodebyte.host/"
+                                href="https://vps.nodebyte.host/" target='_blank'
                                 className="block px-4 py-2 text-white hover:text-blue"
                             >
                                 VPS Panel
