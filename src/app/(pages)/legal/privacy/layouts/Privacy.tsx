@@ -11,7 +11,7 @@ export const PrivacyPolicy: FC = ({ }) => {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch('/api/legal/terms');
+            const response = await fetch('/api/legal/privacy');
             const data = await response.json();
             setContent(data.content);
         };

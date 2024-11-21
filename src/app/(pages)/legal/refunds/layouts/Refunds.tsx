@@ -11,7 +11,7 @@ export const RefundPolicyLayout: FC = ({ }) => {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch('/api/legal/terms');
+            const response = await fetch('/api/legal/refunds');
             const data = await response.json();
             setContent(data.content);
         };

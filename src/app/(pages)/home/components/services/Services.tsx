@@ -124,11 +124,7 @@ export const Services: FC = ({ }) => {
                       </li>
                     ))}
                   </ul>
-                  <ButtonGradient
-                    radius="sm"
-                    size="md"
-                    value="Grab one now!"
-                  />
+                  
                 </motion.article>
               </Atropos>
             ))}
