@@ -7,6 +7,7 @@ type TButton = {
   size: "sm" | "md" | "lg";
   radius: "sm" | "md" | "lg" | "none" | "full";
   href?: string;
+  onPress: () => void;
 };
 
 export const ButtonGradient: FC<TButton> = ({
@@ -14,15 +15,19 @@ export const ButtonGradient: FC<TButton> = ({
   className,
   size,
   radius,
-  href
+  href,
+  onPress
 }) => {
   return (
     <Button
       size={size}
       radius={radius}
       className={`${className}  shadow px-5 bg-gradient-to-br from-blue to-green text-white  font-medium `}
+      onPress={onPress}
     >
       <a href={href}>{value}</a>
+
+
     </Button>
   );
 };
