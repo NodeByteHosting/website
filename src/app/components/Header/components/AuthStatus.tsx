@@ -40,6 +40,12 @@ const AuthStatus = () => {
                                 Profile
                             </a>
                             <a
+                                href="https://billing.nodebyte.host" target='_blank'
+                                className="block px-4 py-2 text-white hover:text-blue"
+                            >
+                                Billing Portal
+                            </a>
+                            <a
                                 href="/settings"
                                 className="block px-4 py-2 text-white hover:text-blue"
                             >
