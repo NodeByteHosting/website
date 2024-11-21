@@ -46,7 +46,6 @@ export const Header: FC = () => {
         isMenuOpen={isMenuOpen}
         isBlurred={false}
         maxWidth="full"
-        shouldHideOnScroll
         height={'3.7rem'}
         className={`${s.Header} bg-gradient-to-tl from-grey-900 via-dark_gray to-black border-gray-200 px-4 lg:px-6 py-2.5 ${pathName === '' ? '' : 'shadow-sm'
           }`}

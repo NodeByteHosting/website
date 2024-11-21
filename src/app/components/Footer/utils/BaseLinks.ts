@@ -21,7 +21,7 @@ export const BASE_LINKS = [
         links: [
             {
                 value: "About",
-                href: "/",
+                href: "/about",
             },
             {
                 value: "Careers",
