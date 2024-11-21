@@ -19,12 +19,13 @@ Customers are responsible for ensuring compatibility and suitability of the serv
 
 ## Refund Process
 
-To request a refund, customers must contact our support team via email or through our ticketing system within the specified 3-day timeframe.
+To request a refund, customers must contact our accounts team via email or through our ticketing system within the specified 3-day timeframe.
 The refund request must include the reason for the refund and any relevant details to expedite the process.
-Our support team will review the request and respond within a reasonable timeframe, typically within 1-2 business days. If the refund request is approved, the refund will be processed using the original payment method within 5-7 business days.
+Our accounts team will review the request and respond within a reasonable timeframe, typically within 1-2 business days. If the refund request is approved, the refund will be processed using the original payment method within 5-7 business days.
 
 ## Contact Information
 
 Note: NodeByte Hosting reserves the right to modify or update this refund policy at any time without prior notice. Customers are encouraged to review the policy periodically for any changes or updates.
 By utilizing our services, customers acknowledge and agree to abide by the terms outlined in this refund policy.
-This refund policy is effective as of: 17th March 2024 and applies to all transactions made thereafter. For a refund request or inquiries related to our Refund Policy, Please contact our support team: accounts@nodebyte.host we will get back to you as soon as we can.
+
+This refund policy is effective as of: 17th March 2024 and applies to all transactions made thereafter. For a refund request or inquiries related to our Refund Policy, Please contact our accounts team: [Accounts](mailto:accounts@nodebyte.host), Our Accounts Team will get back to you within the **24 Hours** your request was sent.

@@ -7,7 +7,7 @@ We use Your Personal data to provide and improve the Service. By using the Servi
 ## Types of Date We Collect
 
 At NodeByte Hosting we collect your personal information while you use our services. We might ask you for you to provide certain information with us. This helps us to contact or identify you.The following information we do collect is
-Frist Name Last Name
+First Name & Last Name
 Email Address
 Phone Number
 Company Name (Optional)
@@ -25,17 +25,19 @@ We take data security seriously. We implement industry-standard security measure
 
 ## Cookies Tracking Technologies
 
-We use cookies and similar tracking technologies to enhance your browsing experience and understand how you interact with our website. Cookies are small text files that are stored on your device. You can control cookie preferences through your browser settings. By using our services, you consent to the use of cookies and tracking technologies as described in our  href="https://nodebyte.host/legal/cookies-policy">Cookie Policy.
+We use cookies and similar tracking technologies to enhance your browsing experience and understand how you interact with our website. Cookies are small text files that are stored on your device. You can control cookie preferences through your browser settings. By using our services, you consent to the use of cookies and tracking technologies as described in our: [Cookie Policy](https://nodebyte.host/legal/cookies)
 
 ## Third-Party Links
 
 Our Website may contain links to other websites not operated by us. If you click on a third-party link, you will be directed to that third party&apos;s site. We strongly advise you to review the Privacy Policy of every site you visit. Please see the following links we use.
-PayPal Payment Info:  href="https://www.paypal.com/uk/legalhub/privacy-full">Link 
-Stripe Payment Info:  href="https://stripe.com/gb/privacy">Link 
+PayPal Payment Info:  [PayPal Info](https://www.paypal.com/uk/legalhub/privacy-full)
+Stripe Payment Info:  [Stripe Info](https://stripe.com/gb/privacy)
+
+
 
 ## Your Rights
 
-You have the right to access, correct, update, or delete your personal information. You can manage your account settings and preferences through our platform. If you have any concerns about your privacy or data usage, you can contact us using the information provided in  href="#">Changes to Policy 9. We will respond to your requests within a reasonable timeframe. But you also have the rights to:
+You have the right to access, correct, update, or delete your personal information. You can manage your account settings and preferences through our platform. If you have any concerns about your privacy or data usage, you can contact us using the information provided in: "Changes to Policy", We will respond to your requests within a reasonable timeframe. But you also have the rights to:
 Right of Access: You have the right to request copies of your personal data.
 Right to Rectification: You have the right to request correction of any inaccurate personal data we hold about you.
 Right to Erasure: You have the right to request that we delete your personal data, under certain conditions.
@@ -46,7 +48,7 @@ Right to Object: You have the right to object to our processing of your personal
 
 ## How we use your Personal Information
 
-At NodeByte Hosting this is what we do with your information for the following purposes.Manage your account: To manage your Registration as a user of the Service, The Personal Data you provide can give <b>You</b>&nbsp;access to different functionalities of the Service that&nbsp;are available to You as a registered user.
+At NodeByte Hosting this is what we do with your information for the following purposes. Manage your account: To manage your Registration as a user of the Service, The Personal Data you provide can give <b>You</b>&nbsp;access to different functionalities of the Service that&nbsp;are available to You as a registered user.
 Contact You: This is to contact you via email, phone calls or text messages.
 Other Purposes: At NodeByte Hosting we may use your information for other purposes this is data analytics, determining the effectiveness of our promotional campaigns and to evaluate and improve our Service, products, services, marketing and your experience.
 
@@ -55,7 +57,7 @@ Other Purposes: At NodeByte Hosting we may use your information for other purpos
 Here at NodeByte Hosting we take massive pride into our GDPR Policy. Please ensure you take a good look into this.
 Ensuring GDPR compliance for a service like NodeByte Hosting, presumably a hosting service, involves several key steps to protect the personal data of users and clients. Here&apos;s a general overview of what would be involved:
 Your Consent: At NodeByte Hosting when signing up to our hosting website you are agreeing that processing Your Personal Data for one or more specific purposes. 
-Request access to Your Personal Data: You have the right to access your data we store at NodeByte Hosting if you do please email:  href="mailto:gdpr@nodebyte.co.uk">gdpr@nodebyte.co.uk &amp; you will get a copy of you information.
+Request access to Your Personal Data: You have the right to access your data we store at NodeByte Hosting if you do please email:[GDPR](mailto:gdpr@nodebyte.co.uk), you will get a copy of you information.
 Delete your data: At NodeByte Hosting you have every right to ask for us to delete all information we hold.
 Ensure that NodeByte Hosting has a valid legal basis for processing personal data under GDPR. This typically includes obtaining explicit consent from users before processing their data, unless there is another lawful basis such as contractual necessity or legitimate interest.
 Develop and implement data protection policies and procedures that comply with GDPR requirements. This includes policies for data minimization, data security, data retention, and data subject rights.
@@ -69,11 +71,11 @@ Regular Compliance Reviews: Regularly review and update NodeByte Hosting data pr
 
 It's important to note that GDPR compliance is an ongoing process, and organizations like NodeByte Hosting should continuously monitor and adapt their data protection measures to address evolving risks and regulatory requirements. Additionally, consulting with legal and privacy professionals familiar with GDPR can provide valuable guidance and support in ensuring compliance.
 
-Email: gdpr@nodebyte.co.uk for more information.
+Email: [GDPR](mailto:gdpr@nodebyte.co.uk) for more information.
 
 ## Changes to This Privacy Policy
 
 We may update this Privacy Policy to reflect changes in our practices or for legal, operational, or regulatory reasons. We will notify you of any significant changes by posting a prominent notice on our website or by sending you an email. You are advised to review this Privacy Policy periodically to stay informed about how we collect, use, and protect your information.
 
 
-If you have any questions or concerns about this Privacy Policy, please contact us at gdpr@nodebyte.host
+If you have any questions or concerns about this Privacy Policy, please contact us at [GDPR](mailto:gdpr@nodebyte.co.uk)
