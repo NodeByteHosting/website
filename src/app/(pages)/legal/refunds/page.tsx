@@ -4,7 +4,7 @@ import { Metadata } from "next";
 const meta = {
   title: 'Refund Policy',
   description: 'The stuff no one wants to read but everyone should know.',
-  url: 'https://nodebyte.host/terms',
+  url: 'https://nodebyte.host/refund',
 }
 
 export const metadata: Metadata = {
