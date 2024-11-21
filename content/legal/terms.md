@@ -35,7 +35,7 @@ Virtual Private Hosting: A better way to host your products like Discord Bots &a
 
 ## Acceptable Usage Policy (AUP)
 This Acceptable Use Policy, including the following list of Prohibited Activities, is an integral part of your Hosting Agreement with the Company. If you engage in any of the activities prohibited by this AUP, the Company may suspend or terminate your account.
-This Acceptable Use Policy (the &quot;Policy&quot;) for the Company&apos;s Services is designed to help protect the Company, the Company&apos;s customers and the Internet community in general from irresponsible or, in some cases, illegal activities. The Policy is a non-exclusive list of the actions prohibited by the Company. The Company reserves the right to modify the Policy at any time, effective upon posting at https://nodebyte.host/legal/privacy-policy
+This Acceptable Use Policy (the &quot;Policy&quot;) for the Company&apos;s Services is designed to help protect the Company, the Company&apos;s customers and the Internet community in general from irresponsible or, in some cases, illegal activities. The Policy is a non-exclusive list of the actions prohibited by the Company. The Company reserves the right to modify the Policy at any time, effective upon posting at: [Privacy Policy](https://nodebyte.host/legal/privacy)
 
 ## Prohibited Content and Activities
 
@@ -59,44 +59,47 @@ You are responsible for the activities of Your users and, by accepting service f
 
 ## Resource Usage
 Users must not engage in activities that adversely affect the normal operation of our servers or other user’s experiences. This includes overuse of network resources, excessive CPU or memory usage, and any activities that may lead to server performance degradation.
-Our services may be marketed as “unmetered” storage. This term is however subject to fair use. We allocate a limit of 200GB’s worth of storage initially to users. This in most cases is ample for normal operation of a typical service as outlined in 2. Description of Service. Should users reach the beforementioned limit we will contact them via their preferred contact method to inform the user of the issue, prior to any action being taken.
-We will allow 3 days from the date of communication to allow for a resolution to be implemented by the user.
-Users can request additional storage be allocated. This must be handled through our support system. We ask for you to provide a valid reason on why this is needed.
-A maximum of 50GB’s will be allocated in addition to the 200GB’s already allocated for a maximum storage limit of 250GB. All files relating to a user’s use of their service counts towards their Storage Limit. This can include: Configuration files, World folders, and  other files required for the Service to function normally.
-If we discover that the Service is being used to store files which are not related to the normal operation of the Service we will inform the user to resolve this within 3 days. Should a user continue to break the limits set we reserve the right to terminate their Service without notice.
+
+Our Minecraft Servers are marked with set storages depending on which plan you go for. We will only allocate another 50GB's worth of storage to users who have reached the limit. Please open a support ticket via the Billing Portal, Please **DO NOT** open a support call via discord.
+
+We allow upto 3 days from the date of commuication of the support call opened so this can be added to the following user's server.
+
+As mentioned above we will only allocate additional 50GB's if we find you have a reason you need this. False reasons given we have a right to **decline** your request.  **Please provide a valid reason!**
+
+Should a user continue to break the limits set we reserve the right to terminate their Service without notice.
 
 
-VPS Hosting
+## VPS
 Please see the following information we allow and don&apos;t allow for the vps hosting.
 
-1. Acceptable Use
+Acceptable Use:
 You agree to use our VPS hosting services for lawful purposes only. Prohibited activities include but are not limited to:
 Illegal Activities: Using the VPS for illegal activities, including but not limited to distributing copyrighted material, hosting phishing sites, or engaging in any illegal activity.
 Harmful Activities: Engaging in activities that may harm our network or infrastructure, such as sending unsolicited bulk emails (SPAM), DDoS attacks, or spreading malware.
 Resource Abuse: Excessive resource consumption that disrupts the performance of the server or impacts other users.
 NodeByte Hosting reserves the right to suspend or terminate services if any prohibited use is detected.
 
-2. Data and Backup
+Data and Backup:
 Data Responsibility: You are solely responsible for maintaining backups of your data. NodeByte Hosting does not guarantee the integrity or safety of your data.
 Backup Services: While we may offer optional backup services, these are not guaranteed, and users are encouraged to maintain their own backup solutions.
 
-3. Resource Allocation
+Resource Allocation:
 Guaranteed Resources: You will receive a specific allocation of CPU, RAM, storage, and bandwidth as per your hosting plan. You may not exceed these limits without upgrading your plan.
 Upgrades and Downgrades: You may upgrade or downgrade your VPS hosting plan at any time, subject to availability and current pricing.
 
-4. Service Availability
-We strive to provide 99.9% uptime for our VPS hosting services. However, service availability may be affected by factors beyond our control, such as:
+Service Availability:
+We strive to provide 99.6% uptime for our VPS hosting services. However, service availability may be affected by factors beyond our control, such as:
 Scheduled maintenance (with prior notice).
 Unforeseen network outages or hardware failures.
 
-5. Suspension and Termination
+Suspension and Termination:
 Suspension: We reserve the right to suspend your VPS hosting services if you violate any terms of this TOS or if your use of the services poses a risk to our systems or other users.
 Termination: Either party may terminate the service with [X] days’ written notice. If you terminate the service, you must stop using the VPS hosting immediately and delete all data stored on our servers.
 
-6. Limitation of Liability
+Limitation of Liability:
 NodeByte Hosting will not be held liable for any direct, indirect, incidental, or consequential damages, including but not limited to loss of data, profits, or revenue, resulting from the use or inability to use our service.
 
-7. Indemnification
+Indemnification:
 You agree to indemnify, defend, and hold harmless NodeByte Hosting, its employees, affiliates, and partners from any claims or damages arising from your use of our VPS hosting services.
 
 ## Security
@@ -162,7 +165,7 @@ The subscription period begins upon initial purchase and activation of the Servi
 You may cancel the renewal of your subscription at any time through the billing panel, by submitting a cancellation request. You are responsible for ensuring that any associated payment subscriptions, such as Paypal, are cancelled to avoid sending automatic payments after your Service is cancelled.
 
 ## Service Fees and Notification
-Fees for our Services are specified on our website are subject to change. We will provide notice of any fee changes by ensuring that our website is update with the new Service fees &amp; through other communication means. All fees are due at the time of service selection or renewal, and are non-refundable except stated otherwise or under the 6.4 Refund Policy.
+Fees for our Services are specified on our website are subject to change. We will provide notice of any fee changes by ensuring that our website is update with the new Service fees &amp; through other communication means. All fees are due at the time of service selection or renewal, and are non-refundable except stated otherwise or under the "Refund Policy".
 In the event of a fee increase for any ongoing service usage, this will take place at the end of the then-current billing period.
 
 The company will provide You with reasonable prior notice of any change in Service fees to give You an opportunity to terminate Your subscription before such a change becomes effective.
@@ -193,6 +196,5 @@ Account Usage and Responsibility - You are solely responsible for the activity t
 
 ## Contact Information
 If you have any questions or concerns regarding these Terms of Service or any aspect of your service that you receive, please contact us using one of the following methods:
-Email: gdpr@nodebyte.co.uk or support@nodebyte.host
-Discord: https://discord.gg/2TgjJzrxm4
+Emmail: [Data Protection](mailto:lossprevention@nodebyte.host)
 We are committed to providing the best service possible. Our response times may vary depending on the nature of your inquiry and the volume of queries we receive.

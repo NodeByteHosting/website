@@ -39,4 +39,4 @@ You are advised to review this Cookies Policy periodically for any changes. Chan
 
 If you have any questions about our Cookies Policy, please contact us:
 
-By email: gdpr@nodebyte.host
+By email: [GDPR](mailto:gdpr@nodebyte.co.uk)
