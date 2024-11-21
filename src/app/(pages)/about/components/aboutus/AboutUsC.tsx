@@ -28,7 +28,7 @@ export const AboutUs: FC = () => {
             className={s.Header}
           >
             <motion.h2 variants={animation} custom={3} className="text-white">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              NodeByte Hosting was founded in January 2024 by Connor & Harley. Our mission is to deliver Fast, reliable, scalable and secure hosting services for your business or gaming experience.
             </motion.h2>
           </motion.section>
         </section>
