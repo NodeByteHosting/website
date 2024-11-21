@@ -74,6 +74,8 @@ const AuthStatus = () => {
     //     />
     // );
 
+
+    // Using this until the login parts are done 100%
     return (
             <div className="relative flex items-center space-x-4">
                 <ButtonGradient
