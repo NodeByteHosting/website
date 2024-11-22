@@ -1,5 +1,5 @@
 import { ArticleSectionLayout } from '../layouts/ArticleSections';
-import type { Metadata } from "next";
+import { Metadata } from "next";
 
 type Props = {
     params: Promise<{ section: string }>
@@ -17,16 +17,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
         title: data.section,
         description: data.about,
-        openGraph: {
-            type: 'website',
-            'locale': 'en_US',
-            url: 'https://nodebyte.host/kb/' + section,
-        },
-        twitter: {
-            site: '@NodeByteHosting',
-            card: 'summary_large_image',
-            creator: '@TheRealToxicDev'
-        }
     }
 }
 
