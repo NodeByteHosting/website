@@ -109,11 +109,25 @@ html {
 .markdown-body ol {
     margin-left: 2em;
     margin-bottom: 1em;
+    padding-left: 1.5em;
+}
+
+.markdown-body ul {
+    list-style-type: disc;
+}
+
+.markdown-body ol {
+    list-style-type: decimal;
 }
 
 .markdown-body ul li,
 .markdown-body ol li {
     margin-bottom: 0.5em;
+}
+
+/* Task Lists */
+.markdown-body input[type="checkbox"] {
+    margin-right: 0.5em;
 }
 
 /* Blockquotes */
@@ -123,6 +137,7 @@ html {
     background-color: #333;
     border-left: 0.25em solid #1e90ff;
     color: #e2e8f0;
+    border-radius: 0.3em;
 }
 
 /* Code */
@@ -131,6 +146,7 @@ html {
     padding: 0.2em 0.4em;
     border-radius: 0.3em;
     font-family: 'Courier New', Courier, monospace;
+    color: #e2e8f0;
 }
 
 .markdown-body pre {
@@ -140,6 +156,14 @@ html {
     overflow-x: auto;
     font-family: 'Courier New', Courier, monospace;
     color: #e2e8f0;
+}
+
+/* Syntax Highlighting */
+.markdown-body pre code {
+    display: block;
+    padding: 0;
+    color: inherit;
+    background: none;
 }
 
 /* Tables */
@@ -164,9 +188,109 @@ html {
     background-color: #1a202c;
 }
 
+.markdown-body tr:nth-child(even) td {
+    background-color: #2a2a2a;
+}
+
+.markdown-body tr:hover td {
+    background-color: #333;
+}
+
+/* Horizontal Rules */
+.markdown-body hr {
+    border: 0;
+    height: 1px;
+    background: #4a5568;
+    margin: 2em 0;
+}
+
 /* Images */
 .markdown-body img {
     max-width: 100%;
     border-radius: 0.5em;
     margin-bottom: 1em;
+}
+
+/* Footnotes */
+.markdown-body .footnotes {
+    font-size: 0.875em;
+    color: #a0aec0;
+}
+
+.markdown-body .footnotes ol {
+    padding-left: 1em;
+}
+
+.markdown-body .footnotes li {
+    margin-bottom: 0.5em;
+}
+
+/* Strikethrough */
+.markdown-body del {
+    text-decoration: line-through;
+}
+
+/* Task Lists */
+.markdown-body input[type="checkbox"] {
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+/* Tables */
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid #4a5568;
+    padding: 0.5em;
+}
+
+.markdown-body th {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+.markdown-body td {
+    background-color: #1a202c;
+}
+
+.markdown-body tr:nth-child(even) td {
+    background-color: #2a2a2a;
+}
+
+.markdown-body tr:hover td {
+    background-color: #333;
+}
+
+/* Horizontal Rules */
+.markdown-body hr {
+    border: 0;
+    height: 1px;
+    background: #4a5568;
+    margin: 2em 0;
+}
+
+/* Images */
+.markdown-body img {
+    max-width: 100%;
+    border-radius: 0.5em;
+    margin-bottom: 1em;
+}
+
+/* Footnotes */
+.markdown-body .footnotes {
+    font-size: 0.875em;
+    color: #a0aec0;
+}
+
+.markdown-body .footnotes ol {
+    padding-left: 1em;
+}
+
+.markdown-body .footnotes li {
+    margin-bottom: 0.5em;
 }

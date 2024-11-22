@@ -3,33 +3,41 @@ export const BASE_LINKS = [
         title: "Resources",
         links: [
             {
-                value: "Docs",
-                href: "https://docs.nodebyte.host/",
+                value: "Knowledge Base",
+                href: "/kb",
             },
             {
-                value: "Status",
-                href: "https://nodebyte.instatus.com",
+                value: "Service Status",
+                href: "/status",
             },
             {
-                value: "Blog",
-                href: "https://nodebyte.co.uk/blog",
+                value: "Billing Panel",
+                href: "https://billing.nodebyte.host"
             },
+            {
+                value: "Game Panel",
+                href: "https://panel.nodebyte.host"
+            }
         ],
     },
     {
         title: "Company",
         links: [
             {
-                value: "About",
+                value: "About Us",
                 href: "/about",
             },
             {
-                value: "Careers",
+                value: "Contact Us",
                 href: "/",
             },
             {
-                value: "Contact",
+                value: "Join the Team",
                 href: "/",
+            },
+            {
+                value: "Community Pulse",
+                href: "kb"
             },
         ],
     },

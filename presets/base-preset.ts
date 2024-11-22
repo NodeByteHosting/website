@@ -73,7 +73,9 @@ export const basePreset = {
                     900: '#0d0d0d',
                 },
             },
-            backgroundImage: {},
+            backgroundImage: {
+                'status-card-text': 'linear-gradient(315deg, #2c74b3 25%, #42d392);'
+            },
         },
     },
 };

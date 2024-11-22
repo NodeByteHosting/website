@@ -27,7 +27,7 @@ export default function NotFoundPage() {
     },
     {
       title: "Knowledge Base",
-      href: "https://billing.nodebyte.host/knowledgebase",
+      href: "/kb",
       suptTitle: "Find answers to common questions.",
       icon: <GiDatabase size={26} />,
     },

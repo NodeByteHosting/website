@@ -8,6 +8,8 @@ const nextConfig = {
         API_IDENTIFIER: "gp1q8Fvvc6uDTrivyvypAGYXR6SQiGD6",
         API_SECRET: "kStD1AOfTLxSMFXmo4TfhXjMQRePMJsi",
         NEXTAUTH_SECRET: "fojr0h9858h95huhierhufiohnf9045y9",
+        HETRIX_API_KEY: "bb00a3bfe18b17195c590f1e389576a2",
+        GITHUB_API_URL: "https://raw.githubusercontent.com/"
     },
     sassOptions: {
         logger: {
