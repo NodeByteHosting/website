@@ -10,7 +10,6 @@ interface Monitor {
     id: string;
     name: string;
     type: string;
-    target: string;
     uptime_status: string;
     monitor_status: string;
     uptime: string;
@@ -30,24 +29,9 @@ interface Monitor {
     };
 }
 
-interface Meta {
-    total: number;
-    total_filtered: number;
-    returned: number;
-    pagination: {
-        current: number;
-        last: number;
-        previous: number | null;
-        next: number | null;
-    };
-}
-
 interface ApiResponse {
     status: string;
-    monitors: {
-        monitors: Monitor[];
-        meta: Meta;
-    };
+    monitors: Monitor[];
     code: number;
 }
 
@@ -61,7 +45,7 @@ export const StatusLayout: FC = ({ }) => {
             const data: ApiResponse = await res.json();
 
             if (data.status === 'OK') {
-                setMonitors(data.monitors.monitors);
+                setMonitors(data.monitors);
             } else {
                 console.error('Failed to fetch monitors:', data);
             }

@@ -12,9 +12,20 @@ export async function GET() {
         });
         const data = await response.json()
 
+        const filtered = data.monitors.map((monitor: any) => ({
+            id: monitor.id,
+            name: monitor.name,
+            type: monitor.type,
+            uptime_status: monitor.uptime_status,
+            monitor_status: monitor.monitor_status,
+            uptime: monitor.uptime,
+            resolve_address_info: monitor.resolve_address_info,
+            locations: monitor.locations
+        }))
+
         return NextResponse.json({
             status: 'OK',
-            monitors: data,
+            monitors: filtered,
             code: 200
         })
     } catch (err: unknown) {
