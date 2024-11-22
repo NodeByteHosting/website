@@ -10,31 +10,25 @@ import NextUiProvider from "@/src/providers/NextUiProvider";
 import NodeByteSession from "@/src/providers/SessionProvider";
 import { GeistSans } from "geist/font/sans";
 
-const meta = {
-  title: 'NodeByte Hosting',
-  description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
-  image: 'https://nodebyte.host/logo.png',
-  banner: 'https://nodebyte.host/banner.png'
-}
 
 export const metadata: Metadata = {
   title: {
-    default: meta.title,
+    default: 'NodeByte Hosting',
     template: '%s | NodeByte Hosting',
   },
-  description: meta.description,
+  description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
   openGraph: {
-    title: meta.title,
-    description: meta.description,
+    title: 'NodeByte Hosting',
+    description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
     url: 'https://nodebyte.host',
     siteName: 'NodeByte Hosting',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
-    title: meta.title,
-    description: meta.description,
-    images: meta.banner,
+    title: 'NodeByte Hosting',
+    description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
+    images: 'https://nodebyte.host/banner.png',
     card: 'summary_large_image'
   },
   alternates: {
