@@ -13,14 +13,13 @@ import { GeistSans } from "geist/font/sans";
 
 export const metadata: Metadata = {
   title: {
-    default: 'NodeByte Hosting',
     template: '%s | NodeByte Hosting',
+    default: 'NodeByte Hosting'
   },
   description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
   openGraph: {
     title: 'NodeByte Hosting',
     description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
-    url: 'https://nodebyte.host',
     siteName: 'NodeByte Hosting',
     locale: 'en_US',
     type: 'website',
@@ -30,9 +29,6 @@ export const metadata: Metadata = {
     description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
     images: 'https://nodebyte.host/banner.png',
     card: 'summary_large_image'
-  },
-  alternates: {
-    canonical: 'https://nodebyte.host'
   }
 };
 
