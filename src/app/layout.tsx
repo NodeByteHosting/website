@@ -30,11 +30,6 @@ export const metadata: Metadata = {
     siteName: 'NodeByte Hosting',
     locale: 'en_US',
     type: 'website',
-    images: [
-      {
-        url: meta.image
-      }
-    ]
   },
   twitter: {
     title: meta.title,
