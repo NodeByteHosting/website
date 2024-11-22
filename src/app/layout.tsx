@@ -13,8 +13,8 @@ import { GeistSans } from "geist/font/sans";
 const meta = {
   title: 'NodeByte Hosting',
   description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
-  image: '/logo.png',
-  banner: '/banner.png'
+  image: 'https://nodebyte.host/logo.png',
+  banner: 'https://nodebyte.host/banner.png'
 }
 
 export const metadata: Metadata = {
