@@ -77,7 +77,7 @@ export const Header: FC = () => {
                 ))}
               </ul>
               <div className="hidden lg:flex items-center space-x-4">
-                {/**<AuthStatus />*/}
+                <AuthStatus />
                 <div className={s.Actions}>
                   <Tooltip
                     content="GitHub"
