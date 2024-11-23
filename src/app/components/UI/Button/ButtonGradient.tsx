@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { Button } from "@nextui-org/react";
 
 type TButton = {
@@ -20,14 +20,14 @@ export const ButtonGradient: FC<TButton> = ({
 }) => {
   return (
     <Button
+      as={href ? 'a' : 'button'}
+      href={href}
       size={size}
       radius={radius}
-      className={`${className}  shadow px-5 bg-gradient-to-br from-blue to-green text-white  font-medium `}
+      className={`${className} shadow px-5 bg-gradient-to-br from-blue to-green text-white font-medium`}
       onPress={onPress}
     >
-      <a href={href}>{value}</a>
-
-
+      {value}
     </Button>
   );
 };

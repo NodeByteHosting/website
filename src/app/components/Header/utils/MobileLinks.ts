@@ -41,14 +41,21 @@ export const DATA_TOGGLE_MENU_LINKS = [
         title: "Resources",
         links: [
             {
-                value: "Docs",
-                href: "https://docs.nodebyte.host",
+                value: "Knowledge Base",
+                href: "/kb",
             },
             {
-                value: "Blog",
-                href: "https://nodebyte.co.uk/blog",
+                value: "Service Status",
+                href: "/status",
             },
-
+            {
+                value: "Announcements",
+                href: "/announcements"
+            },
+            {
+                value: "Blog Posts",
+                href: "/blog"
+            }
         ],
     },
     {

@@ -11,12 +11,12 @@ export const BASE_LINKS = [
                 href: "/status",
             },
             {
-                value: "Billing Panel",
-                href: "https://billing.nodebyte.host"
+                value: "Announcements",
+                href: "/announcements"
             },
             {
-                value: "Game Panel",
-                href: "https://panel.nodebyte.host"
+                value: "Blog Posts",
+                href: "/blog"
             }
         ],
     },

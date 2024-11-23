@@ -8,6 +8,7 @@ import { FaBlogger, FaCalendarAlt } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import ErrorLayout from '../../../components/Static/ErrorLayout';
 
 interface Announcement {
     id: number;
@@ -24,6 +25,8 @@ export const Announcements: FC = ({ }) => {
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [title, setTitle] = useState<string>('Announcements');
+    const [text, setText] = useState<string>('Stay updated with the latest announcements.');
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
@@ -31,12 +34,18 @@ export const Announcements: FC = ({ }) => {
                 const response = await fetch('/api/support/announcements/get');
                 const data = await response.json();
                 if (data.status === 'OK') {
+                    setTitle('Announcements');
+                    setText('Stay updated with the latest announcements.');
                     setAnnouncements(data.announcements);
                 } else {
+                    setTitle('Error: failed to fetch!');
+                    setText(data.message);
                     setError(true);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error fetching announcements:', error);
+                setTitle('Error: failed to fetch!');
+                setText(error.message);
                 setError(true);
             } finally {
                 setLoading(false);
@@ -49,14 +58,16 @@ export const Announcements: FC = ({ }) => {
     return (
         <>
             <PulseTitleBanner
-                title="Announcements"
-                text="Stay updated with the latest announcements."
+                title={title}
+                text={text}
             />
             <motion.section className="py-16 bg-dark">
                 <div className="container">
-                    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {loading ? (
-                            Array.from({ length: 6 }).map((_, i) => (
+                    {error ? (
+                        <ErrorLayout />
+                    ) : loading ? (
+                        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {Array.from({ length: 6 }).map((_, i) => (
                                 <div key={i} className="relative shadow bg-dark_gray rounded-lg p-6">
                                     <Skeleton height={24} width={24} baseColor='#0A2540' highlightColor='#0000FF' />
                                     <div className="mt-4">
@@ -64,13 +75,11 @@ export const Announcements: FC = ({ }) => {
                                         <Skeleton height={15} width="60%" baseColor='#0A2540' highlightColor='#0000FF' />
                                     </div>
                                 </div>
-                            ))
-                        ) : error ? (
-                            <div className="text-white">
-                                Error fetching announcements. Please try again later.
-                            </div>
-                        ) : (
-                            announcements.map((announcement, i) => (
+                            ))}
+                        </section>
+                    ) : (
+                        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {announcements?.map((announcement, i) => (
                                 <article key={i} className="p-6 relative shadow bg-dark_gray hover:bg-black_secondary rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
                                     <div>
                                         <div className="flex justify-between items-center mb-4 text-gray-500">
@@ -105,9 +114,9 @@ export const Announcements: FC = ({ }) => {
                                         </Link>
                                     </div>
                                 </article>
-                            ))
-                        )}
-                    </section>
+                            ))}
+                        </section>
+                    )}
                 </div>
             </motion.section>
         </>

@@ -37,29 +37,22 @@ const ScrapeReviews = async () => {
     }[] = [];
 
     $('.styles_reviewCardInner__EwDq2').each((index, element) => {
-        const title = $(element).find('[data-service-review-title-typography="true"]').text().trim();
-        const content = $(element).find('[data-service-review-text-typography="true"]').text().trim();
-        const reviewer = $(element).find('[data-consumer-name-typography="true"]').text().trim();
-        const reviewer_img = $(element).find('img[data-consumer-avatar-image="true"]').attr('src') || '';
-        const rating_img = $(element).find('.star-rating_starRating__4rrcf img').attr('src') || '';
-        const date = $(element).find('[data-service-review-date-of-experience-typography="true"]').text().trim();
-
-        const correct_reviewer_img = $(element).find('img[data-consumer-avatar-image="true"]').filter((i, el) => {
-            const src = $(el).attr('src');
-            return src !== undefined && !src.startsWith('data:');
-        }).attr('src') || '/default_user.png';
+        const title = $(element).find('[data-service-review-title-typography="true"]').text().trim() || 'No title';
+        const content = $(element).find('[data-service-review-text-typography="true"]').text().trim() || 'No content';
+        const reviewer = $(element).find('[data-consumer-name-typography="true"]').text().trim() || 'Anonymous';
+        const reviewer_img = $(element).find('.avatar_imageWrapper__8wdWb img').last().attr('src') || '/default_user.png';
+        const rating_img = $(element).find('.star-rating_starRating__4rrcf img').attr('src') || '/default_rating.png';
+        const date = $(element).find('[data-service-review-date-of-experience-typography="true"]').text().trim() || 'No date';
 
         reviews.push({
             title,
             content,
             reviewer,
-            reviewer_img: correct_reviewer_img,
+            reviewer_img,
             rating_img,
             date
         });
     });
-
-    console.log('Total reviews scraped:', reviews.length);
 
     return reviews;
 };

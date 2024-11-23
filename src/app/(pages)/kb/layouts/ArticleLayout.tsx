@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from "framer-motion";
-import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
-import { FC, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
 import { MarkdownProvider } from '../../../../providers/MarkdownProvider';
-import ErrorLayout from "./ErrorLayout";
+import { logErrorToDiscord } from "@/src/app/utils/logError";
+import ErrorLayout from "../../../components/Static/ErrorLayout";
 
 export const ArticleLayout: FC = ({ }) => {
     const [content, setContent] = useState<string>('Loading...');
@@ -30,6 +31,13 @@ export const ArticleLayout: FC = ({ }) => {
                 setTitle('Error: failed to fetch!');
                 setDescription(data.message);
                 setContent(data.message);
+                logErrorToDiscord({
+                    title: 'Error: failed to fetch!',
+                    message: data.message,
+                    page: pathname,
+                    source: 'ArticleLayout',
+                    status: 500,
+                })
             }
         };
 
@@ -42,7 +50,7 @@ export const ArticleLayout: FC = ({ }) => {
                 title={title}
                 text={description}
             />
-            {title !== 'Loading...' ? (
+            {title === 'Error: failed to fetch!' ? (
                 <motion.section className="py-16 bg-dark">
                     <ErrorLayout />
                 </motion.section>
