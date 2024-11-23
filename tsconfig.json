@@ -33,6 +33,9 @@
       "@/components/*": [
         "./src/app/components/*"
       ],
+      "@/hooks/*": [
+        "./src/hooks/*"
+      ],
       "@/pages/*": [
         "./src/app/(pages)/*"
       ],

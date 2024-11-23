@@ -17,15 +17,11 @@ const nextConfig = {
         HETRIX_API_KEY: "bb00a3bfe18b17195c590f1e389576a2",
         GITHUB_API_URL: "https://raw.githubusercontent.com/",
         ERROR_HOOK_ID: "1309739781889982485",
-        ERROR_HOOK_TOKEN: "9zf3M23jmLDeGsmY6Ks_gvBfamMQUJKoLAYpziCDUypO8MSJ1FAl4nTZk4-YEWeMZ3JV"
+        ERROR_HOOK_TOKEN: "9zf3M23jmLDeGsmY6Ks_gvBfamMQUJKoLAYpziCDUypO8MSJ1FAl4nTZk4-YEWeMZ3JV",
+        SASS_SILENCE_DEPRECATION_WARNINGS: "true"
     },
     sassOptions: {
-        logger: {
-            warn: (message, options) => {
-                if (message.includes('DEPRECATION WARNING')) return;
-                console.warn(message, options);
-            }
-        }
+        silenceDeprecations: ['legacy-js-api']
     },
 
     async headers() {
