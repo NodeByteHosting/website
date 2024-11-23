@@ -154,9 +154,6 @@ export const Header: FC = () => {
                   </AccordionItem>
                 ))}
               </Accordion>
-              <div className="py-2">
-                {/**<AuthStatus /> */}
-              </div>
               <div className={s.Actions}>
                 <Tooltip
                   content="GitHub"

@@ -72,4 +72,21 @@ export const DATA_TOGGLE_MENU_LINKS = [
             }
         ],
     },
+    {
+        title: "Login ",
+        links: [
+            {
+                value: "Billing Portal",
+                href: "https://billing.nodebyte.host",
+            },
+            {
+                value: "Game Panel",
+                href: "https://panel.nodebyte.host",
+            },
+            {
+                value: "VPS Panel",
+                href: "https://vps.nodebyte.host/"
+            }
+        ],
+    },
 ];
