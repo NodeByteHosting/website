@@ -9,7 +9,9 @@ const nextConfig = {
         API_SECRET: "kStD1AOfTLxSMFXmo4TfhXjMQRePMJsi",
         NEXTAUTH_SECRET: "fojr0h9858h95huhierhufiohnf9045y9",
         HETRIX_API_KEY: "bb00a3bfe18b17195c590f1e389576a2",
-        GITHUB_API_URL: "https://raw.githubusercontent.com/"
+        GITHUB_API_URL: "https://raw.githubusercontent.com/",
+        ERROR_HOOK_ID: "1309739781889982485",
+        ERROR_HOOK_TOKEN: "9zf3M23jmLDeGsmY6Ks_gvBfamMQUJKoLAYpziCDUypO8MSJ1FAl4nTZk4-YEWeMZ3JV"
     },
     sassOptions: {
         logger: {

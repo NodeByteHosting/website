@@ -7,7 +7,7 @@ import s from "./styles/Hero.module.scss";
 // Context
 import { useButtonScrollContext } from "@/src/providers/ButtonScroll";
 // Components
-import { ButtonGradient } from "@/src/app/components/UI/Button/ButtonGradient";
+import { ButtonGradient } from "@/src/app/components/UI/Button/ButtonGradients";
 // NextUI
 import { Button } from "@nextui-org/react";
 // Icons

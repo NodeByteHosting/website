@@ -21,6 +21,23 @@ export const DATA_TOGGLE_MENU_LINKS = [
         ],
     },
     {
+        title: "Portals",
+        links: [
+            {
+                value: "Billing Portal",
+                href: "https://billing.nodebyte.host",
+            },
+            {
+                value: "Game Panel",
+                href: "https://panel.nodebyte.host",
+            },
+            {
+                value: "VPS Panel",
+                href: "https://vps.nodebyte.host/"
+            }
+        ],
+    },
+    {
         title: "Resources",
         links: [
             {
@@ -69,23 +86,6 @@ export const DATA_TOGGLE_MENU_LINKS = [
             {
                 value: "Cookie Policy",
                 href: "/legal/cookies"
-            }
-        ],
-    },
-    {
-        title: "Login ",
-        links: [
-            {
-                value: "Billing Portal",
-                href: "https://billing.nodebyte.host",
-            },
-            {
-                value: "Game Panel",
-                href: "https://panel.nodebyte.host",
-            },
-            {
-                value: "VPS Panel",
-                href: "https://vps.nodebyte.host/"
             }
         ],
     },

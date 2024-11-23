@@ -7,7 +7,7 @@ import s from './styles/Header.module.scss';
 import { usePathname } from 'next/navigation';
 import { SiGithub, SiDiscord } from 'react-icons/si';
 import { Logo } from '@/src/app/components/UI/Logo/Logo';
-import AuthStatus from './components/AuthStatus';
+import ExtraLinksDropdown from './components/ExtraLinks';
 import { DATA_NAVBAR_LINKS } from './utils/DesktopLinks';
 import { DATA_TOGGLE_MENU_LINKS } from './utils/MobileLinks';
 import {
@@ -77,53 +77,14 @@ export const Header: FC = () => {
                 ))}
               </ul>
               <div className="hidden lg:flex items-center space-x-4">
-                <AuthStatus />
-                <div className={s.Actions}>
-                  <Tooltip
-                    content="GitHub"
-                    size="sm"
-                    showArrow
-                    className="bg-zinc-800 text-white"
-                  >
-                    <div className={`${s.Social} hover:bg-zinc-800`}>
-                      <Link
-                        target="_blank"
-                        href={'https://github.com/NodeByteHosting'}
-                      >
-                        <SiGithub
-                          strokeWidth={1.5}
-                          className="text-white/70"
-                          size={20}
-                        />
-                      </Link>
-                    </div>
-                  </Tooltip>
-                  <Tooltip
-                    content="Discord"
-                    size="sm"
-                    showArrow
-                    className="bg-zinc-800 text-white"
-                  >
-                    <div className={`${s.Social} hover:bg-zinc-800`}>
-                      <Link
-                        target="_blank"
-                        href={'https://discord.gg/nodebyte'}
-                      >
-                        <SiDiscord
-                          strokeWidth={1.5}
-                          className="text-white/70"
-                          size={20}
-                        />
-                      </Link>
-                    </div>
-                  </Tooltip>
-                </div>
+                <ExtraLinksDropdown />
               </div>
               <NavbarMenuToggle
                 onClick={toggleMenu}
                 className={`${s.Burger} text-blue lg:hidden`}
               />
             </nav>
+            {/* Mobile Menu */}
             <NavbarMenu
               className={`z-index2000 border-t-1 border-gray/10 bg-gradient-to-tl from-grey-900 via-dark_gray to-black border-gray-200 px-1 lg:hidden`}
             >

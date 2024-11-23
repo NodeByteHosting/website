@@ -14,10 +14,11 @@ export async function GET(req: NextRequest) {
 
     try {
         const response = await fetch(url);
+
         if (!response.ok) {
             return NextResponse.json({
                 status: 'ERROR',
-                message: response.statusText,
+                message: 'Whoops, we are unable to load that article at this time, if this issues persists please contact our support team!',
                 code: 500
             });
         }
@@ -47,10 +48,14 @@ export async function GET(req: NextRequest) {
 
         const articlePath = `${baseUrl}${repoOwner}/${repoName}/${branch}/markdown/kb/${article.path}.md`;
         const fileResponse = await fetch(articlePath);
+
         if (!fileResponse.ok) {
+
+            console.log(`[@nodebyte/fetch_article_error]:`, fileResponse)
+
             return NextResponse.json({
                 status: 'ERROR',
-                message: fileResponse.statusText,
+                message: 'Whoops, we are unable to load that article at this time, if this issues persists please contact our support team!',
                 code: 500
             });
         }

@@ -71,7 +71,7 @@ export const Reviews: FC = () => {
                         </motion.p>
                     </motion.section>
                     <section className="mt-6">
-                        {reviews.map((review, index) => (
+                        {reviews?.map((review, index) => (
                             <motion.div
                                 key={index}
                                 className="gap-3 py-6 sm:flex sm:items-start"

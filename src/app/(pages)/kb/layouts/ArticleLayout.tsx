@@ -5,6 +5,7 @@ import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
 import { FC, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { MarkdownProvider } from '../../../../providers/MarkdownProvider';
+import ErrorLayout from "./ErrorLayout";
 
 export const ArticleLayout: FC = ({ }) => {
     const [content, setContent] = useState<string>('Loading...');
@@ -26,9 +27,9 @@ export const ArticleLayout: FC = ({ }) => {
                 setTitle(data.title);
                 setDescription(data.description);
             } else {
-                setContent('Unable to fetch the article content.');
-                setTitle('Error');
-                setDescription('Error fetching article content.');
+                setTitle('Error: failed to fetch!');
+                setDescription(data.message);
+                setContent(data.message);
             }
         };
 
@@ -41,11 +42,17 @@ export const ArticleLayout: FC = ({ }) => {
                 title={title}
                 text={description}
             />
-            <motion.section className="py-16 bg-dark">
-                <div className="container text-white markdown-body">
-                    <MarkdownProvider content={content} />
-                </div>
-            </motion.section>
+            {title !== 'Loading...' ? (
+                <motion.section className="py-16 bg-dark">
+                    <ErrorLayout />
+                </motion.section>
+            ) : (
+                <motion.section className="py-16 bg-dark">
+                    <div className="container text-white markdown-body">
+                        <MarkdownProvider content={content} />
+                    </div>
+                </motion.section>
+            )}
         </>
     );
 };
