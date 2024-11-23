@@ -46,6 +46,22 @@ export const Services: FC = ({ }) => {
         },
       ],
       link: "https://billing.nodebyte.host/store/vps-hosting"
+    },
+    {
+      title: "Custom Minecraft Plans",
+      info: "Grab yourself a custom Minecraft Plan and start hosting with specs you want!",
+      features: [
+        {
+          text: "Custom Specs",
+        },
+        {
+          text: "For Minecraft Hosting Only",
+        },
+        {
+          text: "Full Support!",
+        },
+      ],
+      link: "https://billing.nodebyte.host/submitticket.php?step=2&deptid=3"
     }
   ];
   const DATA_ITEMS_MARQUEE = [
