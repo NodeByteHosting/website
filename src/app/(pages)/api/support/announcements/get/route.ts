@@ -9,9 +9,7 @@ export async function GET(req: NextRequest) {
     if (!data.ok) {
         await logErrorToDiscord({
             title: "Error: failed to fetch",
-            message: `${data.message.includes("Invalid IP")
-                ? "Please visit: [whmcs settings](https://billing.nodebyte.host/admin/configgeneral.php?nocache=q5WqdlN5rmxjKjgL#tab=10) and whitelist the IP Address for the host machine to fix this error!"
-                : data.message}`,
+            message: "Please visit: [whmcs settings](https://billing.nodebyte.host/admin/configgeneral.php?nocache=q5WqdlN5rmxjKjgL#tab=10) and whitelist the IP Address for the host machine to fix this error!",
             source: "[LogiQ]: RESTRICTED_IP",
             page: "/api/support/announcements/get",
             status: 500
