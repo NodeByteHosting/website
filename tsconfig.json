@@ -27,6 +27,9 @@
       "@/*": [
         "./*"
       ],
+      "contentlayer/generated": [
+        "./.contentlayer/generated"
+      ],
       "@/components/*": [
         "./src/app/components/*"
       ],
@@ -42,7 +45,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".contentlayer/generated"
   ],
   "exclude": [
     "node_modules"

@@ -2,12 +2,10 @@
 
 import Link from 'next/link';
 import { motion } from "framer-motion";
-import Skeleton from 'react-loading-skeleton';
 import { useEffect, useState, FC } from 'react';
-import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
-import 'react-loading-skeleton/dist/skeleton.css';
-import { MdArticle, MdHelp } from 'react-icons/md';
+import { MdArticle } from 'react-icons/md';
 import { usePathname } from 'next/navigation';
+import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
 
 interface Article {
     slug: string;
@@ -49,7 +47,7 @@ export const ArticleSectionLayout: FC = ({ }) => {
 
     return (
         <>
-            <ArticleTitleBanner
+            <PageHero
                 title={section?.section as string}
                 text={section?.about as string}
             />

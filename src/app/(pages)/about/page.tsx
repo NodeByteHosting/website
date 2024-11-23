@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import ButtonScrollProvider from "@/src/providers/ButtonScroll";
-import { PulseTitleBanner } from "./components/PulseTitleBanner";
-import { AboutUs } from "./components/aboutus/AboutUsC";
+import { PageHero } from "../../components/PageHero/UsePageHero";
+import { AboutUs } from "./layouts/AboutUsC";
 
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function AboutPage() {
     return (
         <>
             <ButtonScrollProvider>
-                <PulseTitleBanner
+                <PageHero
                     title="About Us"
                     text="What about us?"
                 />

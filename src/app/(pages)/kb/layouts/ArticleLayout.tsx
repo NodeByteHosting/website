@@ -3,10 +3,10 @@
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
-import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
 import { MarkdownProvider } from '../../../../providers/MarkdownProvider';
 import { logErrorToDiscord } from "@/src/app/utils/logError";
 import ErrorLayout from "../../../components/Static/ErrorLayout";
+import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
 
 export const ArticleLayout: FC = ({ }) => {
     const [content, setContent] = useState<string>('Loading...');
@@ -46,7 +46,7 @@ export const ArticleLayout: FC = ({ }) => {
 
     return (
         <>
-            <ArticleTitleBanner
+            <PageHero
                 title={title}
                 text={description}
             />

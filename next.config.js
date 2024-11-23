@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
+const { withContentlayer } = require('next-contentlayer2');
 
 const nextConfig = {
     reactStrictMode: true,
+    images: {
+        domains: [
+            "source.unsplash.com"
+        ]
+    },
     env: {
         API_URL: "https://billing.nodebyte.host/includes/api.php",
         API_SHORT_URL: "billing.nodebyte.host",
@@ -64,4 +70,4 @@ const securityHeaders = [
 ]
 
 
-module.exports = nextConfig
+module.exports = withContentlayer(nextConfig);

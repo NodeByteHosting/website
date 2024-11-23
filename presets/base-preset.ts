@@ -74,6 +74,7 @@ export const basePreset = {
                 },
             },
             backgroundImage: {
+                'hero-gradient': 'linear-gradient(to bottom, #111827 45%, #1c2634 72.5%, #1c2634 100%)',
                 'status-card-text': 'linear-gradient(315deg, #2c74b3 25%, #42d392);'
             },
         },

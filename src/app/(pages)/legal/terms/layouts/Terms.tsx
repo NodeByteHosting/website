@@ -2,8 +2,8 @@
 
 import md from "markdown-it";
 import { motion } from "framer-motion";
-import { TOSTitleBanner } from "../components/TitleBanner";
 import { FC, useEffect, useState } from 'react';
+import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
 
 
 export const TermsOfService: FC = ({ }) => {
@@ -21,10 +21,10 @@ export const TermsOfService: FC = ({ }) => {
 
     return (
         <>
-            <TOSTitleBanner
+            <PageHero
                 title="Terms of Service"
                 text="The stuff no one wants to read but everyone should know."
-                updated="Last updated: 2024-11-20"
+                sup={{ title1: "Last updated", title2: "2024-", title3: "11-", title4: "20" }}
             />
             <motion.section className="py-16 bg-dark">
                 <div

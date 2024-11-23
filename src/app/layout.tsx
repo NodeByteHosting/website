@@ -8,6 +8,7 @@ import { Loader } from "./components/Loader/Loader";
 import ModalProvider from "@/src/providers/ModalProvider";
 import NextUiProvider from "@/src/providers/NextUiProvider";
 import NodeByteSession from "@/src/providers/SessionProvider";
+import { absoluteUrl } from "../hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";
 
 
@@ -18,18 +19,26 @@ export const metadata: Metadata = {
   },
   description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
   openGraph: {
-    title: 'NodeByte Hosting',
+    url: "https://nodebyte.host",
+    title: {
+      template: '%s | NodeByte Hosting',
+      default: 'NodeByte Hosting'
+    },
     description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
-    siteName: 'NodeByte Hosting',
-    locale: 'en_US',
-    type: 'website',
+    images: "/banner.png",
+    siteName: "NodeByte Hosting",
   },
   twitter: {
-    title: 'NodeByte Hosting',
+    card: 'summary_large_image',
+    creator: "@TheRealToxicDev",
+    title: {
+      template: '%s | NodeByte Hosting',
+      default: 'NodeByte Hosting'
+    },
     description: 'Fast, reliable, scalable and secure hosting services for your business or gaming experience.',
-    images: 'https://nodebyte.host/banner.png',
-    card: 'summary_large_image'
-  }
+    images: "/banner.png",
+  },
+  metadataBase: absoluteUrl()
 };
 
 export default function RootLayout({

@@ -7,7 +7,7 @@ import { MdHomeFilled } from "react-icons/md";
 import { PiContactlessPaymentFill } from "react-icons/pi";
 import { FiExternalLink } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { TitleBannerPage } from "./components/TitleBannerPage/TitleBannerPage";
+import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
 import { BiSolidUserVoice } from "react-icons/bi";
 import ErrorLayout from "./components/Static/ErrorLayout";
 
@@ -20,8 +20,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                     suppressHydrationWarning
                     suppressContentEditableWarning
                 >
-                    <TitleBannerPage
-                        supTitle="500"
+                    <PageHero
                         text="Oops, something went wrong."
                         title="Internal Server Error"
                     />

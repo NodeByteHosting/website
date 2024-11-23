@@ -2,9 +2,9 @@
 
 import { useEffect, useState, FC } from 'react';
 import { motion } from "framer-motion";
-import { PulseTitleBanner } from '../components/PulseTitleBanner';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
 
 interface Monitor {
     id: string;
@@ -57,7 +57,7 @@ export const StatusLayout: FC = ({ }) => {
 
     return (
         <>
-            <PulseTitleBanner
+            <PageHero
                 title="Status"
                 text="Check the status of our services and any ongoing maintenance."
             />

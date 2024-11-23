@@ -84,7 +84,7 @@ export const Reviews: FC = () => {
                                 <div className="shrink-0 space-y-2 sm:w-48 md:w-72">
                                     <div className="flex items-center gap-0.5">
                                         <Image
-                                            src={review.reviewer_img}
+                                            src={!review.reviewer_img.includes('data:') ? review.reviewer_img : '/default_user.png'}
                                             alt={review.reviewer}
                                             width={44}
                                             height={44}

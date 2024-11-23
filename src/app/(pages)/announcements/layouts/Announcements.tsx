@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { useEffect, useState, FC } from 'react';
 import { motion } from "framer-motion";
-import { PulseTitleBanner } from "../components/PulseTitleBanner";
 import { FaBlogger, FaCalendarAlt } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import ErrorLayout from '../../../components/Static/ErrorLayout';
+import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
 
 interface Announcement {
     id: number;
@@ -57,7 +57,7 @@ export const Announcements: FC = ({ }) => {
 
     return (
         <>
-            <PulseTitleBanner
+            <PageHero
                 title={title}
                 text={text}
             />

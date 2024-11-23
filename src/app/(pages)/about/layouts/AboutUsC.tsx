@@ -1,7 +1,7 @@
 'use client'; // Tells next its a client component not server if you look at my other page layouts they all do this for a reason :wink:
 
 import { FC } from "react";
-import s from "./styles/aboutUs.module.scss";
+import s from "../styles/aboutUs.module.scss";
 import { motion } from "framer-motion";
 
 export const AboutUs: FC = () => {

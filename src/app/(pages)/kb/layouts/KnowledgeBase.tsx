@@ -3,10 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState, FC } from 'react';
 import { motion } from "framer-motion";
-import { ArticleTitleBanner } from "../components/ArticleTitleBanner";
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import { MdArticle } from 'react-icons/md';
+import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
 
 interface Article {
     slug: string;
@@ -42,7 +40,7 @@ export const KnowledgeBaseLayout: FC = ({ }) => {
 
     return (
         <>
-            <ArticleTitleBanner
+            <PageHero
                 title="Knowledge Base"
                 text="Find answers to your questions."
             />
