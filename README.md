@@ -34,12 +34,3 @@ bun start
 ```sh
 bun run dev
 ```
-
----
-
-### Legal Pages
-Our legal pages are set up in a rather interesting manner:
-
-- You can add/update the content of our legal pages in [content/legal](./content/legal/)
-- The files are then looped through using our [api](./src/app/(pages)/api/legal/)
-- The content is then generated and converted to html in the [legal pages](./src/app/(pages)/legal/)
