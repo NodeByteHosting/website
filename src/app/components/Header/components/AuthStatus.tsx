@@ -79,7 +79,7 @@ const AuthStatus = () => {
     return (
             <div className="relative flex items-center space-x-4">
                 <button
-                    className="text-white font-medium flex items-center space-x-2"
+                    className="text-white font-medium text-small flex items-center space-x-2"
                     onClick={toggleDropdown}
                 >
                     <span>Login</span>
