@@ -1,6 +1,8 @@
 ## NodeByte Hosting
 Fast, reliable, scalable and secure hosting services for your business or gaming experience.
 
+[![Build](https://github.com/NodeByteHosting/website/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/NodeByteHosting/website/actions/workflows/build.yml)
+
 ---
 
 ### Project Details
@@ -18,6 +20,12 @@ Some things you need to know before you host the website:
 ##### Build/Compile the site
 ```sh
 bun run build
+```
+
+##### Build the Blog Pages
+**REQUIRED IN DEVELOPMENT**
+```sh
+bun run build:blog
 ```
 
 ##### Install dependencies
