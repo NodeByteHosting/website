@@ -29,7 +29,7 @@ export const BASE_LINKS = [
             },
             {
                 value: "Contact Us",
-                href: "/",
+                href: "https://billing.nodebyte.host/submitticket.php",
             },
             {
                 value: "Join the Team",
