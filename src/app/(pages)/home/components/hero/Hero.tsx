@@ -1,12 +1,11 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { motion } from "framer-motion";
 import s from "./styles/Hero.module.scss";
-import { useButtonScrollContext } from "@/src/providers/ButtonScroll";
-import { CobeGlobe } from "@/src/app/components/UI/Earth/Globe";
+import dynamic from "next/dynamic";
+
+const CobeGlobe = dynamic(() => import("@/components/UI/Earth/Globe").then(mod => mod.CobeGlobe));
 
 export const Hero: FC = ({ }) => {
-  const { scrollToElement } = useContext(useButtonScrollContext);
-  // Animation
   const animation = {
     hidden: {
       y: 30,

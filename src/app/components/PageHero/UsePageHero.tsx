@@ -3,7 +3,11 @@
 import { FC } from "react";
 import { motion } from "framer-motion";
 import s from "@/pages/home/components/hero/styles/Hero.module.scss";
-import { CobeGlobe } from "@/src/app/components/UI/Earth/Globe";
+import dynamic from "next/dynamic";
+
+const CobeGlobe = dynamic(() => import("@/components/UI/Earth/Globe").then(mod => mod.CobeGlobe));
+
+
 
 type PageHeroProps = {
   title: string;
