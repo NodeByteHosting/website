@@ -40,8 +40,34 @@ const ScrapeReviews = async () => {
         const title = $(element).find('[data-service-review-title-typography="true"]').text().trim() || 'No title';
         const content = $(element).find('[data-service-review-text-typography="true"]').text().trim() || 'No content';
         const reviewer = $(element).find('[data-consumer-name-typography="true"]').text().trim() || 'Anonymous';
-        const reviewer_img = $(element).find('.avatar_imageWrapper__8wdWb img').last().attr('src') || '/default_user.png';
+
+        // Extract image src and data-src
+        let reviewer_img = $(element)
+            .find('.avatar_imageWrapper__8wdWb img')
+            .filter(function () {
+                return $(this).attr('data-consumer-avatar-image') === "true";
+            })
+            .attr('src') || '/default_user.png';
+
+        const reviewer_img_data_src = $(element)
+            .find('.avatar_imageWrapper__8wdWb img')
+            .attr('data-src') || '/default_user.png';
+
+        console.log(`Reviewer image src: ${reviewer_img}`);
+        console.log(`Reviewer image data-src: ${reviewer_img_data_src}`);
+
+        if (reviewer_img && reviewer_img.startsWith('data:image/')) {
+            console.log("Base64 image found, using default user image.");
+            reviewer_img = '/default_user.png';
+        }
+
+        if (reviewer_img === '/default_user.png' && reviewer_img_data_src && !reviewer_img_data_src.startsWith('data:image/')) {
+            console.log("Using lazy-loaded image: " + reviewer_img_data_src);
+            reviewer_img = reviewer_img_data_src;
+        }
+
         const rating_img = $(element).find('.star-rating_starRating__4rrcf img').attr('src') || '/default_rating.png';
+
         const date = $(element).find('[data-service-review-date-of-experience-typography="true"]').text().trim() || 'No date';
 
         reviews.push({

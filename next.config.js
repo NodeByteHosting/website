@@ -1,12 +1,45 @@
 /** @type {import('next').NextConfig} */
 const { withContentlayer } = require('next-contentlayer2');
+const withAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+});
 
 const nextConfig = {
+    compress: true,
     reactStrictMode: true,
+    productionBrowserSourceMaps: false,
+    pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+    experimental: {
+        mdxRs: true,
+        turbo: {
+            resolveExtensions: [
+                '.mdx',
+                '.tsx',
+                '.ts',
+                '.jsx',
+                '.js',
+                '.mjs',
+                '.json',
+            ],
+        },
+    },
     images: {
-        domains: [
-            "source.unsplash.com",
-            "toxicdev.me"
+        unoptimized: true,
+        formats: ['image/avif', 'image/webp'],
+        dangerouslyAllowSVG: true,
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "user-images.trustpilot.com"
+            },
+            {
+                protocol: "https",
+                hostname: "source.unsplash.com"
+            },
+            {
+                protocol: "https",
+                hostname: "toxicdev.me"
+            }
         ]
     },
     env: {
@@ -19,7 +52,6 @@ const nextConfig = {
         GITHUB_API_URL: "https://raw.githubusercontent.com/",
         ERROR_HOOK_ID: "1309739781889982485",
         ERROR_HOOK_TOKEN: "9zf3M23jmLDeGsmY6Ks_gvBfamMQUJKoLAYpziCDUypO8MSJ1FAl4nTZk4-YEWeMZ3JV",
-        SASS_SILENCE_DEPRECATION_WARNINGS: "true"
     },
     sassOptions: {
         silenceDeprecations: ['legacy-js-api']
@@ -63,8 +95,12 @@ const securityHeaders = [
     {
         key: 'Referrer-Policy',
         value: 'origin-when-cross-origin'
+    },
+    {
+        key: "Cache-Control",
+        value: "public, max-age=31536000, immutable"
     }
 ]
 
 
-module.exports = withContentlayer(nextConfig);
+module.exports = withAnalyzer(withContentlayer(nextConfig));

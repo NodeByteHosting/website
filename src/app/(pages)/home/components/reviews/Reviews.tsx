@@ -17,6 +17,7 @@ export const Reviews: FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const { targetRef } = useContext(useButtonScrollContext);
 
+
     useEffect(() => {
         const fetchReviews = async () => {
             try {
@@ -84,7 +85,7 @@ export const Reviews: FC = () => {
                                 <div className="shrink-0 space-y-2 sm:w-48 md:w-72">
                                     <div className="flex items-center gap-0.5">
                                         <Image
-                                            src={!review.reviewer_img.includes('data:') ? review.reviewer_img : '/default_user.png'}
+                                            src={review.reviewer_img}
                                             alt={review.reviewer}
                                             width={44}
                                             height={44}
@@ -101,7 +102,7 @@ export const Reviews: FC = () => {
                                 <div className="mt-4 min-w-0 flex-1 space-y-4 sm:mt-0">
                                     <p className="text-base font-normal text-white/50">{review.content}</p>
                                     <div className="flex items-center gap-4">
-                                        <Image
+                                        <img
                                             src={review.rating_img}
                                             alt={`Rating: ${review.title}`}
                                             width={100}
