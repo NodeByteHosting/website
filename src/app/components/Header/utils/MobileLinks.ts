@@ -49,8 +49,8 @@ export const DATA_TOGGLE_MENU_LINKS = [
                 href: "/status",
             },
             {
-                value: "Announcements",
-                href: "/announcements"
+                value: "Documentation",
+                href: "/docs"
             },
             {
                 value: "Blog Posts",

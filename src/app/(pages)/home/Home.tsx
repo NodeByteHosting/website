@@ -1,10 +1,12 @@
 import { FC } from "react";
-import { Hero } from "./components/hero/Hero";
-import { Advantages } from "./components/advantages/Advantages";
-import { Services } from "./components/services/Services";
-import { FAQ } from "./components/FAQ/FAQ";
 import ButtonScrollProvider from "@/src/providers/ButtonScroll";
-import { Reviews } from "./components/reviews/Reviews";
+import dynamic from "next/dynamic";
+
+const Hero = dynamic(() => import("./components/hero/Hero").then(mod => mod.Hero));
+const Advantages = dynamic(() => import("./components/advantages/Advantages").then(mod => mod.Advantages));
+const Services = dynamic(() => import("./components/services/Services").then(mod => mod.Services));
+const FAQ = dynamic(() => import("./components/FAQ/FAQ").then(mod => mod.FAQ));
+const Reviews = dynamic(() => import("./components/reviews/Reviews").then(mod => mod.Reviews));
 
 export const HomePage: FC = ({ }) => {
   return (

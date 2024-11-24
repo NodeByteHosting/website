@@ -4,11 +4,11 @@ export const DATA_NAVBAR_LINKS = [
         href: "/",
     },
     {
-        value: "About Us",
+        value: "About",
         href: "about",
     },
     {
-        value: "Our Services",
+        value: "Services",
         href: "/#our-services",
     },
     {

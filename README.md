@@ -22,10 +22,10 @@ Some things you need to know before you host the website:
 bun run build
 ```
 
-##### Build the Blog Pages
+##### Build the Blog/Docs Pages
 **REQUIRED IN DEVELOPMENT**
 ```sh
-bun run build:blog
+bun run build:assets
 ```
 
 ##### Install dependencies
