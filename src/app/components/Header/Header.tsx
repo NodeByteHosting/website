@@ -144,7 +144,7 @@ export const Header: FC = () => {
                   <div className={`${s.Social} hover:bg-zinc-800`}>
                     <Link
                       target="_blank"
-                      href={'https://discord.gg/nodebyte'}
+                      href={'https://discord.gg/nuh57Q69tq'}
                     >
                       <SiDiscord
                         strokeWidth={1.5}
@@ -158,7 +158,7 @@ export const Header: FC = () => {
               <div
                 className={`${s.Copyright} pt-2 mx-2 text-center text-gray text-sm mt-4  border-t-1 border-gray/10`}
               >
-                &copy; 2024 NodeByte LTD | All rights reserved.
+                &copy; 2025 NodeByte LTD | All rights reserved.
               </div>
             </NavbarMenu>
           </section>

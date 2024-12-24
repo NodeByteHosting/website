@@ -59,6 +59,10 @@ export const BASE_LINKS = [
             {
                 value: "Cookie Policy",
                 href: "/legal/cookies"
+            },
+            {
+                value: "DMCA Policy",
+                href: "/legal/dmca"
             }
         ],
     },

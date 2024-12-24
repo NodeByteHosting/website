@@ -20,7 +20,7 @@ export const Footer: FC = ({ }) => {
 
     {
       title: "Discord",
-      href: "https://discord.gg/nodebyte",
+      href: "https://discord.gg/nuh57Q69tq",
       icon: <BsDiscord className="w-6 h-6 text-white" />,
     },
     {
@@ -92,7 +92,7 @@ export const Footer: FC = ({ }) => {
       </div>
       <section className={`${s.Copyright} bg-gray/5 border-t-1 border-gray/10`}>
         <div className="text-gray">
-          &copy; 2024 NodeByte LTD | All rights reserved.
+          &copy; 2025 NodeByte LTD | All rights reserved.
         </div>
       </section>
     </footer>
