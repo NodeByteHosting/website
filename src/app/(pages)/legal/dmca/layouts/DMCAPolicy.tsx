@@ -11,7 +11,7 @@ export const DMCAPolicy: FC = ({ }) => {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch('/api/legal/dmca');
+            const response = await fetch('/api/legal?asset=dmca');
             const data = await response.json();
             setContent(data.content);
         };

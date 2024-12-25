@@ -11,7 +11,7 @@ export const TermsOfService: FC = ({ }) => {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch('/api/legal/terms');
+            const response = await fetch('/api/legal?asset=terms');
             const data = await response.json();
             setContent(data.content);
         };

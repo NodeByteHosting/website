@@ -11,7 +11,7 @@ export const CookiePolicy: FC = ({ }) => {
 
     useEffect(() => {
         const fetchContent = async () => {
-            const response = await fetch('/api/legal/cookies');
+            const response = await fetch('/api/legal?asset=cookies');
             const data = await response.json();
             setContent(data.content);
         };

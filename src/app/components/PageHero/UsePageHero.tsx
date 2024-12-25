@@ -57,8 +57,8 @@ export const PageHero: FC<PageHeroProps> = ({
               >
                 <div className="border-1 border-gray/20 rounded-full py-2 px-3 bg-black_secondary">
                   {sup.title1}{" "}
-                  <span className="font-bold">{sup.title2} </span>
-                  new <span className="font-bold">{sup.title3} </span> {sup.title4}
+                  <span className="font-bold">{sup.title2}{" "}</span>
+                  <span className="font-bold">{sup.title3}{" "}</span> {sup.title4}
                 </div>
               </motion.h2>
             )}

@@ -1,27 +1,27 @@
+import type { Metadata } from "next";
 import { StatusLayout } from './layouts/Status';
-import { Metadata } from "next";
+import { absoluteUrl } from "@/hooks/absoluteUrl";
 
 export const metadata: Metadata = {
     title: "Status",
-    description: 'Check the status of our services and any ongoing maintenance.',
+    description: "View the current real-time status of our services.",
     openGraph: {
-        title: 'NodeByte Hosting',
-        description: 'Check the status of our services and any ongoing maintenance.',
-        url: 'https://nodebyte.host/status',
-        siteName: 'NodeByte Hosting',
-        locale: 'en_US',
-        type: 'website',
+        url: "https://nodebyte.host",
+        title: "Status",
+        description: "View the current real-time status of our services.",
+        images: "/logo.png",
+        siteName: "NodeByte Hosting",
     },
     twitter: {
-        title: 'NodeByte Hosting',
-        description: 'Check the status of our services and any ongoing maintenance.',
-        images: 'https://nodebyte.host/banner.png',
-        card: 'summary_large_image'
+        card: "summary_large_image",
+        creator: "@TheRealToxicDev",
+        title: "Status",
+        description: "View the current real-time status of our services.",
+        images: "/banner.png"
+
     },
-    alternates: {
-        canonical: 'https://nodebyte.host/status'
-    }
-};
+    metadataBase: absoluteUrl()
+}
 
 
 export default function StatusPage() {
