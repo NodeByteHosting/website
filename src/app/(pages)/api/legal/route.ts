@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { fetchGithubContent } from "@/utils/getAssetContent";
+import { fetchLegalPages } from "@/utils/github/getLegalAssets";
 
 export async function GET(req: NextRequest) {
 
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const repoName = "assets/contents";
     const filePath = `markdown/legal/${asset}.md?ref=main`;
 
-    const result = await fetchGithubContent(repoOwner, repoName, filePath);
+    const result = await fetchLegalPages(repoOwner, repoName, filePath);
 
     return NextResponse.json(result, {
         headers: { "Cache-Control": "no-store" }

@@ -1,87 +1,24 @@
+import { fetchKbPages } from "@/utils/github/getKbAssets";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const slug = searchParams.get('slug');
 
-    const baseUrl = process.env.GITHUB_API_URL;
     const repoOwner = 'NodeByteHosting';
-    const repoName = 'assets';
-    const filePath = 'markdown/kb/articles.json';
-    const branch = 'main';
+    const repoName = 'assets/contents';
+    const articlesJson = 'markdown/kb/articles.json?ref=main';
 
-    const url = `${baseUrl}${repoOwner}/${repoName}/${branch}/${filePath}`;
+    const result = await fetchKbPages({
+        repoName: repoName as string,
+        repoOwner: repoOwner as string,
+        articlesJson: articlesJson as string,
+        slug: slug as string
+    });
 
-    try {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            return NextResponse.json({
-                status: 'ERROR',
-                message: 'Whoops, we are unable to load that article at this time, if this issues persists please contact our support team!',
-                code: 500
-            });
+    return NextResponse.json(result, {
+        headers: {
+            "Cache-Control": "no-store"
         }
-        const articlesFileContent = await response.json();
-        const sections = articlesFileContent;
-
-        let article = null;
-        let articleTitle = '';
-        let articleDescription = '';
-
-        for (const section of sections) {
-            article = section.articles.find((article: any) => article.slug === slug);
-            if (article) {
-                articleTitle = article.title;
-                articleDescription = article.description;
-                break;
-            }
-        }
-
-        if (!article) {
-            return NextResponse.json({
-                status: 'OK',
-                message: 'Unable to locate that article in our knowledge base!',
-                code: 404
-            });
-        }
-
-        const articlePath = `${baseUrl}${repoOwner}/${repoName}/${branch}/markdown/kb/${article.path}.md`;
-        const fileResponse = await fetch(articlePath);
-
-        if (!fileResponse.ok) {
-
-            console.log(`[@nodebyte/fetch_article_error]:`, fileResponse)
-
-            return NextResponse.json({
-                status: 'ERROR',
-                message: 'Whoops, we are unable to load that article at this time, if this issues persists please contact our support team!',
-                code: 500
-            });
-        }
-        const fileContent = await fileResponse.text();
-
-        return NextResponse.json({
-            status: 'OK',
-            message: "Successfully fetched article from Knowledge base",
-            article: fileContent,
-            title: articleTitle,
-            description: articleDescription,
-            code: 200
-        });
-    } catch (err: unknown) {
-        if (err instanceof Error) {
-            return NextResponse.json({
-                status: 'ERROR',
-                message: err.message,
-                code: 500
-            });
-        }
-
-        return NextResponse.json({
-            status: 'ERROR',
-            message: 'Unknown error occurred',
-            code: 500
-        });
-    }
+    });
 }

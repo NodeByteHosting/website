@@ -1,13 +1,10 @@
+interface LegalAssetProps {
+    repoOwner: string;
+    repoName: string;
+    filePath: string;
+}
 
-/**
- * Fetch the contents of a file from a Github Repository
- * @param repoOwner The owner of the repo/org name (ex: NodeByteHosting)
- * @param repoName The name of the repo to fetch (ex: website)
- * @param filePath The path to the file to fetch (ex: markdown/legal/cookies.md?ref=main)
- * 
- * @important Please make sure you provide a reference to the branch in the file path (ex: ?ref=main) 
- */
-export async function fetchGithubContent(repoOwner: string, repoName: string, filePath: string) {
+export async function fetchLegalPages({ repoOwner, repoName, filePath }: LegalAssetProps) {
 
     const apiUrl = process.env.GITHUB_API_URL;
     const apiKey = process.env.GITHUB_PAT;
