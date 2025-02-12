@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { MdArticle } from 'react-icons/md';
 import { usePathname } from 'next/navigation';
 import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
-import { githubFetcher } from '@/lib/githubFethcer';
+import { githubFetcher } from '@/src/fetchers/github';
 import { useSWRClient } from '@/providers/SWR/config';
 import ErrorLayout from '@/src/app/components/Static/ErrorLayout';
 import LoadingSkeleton from './LoadingSkeleton';

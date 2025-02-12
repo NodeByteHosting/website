@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { MarkdownProvider } from '../../../../providers/MarkdownProvider';
 import { logErrorToDiscord } from "@/src/app/utils/logError";
 import ErrorLayout from "../../../components/Static/ErrorLayout";
 import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
-import { githubFetcher } from '@/lib/githubFethcer';
+import { githubFetcher } from '@/src/fetchers/github';
 import { useSWRClient } from '@/providers/SWR/config';
 import LoadingSkeleton from './LoadingSkeleton';
 

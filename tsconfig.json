@@ -42,8 +42,8 @@
       "@/utils/*": [
         "./src/app/utils/*"
       ],
-      "@/lib/*": [
-        "./src/lib/*"
+      "@/fetchers/*": [
+        "./src/fetchers/*"
       ],
       "@/providers/*": [
         "./src/providers/*"

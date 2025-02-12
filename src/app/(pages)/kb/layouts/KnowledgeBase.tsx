@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { motion } from "framer-motion";
 import { MdArticle } from 'react-icons/md';
 import { PageHero } from '@/components/PageHero/UsePageHero';
-import { githubFetcher } from '@/lib/githubFethcer';
+import { githubFetcher } from '@/src/fetchers/github';
 import { useSWRClient } from '@/providers/SWR/config';
 import ErrorLayout from '@/src/app/components/Static/ErrorLayout';
 import LoadingSkeleton from './LoadingSkeleton';
