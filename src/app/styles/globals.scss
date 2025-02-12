@@ -1,0 +1,296 @@
+@tailwind base;
+@tailwind utilities;
+
+html {
+    &.hide {
+        overflow: hidden;
+    }
+
+    hr {
+        display: none;
+    }
+
+    body {
+        position: relative;
+
+        .container {
+            width: min(100% - 40px, 1260px);
+            margin-inline: auto;
+        }
+
+        #app {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+        }
+
+        // Scroll-bar
+        &::-webkit-scrollbar {
+            background-color: #fff;
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba($color: #ccc, $alpha: 1);
+            border-radius: 10px;
+            border: 2px solid #fff;
+        }
+    }
+}
+
+/* Base styles for the Markdown content */
+.markdown-body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #ffffff;
+    padding: 1em;
+    border-radius: 0.5em;
+}
+
+/* Headings */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    color: #e2e8f0;
+}
+
+.markdown-body h1 {
+    font-size: 2em;
+    border-bottom: 2px solid #4a5568;
+    padding-bottom: 0.3em;
+}
+
+.markdown-body h2 {
+    font-size: 1.75em;
+    border-bottom: 1px solid #4a5568;
+    padding-bottom: 0.3em;
+}
+
+.markdown-body h3 {
+    font-size: 1.5em;
+}
+
+.markdown-body h4 {
+    font-size: 1.25em;
+}
+
+.markdown-body h5 {
+    font-size: 1em;
+}
+
+.markdown-body h6 {
+    font-size: 0.875em;
+    color: #a0aec0;
+}
+
+/* Paragraphs */
+.markdown-body p {
+    margin-bottom: 1em;
+}
+
+/* Links */
+.markdown-body a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+.markdown-body a:hover {
+    text-decoration: underline;
+}
+
+/* Lists */
+.markdown-body ul,
+.markdown-body ol {
+    margin-left: 2em;
+    margin-bottom: 1em;
+    padding-left: 1.5em;
+}
+
+.markdown-body ul {
+    list-style-type: disc;
+}
+
+.markdown-body ol {
+    list-style-type: decimal;
+}
+
+.markdown-body ul li,
+.markdown-body ol li {
+    margin-bottom: 0.5em;
+}
+
+/* Task Lists */
+.markdown-body input[type="checkbox"] {
+    margin-right: 0.5em;
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+    margin: 1em 0;
+    padding: 0.5em 1em;
+    background-color: #333;
+    border-left: 0.25em solid #1e90ff;
+    color: #e2e8f0;
+    border-radius: 0.3em;
+}
+
+/* Code */
+.markdown-body code {
+    background-color: #333;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+    font-family: 'Courier New', Courier, monospace;
+    color: #e2e8f0;
+}
+
+.markdown-body pre {
+    background-color: #333;
+    padding: 1em;
+    border-radius: 0.3em;
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    color: #e2e8f0;
+}
+
+/* Syntax Highlighting */
+.markdown-body pre code {
+    display: block;
+    padding: 0;
+    color: inherit;
+    background: none;
+}
+
+/* Tables */
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid #4a5568;
+    padding: 0.5em;
+}
+
+.markdown-body th {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+.markdown-body td {
+    background-color: #1a202c;
+}
+
+.markdown-body tr:nth-child(even) td {
+    background-color: #2a2a2a;
+}
+
+.markdown-body tr:hover td {
+    background-color: #333;
+}
+
+/* Horizontal Rules */
+.markdown-body hr {
+    border: 0;
+    height: 1px;
+    background: #4a5568;
+    margin: 2em 0;
+}
+
+/* Images */
+.markdown-body img {
+    max-width: 100%;
+    border-radius: 0.5em;
+    margin-bottom: 1em;
+}
+
+/* Footnotes */
+.markdown-body .footnotes {
+    font-size: 0.875em;
+    color: #a0aec0;
+}
+
+.markdown-body .footnotes ol {
+    padding-left: 1em;
+}
+
+.markdown-body .footnotes li {
+    margin-bottom: 0.5em;
+}
+
+/* Strikethrough */
+.markdown-body del {
+    text-decoration: line-through;
+}
+
+/* Task Lists */
+.markdown-body input[type="checkbox"] {
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+/* Tables */
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid #4a5568;
+    padding: 0.5em;
+}
+
+.markdown-body th {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+.markdown-body td {
+    background-color: #1a202c;
+}
+
+.markdown-body tr:nth-child(even) td {
+    background-color: #2a2a2a;
+}
+
+.markdown-body tr:hover td {
+    background-color: #333;
+}
+
+/* Horizontal Rules */
+.markdown-body hr {
+    border: 0;
+    height: 1px;
+    background: #4a5568;
+    margin: 2em 0;
+}
+
+/* Images */
+.markdown-body img {
+    max-width: 100%;
+    border-radius: 0.5em;
+    margin-bottom: 1em;
+}
+
+/* Footnotes */
+.markdown-body .footnotes {
+    font-size: 0.875em;
+    color: #a0aec0;
+}
+
+.markdown-body .footnotes ol {
+    padding-left: 1em;
+}
+
+.markdown-body .footnotes li {
+    margin-bottom: 0.5em;
+}

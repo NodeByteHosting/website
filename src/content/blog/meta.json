@@ -1,0 +1,14 @@
+{
+    "authors": [
+        {
+            "name": "System",
+            "icon": "/logo.png",
+            "title": "Automation"
+        },
+        {
+            "name": "Toxic Dev",
+            "icon": "https://toxicdev.me/ToxicDevLogo.jpg",
+            "title": "Chief Business Officer"
+        }
+    ]
+}
