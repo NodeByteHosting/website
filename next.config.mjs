@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 import { createContentlayerPlugin } from 'next-contentlayer2';
+import { resolve } from 'path';
 
 export const withContentLayer = createContentlayerPlugin({
     configPath: './configs/contentlayer.ts',
@@ -9,7 +10,11 @@ export const withContentLayer = createContentlayerPlugin({
 export default withContentLayer({
     compress: true,
     reactStrictMode: false,
-    reactProductionProfiling: true,
+    cacheHandler: resolve('./src/lib/cacheHandler.js'),
+    cacheMaxMemorySize: 0,
+    generateBuildId: async () => {
+        return process.env.GIT_HASH
+    },
     experimental: {
         mdxRs: true,
         turbo: {
@@ -22,7 +27,11 @@ export default withContentLayer({
                 }
             },
             resolveImports: true
-        }
+        },
+        optimizeCss: true,
+        optimizeServerReact: true,
+        optimizePackageImports: ['cobe'],
+        optimisticClientCache: true
     },
     images: {
         dangerouslyAllowSVG: true,
