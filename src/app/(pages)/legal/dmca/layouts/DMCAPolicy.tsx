@@ -1,43 +1,62 @@
 'use client';
 
-import md from "markdown-it";
 import { motion } from "framer-motion";
-import { FC, useEffect, useState } from 'react';
-import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
-
+import { usePathname } from 'next/navigation';
+import { FC, useEffect } from 'react';
+import { MarkdownProvider } from '@/providers/MarkdownProvider';
+import { logErrorToDiscord } from "@/src/app/utils/logError";
+import ErrorLayout from "@/components/Static/ErrorLayout";
+import { PageHero } from "@/components/PageHero/UsePageHero";
+import { fetchLegalPages } from '@/src/fetchers/legal';
+import { useSWRClient } from '@/providers/SWR/config';
 
 export const DMCAPolicy: FC = ({ }) => {
-    const [content, setContent] = useState<string>('');
+    const pathname = usePathname();
+    const slug = pathname.split('/').pop();
+
+    const { data, error } = useSWRClient(
+        {
+            repoOwner: 'NodeByteHosting',
+            repoName: 'assets/contents/markdown',
+            filePath: `legal/dmca.md?ref=main`,
+            slug,
+            type: 'page',
+        },
+        fetchLegalPages
+    );
+
+    const content = data?.content || 'Loading...';
 
     useEffect(() => {
-        const fetchContent = async () => {
-            const response = await fetch('/api/legal?asset=dmca');
-            const data = await response.json();
-            setContent(data.content);
-        };
-
-        fetchContent();
-    }, []);
+        if (error) {
+            logErrorToDiscord({
+                title: 'Error: failed to fetch!',
+                message: error.message,
+                page: pathname,
+                source: 'DMCAPolicy',
+                status: 500,
+            });
+        }
+    }, [error, pathname]);
 
     return (
         <>
             <PageHero
                 title="DMCA Policy"
                 text="The stuff no one wants to read but everyone should know."
-                sup={{ title1: "Last updated", title2: "2024-", title3: "11-", title4: "20" }}
+                sup={{ title1: "Last updated", title2: "2024 -", title3: "11 -", title4: "20" }}
             />
-            <motion.section className="py-16 bg-dark">
-                <div
-                    className="container text-white markdown-body"
-                    dangerouslySetInnerHTML={{
-                        __html: md({
-                            html: true,
-                            linkify: true,
-                            typographer: true
-                        }).render(content)
-                    }}
-                />
-            </motion.section>
+            {error || !data ? (
+                <motion.section className="py-16 bg-dark">
+                    <ErrorLayout />
+                </motion.section>
+            ) : (
+                <motion.section className="py-16 bg-dark">
+                    <div className="container text-white markdown-body">
+                        <MarkdownProvider content={content} />
+                    </div>
+                </motion.section>
+            )}
         </>
     );
 };
