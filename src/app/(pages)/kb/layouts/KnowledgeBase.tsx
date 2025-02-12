@@ -6,7 +6,9 @@ import { motion } from "framer-motion";
 import { MdArticle } from 'react-icons/md';
 import { PageHero } from '@/components/PageHero/UsePageHero';
 import { githubFetcher } from '@/lib/githubFethcer';
-import useSWR from 'swr';
+import { useSWRClient } from '@/providers/SWR/config';
+import ErrorLayout from '@/src/app/components/Static/ErrorLayout';
+import LoadingSkeleton from './LoadingSkeleton';
 
 interface Article {
     slug: string;
@@ -23,11 +25,12 @@ interface Section {
 }
 
 export const KnowledgeBaseLayout: FC = ({ }) => {
-    const { data, error } = useSWR(
+    const { data, error, isLoading } = useSWRClient(
         {
             repoOwner: 'NodeByteHosting',
             repoName: 'assets/contents',
             jsonPath: 'markdown/kb/articles.json?ref=main',
+            type: 'articles',
         },
         githubFetcher
     );
@@ -38,14 +41,14 @@ export const KnowledgeBaseLayout: FC = ({ }) => {
         <>
             <PageHero
                 title="Knowledge Base"
-                text="Find answers to your questions."
+                text="Find all the information you need to use our services, from getting started to advanced configurations."
             />
             <motion.section className="py-16 bg-dark">
                 <div className="px-4 mx-auto max-w-screen-xl">
                     {error ? (
-                        <div className="text-center text-red-500 break-all">Error loading articles: {error.message}</div>
-                    ) : !data ? (
-                        <div className="text-center text-white">Loading...</div>
+                        <ErrorLayout />
+                    ) : isLoading || !data ? (
+                        <LoadingSkeleton />
                     ) : sections.length === 0 ? (
                         <div className="text-center text-white">No articles available at the moment.</div>
                     ) : (

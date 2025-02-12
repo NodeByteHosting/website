@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import { motion } from "framer-motion";
-import { useEffect, useState, FC } from 'react';
+import { FC } from 'react';
 import { MdArticle } from 'react-icons/md';
 import { usePathname } from 'next/navigation';
 import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
+import { githubFetcher } from '@/lib/githubFethcer';
+import { useSWRClient } from '@/providers/SWR/config';
+import ErrorLayout from '@/src/app/components/Static/ErrorLayout';
+import LoadingSkeleton from './LoadingSkeleton';
 
 interface Article {
     slug: string;
@@ -23,58 +27,74 @@ interface Section {
 }
 
 export const ArticleSectionLayout: FC = ({ }) => {
-    const [articles, setArticles] = useState<Section['articles']>([]);
-    const [section, setSection] = useState<Section>();
-
     const slug = usePathname().replace('/kb/', '');
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            const res = await fetch(`/api/kb/section?slug=${slug}`);
-            const data = await res.json();
+    const { data, error, isLoading } = useSWRClient(
+        {
+            repoOwner: 'NodeByteHosting',
+            repoName: 'assets/contents',
+            jsonPath: 'markdown/kb/articles.json?ref=main',
+            slug,
+            type: 'section',
+        },
+        githubFetcher
+    );
 
-            if (data.status === 'OK') {
-                console.log(data)
-                setArticles(data.articles);
-                setSection(data);
-            } else {
-                console.error('Failed to fetch articles:', data.message);
-            }
-        }
+    const section: Section = data || {};
+    const articles: Article[] = section.articles || [];
 
-        fetchArticles();
-    }, []);
+    const pageTitle = error
+        ? 'Internal Error'
+        : isLoading
+            ? 'Loading Articles...'
+            : section.section
+            || 'Loading...';
+
+    const pageSubtitle = error
+        ? `An error occurred: ${error.message}`
+        : isLoading
+            ? 'Please wait while we fetch the articles.'
+            : section.about
+            || 'Please wait while we fetch the articles.';
 
     return (
         <>
             <PageHero
-                title={section?.section as string}
-                text={section?.about as string}
+                title={pageTitle}
+                text={pageSubtitle}
             />
             <motion.section className="py-16 bg-dark">
                 <div className="px-4 mx-auto max-w-screen-xl">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {articles?.map((article, index) => (
-                            <Link href={`/kb/${article.section}/article/${article.slug}`}>
-                                <article key={index} className="p-6 relative shadow bg-dark_gray hover:bg-black_secondary rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex justify-between items-center mb-4 text-gray-500">
-                                            <span className="text-sm flex items-center text-white/50">
-                                                <MdArticle className="mr-1 text-white/50" />
-                                                Article
-                                            </span>
+                    {error ? (
+                        <ErrorLayout />
+                    ) : isLoading || !data ? (
+                        <LoadingSkeleton />
+                    ) : articles.length === 0 ? (
+                        <div className="text-center text-white">No articles available at the moment.</div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {articles.map((article, index) => (
+                                <Link key={index} href={`/kb/${article.section}/article/${article.slug}`}>
+                                    <article className="p-6 relative shadow bg-dark_gray hover:bg-black_secondary rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex justify-between items-center mb-4 text-gray-500">
+                                                <span className="text-sm flex items-center text-white/50">
+                                                    <MdArticle className="mr-1 text-white/50" />
+                                                    Article
+                                                </span>
+                                            </div>
+                                            <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
+                                                {article.title}
+                                            </h2>
+                                            <p className="mb-6 font-light text-white/50">
+                                                {article.description}
+                                            </p>
                                         </div>
-                                        <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
-                                            {article.title}
-                                        </h2>
-                                        <p className="mb-6 font-light text-white/50">
-                                            {article.description}
-                                        </p>
-                                    </div>
-                                </article>
-                            </Link>
-                        ))}
-                    </div>
+                                    </article>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </motion.section>
         </>

@@ -47,19 +47,24 @@ export const PageHero: FC<PageHeroProps> = ({
             viewport={{ once: true }}
             className={s.Content}
           >
-            {sup && (
-              <motion.h2
-                custom={1}
-                variants={animation}
-                className="text-white "
-              >
+            <motion.h2
+              custom={1}
+              variants={animation}
+              className="text-white "
+            >
+              {sup && (
                 <div className="border-1 border-gray/20 rounded-full py-2 px-3 bg-black_secondary">
-                  {sup.title1}{" "}
-                  <span className="font-bold">{sup.title2}{" "}</span>
-                  <span className="font-bold">{sup.title3}{" "}</span> {sup.title4}
+                  {sup?.title1 && (
+                    <>
+                      <span className="font-bold">{sup.title1} </span>
+                      {sup.title2 && <span>{sup.title2} </span>}
+                      {sup.title3 && <span className="font-bold">{sup.title3} </span>}
+                      {sup.title4 && <span>{sup.title4}</span>}
+                    </>
+                  )}
                 </div>
-              </motion.h2>
-            )}
+              )}
+            </motion.h2>
             <motion.h1
               custom={2}
               variants={animation}
@@ -69,7 +74,7 @@ export const PageHero: FC<PageHeroProps> = ({
               {title}
             </motion.h1>
             <motion.p custom={3} variants={animation} className="text-white/70">
-              {text}{" "}
+              {text}
             </motion.p>
           </motion.section>
         </section>

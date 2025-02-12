@@ -11,7 +11,6 @@ import { Loader } from "./components/Loader/Loader";
 /** PROVIDERS */
 import ModalProvider from "@/providers/ModalProvider";
 import NextUiProvider from "@/providers/NextUiProvider";
-import SWRProvider from "@/providers/SWR/provider";
 
 import { absoluteUrl } from "../hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";
@@ -56,21 +55,19 @@ export default function RootLayout({
         <div id="app" style={GeistSans.style}>
           <NextUiProvider>
             <ModalProvider>
-              <SWRProvider>
-                <Header />
-                <main>{children}</main>
-                <Toaster
-                  position="bottom-right"
-                  toastOptions={{
-                    style: {
-                      background: "#0A2540",
-                      color: "#fff",
-                    }
-                  }}
-                />
-                <Footer />
-                <BtnTop />
-              </SWRProvider>
+              <Header />
+              <main>{children}</main>
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  style: {
+                    background: "#0A2540",
+                    color: "#fff",
+                  }
+                }}
+              />
+              <Footer />
+              <BtnTop />
             </ModalProvider>
           </NextUiProvider>
           <Loader />
