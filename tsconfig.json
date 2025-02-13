@@ -36,6 +36,9 @@
       "@logger": [
         "./src/lib/logger"
       ],
+      "components": [
+        "./src/app/components"
+      ],
       "@/components/*": [
         "./src/app/components/*"
       ],
@@ -53,6 +56,12 @@
       ],
       "@/providers/*": [
         "./src/providers/*"
+      ],
+      "tailwind": [
+        "./src/hooks/tailwindUtils"
+      ],
+      "ui/*": [
+        "./src/app/components/UI/*"
       ]
     }
   },
