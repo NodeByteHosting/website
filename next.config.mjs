@@ -10,7 +10,7 @@ export const withContentLayer = createContentlayerPlugin({
 export default withContentLayer({
     compress: true,
     reactStrictMode: false,
-    cacheHandler: resolve('./src/lib/cacheHandler.js'),
+    cacheHandler: resolve('./src/lib/cache.js'),
     cacheMaxMemorySize: 0,
     generateBuildId: async () => {
         return process.env.GIT_HASH
