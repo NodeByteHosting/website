@@ -31,7 +31,7 @@
         "./.contentlayer/generated"
       ],
       "@cache": [
-        "./src/lib/cacheHandler"
+        "./src/lib/cache"
       ],
       "@logger": [
         "./src/lib/logger"
@@ -62,7 +62,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "src/constants/secHeaders.ks"
+    "src/constants/secHeaders.ks",
+    "src/lib/logger.js"
   ],
   "exclude": [
     "node_modules"

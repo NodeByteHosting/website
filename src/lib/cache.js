@@ -26,8 +26,8 @@ module.exports = class CacheHandler {
 
         if (!entry) {
             logger.cache({
-                message: `Cache miss for key: ${key}`,
-                service: 'CacheHandler',
+                message: `Unable to find cache for key: ${key}`,
+                service: 'CACHE',
                 method: 'get',
                 cacheState: 'MISS',
                 level: 'warn'
@@ -39,18 +39,18 @@ module.exports = class CacheHandler {
         if (Date.now() - entry.lastModified > this.options.ttl) {
             cache.delete(key);
             logger.cache({
-                message: `Cache expired for key: ${key}`,
-                service: 'CacheHandler',
+                message: `The cache for key: ${key} has expired`,
+                service: 'CACHE',
                 method: 'get',
                 cacheState: 'EXPIRED',
-                level: 'warn'
+                level: 'error'
             });
             return null;
         }
 
         logger.cache({
-            message: `Cache hit for key: ${key}`,
-            service: 'CacheHandler',
+            message: `Located cache for key: ${key}`,
+            service: 'CACHE',
             method: 'get',
             cacheState: 'HIT',
             level: 'info'
@@ -72,8 +72,8 @@ module.exports = class CacheHandler {
             const oldestKey = [...cache.keys()][0];
             cache.delete(oldestKey);
             logger.cache({
-                message: `Cache evicted for key: ${oldestKey}`,
-                service: 'CacheHandler',
+                message: `Evicted cache for key: ${oldestKey}`,
+                service: 'CACHE',
                 method: 'set',
                 cacheState: 'EVICTED',
                 level: 'warn'
@@ -87,8 +87,8 @@ module.exports = class CacheHandler {
         });
 
         logger.cache({
-            message: `Cache set for key: ${key}`,
-            service: 'CacheHandler',
+            message: `Set cache for key: ${key}`,
+            service: 'CACHE',
             method: 'set',
             cacheState: 'SET',
             level: 'info'
@@ -106,8 +106,8 @@ module.exports = class CacheHandler {
             if (value.tags.some(tag => tags.includes(tag))) {
                 cache.delete(key);
                 logger.cache({
-                    message: `Cache invalidated for key: ${key}`,
-                    service: 'CacheHandler',
+                    message: `Invalidated cache for key: ${key}`,
+                    service: 'CACHE',
                     method: 'revalidateTag',
                     cacheState: 'INVALIDATE',
                     level: 'info'
@@ -122,8 +122,8 @@ module.exports = class CacheHandler {
     async clear() {
         cache.clear();
         logger.cache({
-            message: `Cache cleared`,
-            service: 'CacheHandler',
+            message: `Cleared all cache entries`,
+            service: 'CACHE',
             method: 'clear',
             cacheState: 'CLEAR',
             level: 'info'

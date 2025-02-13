@@ -11,21 +11,15 @@ interface FetcherProps {
 const getGithubApiUrl = () => process.env.GITHUB_API_URL;
 const getGithubAccessToken = () => process.env.GITHUB_PAT;
 
-const cache = new CacheHandler({ ttl: 5 * 60 * 1000 }); // Cache for 5 minutes
+const cache = new CacheHandler({ ttl: 5 * 60 * 1000 });
 
 export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type }: FetcherProps) => {
     const apiUrl = getGithubApiUrl();
     const apiKey = getGithubAccessToken();
     const cacheKey = `Cache:GitHub_${repoOwner}_${repoName}_${type}_${slug ?? 'all'}`;
 
-    // ✅ Check cache first
     let cachedData = await cache.get(cacheKey);
-    if (cachedData) {
-        console.log(`[CACHE HIT]: ${cacheKey}`);
-        return cachedData;
-    }
-
-    console.log(`[CACHE MISS]: ${cacheKey} - Fetching from GitHub...`);
+    if (cachedData) return cachedData;
 
     try {
         const url = `${apiUrl}/${repoOwner}/${repoName}/${jsonPath}`;
@@ -92,7 +86,6 @@ export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type 
             throw new Error('Invalid fetch type');
         }
 
-        // ✅ Store in cache
         await cache.set(cacheKey, result, { tags: [`GitHub:${repoOwner}/${repoName}`] });
 
         return result;
