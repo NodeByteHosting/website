@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES2024",
     "lib": [
       "dom",
       "dom.iterable",
@@ -32,6 +32,9 @@
       ],
       "@cache": [
         "./src/lib/cacheHandler"
+      ],
+      "@logger": [
+        "./src/lib/logger"
       ],
       "@/components/*": [
         "./src/app/components/*"
