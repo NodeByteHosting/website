@@ -1,3 +1,5 @@
+import CacheHandler from '@cache';
+
 interface FetcherProps {
     repoOwner: string;
     repoName: string;
@@ -6,29 +8,34 @@ interface FetcherProps {
     type: 'articles' | 'section' | 'page';
 }
 
-const getGithubApiUrl = () => {
-    return process.env.GITHUB_API_URL;
-};
+const getGithubApiUrl = () => process.env.GITHUB_API_URL;
+const getGithubAccessToken = () => process.env.GITHUB_PAT;
 
-const getGithubAccessToken = () => {
-    return process.env.GITHUB_PAT;
-};
+const cache = new CacheHandler({ ttl: 5 * 60 * 1000 }); // Cache for 5 minutes
 
 export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type }: FetcherProps) => {
     const apiUrl = getGithubApiUrl();
     const apiKey = getGithubAccessToken();
+    const cacheKey = `Cache:GitHub_${repoOwner}_${repoName}_${type}_${slug ?? 'all'}`;
 
-    const url = `${apiUrl}/${repoOwner}/${repoName}/${jsonPath}`;
+    // ✅ Check cache first
+    let cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+        console.log(`[CACHE HIT]: ${cacheKey}`);
+        return cachedData;
+    }
+
+    console.log(`[CACHE MISS]: ${cacheKey} - Fetching from GitHub...`);
 
     try {
+        const url = `${apiUrl}/${repoOwner}/${repoName}/${jsonPath}`;
         const response = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-            },
-        }).catch((err: unknown) => {
-            const errMessage = (err as Error).message ?? "an unknown error occurred";
-            throw new Error(errMessage);
+            headers: { Authorization: `Bearer ${apiKey}` },
         });
+
+        if (!response.ok) {
+            throw new Error(`GitHub API request failed: ${response.statusText}`);
+        }
 
         const fileContent = await response.json();
 
@@ -39,19 +46,15 @@ export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type 
         const decodedContent = Buffer.from(fileContent.content, 'base64').toString('utf-8');
         const data = JSON.parse(decodedContent);
 
+        let result: any;
+
         if (type === 'articles') {
-            return data;
-        }
-
-        if (type === 'section') {
+            result = data;
+        } else if (type === 'section') {
             const section = data.find((section: any) => section.slug === slug);
-            if (!section) {
-                throw new Error('Section not found');
-            }
-            return section;
-        }
-
-        if (type === 'page') {
+            if (!section) throw new Error('Section not found');
+            result = section;
+        } else if (type === 'page') {
             const sections = data;
             let article = null;
             let articleTitle = '';
@@ -66,39 +69,34 @@ export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type 
                 }
             }
 
-            if (!article) {
-                throw new Error('Article not found');
-            }
+            if (!article) throw new Error('Article not found');
 
             const articlePath = `${apiUrl}/${repoOwner}/${repoName}/markdown/kb/${article.path}.md`;
             const articleResponse = await fetch(articlePath, {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`,
-                },
+                headers: { Authorization: `Bearer ${apiKey}` },
             });
 
-            if (!articleResponse.ok) {
-                const errorMessage = `Unable to decode or locate the article content`;
-                throw new Error(errorMessage);
-            }
+            if (!articleResponse.ok) throw new Error('Unable to fetch article content');
 
             const articleFileContent = await articleResponse.json();
-
-            if (!articleFileContent.content) {
-                throw new Error('Unable to decode or locate the article content');
-            }
+            if (!articleFileContent.content) throw new Error('Unable to decode article content');
 
             const decodedArticleFile = Buffer.from(articleFileContent.content, 'base64').toString('utf-8');
 
-            return {
+            result = {
                 article: decodedArticleFile,
                 title: articleTitle,
                 description: articleDescription,
             };
+        } else {
+            throw new Error('Invalid fetch type');
         }
 
-        throw new Error('Invalid fetch type');
-    } catch (err: unknown) {
+        // ✅ Store in cache
+        await cache.set(cacheKey, result, { tags: [`GitHub:${repoOwner}/${repoName}`] });
+
+        return result;
+    } catch (err) {
         throw new Error((err as Error).message ?? 'An unknown error occurred');
     }
 };

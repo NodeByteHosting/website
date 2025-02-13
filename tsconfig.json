@@ -30,6 +30,9 @@
       "contentlayer/generated": [
         "./.contentlayer/generated"
       ],
+      "@cache": [
+        "./src/lib/cacheHandler"
+      ],
       "@/components/*": [
         "./src/app/components/*"
       ],

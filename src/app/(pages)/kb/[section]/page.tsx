@@ -1,25 +1,36 @@
+import { githubFetcher } from '@/src/fetchers/github';
 import { ArticleSectionLayout } from '../layouts/ArticleSections';
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
-type Props = {
-    params: Promise<{ section: string }>
+type Params = {
+    params: Promise<{ section: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const section = (await params).section;
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+    const slug = (await params).section;
 
-    console.log('slug:', section);
+    try {
+        const section = await githubFetcher({
+            repoOwner: 'NodeByteHosting',
+            repoName: 'assets/contents',
+            jsonPath: 'markdown/kb/articles.json?ref=main',
+            slug,
+            type: 'section',
+        });
 
-    const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://nodebyte.host';
-    const kbSection = await fetch(`${baseUrl}/api/kb/section?slug=${section}`);
-    const data = await kbSection.json();
+        return {
+            title: section.section,
+            description: section.about
+        };
+    } catch (err: unknown) {
+        console.error(`Failed to fetch section: ${slug}`, (err as Error).message);
 
-    return {
-        title: data.section,
-        description: data.about,
+        return {
+            title: 'Internal Error',
+            description: 'An error occurred while fetching the section'
+        }
     }
 }
-
 
 export default async function KnowledgeBase() {
     return <ArticleSectionLayout />
