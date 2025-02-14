@@ -32,6 +32,11 @@ Please follow the existing code style and conventions. Ensure your code passes a
 
 If you find a bug or have a feature request, please create an issue on GitHub.
 
+## Special Instructions
+
+- **Legal and Knowledge Base Page Content**: All changes to legal and knowledge base page content should be committed via the [NodeByteHosting/assets](https://github.com/NodeByteHosting/assets) repository.
+- **Blog Post and Docs Page Changes**: Any blog post changes, new posts, and docs page changes can be committed to the `src/content` directory in this repository.
+
 ## Code of Conduct
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
