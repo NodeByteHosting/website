@@ -35,7 +35,12 @@ If you find a bug or have a feature request, please create an issue on GitHub.
 ## Special Instructions
 
 - **Legal and Knowledge Base Page Content**: All changes to legal and knowledge base page content should be committed via the [NodeByteHosting/assets](https://github.com/NodeByteHosting/assets) repository.
+
 - **Blog Post and Docs Page Changes**: Any blog post changes, new posts, and docs page changes can be committed to the `src/content` directory in this repository.
+
+- **Contribution/Commit Branches**: All new contributions/commits can be pushed directly to the development branch or a new branch created by you during the pull request process. 
+
+- **Production Branch**: The production branch is protected by branch rules and requires a PR before any merges/commits can happen 
 
 ## Code of Conduct
 
