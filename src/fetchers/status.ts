@@ -10,6 +10,12 @@ export const fetchStatus = async () => {
             if (monitor.url !== undefined) {
                 delete monitor.url;
             }
+
+            // Process incidents if they exist
+            if (monitor.logs) {
+                monitor.incidents = monitor.logs.filter((log: any) => log.type === 1 || log.type === 2);
+                delete monitor.logs;
+            }
         });
 
         return monitors;

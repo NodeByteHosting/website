@@ -5,7 +5,7 @@ import { Param } from "../layout";
 import type { Metadata } from "next";
 import { getTableOfContents } from "@/hooks/getTOC";
 import { TOC } from "@/components/UI/TOC/getTOC";
-import { Breadcrumb } from "@/components/UI/breadCrumb";
+import { Breadcrumb } from "ui/Breadcrumb";
 import { getPageTree } from "@/hooks/pageTree/usePageTree";
 import { absoluteUrl } from "@/hooks/absoluteUrl";
 
