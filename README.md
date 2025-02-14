@@ -80,8 +80,10 @@ bun run dev
 
 ### Contributing
 
-We welcome contributions! Please view our [Contributing Guidelines](./CONTRIBUTING.md) for steps and information!
+We welcome all contributions! Please view our Contributing Guide for more info:
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### License
 
-This project is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the AGPL-3.0 License, For more details see:
+- [LICENSE.md](./LICENSE)
