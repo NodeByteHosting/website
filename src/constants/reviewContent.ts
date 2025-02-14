@@ -1,4 +1,4 @@
-import { Review } from '@/pages/home/components/reviews/Reviews';
+import { Review } from '@/src/app/(pages)/home/sections/reviews/Reviews';
 
 export const reviewsList: Review[] = [
     {

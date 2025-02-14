@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server';
-import { whmcs } from "@/src/app/utils/whmcs";
+import { whmcs } from "@/src/utils/whmcs";
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;

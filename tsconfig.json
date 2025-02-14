@@ -42,6 +42,9 @@
       "@/components/*": [
         "./src/app/components/*"
       ],
+      "hooks/*": [
+        "./src/hooks/*"
+      ],
       "@/hooks/*": [
         "./src/hooks/*"
       ],
@@ -49,7 +52,7 @@
         "./src/app/(pages)/*"
       ],
       "@/utils/*": [
-        "./src/app/utils/*"
+        "src/utils/*"
       ],
       "@/fetchers/*": [
         "./src/fetchers/*"
@@ -57,11 +60,14 @@
       "@/providers/*": [
         "./src/providers/*"
       ],
+      "styling/*": [
+        "./src/app/styles/*"
+      ],
       "tailwind": [
         "./src/hooks/tailwindUtils"
       ],
       "ui/*": [
-        "./src/app/components/UI/*"
+        "./src/components/UI/*"
       ]
     }
   },

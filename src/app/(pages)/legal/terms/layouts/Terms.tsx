@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import { MarkdownProvider } from '@/providers/MarkdownProvider';
-import { logErrorToDiscord } from "@/src/app/utils/logError";
+import { logErrorToDiscord } from "@/src/utils/logError";
 import ErrorLayout from "@/components/Static/ErrorLayout";
 import { PageHero } from "@/components/PageHero/UsePageHero";
 import { fetchLegalPages } from '@/src/fetchers/legal';

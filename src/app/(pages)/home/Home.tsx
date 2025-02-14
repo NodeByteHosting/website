@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { Hero } from "./components/hero/Hero";
-import { Advantages } from "./components/advantages/Advantages";
-import { Services } from "./components/services/Services";
-import { FAQ } from "./components/FAQ/FAQ";
+import { FAQ } from "./sections/FAQ/FAQ";
+import { Hero } from "./sections/hero/Hero";
+import { Reviews } from "./sections/reviews/Reviews";
+import { Services } from "./sections/services/Services";
+import { Advantages } from "./sections/advantages/Advantages";
 import ButtonScrollProvider from "@/src/providers/ButtonScroll";
-import { Reviews } from "./components/reviews/Reviews";
 
 export const HomePage: FC = ({ }) => {
   return (
