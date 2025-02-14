@@ -5,32 +5,47 @@ import s from "./styles/Advantages.module.scss";
 // Animations
 import { motion } from "framer-motion";
 // Icons
-import { Gem, Crown, Rocket, Server, Gamepad2, Shield } from "lucide-react";
+import { Server, Gamepad2, Shield, Settings, Clock, DollarSign } from "lucide-react";
 // Providers
 import { useButtonScrollContext } from "@/src/providers/ButtonScroll";
+import AdvantageCard from "ui/AdvantageCard";
 
 export const Advantages: FC = ({ }) => {
   const { targetRef } = useContext(useButtonScrollContext);
   const DATA_CARDS = [
     {
       icon: <Server strokeWidth={1.5} size={24} />,
-      title: "High-Performance VPS",
-      content:
-        "Our Virtual Private Servers (VPS) are designed to provide high performance, reliability, and security for your business or gaming needs. Enjoy scalable resources and 99.6% uptime guarantee.",
+      title: "VPS Excellence",
+      content: "Achieve unparalleled performance and reliability with our VPS solutions, boasting scalable resources and a 99.6% uptime.",
     },
     {
       icon: <Gamepad2 strokeWidth={1.5} size={24} />,
-      title: "Dedicated Minecraft Servers",
-      content:
-        "Experience seamless gaming with our dedicated Minecraft servers. We offer powerful hardware and optimized configurations to ensure a lag-free and enjoyable gaming experience.",
+      title: "Minecraft Bliss",
+      content: "Enjoy lag-free gaming on our robust Minecraft servers, optimized for an extraordinary and immersive experience.",
     },
     {
       icon: <Shield strokeWidth={1.5} size={24} />,
-      title: "Top-Notch Security",
-      content:
-        "Security is our top priority. Our servers are equipped with advanced security measures to protect your data and ensure your peace of mind. Enjoy DDoS protection and regular security updates.",
-    }
+      title: "Ironclad Security",
+      content: "Stay protected with cutting-edge security features, including DDoS protection and frequent updates to guard your data.",
+    },
+    {
+      icon: <Settings strokeWidth={1.5} size={24} />,
+      title: "Effortless Control",
+      content: "Manage your servers with ease using our intuitive panels, designed for seamless and user-friendly operation.",
+    },
+    {
+      icon: <Clock strokeWidth={1.5} size={24} />,
+      title: "Reliable Support",
+      content: "Receive 24/7 assistance from our expert support team, ready to resolve your issues anytime, day or night.",
+    },
+    {
+      icon: <DollarSign strokeWidth={1.5} size={24} />,
+      title: "Value for Money",
+      content: "Get top-tier hosting services at competitive prices, ensuring you receive the best value without compromising quality.",
+    },
   ];
+
+
   // Animation
   const animation = {
     hidden: {
@@ -72,19 +87,23 @@ export const Advantages: FC = ({ }) => {
           </motion.section>
           <section className={s.Content}>
             {DATA_CARDS.map((card, i) => (
-              <motion.article
+              <motion.div
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ amount: "some", once: true }}
                 variants={animation}
                 custom={i}
-                className={`${s.Card} shadow bg-dark_gray hover:bg-black_secondary`}
                 key={i}
               >
-                <div className={` text-white`}>{card.icon}</div>
-                <h3 className="text-white">{card.title}</h3>
-                <p className="text-gray">{card.content}</p>
-              </motion.article>
+                <AdvantageCard
+                  icon={card.icon}
+                  title={card.title}
+                  content={card.content}
+                  duration={Math.floor(Math.random() * 10000) + 10000}
+                  borderRadius="0.4rem"
+                  className="flex-1 border-blue/50"
+                />
+              </motion.div>
             ))}
           </section>
         </section>
