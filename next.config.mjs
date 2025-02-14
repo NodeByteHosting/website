@@ -1,13 +1,8 @@
 /** @type {import('next').NextConfig} */
-import { createContentlayerPlugin } from 'next-contentlayer2';
+import { withContentlayer } from 'next-contentlayer2';
 import { resolve } from 'path';
 
-export const withContentLayer = createContentlayerPlugin({
-    configPath: './configs/contentlayer.ts',
-    options: { cacheDir: '.contentlayer_cache' }
-})
-
-export default withContentLayer({
+export default withContentlayer({
     compress: true,
     reactStrictMode: false,
     cacheHandler: resolve('./src/lib/cache.js'),

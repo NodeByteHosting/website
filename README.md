@@ -2,8 +2,6 @@
 
 Fast, reliable, scalable, and secure hosting services for your business or gaming experience.
 
-[![Build](https://github.com/NodeByteHosting/website/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/NodeByteHosting/website/actions/workflows/build.yml)
-
 ---
 
 ### Project Details
