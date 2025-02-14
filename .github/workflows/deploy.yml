@@ -1,10 +1,10 @@
-name: Build Website
+name: Deploy Website
 on:
   push:
-    branches: [production, development]
+    branches: [production]
 
 jobs:
-  build_test:
+  deploy:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
@@ -14,4 +14,5 @@ jobs:
         with:
           node-version: 20.18.0
       - run: bun install
-      - run: bun build
+      - run: bun run build
+      - run: systemctl restart nodebyte-main
