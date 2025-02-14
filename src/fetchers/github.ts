@@ -1,4 +1,4 @@
-import CacheHandler from '@cache';
+import CacheHandler from 'cache';
 
 interface FetcherProps {
     repoOwner: string;

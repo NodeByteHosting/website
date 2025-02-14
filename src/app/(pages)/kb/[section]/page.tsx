@@ -1,7 +1,7 @@
-import { githubFetcher } from '@/src/fetchers/github';
-import { ArticleSectionLayout } from '../layouts/ArticleSections';
 import type { Metadata } from "next";
-import { absoluteUrl } from '@/src/hooks/absoluteUrl';
+import { absoluteUrl } from 'hooks/absoluteUrl';
+import { githubFetcher } from 'fetchers/github';
+import { ArticleSectionLayout } from 'components/Layouts/Section';
 
 export default async function KnowledgeBase() {
     return <ArticleSectionLayout />

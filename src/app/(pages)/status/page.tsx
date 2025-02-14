@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { StatusLayout } from './layouts/Status';
-import { absoluteUrl } from "@/hooks/absoluteUrl";
+import { StatusLayout } from 'components/Layouts/Status';
+import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {
     title: "Status",

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import MonitorRow from './MonitorRow';
+import MonitorRow from '../MonitorRow';
 
 interface Monitor {
     id: number;

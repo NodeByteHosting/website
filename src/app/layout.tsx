@@ -9,9 +9,9 @@ import { BtnTop } from "components/BtnTop";
 import { Loader } from "components/Loader";
 
 /** PROVIDERS */
-import ModalProvider from "providers/ModalProvider";
-import NextUiProvider from "providers/NextUiProvider";
-import NodeByteSession from "providers/SessionProvider";
+import ModalProvider from "providers/Modal";
+import NextUiProvider from "providers/NextUi";
+import NodeByteSession from "providers/Session";
 
 import { absoluteUrl } from "hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";

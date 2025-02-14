@@ -1,17 +1,17 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import Tabs from './Tabs';
+import Incidents from './Incidents';
 import { motion } from "framer-motion";
+import MonitorTable from './MonitorTable';
 import Skeleton from 'react-loading-skeleton';
+import { fetchStatus } from 'fetchers/status';
+import { PageHero } from 'components/PageHero';
+import { FC, useEffect, useState } from 'react';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
-import { fetchStatus } from '@/src/fetchers/status';
-import { useSWRClient } from '@/providers/SWR/config';
+import { useSWRClient } from 'providers/SWR/config';
 import { FaCheckCircle, FaTimesCircle, FaServer, FaExclamationTriangle } from 'react-icons/fa';
 import { ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import Tabs from '../components/Tabs';
-import MonitorTable from '../components/MonitorTable';
-import Incidents from '../components/Incidents';
 
 interface Monitor {
     id: number;

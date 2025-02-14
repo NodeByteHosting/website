@@ -45,6 +45,9 @@
       "hooks/*": [
         "./src/hooks/*"
       ],
+      "layouts/*": [
+        "./src/components/Layouts/*"
+      ],
       "package": [
         "./package.json"
       ],
@@ -63,8 +66,8 @@
       "tailwind": [
         "./src/hooks/tailwindUtils"
       ],
-      "@/utils/*": [
-        "src/utils/*"
+      "utils/*": [
+        "./src/utils/*"
       ],
       "ui/*": [
         "./src/components/UI/*"

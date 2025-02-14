@@ -1,7 +1,7 @@
 import React from 'react';
 import md from 'markdown-it';
-import markdownItIcon from './MarkdownIt/Provider';
-import markdownItRehype from './MarkdownIt/RehypeProvider';
+import markdownItIcon from '../MarkdownIt';
+import markdownItRehype from '../Rehype';
 
 const markdown = md({
     html: true,

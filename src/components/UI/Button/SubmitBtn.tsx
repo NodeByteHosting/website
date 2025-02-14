@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 import { useFormStatus } from "react-dom";
 // Providers
-import { useModalContext } from "@/src/providers/ModalProvider";
+import { useModalContext } from "@/src/providers/Modal";
 // NextUI
 import { Button } from "@nextui-org/react";
 // Model

@@ -1,15 +1,15 @@
 'use client';
 
+import { FC, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
-import { FC, useEffect } from 'react';
-import { MarkdownProvider } from '../../../../providers/MarkdownProvider';
-import { logErrorToDiscord } from "@/src/utils/logError";
-import ErrorLayout from "../../../components/Static/ErrorLayout";
-import { PageHero } from "@/src/app/components/PageHero/UsePageHero";
+import { PageHero } from "components/PageHero";
+import { logErrorToDiscord } from "utils/logError";
+import ErrorLayout from "../../Static/ErrorLayout";
+import { MarkdownProvider } from 'providers/Markdown';
 import { githubFetcher } from '@/src/fetchers/github';
-import { useSWRClient } from '@/providers/SWR/config';
-import LoadingSkeleton from './LoadingSkeleton';
+import { useSWRClient } from 'providers/SWR/config';
+import LoadingSkeleton from '../LoadingSkeleton';
 
 export const ArticleLayout: FC = ({ }) => {
     const pathname = usePathname();

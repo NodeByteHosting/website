@@ -1,4 +1,4 @@
-import { KnowledgeBaseLayout } from './layouts/KnowledgeBase';
+import { KnowledgeBaseLayout } from 'layouts/Knowledgebase';
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
