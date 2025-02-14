@@ -30,34 +30,31 @@
       "contentlayer/generated": [
         "./.contentlayer/generated"
       ],
-      "@cache": [
+      "cache": [
         "./src/lib/cache"
       ],
-      "@logger": [
+      "logger": [
         "./src/lib/logger"
       ],
-      "components": [
-        "./src/app/components"
+      "components/*": [
+        "./src/components/*"
       ],
-      "@/components/*": [
-        "./src/app/components/*"
+      "fetchers/*": [
+        "./src/fetchers/*"
       ],
       "hooks/*": [
         "./src/hooks/*"
       ],
-      "@/hooks/*": [
-        "./src/hooks/*"
+      "package": [
+        "./package.json"
       ],
-      "@/pages/*": [
+      "pages/*": [
         "./src/app/(pages)/*"
       ],
-      "@/utils/*": [
-        "src/utils/*"
+      "presets/*": [
+        "./presets/*"
       ],
-      "@/fetchers/*": [
-        "./src/fetchers/*"
-      ],
-      "@/providers/*": [
+      "providers/*": [
         "./src/providers/*"
       ],
       "styling/*": [
@@ -65,6 +62,9 @@
       ],
       "tailwind": [
         "./src/hooks/tailwindUtils"
+      ],
+      "@/utils/*": [
+        "src/utils/*"
       ],
       "ui/*": [
         "./src/components/UI/*"

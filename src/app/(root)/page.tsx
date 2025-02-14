@@ -1,6 +1,7 @@
 "use client";
-import { HomePage } from "../(pages)/home/Home";
-import TawkToChat from "../components/Static/TawkTo";
+
+import { HomePage } from "pages/home";
+import TawkToChat from "components/Static/TawkTo";
 
 export default function Home() {
   return (

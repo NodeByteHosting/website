@@ -1,20 +1,19 @@
-import "./styles/globals.scss";
+import "styling/globals.scss";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 
 /** COMPONENTS */
-import { Header } from "./components/Header/Header";
-import { Footer } from "./components/Footer/Footer";
-import { BtnTop } from "./components/BtnTop/BtnTop";
-import { Loader } from "./components/Loader/Loader";
+import { Header } from "components/Header";
+import { Footer } from "components/Footer";
+import { BtnTop } from "components/BtnTop";
+import { Loader } from "components/Loader";
 
 /** PROVIDERS */
-import ModalProvider from "@/providers/ModalProvider";
-import NextUiProvider from "@/providers/NextUiProvider";
+import ModalProvider from "providers/ModalProvider";
+import NextUiProvider from "providers/NextUiProvider";
+import NodeByteSession from "providers/SessionProvider";
 
-import NodeByteSession from "@/src/providers/SessionProvider";
-
-import { absoluteUrl } from "../hooks/absoluteUrl";
+import { absoluteUrl } from "hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";
 
 export const metadata: Metadata = {
