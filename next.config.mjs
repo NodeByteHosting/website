@@ -12,9 +12,6 @@ export default withContentLayer({
     reactStrictMode: false,
     cacheHandler: resolve('./src/lib/cache.js'),
     cacheMaxMemorySize: 0,
-    generateBuildId: async () => {
-        return process.env.GIT_HASH
-    },
     experimental: {
         mdxRs: true,
         turbo: {
