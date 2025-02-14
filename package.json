@@ -57,6 +57,7 @@
     "rehype-slug": "^6.0.0",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.0",
+    "sass": "^1.83.4",
     "swr": "^2.2.5",
     "unist-util-visit": "^5.0.0",
     "whmcs-sdk": "^0.1.4"
