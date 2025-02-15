@@ -1,7 +1,7 @@
+import { whmcs } from "utils/whmcs";
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server';
-import { whmcs } from "@/src/utils/whmcs";
-import { logErrorToDiscord } from "@/src/utils/logError";
+import { logErrorToDiscord } from "utils/logError";
 
 export async function GET(req: NextRequest) {
     const data = await whmcs.get('Announcements').then(announcements => announcements).catch(err => console.error('Error:', err));

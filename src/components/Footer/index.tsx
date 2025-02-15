@@ -4,12 +4,13 @@ import { FC } from "react";
 import Link from "next/link";
 import { Logo } from "ui/Logo";
 import { FooterForm } from "./form";
-import s from "./styles/Footer.module.scss";
 import { Tooltip } from "@nextui-org/react";
 import { SiTrustpilot } from "react-icons/si";
 import { BASE_LINKS } from "./utils/BaseLinks";
 import { usePathname } from "next/navigation";
 import { BsGithub, BsTwitterX, BsDiscord } from "react-icons/bs";
+
+import s from "styling/modules/Footer/global.module.scss";
 
 export const Footer: FC = ({ }) => {
   const pathname = usePathname();

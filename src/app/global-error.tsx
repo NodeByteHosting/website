@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     metadataBase: absoluteUrl()
 }
 
-
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }, reset: () => void }) {
     return (
         <>

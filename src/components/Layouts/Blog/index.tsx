@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
+import { PageHero } from 'components/PageHero';
 import { CalendarIcon, EditIcon } from "lucide-react";
 import { Blog, allBlogs } from "contentlayer/generated";
 
@@ -17,7 +17,7 @@ interface Post {
     [key: string]: any;
 }
 
-export default function BlogsListPage() {
+export default function BlogLayout() {
     const blogs = allBlogs.sort((a, b) =>
         new Date(a.date) < new Date(b.date) ? 1 : -1
     );

@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import s from "../styles/aboutUs.module.scss";
+import s from "styling/modules/About/global.module.scss";
 import { motion } from "framer-motion";
 
 export const AboutUs: FC = () => {

@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, FC } from 'react';
 import { motion } from "framer-motion";
-import { FaBlogger, FaCalendarAlt } from 'react-icons/fa';
-import { FiExternalLink } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
+import { FiExternalLink } from 'react-icons/fi';
+import { useEffect, useState, FC } from 'react';
 import 'react-loading-skeleton/dist/skeleton.css';
-import ErrorLayout from '../../../components/Static/ErrorLayout';
-import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
+import { FaBlogger, FaCalendarAlt } from 'react-icons/fa';
+import ErrorLayout from 'components/Static/ErrorLayout';
+import { PageHero } from 'components/PageHero';
 
 interface Announcement {
     id: number;

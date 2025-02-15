@@ -2,7 +2,7 @@
 
 import { ChevronUp } from "lucide-react";
 import { FC, useState, useEffect } from "react";
-import { useScrollTop } from "@/src/hooks/useScrollTop";
+import { useScrollTop } from "hooks/useScrollTop";
 import s from "styling/modules/BtnTop/global.module.scss";
 
 export const BtnTop: FC = ({ }) => {

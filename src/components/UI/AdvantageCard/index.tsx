@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import s from "@/pages/home/components/advantages/styles/Advantages.module.scss";
+import s from "styling/modules/Advantages/global.module.scss";
 import { motion, useAnimationFrame, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "tailwind";

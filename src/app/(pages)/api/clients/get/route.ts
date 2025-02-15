@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server';
-import { whmcs } from "@/src/utils/whmcs";
+import { whmcs } from "utils/whmcs";
 
 export async function GET(req: NextRequest) {
 

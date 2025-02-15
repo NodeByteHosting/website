@@ -4,8 +4,6 @@ import { FC, useEffect, useState } from "react";
 import s from "./CookieModal.module.scss";
 // NextUI
 import { Button } from "@nextui-org/react";
-import { FaGithubAlt } from "react-icons/fa";
-import { IoLogoLinkedin } from "react-icons/io5";
 import { X } from "lucide-react";
 
 export const CookieModal: FC = ({}) => {

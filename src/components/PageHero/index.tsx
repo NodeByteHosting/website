@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import s from "@/pages/home/components/hero/styles/Hero.module.scss";
+import s from "styling/modules/Hero/global.module.scss";
 import { CobeGlobe } from "ui/Earth/Globe";
 
 type PageHeroProps = {

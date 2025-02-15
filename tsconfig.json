@@ -33,6 +33,9 @@
       "cache": [
         "./src/lib/cache"
       ],
+      "configs/*": [
+        "./src/configs/*"
+      ],
       "logger": [
         "./src/lib/logger"
       ],

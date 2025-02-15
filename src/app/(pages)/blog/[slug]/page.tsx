@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import { MdxContent } from "@/components/UI/MDX/Content";
-import { absoluteUrl } from "@/hooks/absoluteUrl";
-import { PageHero } from "src/app/components/PageHero/UsePageHero";
-import { allBlogs, blogMetum } from "contentlayer/generated";
-import { CalendarIcon } from "lucide-react";
-import readTime from "reading-time";
-import { Metadata } from "next";
 import Link from "next/link";
+import { Metadata } from "next";
+import readTime from "reading-time";
 import { FaBook } from "react-icons/fa";
+import { CalendarIcon } from "lucide-react";
+import { PageHero } from "components/PageHero";
+import { absoluteUrl } from "hooks/absoluteUrl";
+import { MdxContent } from "components/UI/MDX/Content";
+import { allBlogs, blogMetum } from "contentlayer/generated";
 
 type Params = {
     slug: string;

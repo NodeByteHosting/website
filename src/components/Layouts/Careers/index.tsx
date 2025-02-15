@@ -1,13 +1,13 @@
 'use client';
 
 import { FC } from 'react';
-import { motion } from "framer-motion";
-import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
-import { Check, InfoIcon } from "lucide-react";
-import { ButtonGradient } from "@/src/app/components/UI/Button/ButtonGradient";
-import Atropos from "atropos/react";
-import s from "../styles/Careers.module.scss";
 import Link from 'next/link';
+import Atropos from "atropos/react";
+import { motion } from "framer-motion";
+import { PageHero } from 'components/PageHero';
+import { Check, InfoIcon } from "lucide-react";
+import { ButtonGradient } from "components/UI/Button/ButtonGradient";
+import s from "../styles/Careers.module.scss";
 
 interface JobDetails {
     location: string; // Remote or specified location

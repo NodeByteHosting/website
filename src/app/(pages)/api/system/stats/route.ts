@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from 'next/server';
-import { whmcs } from "@/src/utils/whmcs";
+import { whmcs } from "utils/whmcs";
 
 export async function GET(req: NextRequest) {
     const data = await whmcs.get('Stats').then(stats => stats).catch(err => console.error('Error:', err));

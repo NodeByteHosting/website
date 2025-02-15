@@ -1,4 +1,4 @@
-import { searchDocs } from "@/hooks/docs/search";
+import { searchDocs } from "hooks/docs/search";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {

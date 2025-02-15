@@ -1,5 +1,5 @@
-import BlogsListPage from "./layouts/LatestPosts";
 import type { Metadata } from "next";
+import BlogsListPage from "components/Layouts/Blog";
 
 export const metadata: Metadata = {
     title: 'Blog',

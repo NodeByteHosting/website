@@ -1,14 +1,14 @@
 'use client';
 
+import { FC, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
-import { FC, useEffect } from 'react';
-import { MarkdownProvider } from '@/providers/MarkdownProvider';
-import { logErrorToDiscord } from "@/src/utils/logError";
-import ErrorLayout from "@/components/Static/ErrorLayout";
-import { PageHero } from "@/components/PageHero/UsePageHero";
+import { PageHero } from "components/PageHero";
+import { logErrorToDiscord } from "utils/logError";
+import { MarkdownProvider } from 'providers/Markdown';
+import ErrorLayout from "components/Static/ErrorLayout";
 import { fetchLegalPages } from '@/src/fetchers/legal';
-import { useSWRClient } from '@/providers/SWR/config';
+import { useSWRClient } from 'providers/SWR/config';
 
 export const CookiePolicy: FC = ({ }) => {
     const pathname = usePathname();

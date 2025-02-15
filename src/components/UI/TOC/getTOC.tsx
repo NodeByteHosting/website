@@ -1,10 +1,10 @@
 "use client";
 
 import { ActiveAnchorProvider, useActiveAnchor } from "./provider";
-import { TableOfContents } from "@/hooks/getTOC";
+import { TableOfContents } from "hooks/getTOC";
 import clsx from "clsx";
 import { useMemo } from "react";
-import type { Item } from "@/hooks/getTOC";
+import type { Item } from "hooks/getTOC";
 
 export function TOC({ toc }: { toc: TableOfContents }) {
     const headings = useMemo(() => {

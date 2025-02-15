@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { BytePanelLanding } from "./layouts/Landing";
-import { absoluteUrl } from "@/hooks/absoluteUrl";
+import { BytePanelLayout } from "components/Layouts/Bytepanel";
+import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {
     title: "BytePanel",
@@ -25,5 +25,5 @@ export const metadata: Metadata = {
 
 
 export default function StatusPage() {
-    return <BytePanelLanding />
+    return <BytePanelLayout />
 }

@@ -1,5 +1,5 @@
 import { DialogProps } from "@radix-ui/react-dialog";
-import { useDocsSearch } from "@/hooks/docs/useDocsSearch";
+import { useDocsSearch } from "hooks/docs/useDocsSearch";
 import {
     CommandDialog,
     CommandEmpty,

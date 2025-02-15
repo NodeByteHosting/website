@@ -1,13 +1,13 @@
-import { allDocs } from "contentlayer/generated";
-import { notFound } from "next/navigation";
-import { MdxContent } from "@/components/UI/MDX/Content";
 import { Param } from "../layout";
 import type { Metadata } from "next";
-import { getTableOfContents } from "@/hooks/getTOC";
-import { TOC } from "@/components/UI/TOC/getTOC";
+import { notFound } from "next/navigation";
 import { Breadcrumb } from "ui/Breadcrumb";
-import { getPageTree } from "@/hooks/pageTree/usePageTree";
-import { absoluteUrl } from "@/hooks/absoluteUrl";
+import { TOC } from "components/UI/TOC/getTOC";
+import { allDocs } from "contentlayer/generated";
+import { getTableOfContents } from "hooks/getTOC";
+import { MdxContent } from "components/UI/MDX/Content";
+import { getPageTree } from "hooks/pageTree/usePageTree";
+import { absoluteUrl } from "hooks/absoluteUrl";
 
 export default async function Page({ params }: { params: Param }) {
     const path = (params.slug ?? []).join("/");

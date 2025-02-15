@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { SidebarList, SidebarProvider } from "@/components/UI/Sidebar/DocsSidebar";
-import { getPageTree } from "@/hooks/pageTree/usePageTree";
+import { SidebarList, SidebarProvider } from "components/UI/Sidebar/DocsSidebar";
+import { getPageTree } from "hooks/pageTree/usePageTree";
 import clsx from "clsx";
 
 export type Param = {

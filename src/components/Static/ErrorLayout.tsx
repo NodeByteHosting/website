@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiExternalLink } from "react-icons/fi";
-import { ERROR_PAGE_LINKS } from "../../utils/errorLinks";
-import { DynamicIcon } from "@/src/providers/DynamicIcon";
+import { ERROR_PAGE_LINKS } from "utils/errorLinks";
+import { DynamicIcon } from "providers/DynamicIcon";
 
 interface DynamicIconProps {
     iconName: string;

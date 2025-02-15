@@ -2,9 +2,9 @@
 
 import { FC } from 'react';
 import { motion } from "framer-motion";
-import { PageHero } from '@/src/app/components/PageHero/UsePageHero';
+import { PageHero } from 'components/PageHero';
 
-export const BytePanelLanding: FC = ({ }) => {
+export const BytePanelLayout: FC = ({ }) => {
     return (
         <>
             <PageHero

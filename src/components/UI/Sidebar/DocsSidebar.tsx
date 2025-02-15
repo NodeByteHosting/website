@@ -11,12 +11,12 @@ import {
 } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { TreeNode, FileNode, FolderNode } from "@/hooks/pageTree/generateTree";
+import type { TreeNode, FileNode, FolderNode } from "hooks/pageTree/generateTree";
 import dynamic from "next/dynamic";
 import { CommandShortcut } from "./Command";
 import { MouseEvent } from "react";
 
-const SearchDialog = dynamic(() => import("@/components/UI/Sidebar/dialog/Search"));
+const SearchDialog = dynamic(() => import("ui/Sidebar/dialog/Search"));
 
 const SidebarContext = createContext({
     open: false,
