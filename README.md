@@ -2,6 +2,8 @@
 
 Fast, reliable, scalable, and secure hosting services for your business or gaming experience.
 
+[![Build Website](https://github.com/NodeByteHosting/website/actions/workflows/build.yml/badge.svg?branch=development)](https://github.com/NodeByteHosting/website/actions/workflows/build.yml) [![Build Website](https://github.com/NodeByteHosting/website/actions/workflows/build.yml/badge.svg?branch=production)](https://github.com/NodeByteHosting/website/actions/workflows/build.yml)
+
 ---
 
 ### Project Details
@@ -26,14 +28,14 @@ Some things you need to know before you host the website:
 
 To run this project, you will need to set up the following environment variables. Rename the `.env.template` file to `.env` and fill out the values inside it:
 
-| Variable Name       | Description                                               | Required |
-|---------------------|-----------------------------------------------------------|----------|
-| `TAWK_TO_EMBED_URL` | The embed URL for Tawk.to live chat integration.          | No       |
-| `GITHUB_API_URL`    | Base url for contacting the GitHub API.                   | Yes      |
-| `GITHUB_PAT`        | Personal Access Token for GitHub API access.              | Yes      |
-| `ERROR_HOOK_ID`     | Discord webhook ID for error notifications.               | No       |
-| `ERROR_HOOK_TOKEN`  | Discord webhook token for error notifications.            | No       |
-| `UR_API_KEY`        | API key for UptimeRobot monitoring.                       | Yes      |
+| Variable Name       | Description                                      | Required |
+| ------------------- | ------------------------------------------------ | -------- |
+| `TAWK_TO_EMBED_URL` | The embed URL for Tawk.to live chat integration. | No       |
+| `GITHUB_API_URL`    | Base url for contacting the GitHub API.          | Yes      |
+| `GITHUB_PAT`        | Personal Access Token for GitHub API access.     | Yes      |
+| `ERROR_HOOK_ID`     | Discord webhook ID for error notifications.      | No       |
+| `ERROR_HOOK_TOKEN`  | Discord webhook token for error notifications.   | No       |
+| `UR_API_KEY`        | API key for UptimeRobot monitoring.              | Yes      |
 
 - `TAWK_TO_EMBED_URL`: This value should be filled out if you would like to test/update our live chat.
 - `GITHUB_API_URL`: This value is provided with the env template and is required for the Knowledge Base and Legal Pages.
@@ -79,9 +81,11 @@ bun run dev
 ### Contributing
 
 We welcome all contributions! Please view our Contributing Guide for more info:
+
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### License
 
 This project is licensed under the AGPL-3.0 License, For more details see:
+
 - [LICENSE.md](./LICENSE)
