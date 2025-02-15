@@ -13,6 +13,7 @@ src/configs/nextauth.ts
 src/app/(pages)/api/auth
 src/providers/SessionProvider.tsx
 src/app/(pages)/api/auth/[...nextauth].ts
+src/components/Header/components/Login.tsx
 src/app/(pages)/auth
 
 # testing
