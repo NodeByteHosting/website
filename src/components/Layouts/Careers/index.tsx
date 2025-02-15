@@ -7,15 +7,31 @@ import { motion } from "framer-motion";
 import { PageHero } from 'components/PageHero';
 import { Check, InfoIcon } from "lucide-react";
 import { ButtonGradient } from "components/UI/Button/ButtonGradient";
-import s from "../styles/Careers.module.scss";
+import s from "styling/modules/Careers/global.module.scss";
 
+/**
+ * Job details object.
+ *
+ * @property {string} location - Job location. Can be "Remote" or a specific location.
+ * @property {string} status - Job status. Can be "Full-time", "Part-time", "Volunteer", etc.
+ * @property {string} payment - Job payment. Can be "Salary", "Hourly", "Not applicable", etc.
+ * @property {string|boolean} [key] - Additional job details. Can be a string or boolean.
+ */
 interface JobDetails {
-    location: string; // Remote or specified location
-    status: string; // Full-time, part-time, volunteer etc.
-    payment: string; // Salary, hourly, not applicable, etc.
+    location: string;
+    status: string;
+    payment: string;
     [key: string]: string | boolean;
 }
 
+/**
+ * Job card interface.
+ *
+ * @property {string} title - Job title.
+ * @property {string} info - Job information.
+ * @property {JobDetails} details - Job details.
+ * @property {string} link - Job application link.
+ */
 interface JobCard {
     title: string;
     info: string;
@@ -25,6 +41,14 @@ interface JobCard {
 
 const DATA_CARDS: JobCard[] = [];
 
+/**
+ * Animation configuration object for motion components.
+ *
+ * @property hidden - Initial state of the animation, with an offset on the y-axis and fully transparent.
+ * @property visible - Function returning the visible state of the animation based on a custom parameter.
+ *  - @param {number} custom - Custom delay multiplier for staggering animations.
+ *  - @returns {object} - Visible state with no y-axis offset, full opacity, and a transition configuration.
+ */
 const animation = {
     hidden: { y: 30, opacity: 0 },
     visible: (custom: number) => ({

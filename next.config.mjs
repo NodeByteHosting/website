@@ -8,17 +8,8 @@ export default withContentlayer({
     cacheHandler: resolve('./src/lib/cache.js'),
     cacheMaxMemorySize: 0,
     experimental: {
-        mdxRs: true,
         turbo: {
             rules: {
-                // The following rule is required for loading .sass files. It is not
-                // possible to remove this and still have Next.js load .sass files,
-                // because when `sassOptions` is specified in next.config.js, Next.js
-                // will not automatically configure sass-loader. (See
-                //
-                // https://nextjs.org/docs/api-reference/next.config.js/sass-options
-                //
-                // for more information.)
                 '*.sass': {
                     loaders: ['sass-loader'],
                     options: {
@@ -28,8 +19,6 @@ export default withContentlayer({
             },
             resolveImports: true
         },
-        optimizeCss: true,
-        optimizeServerReact: true,
         optimizePackageImports: ['cobe'],
         optimisticClientCache: true
     },
