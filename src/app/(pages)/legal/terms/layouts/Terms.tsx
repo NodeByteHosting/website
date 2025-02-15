@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import { usePathname } from 'next/navigation';
 import { FC, useEffect } from 'react';
-import { MarkdownProvider } from '@/providers/MarkdownProvider';
-import { logErrorToDiscord } from "@/src/utils/logError";
-import ErrorLayout from "@/components/Static/ErrorLayout";
-import { PageHero } from "@/components/PageHero/UsePageHero";
-import { fetchLegalPages } from '@/src/fetchers/legal';
-import { useSWRClient } from '@/providers/SWR/config';
+import { MarkdownProvider } from 'providers/Markdown';
+import { logErrorToDiscord } from "utils/logError";
+import ErrorLayout from "components/Static/ErrorLayout";
+import { PageHero } from "components/PageHero";
+import { fetchLegalPages } from 'fetchers/legal';
+import { useSWRClient } from 'providers/SWR/config';
 
 export const TermsOfService: FC = ({ }) => {
     const pathname = usePathname();

@@ -7,7 +7,7 @@ import { PageHero } from "components/PageHero";
 import { logErrorToDiscord } from "utils/logError";
 import { MarkdownProvider } from 'providers/Markdown';
 import ErrorLayout from "components/Static/ErrorLayout";
-import { fetchLegalPages } from '@/src/fetchers/legal';
+import { fetchLegalPages } from 'fetchers/legal';
 import { useSWRClient } from 'providers/SWR/config';
 
 export const CookiePolicy: FC = ({ }) => {

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { PageHero } from "components/PageHero";
-import ButtonScrollProvider from "@/src/providers/ButtonScroll";
+import ButtonScrollProvider from "providers/ButtonScroll";
 
 
 export const metadata: Metadata = {
