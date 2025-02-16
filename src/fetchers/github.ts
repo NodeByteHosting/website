@@ -11,7 +11,7 @@ interface FetcherProps {
 const getGithubApiUrl = () => process.env.GITHUB_API_URL;
 const getGithubAccessToken = () => process.env.GITHUB_PAT;
 
-const cache = new CacheHandler({ ttl: 5 * 60 * 1000 });
+const cache = new CacheHandler({ ttl: 5 * 60 * 1000, maxSize: 500 });
 
 export const githubFetcher = async ({ repoOwner, repoName, jsonPath, slug, type }: FetcherProps) => {
     const apiUrl = getGithubApiUrl();
