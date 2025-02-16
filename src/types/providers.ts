@@ -24,6 +24,7 @@ export interface ModalContext {
 export interface DynamicIconProps {
     name?: string;
     iconName: string;
+    className?: string;
     size?: number;
     color?: string;
 }
