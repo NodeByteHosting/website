@@ -6,12 +6,6 @@ import { FiExternalLink } from "react-icons/fi";
 import { ERROR_PAGE_LINKS } from "utils/errorLinks";
 import { DynamicIcon } from "providers/DynamicIcon";
 
-interface DynamicIconProps {
-    iconName: string;
-    size?: number;
-    color?: string;
-}
-
 export default function ErrorLayout() {
     return (
         <>

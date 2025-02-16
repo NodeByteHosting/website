@@ -14,12 +14,12 @@ type TButton = {
 };
 
 export default function SubmitBtn({ radius, size, styles, value }: TButton) {
-  const { onClose } = useContext(useModalContext);
+  const modalContext = useContext(useModalContext);
   const { pending } = useFormStatus();
 
   return (
     <Button
-      onPress={() => setTimeout(onClose, 2000)}
+      onPress={() => modalContext?.onClose && setTimeout(modalContext.onClose, 2000)}
       className={styles}
       radius={radius}
       fullWidth
@@ -28,7 +28,7 @@ export default function SubmitBtn({ radius, size, styles, value }: TButton) {
       size={size}
     >
       {pending ? (
-        <div className="  h-5 w-5 animate-spin rounded-full border-b-2 border-white m-auto"></div>
+        <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white m-auto"></div>
       ) : (
         value
       )}

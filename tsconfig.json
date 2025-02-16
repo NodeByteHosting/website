@@ -36,6 +36,9 @@
       "configs/*": [
         "./src/configs/*"
       ],
+      "consts/*": [
+        "./src/constants/*"
+      ],
       "logger": [
         "./src/lib/logger"
       ],
@@ -50,6 +53,9 @@
       ],
       "layouts/*": [
         "./src/components/Layouts/*"
+      ],
+      "lib/*": [
+        "./src/lib/*"
       ],
       "package": [
         "./package.json"
@@ -68,6 +74,9 @@
       ],
       "tailwind": [
         "./src/hooks/tailwindUtils"
+      ],
+      "types/*": [
+        "./src/types/*"
       ],
       "utils/*": [
         "./src/utils/*"

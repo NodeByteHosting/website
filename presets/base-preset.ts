@@ -77,6 +77,27 @@ export const basePreset = {
                 'hero-gradient': 'linear-gradient(to bottom, #111827 45%, #1c2634 72.5%, #1c2634 100%)',
                 'status-card-text': 'linear-gradient(315deg, #2c74b3 25%, #42d392);'
             },
+            keyframes: {
+                pop: {
+                    '0%': { transform: 'scale(0) rotate(-45deg)' },
+                    '50%': { transform: 'scale(1.2) rotate(0deg)' },
+                    '100%': { transform: 'scale(1) rotate(0deg)' }
+                },
+                confetti: {
+                    '0%': {
+                        transform: 'translateY(0) rotate(0deg)',
+                        opacity: '1'
+                    },
+                    '100%': {
+                        transform: 'translateY(-100px) rotate(360deg)',
+                        opacity: '0'
+                    }
+                }
+            },
+            animation: {
+                'pop': 'pop 0.5s ease-out forwards',
+                'confetti': 'confetti 1s ease-out forwards'
+            }
         },
     },
 };

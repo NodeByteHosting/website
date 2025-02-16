@@ -11,10 +11,10 @@ import { Loader } from "components/Loader";
 /** PROVIDERS */
 import ModalProvider from "providers/Modal";
 import NextUiProvider from "providers/NextUi";
-import NodeByteSession from "providers/Session";
 
 import { absoluteUrl } from "hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";
+import DevTools from "@/src/providers/DevTools";
 
 export const metadata: Metadata = {
   title: {
@@ -54,26 +54,24 @@ export default function RootLayout({
     <html lang="en" className="">
       <body className="bg-gradient-to-br from-grey-900 via-dark_gray to-black border-gray-200" suppressHydrationWarning suppressContentEditableWarning>
         <div id="app" style={GeistSans.style}>
-          <NodeByteSession>
-            <NextUiProvider>
-              <ModalProvider>
-                <Header />
-                <main>{children}</main>
-                <Toaster
-                  position="bottom-right"
-                  toastOptions={{
-                    style: {
-                      background: "#0A2540",
-                      color: "#fff",
-                    }
-                  }}
-                />
-                <Footer />
-                <BtnTop />
-              </ModalProvider>
-            </NextUiProvider>
-            <Loader />
-          </NodeByteSession>
+          <NextUiProvider>
+            <ModalProvider>
+              <Header />
+              <main>{children}</main>
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  style: {
+                    background: "#0A2540",
+                    color: "#fff",
+                  }
+                }}
+              />
+              <Footer />
+              <BtnTop />
+            </ModalProvider>
+          </NextUiProvider>
+          <Loader />
         </div>
       </body>
     </html>

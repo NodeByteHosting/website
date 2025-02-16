@@ -1,18 +1,18 @@
 export const DATA_TOGGLE_MENU_LINKS = [
     {
-        title: "Pages",
+        title: "Basic",
         links: [
             {
                 value: "Home",
                 href: "/",
             },
             {
-                value: "About Us",
+                value: "About",
                 href: "about",
             },
             {
-                value: "Our Services",
-                href: "/#our-services",
+                value: "Blog",
+                href: "/blog"
             },
             {
                 value: "Partners",
@@ -45,6 +45,10 @@ export const DATA_TOGGLE_MENU_LINKS = [
         title: "Resources",
         links: [
             {
+                value: "Community Pulse",
+                href: "/pulse",
+            },
+            {
                 value: "Knowledge Base",
                 href: "/kb",
             },
@@ -55,27 +59,23 @@ export const DATA_TOGGLE_MENU_LINKS = [
             {
                 value: "Documentation",
                 href: "/docs"
-            },
-            {
-                value: "Blog Posts",
-                href: "/blog"
             }
         ],
     },
     {
-        title: "Socials",
+        title: "Services",
         links: [
             {
-                value: "GitHub",
-                href: "https://github.com/NodeByteHosting",
+                value: "Dedicated Servers",
+                href: "/services/dedi",
             },
             {
-                value: "Twitter",
-                href: "https://x.com/NodeByteHosting",
+                value: "Minecraft Servers",
+                href: "/services/mc",
             },
             {
-                value: "Discord",
-                href: "https://discord.gg/NAphFuVm2V"
+                value: "VPS Servers",
+                href: "/services/vps"
             }
         ],
     },

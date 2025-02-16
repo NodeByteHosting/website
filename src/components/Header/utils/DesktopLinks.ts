@@ -8,8 +8,8 @@ export const DATA_NAVBAR_LINKS = [
         href: "about",
     },
     {
-        value: "Services",
-        href: "/#our-services",
+        value: "Blog",
+        href: "/blog",
     },
     {
         value: "Partners",

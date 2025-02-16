@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-const ExtraLinksDropdown = () => {
+const PanelLinksDropdown = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -11,7 +11,7 @@ const ExtraLinksDropdown = () => {
     return (
         <div className="relative flex items-center space-x-4">
             <button
-                className="text-white font-medium text-sm flex items-center space-x-2"
+                className="text-white font-medium text-sm flex items-center space-x-1"
                 onClick={toggleDropdown}
             >
                 <span>{dropdownOpen ? "What's this?" : 'Portals'}</span>
@@ -64,4 +64,4 @@ const ExtraLinksDropdown = () => {
     );
 };
 
-export default ExtraLinksDropdown;
+export default PanelLinksDropdown;

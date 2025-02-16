@@ -7,7 +7,6 @@ import { FC, useEffect, useState } from 'react';
 import { SiGithub, SiDiscord } from 'react-icons/si';
 import { Accordion, AccordionItem } from '@nextui-org/react';
 import s from 'styling/modules/Header/global.module.scss';
-import ExtraLinksDropdown from './components/ExtraLinks';
 import { DATA_NAVBAR_LINKS } from './utils/DesktopLinks';
 import { DATA_TOGGLE_MENU_LINKS } from './utils/MobileLinks';
 
@@ -18,6 +17,8 @@ import {
   NavbarMenuToggle,
   Tooltip,
 } from '@nextui-org/react';
+import PanelLinksDropdown from './components/PanelLinks';
+import ServiceLinksDropdown from './components/ServiceLinks';
 
 export const Header: FC = () => {
   const pathName = usePathname().replace('/', '');
@@ -78,7 +79,10 @@ export const Header: FC = () => {
                 ))}
               </ul>
               <div className="hidden lg:flex items-center space-x-4">
-                <ExtraLinksDropdown />
+                <ServiceLinksDropdown />
+              </div>
+              <div className="hidden lg:flex items-center space-x-4">
+                <PanelLinksDropdown />
               </div>
               <NavbarMenuToggle
                 onClick={toggleMenu}

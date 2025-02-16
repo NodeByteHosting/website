@@ -2,33 +2,14 @@
 
 import * as React from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { Button } from "ui/Button/Standard";
+import { Button } from "ui/Button/Standard"
 import { cn } from "tailwind"
-
-import useEmblaCarousel, {
-    type UseEmblaCarouselType,
-} from "embla-carousel-react"
-
-type CarouselApi = UseEmblaCarouselType[1]
-type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
-type CarouselOptions = UseCarouselParameters[0]
-type CarouselPlugin = UseCarouselParameters[1]
-
-type CarouselProps = {
-    opts?: CarouselOptions
-    plugins?: CarouselPlugin
-    orientation?: "horizontal" | "vertical"
-    setApi?: (api: CarouselApi) => void
-}
-
-type CarouselContextProps = {
-    carouselRef: ReturnType<typeof useEmblaCarousel>[0]
-    api: ReturnType<typeof useEmblaCarousel>[1]
-    scrollPrev: () => void
-    scrollNext: () => void
-    canScrollPrev: boolean
-    canScrollNext: boolean
-} & CarouselProps
+import useEmblaCarousel from "embla-carousel-react"
+import type { 
+    CarouselApi, 
+    CarouselProps, 
+    CarouselContextProps 
+} from 'types/ui'
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
@@ -69,9 +50,7 @@ const Carousel = React.forwardRef<
         const [canScrollNext, setCanScrollNext] = React.useState(false)
 
         const onSelect = React.useCallback((api: CarouselApi) => {
-            if (!api) {
-                return
-            }
+            if (!api) return
 
             setCanScrollPrev(api.canScrollPrev())
             setCanScrollNext(api.canScrollNext())
@@ -99,24 +78,21 @@ const Carousel = React.forwardRef<
         )
 
         React.useEffect(() => {
-            if (!api || !setApi) {
-                return
-            }
+            if (!api || !setApi) return
 
             setApi(api)
         }, [api, setApi])
 
         React.useEffect(() => {
-            if (!api) {
-                return
-            }
+            if (!api) return
 
             onSelect(api)
-            api.on("reInit", onSelect)
             api.on("select", onSelect)
+            api.on("reInit", onSelect)
 
             return () => {
-                api?.off("select", onSelect)
+                api.off("select", onSelect)
+                api.off("reInit", onSelect)
             }
         }, [api, onSelect])
 
@@ -124,7 +100,7 @@ const Carousel = React.forwardRef<
             <CarouselContext.Provider
                 value={{
                     carouselRef,
-                    api: api,
+                    api,
                     opts,
                     orientation:
                         orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
@@ -206,7 +182,7 @@ const CarouselPrevious = React.forwardRef<
             variant={variant}
             size={size}
             className={cn(
-                "absolute  h-8 w-8 rounded-full",
+                "absolute h-8 w-8 rounded-full",
                 orientation === "horizontal"
                     ? "-left-12 top-1/2 -translate-y-1/2"
                     : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -216,7 +192,7 @@ const CarouselPrevious = React.forwardRef<
             onClick={scrollPrev}
             {...props}
         >
-            <ArrowLeft className="h-4 w-4" color="white" />
+            <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Previous slide</span>
         </Button>
     )
@@ -245,7 +221,7 @@ const CarouselNext = React.forwardRef<
             onClick={scrollNext}
             {...props}
         >
-            <ArrowRight className="h-4 w-4" color="white" />
+            <ArrowRight className="h-4 w-4" />
             <span className="sr-only">Next slide</span>
         </Button>
     )
