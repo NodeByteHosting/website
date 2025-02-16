@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 import { basePreset } from "./presets/base-preset";
 import { markdownPreset } from "./presets/md-preset";
-const { nextui } = require("@nextui-org/react");
+import { nextui } from "@nextui-org/react";
 
 const config: Config = {
   darkMode: "class",

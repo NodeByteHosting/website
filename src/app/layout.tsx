@@ -1,20 +1,20 @@
-import "./styles/globals.scss";
+import "styling/globals.scss";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 
 /** COMPONENTS */
-import { Header } from "./components/Header/Header";
-import { Footer } from "./components/Footer/Footer";
-import { BtnTop } from "./components/BtnTop/BtnTop";
-import { Loader } from "./components/Loader/Loader";
+import { Header } from "components/Header";
+import { Footer } from "components/Footer";
+import { BtnTop } from "components/BtnTop";
+import { Loader } from "components/Loader";
 
 /** PROVIDERS */
-import ModalProvider from "@/providers/ModalProvider";
-import NextUiProvider from "@/providers/NextUiProvider";
-import SWRProvider from "@/providers/SWR/provider";
+import ModalProvider from "providers/Modal";
+import NextUiProvider from "providers/NextUi";
 
-import { absoluteUrl } from "../hooks/absoluteUrl";
+import { absoluteUrl } from "hooks/absoluteUrl";
 import { GeistSans } from "geist/font/sans";
+import DevTools from "@/src/providers/DevTools";
 
 export const metadata: Metadata = {
   title: {
@@ -56,21 +56,19 @@ export default function RootLayout({
         <div id="app" style={GeistSans.style}>
           <NextUiProvider>
             <ModalProvider>
-              <SWRProvider>
-                <Header />
-                <main>{children}</main>
-                <Toaster
-                  position="bottom-right"
-                  toastOptions={{
-                    style: {
-                      background: "#0A2540",
-                      color: "#fff",
-                    }
-                  }}
-                />
-                <Footer />
-                <BtnTop />
-              </SWRProvider>
+              <Header />
+              <main>{children}</main>
+              <Toaster
+                position="bottom-right"
+                toastOptions={{
+                  style: {
+                    background: "#0A2540",
+                    color: "#fff",
+                  }
+                }}
+              />
+              <Footer />
+              <BtnTop />
             </ModalProvider>
           </NextUiProvider>
           <Loader />

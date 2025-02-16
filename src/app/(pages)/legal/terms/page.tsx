@@ -1,6 +1,6 @@
 import { TermsOfService } from "./layouts/Terms";
 import type { Metadata } from "next";
-import { absoluteUrl } from "@/hooks/absoluteUrl";
+import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {
   title: "Terms of Service",

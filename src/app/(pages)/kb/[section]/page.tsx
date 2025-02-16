@@ -1,26 +1,44 @@
-import { ArticleSectionLayout } from '../layouts/ArticleSections';
-import { Metadata } from "next";
-
-type Props = {
-    params: Promise<{ section: string }>
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const section = (await params).section;
-
-    console.log('slug:', section);
-
-    const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://nodebyte.host';
-    const kbSection = await fetch(`${baseUrl}/api/kb/section?slug=${section}`);
-    const data = await kbSection.json();
-
-    return {
-        title: data.section,
-        description: data.about,
-    }
-}
-
+import type { Metadata } from "next";
+import { absoluteUrl } from 'hooks/absoluteUrl';
+import { githubFetcher } from 'fetchers/github';
+import { ArticleSectionLayout } from 'components/Layouts/Section';
 
 export default async function KnowledgeBase() {
     return <ArticleSectionLayout />
+}
+
+type Props = {
+    params: Promise<{ section: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const slug = (await params).section;
+    const section = await githubFetcher({
+        repoOwner: 'NodeByteHosting',
+        repoName: 'assets/contents',
+        jsonPath: 'markdown/kb/articles.json?ref=main',
+        slug,
+        type: 'section',
+    });
+
+    return {
+        title: section.section,
+        description: section.about,
+        openGraph: {
+            type: 'website',
+            title: section.section,
+            description: section.about,
+            url: `https://nodebyte.dev/kb/${slug}`,
+            siteName: 'NodeByte Hosting',
+            images: '/banner.png'
+        },
+        twitter: {
+            card: 'summary_large_image',
+            creator: '@TheRealToxicDev',
+            title: section.section,
+            description: section.about,
+            images: '/banner.png',
+        },
+        metadataBase: absoluteUrl()
+    };
 }

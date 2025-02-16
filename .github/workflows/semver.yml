@@ -1,0 +1,52 @@
+name: Release CI
+
+on:
+    workflow_dispatch:
+        inputs:
+            semver:
+                description: 'Select version bump type: major, minor, patch'
+                required: false
+                default: ''
+            prerelease:
+                description: 'Pre-release identifier (e.g., alpha, beta, rc.1). Leave empty for stable releases.'
+                required: false
+                default: ''
+            custom_version:
+                description: 'Specify a custom version. This will override the semver and prerelease inputs.'
+                required: false
+                default: ''
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14
+
+            - name: Set Git identity
+              run: |
+                  git config --local user.email "toxic.dev09@gmail.com"
+                  git config --local user.name "Toxic Dev"
+
+            - name: Version bump
+              run: |
+                  if [ -n "${{ github.event.inputs.custom_version }}" ]; then
+                    npm version ${{ github.event.inputs.custom_version }} -m "Bump version to %s"
+                  elif [ -n "${{ github.event.inputs.semver }}" ]; then
+                    if [ -z "${{ github.event.inputs.prerelease }}" ]; then
+                      npm version ${{ github.event.inputs.semver }} -m "Bump version to %s"
+                    else
+                      npm version ${{ github.event.inputs.semver }}-${{ github.event.inputs.prerelease }} -m "Bump version to %s"
+                    fi
+                  fi
+
+            - name: Push changes
+              uses: ad-m/github-push-action@master
+              with:
+                  github_token: ${{ secrets.GIT_TOKEN }}

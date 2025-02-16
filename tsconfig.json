@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -30,23 +30,59 @@
       "contentlayer/generated": [
         "./.contentlayer/generated"
       ],
-      "@/components/*": [
-        "./src/app/components/*"
+      "cache": [
+        "./src/lib/cache"
       ],
-      "@/hooks/*": [
+      "configs/*": [
+        "./src/configs/*"
+      ],
+      "consts/*": [
+        "./src/constants/*"
+      ],
+      "logger": [
+        "./src/lib/logger"
+      ],
+      "components/*": [
+        "./src/components/*"
+      ],
+      "fetchers/*": [
+        "./src/fetchers/*"
+      ],
+      "hooks/*": [
         "./src/hooks/*"
       ],
-      "@/pages/*": [
-        "./src/app/(pages)/*"
+      "layouts/*": [
+        "./src/components/Layouts/*"
       ],
-      "@/utils/*": [
-        "./src/app/utils/*"
-      ],
-      "@/lib/*": [
+      "lib/*": [
         "./src/lib/*"
       ],
-      "@/providers/*": [
+      "package": [
+        "./package.json"
+      ],
+      "pages/*": [
+        "./src/app/(pages)/*"
+      ],
+      "presets/*": [
+        "./presets/*"
+      ],
+      "providers/*": [
         "./src/providers/*"
+      ],
+      "styling/*": [
+        "./src/app/styles/*"
+      ],
+      "tailwind": [
+        "./src/hooks/tailwindUtils"
+      ],
+      "types/*": [
+        "./src/types/*"
+      ],
+      "utils/*": [
+        "./src/utils/*"
+      ],
+      "ui/*": [
+        "./src/components/UI/*"
       ]
     }
   },
@@ -56,7 +92,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "src/constants/secHeaders.ks"
+    "src/constants/secHeaders.ks",
+    "src/lib/logger.js"
   ],
   "exclude": [
     "node_modules"

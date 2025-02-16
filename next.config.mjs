@@ -1,17 +1,13 @@
 /** @type {import('next').NextConfig} */
-import { createContentlayerPlugin } from 'next-contentlayer2';
+import { withContentlayer } from 'next-contentlayer2';
+import { resolve } from 'path';
 
-export const withContentLayer = createContentlayerPlugin({
-    configPath: './configs/contentlayer.ts',
-    options: { cacheDir: '.contentlayer_cache' }
-})
-
-export default withContentLayer({
+export default withContentlayer({
     compress: true,
     reactStrictMode: false,
-    reactProductionProfiling: true,
+    cacheHandler: resolve('./src/lib/cache.js'),
+    cacheMaxMemorySize: 0,
     experimental: {
-        mdxRs: true,
         turbo: {
             rules: {
                 '*.sass': {
@@ -22,7 +18,9 @@ export default withContentLayer({
                 }
             },
             resolveImports: true
-        }
+        },
+        optimizePackageImports: ['cobe'],
+        optimisticClientCache: true
     },
     images: {
         dangerouslyAllowSVG: true,
@@ -62,6 +60,46 @@ export default withContentLayer({
         GITHUB_PAT: process.env.GITHUB_PAT,
         ERROR_HOOK_ID: process.env.ERROR_HOOK_ID,
         ERROR_HOOK_TOKEN: process.env.ERROR_HOOK_TOKEN,
-        TAWK_TO_EMBED_URL: process.env.TAWK_TO_EMBED_URL
+        TAWK_TO_EMBED_URL: process.env.TAWK_TO_EMBED_URL,
+        UR_API_KEY: process.env.UR_API_KEY,
     },
+    async headers() {
+        return [
+            {
+                source: '/:path*',
+                headers: securityHeaders
+            }
+        ]
+    }
 })
+
+const securityHeaders = [
+    {
+        key: 'X-Powered-By',
+        value: 'NodeByte LTD'
+    },
+    {
+        key: 'Powered-By',
+        value: 'NodeByte LTD'
+    },
+    {
+        key: 'X-Content-Type-Options',
+        value: 'nosniff'
+    },
+    {
+        key: 'X-Frame-Options',
+        value: 'DENY'
+    },
+    {
+        key: 'X-XSS-Protection',
+        value: '1; mode=block'
+    },
+    {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload'
+    },
+    {
+        key: 'Referrer-Policy',
+        value: 'origin-when-cross-origin'
+    },
+]

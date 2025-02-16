@@ -1,9 +1,9 @@
 "use client";
 
-import ErrorLayout from "./components/Static/ErrorLayout";
-import { PageHero } from "./components/PageHero/UsePageHero";
 import type { Metadata } from "next";
-import { absoluteUrl } from "../hooks/absoluteUrl";
+import { absoluteUrl } from "hooks/absoluteUrl";
+import ErrorLayout from "components/Static/ErrorLayout";
+import { PageHero } from "components/PageHero";
 
 export const metadata: Metadata = {
   title: "404",

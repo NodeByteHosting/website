@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CareersLanding } from "./layouts/Landing";
-import { absoluteUrl } from "@/hooks/absoluteUrl";
+import { CareersLanding } from "components/Layouts/Careers";
+import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {
     title: "Careers",

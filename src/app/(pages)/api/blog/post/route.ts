@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { findPostBySlug } from "@/utils/posts";
+import { findPostBySlug } from "utils/posts";
 
 export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
