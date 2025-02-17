@@ -21,7 +21,7 @@ export const Services: FC = ({ }) => {
           text: "Highly Modified Pterodactyl Panel",
         },
         {
-          text: "NeoProtect DDoS Protection",
+          text: "FyfeWeb Net",
         },
         {
           text: "SSD Storage",
@@ -40,7 +40,7 @@ export const Services: FC = ({ }) => {
           text: "Virtualizor Panel",
         },
         {
-          text: "FyfeWeb DDoS Protection",
+          text: "FyfeWeb Net",
         },
         {
           text: "SSD Storage",

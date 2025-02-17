@@ -38,6 +38,10 @@ export const DATA_TOGGLE_MENU_LINKS = [
             {
                 value: "VPS Panel",
                 href: "https://vps.nodebyte.host/"
+            },
+            {
+                value: "Demo Panel",
+                href: "https://demo.nodebyte.host/"
             }
         ],
     },
