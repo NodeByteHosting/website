@@ -87,10 +87,6 @@ const securityHeaders = [
         value: 'nosniff'
     },
     {
-        key: 'X-Frame-Options',
-        value: 'DENY'
-    },
-    {
         key: 'X-XSS-Protection',
         value: '1; mode=block'
     },
@@ -102,4 +98,8 @@ const securityHeaders = [
         key: 'Referrer-Policy',
         value: 'origin-when-cross-origin'
     },
+    {
+         key: 'Content-Security-Policy',
+        value: "frame-ancestors 'self' https://tawk.to https://toxicdev.me;"
+    }
 ]
