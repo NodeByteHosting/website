@@ -29,7 +29,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     featured = false,
     limitedTime = false,
     limitedQuantity = false,
-    hideLocation = false,
+    hideLocation = true,
     stockCount = 0,
     outOfStock = false,
     comingSoon = false,
@@ -60,7 +60,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             <div className="absolute top-0 left-0 w-full px-3 py-2 z-20">
                 <div className="flex justify-between">
                     {/* Location Badge - Left Side */}
-                    {!hideLocation && (
+                    {/* {!hideLocation && (
                         <div className="flex flex-col gap-2">
                             <div className="bg-slate-800/80 text-white text-xs font-bold px-3 py-1 rounded-md shadow-lg flex items-center gap-2">
                                 {(!location || location === "TBD" || location === "TBA") ? (
@@ -78,7 +78,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                                 )}
                             </div>
                         </div>
-                    )}
+                    )} */}
                     <div className="flex flex-col gap-2 items-end">
                         {recommended && (
                             <div className="bg-gradient-to-br from-blue to-green text-white text-xs font-bold px-3 py-1 rounded-md shadow-lg">
