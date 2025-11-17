@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "ui/Logo";
 import { FooterForm } from "./form";
@@ -12,8 +12,21 @@ import { BsGithub, BsTwitterX, BsDiscord } from "react-icons/bs";
 
 import s from "styling/modules/Footer/global.module.scss";
 
-export const Footer: FC = ({ }) => {
+export const Footer: FC = () => {
   const pathname = usePathname();
+
+  // Load Trustpilot script dynamically
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   if (pathname.startsWith("/docs")) {
     return null;
@@ -91,6 +104,25 @@ export const Footer: FC = ({ }) => {
                     </Link>
                   </Tooltip>
                 ))}
+              </div>
+
+              {/* Example TrustBox container */}
+              <div
+                className="trustpilot-widget"
+                data-locale="en-GB"
+                data-template-id="53aa8807dec7e10d38f59f36"
+                data-businessunit-id="YOUR_BUSINESS_UNIT_ID"
+                data-style-height="150px"
+                data-style-width="100%"
+                data-theme="dark"
+              >
+                <a
+                  href="https://uk.trustpilot.com/review/nodebyte.host"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Trustpilot
+                </a>
               </div>
             </div>
           </section>

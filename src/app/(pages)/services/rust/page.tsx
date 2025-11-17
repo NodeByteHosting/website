@@ -7,20 +7,20 @@ import { FAQ } from "@/src/components/Layouts/Services/rust/GeneralFAQs";
 import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {
-    title: "Services",
-    description: "View the current real-time status of our services.",
+    title: "Rust Hosting",
+    description: "Rust Hosting Services.",
     openGraph: {
         url: "https://nodebyte.host",
-        title: "Services",
-        description: "View the current real-time status of our services.",
+        title: "Rust Hosting",
+        description: "Rust Hosting Services.",
         images: "/logo.png",
         siteName: "NodeByte Hosting",
     },
     twitter: {
         card: "summary_large_image",
         creator: "@TheRealToxicDev",
-        title: "Services",
-        description: "View the current real-time status of our services.",
+        title: "Rust Hosting",
+        description: "Rust Hosting Services.",
         images: "/banner.png"
 
     },
