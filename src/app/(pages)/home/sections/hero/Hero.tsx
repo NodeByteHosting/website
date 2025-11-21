@@ -34,8 +34,10 @@ export const Hero: FC = ({ }) => {
               className="text-white "
             >
               <div className="border-1 border-gray/20 rounded-full py-2 px-3 bg-black_secondary">
-                <span className="font-bold">Rust Hosting </span>
-                is now available!
+              Get
+                <span className="font-bold"> 10% off{" "}</span>
+                Your First Order with code {" "}
+                <span className="font-mono font-bold">WELCOME10</span>
               </div>
             </motion.h2>
             <motion.h1

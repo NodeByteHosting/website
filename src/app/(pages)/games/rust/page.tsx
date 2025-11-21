@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import ServicesHero from '@/src/components/Layouts/Services/rust/Hero';
+import ServicesHero from '@/src/components/Layouts/games/rust/Hero';
 import ButtonScrollProvider from "providers/ButtonScroll";
-import WhyChooseUs from "@/src/components/Layouts/Services/rust/Benefits";
-import ServersList from "@/src/components/Layouts/Services/rust/Servers";
-import { FAQ } from "@/src/components/Layouts/Services/rust/GeneralFAQs";
+import WhyChooseUs from "@/src/components/Layouts/games/rust/Benefits";
+import ServersList from "@/src/components/Layouts/games/rust/Servers";
+import { FAQ } from "@/src/components/Layouts/games/rust/GeneralFAQs";
 import { absoluteUrl } from "hooks/absoluteUrl";
 
 export const metadata: Metadata = {

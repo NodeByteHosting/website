@@ -20,7 +20,7 @@ export interface DataCard {
     recommended: boolean;
     featured: boolean;
     marqueeItems?: { title: string }[];
-    faqs: { question: string; answer: string; icon?: React.ReactNode }[];
+    faqs?: { question: string; answer: string; icon?: React.ReactNode }[];
 }
 
 export interface ServerInfoModalProps {

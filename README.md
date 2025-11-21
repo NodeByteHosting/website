@@ -64,6 +64,8 @@ bun run build:assets
 
 ```sh
 bun install
+# If the above gives you errors use:
+bun install --linker isolated
 ```
 
 #### Run the Site

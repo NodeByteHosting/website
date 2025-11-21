@@ -30,13 +30,13 @@ const ServiceLinksDropdown = () => {
                 <div className="absolute right-0 mt-52 w-48 bg-gradient-to-tl from-grey-900 via-dark_gray to-black rounded-md shadow-lg z-10">
                     <div className="py-2">
                         <a
-                            href="/services/mc"
+                            href="/games/minecraft"
                             className="block px-4 py-2 text-white hover:text-blue"
                         >
                             Minecraft Servers
                         </a>
                         <a
-                            href="/services/rust"
+                            href="/games/rust"
                             className="block px-4 py-2 text-white hover:text-blue"
                         >
                             Rust
