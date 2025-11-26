@@ -18,8 +18,11 @@ import TrustpilotWidget from './TrustpilotWidget';
 export const Footer: FC = () => {
   const pathname = usePathname();
 
-  // Load Trustpilot script dynamically
+  const TP_BUSINESS_ID = process.env.NEXT_PUBLIC_TRUSTPILOT_BUSINESS_ID;
+
+  // Load Trustpilot script dynamically only if a business id is set
   useEffect(() => {
+    if (!TP_BUSINESS_ID) return;
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.src = "//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js";
@@ -27,9 +30,11 @@ export const Footer: FC = () => {
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      try {
+        document.body.removeChild(script);
+      } catch (e) { /* ignore cleanup errors */ }
     };
-  }, []);
+  }, [TP_BUSINESS_ID]);
 
   if (pathname.startsWith("/docs")) {
     return null;

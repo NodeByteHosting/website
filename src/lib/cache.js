@@ -17,7 +17,7 @@ module.exports = class CacheHandler {
         };
 
         // Periodically clean expired cache entries
-        setInterval(() => this.cleanupExpiredEntries(), this.options.ttl);
+        this._cleanupInterval = setInterval(() => this.cleanupExpiredEntries(), this.options.ttl);
     }
 
     /**
@@ -27,30 +27,53 @@ module.exports = class CacheHandler {
      * @throws {TypeError} If the key is not a string.
      */
     async get(key) {
-        if (typeof key !== 'string') {
-            throw new TypeError('Cache key must be a string');
-        }
+        try {
+            // tolerate non-string keys: coerce to string but warn
+            if (typeof key !== 'string') {
+                try {
+                    logger.cache?.({ message: `Non-string cache key coerced: ${String(key)}`, service: 'CACHE', method: 'get', cacheState: 'WARN', level: 'warn' });
+                } catch (e) { /* swallow logger errors */ }
+                key = String(key);
+            }
 
-        const entry = this.cache.get(key);
-        if (!entry) {
-            logger.cache({ message: `Cache miss: ${key}`, service: 'CACHE', method: 'get', cacheState: 'MISS', level: 'warn' });
+            const entry = this.cache.get(key);
+            if (!entry) {
+                try {
+                    logger.cache?.({ message: `Cache miss: ${key}`, service: 'CACHE', method: 'get', cacheState: 'MISS', level: 'warn' });
+                } catch (e) { /* swallow logger errors */ }
+                return null;
+            }
+
+            // Check expiration
+            if (Date.now() - entry.lastModified > this.options.ttl) {
+                this.cache.delete(key);
+                const idx = this.cacheKeys.indexOf(key);
+                if (idx >= 0) this.cacheKeys.splice(idx, 1);
+                try {
+                    logger.cache?.({ message: `Cache expired: ${key}`, service: 'CACHE', method: 'get', cacheState: 'EXPIRED', level: 'warn' });
+                } catch (e) { /* swallow logger errors */ }
+                return null;
+            }
+
+            // Move key to end (most recently used)
+            const idx = this.cacheKeys.indexOf(key);
+            if (idx >= 0) {
+                this.cacheKeys.splice(idx, 1);
+            }
+            this.cacheKeys.push(key);
+
+            try {
+                logger.cache?.({ message: `Cache hit: ${key}`, service: 'CACHE', method: 'get', cacheState: 'HIT', level: 'info' });
+            } catch (e) { /* swallow logger errors */ }
+
+            return entry.value;
+        } catch (err) {
+            // Fail safe: don't throw on cache internal errors — log and return null
+            try {
+                logger.cache?.({ message: `Cache get error: ${err?.message || err}`, service: 'CACHE', method: 'get', cacheState: 'ERROR', level: 'error' });
+            } catch (e) { /* swallow logger errors */ }
             return null;
         }
-
-        // Check expiration
-        if (Date.now() - entry.lastModified > this.options.ttl) {
-            this.cache.delete(key);
-            this.cacheKeys.splice(this.cacheKeys.indexOf(key), 1);
-            logger.cache({ message: `Cache expired: ${key}`, service: 'CACHE', method: 'get', cacheState: 'EXPIRED', level: 'error' });
-            return null;
-        }
-
-        // Move key to end (most recently used)
-        this.cacheKeys.splice(this.cacheKeys.indexOf(key), 1);
-        this.cacheKeys.push(key);
-
-        logger.cache({ message: `Cache hit: ${key}`, service: 'CACHE', method: 'get', cacheState: 'HIT', level: 'info' });
-        return entry.value;
     }
 
     /**
@@ -64,25 +87,49 @@ module.exports = class CacheHandler {
      * @throws {Error} If the data is undefined.
      */
     async set(key, data, ctx = {}) {
-        if (typeof key !== 'string') {
-            throw new TypeError('Cache key must be a string');
-        }
-        if (data === undefined) {
-            throw new Error('Cannot cache undefined value');
-        }
+        try {
+            if (typeof key !== 'string') {
+                try {
+                    logger.cache?.({ message: `Non-string cache key coerced: ${String(key)}`, service: 'CACHE', method: 'set', cacheState: 'WARN', level: 'warn' });
+                } catch (e) { /* swallow logger errors */ }
+                key = String(key);
+            }
+            // don't throw in production for undefined data — just log and skip
+            if (data === undefined) {
+                try {
+                    logger.cache?.({ message: `Attempted to cache undefined value for key: ${key} — skipping`, service: 'CACHE', method: 'set', cacheState: 'SKIP', level: 'warn' });
+                } catch (e) { /* swallow logger errors */ }
+                return;
+            }
 
-        // If cache reaches max size, remove least recently used (LRU) entry
-        if (this.cache.size >= this.options.maxSize) {
-            const oldestKey = this.cacheKeys.shift(); // Remove LRU entry
-            this.cache.delete(oldestKey);
-            logger.cache({ message: `Evicted LRU cache: ${oldestKey}`, service: 'CACHE', method: 'set', cacheState: 'EVICTED', level: 'warn' });
+            // If cache reaches max size, remove least recently used (LRU) entry
+            if (this.cache.size >= this.options.maxSize) {
+                const oldestKey = this.cacheKeys.shift(); // Remove LRU entry
+                if (oldestKey) {
+                    this.cache.delete(oldestKey);
+                    try {
+                        logger.cache?.({ message: `Evicted LRU cache: ${oldestKey}`, service: 'CACHE', method: 'set', cacheState: 'EVICTED', level: 'warn' });
+                    } catch (e) { /* swallow logger errors */ }
+                }
+            }
+
+            // Store new entry
+            this.cache.set(key, { value: data, lastModified: Date.now(), tags: ctx.tags || [] });
+
+            // remove existing duplicate key from keys list if present
+            const existingIdx = this.cacheKeys.indexOf(key);
+            if (existingIdx >= 0) this.cacheKeys.splice(existingIdx, 1);
+            this.cacheKeys.push(key); // Track for LRU
+
+            try {
+                logger.cache?.({ message: `Cache set: ${key}`, service: 'CACHE', method: 'set', cacheState: 'SET', level: 'info' });
+            } catch (e) { /* swallow logger errors */ }
+        } catch (err) {
+            // fail safe: log error but do not throw to avoid bubbling into request handlers
+            try {
+                logger.cache?.({ message: `Cache set error: ${err?.message || err}`, service: 'CACHE', method: 'set', cacheState: 'ERROR', level: 'error' });
+            } catch (e) { /* swallow logger errors */ }
         }
-
-        // Store new entry
-        this.cache.set(key, { value: data, lastModified: Date.now(), tags: ctx.tags || [] });
-        this.cacheKeys.push(key); // Track for LRU
-
-        logger.cache({ message: `Cache set: ${key}`, service: 'CACHE', method: 'set', cacheState: 'SET', level: 'info' });
     }
 
     /**
@@ -90,14 +137,24 @@ module.exports = class CacheHandler {
      * @param {string|string[]} tags - The tag(s) to invalidate.
      */
     async revalidateTag(tags) {
-        tags = Array.isArray(tags) ? tags : [tags];
+        try {
+            tags = Array.isArray(tags) ? tags : [tags];
 
-        for (const [key, value] of this.cache) {
-            if (value.tags.some(tag => tags.includes(tag))) {
-                this.cache.delete(key);
-                this.cacheKeys.splice(this.cacheKeys.indexOf(key), 1);
-                logger.cache({ message: `Cache invalidated: ${key}`, service: 'CACHE', method: 'revalidateTag', cacheState: 'INVALIDATE', level: 'info' });
+            for (const [key, value] of this.cache) {
+                try {
+                    if (value.tags && value.tags.some(tag => tags.includes(tag))) {
+                        this.cache.delete(key);
+                        const idx = this.cacheKeys.indexOf(key);
+                        if (idx >= 0) this.cacheKeys.splice(idx, 1);
+                        logger.cache?.({ message: `Cache invalidated: ${key}`, service: 'CACHE', method: 'revalidateTag', cacheState: 'INVALIDATE', level: 'info' });
+                    }
+                } catch (e) {
+                    // per-entry failure shouldn't abort rest
+                    try { logger.cache?.({ message: `Error invalidating cache key ${key}: ${e?.message || e}`, service: 'CACHE', method: 'revalidateTag', cacheState: 'ERROR', level: 'error' }); } catch (_) { }
+                }
             }
+        } catch (err) {
+            try { logger.cache?.({ message: `Cache revalidateTag error: ${err?.message || err}`, service: 'CACHE', method: 'revalidateTag', cacheState: 'ERROR', level: 'error' }); } catch (_) { }
         }
     }
 
@@ -105,21 +162,30 @@ module.exports = class CacheHandler {
      * Clears all cache entries.
      */
     async clear() {
-        this.cache.clear();
-        this.cacheKeys = [];
-        logger.cache({ message: `All cache cleared`, service: 'CACHE', method: 'clear', cacheState: 'CLEAR', level: 'info' });
+        try {
+            this.cache.clear();
+            this.cacheKeys = [];
+            try { logger.cache?.({ message: `All cache cleared`, service: 'CACHE', method: 'clear', cacheState: 'CLEAR', level: 'info' }); } catch (_) { }
+        } catch (err) {
+            try { logger.cache?.({ message: `Cache clear error: ${err?.message || err}`, service: 'CACHE', method: 'clear', cacheState: 'ERROR', level: 'error' }); } catch (_) { }
+        }
     }
 
     /**
      * Periodically removes expired cache entries.
      */
     cleanupExpiredEntries() {
-        for (const [key, entry] of this.cache) {
-            if (Date.now() - entry.lastModified > this.options.ttl) {
-                this.cache.delete(key);
-                this.cacheKeys.splice(this.cacheKeys.indexOf(key), 1);
-                logger.cache({ message: `Auto-cleaned expired cache: ${key}`, service: 'CACHE', method: 'cleanup', cacheState: 'EXPIRED', level: 'info' });
+        try {
+            for (const [key, entry] of this.cache) {
+                if (Date.now() - entry.lastModified > this.options.ttl) {
+                    this.cache.delete(key);
+                    const idx = this.cacheKeys.indexOf(key);
+                    if (idx >= 0) this.cacheKeys.splice(idx, 1);
+                    try { logger.cache?.({ message: `Auto-cleaned expired cache: ${key}`, service: 'CACHE', method: 'cleanup', cacheState: 'EXPIRED', level: 'info' }); } catch (_) { }
+                }
             }
+        } catch (err) {
+            try { logger.cache?.({ message: `Cache cleanup error: ${err?.message || err}`, service: 'CACHE', method: 'cleanup', cacheState: 'ERROR', level: 'error' }); } catch (_) { }
         }
     }
 };
