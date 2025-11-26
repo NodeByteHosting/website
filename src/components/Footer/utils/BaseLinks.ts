@@ -21,14 +21,14 @@ export const BASE_LINKS = [
         ],
     },
     {
-        title: "Company",
+        title: "Support",
         links: [
             {
-                value: "Email",
+                value: "Email Us",
                 href: "mailto:support@nodebyte.host",
             },
             {
-                value: "Submit Ticket",
+                value: "Submit a Ticket",
                 href: "https://billing.nodebyte.host/submitticket.php",
             },
             {
@@ -42,27 +42,44 @@ export const BASE_LINKS = [
         ],
     },
     {
+        title: "Company",
+        links: [
+            {
+                value: "Tel: 03301334561",
+                disabled: true,
+            },
+            {
+                value: "20 Wenlock Road",
+                disabled: true
+            },
+            {
+                value: "London England",
+                disabled: true
+            },
+            {
+                value: "N1 7GU",
+                disabled: true
+            },
+        ],
+    },
+    {
         title: "Legal ",
         links: [
             {
                 value: "Terms of Service",
-                href: "/legal/terms",
+                href: "https://nodebyte.co.uk/legal/terms",
             },
             {
                 value: "Privacy Policy",
-                href: "/legal/privacy",
+                href: "https://nodebyte.co.uk/legal/privacy",
             },
             {
                 value: "Refund Policy",
-                href: "/legal/refunds",
+                href: "https://nodebyte.co.uk/legal/payment-policy",
             },
             {
-                value: "Cookie Policy",
-                href: "/legal/cookies"
-            },
-            {
-                value: "DMCA Policy",
-                href: "/legal/dmca"
+                value: "Legal Hub",
+                href: "https://nodebyte.co.uk/legal"
             }
         ],
     },

@@ -3,7 +3,8 @@
         .Content {
             padding: 50px 0px;
             display: grid;
-            grid-template-columns: repeat(3, auto);
+            grid-template-columns: 180px 1fr 260px;
+            /* Brand | Links | Subscribe */
             grid-column-gap: 60px;
 
             h5 {
@@ -15,11 +16,12 @@
             .Logo {
                 line-height: 1;
                 transition: opacity 0.1s ease;
-                display: grid;
-                grid-template-columns: repeat(2, auto);
-                justify-content: start;
+                display: flex;
+                /* use flex so logo and text sit inline */
                 align-items: center;
-                height: 0;
+                gap: 6px;
+                height: auto;
+                /* ensure visible */
                 grid-column-gap: 5px;
 
                 &:hover {
@@ -31,6 +33,33 @@
                     font-weight: 300;
                     color: white;
                 }
+            }
+
+            /* Brand column: logo on top, extras (social) directly beneath, horizontal */
+            .Brand {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .BrandSocial {
+                display: flex;
+                /* horizontal row */
+                flex-direction: row;
+                gap: 0.5rem;
+                align-items: center;
+                justify-content: flex-start;
+                margin-top: 4px;
+            }
+
+            .BrandSocial a {
+                width: 32px;
+                height: 32px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 9999px;
             }
 
             .Actions {
@@ -54,6 +83,12 @@
                         }
                     }
                 }
+
+                span {
+                    font-size: 14px;
+                    font-weight: 400;
+                    color: rgba(255, 255, 255, 0.5);
+                }
             }
 
             .Subscribe {
@@ -65,7 +100,7 @@
                         padding: 5px 0px;
                         border-radius: 8px;
                         font-size: 14px;
-                        margin-top: 10px;
+                        margin-top: 5px;
                     }
                 }
 
@@ -79,7 +114,7 @@
                     grid-template-columns: repeat(6, auto);
                     justify-content: start;
                     grid-column-gap: 10px;
-                    margin-top: 10px;
+                    margin-top: 5px;
 
                     a {
                         width: 30px;
@@ -133,7 +168,7 @@
     }
 }
 
-@media screen and (width <=1160px) {
+@media screen and (max-width: 1024px) {
     .Footer {
         .Wrapper {
             .Content {
@@ -141,12 +176,21 @@
                 grid-row-gap: 30px;
 
                 .Logo {
-                    height: 100%;
+                    height: auto;
                 }
 
                 .Actions {
                     gap: 30px;
                     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                }
+
+                .Brand {
+                    align-items: center;
+                    text-align: center;
+                }
+
+                .BrandSocial {
+                    justify-content: center;
                 }
             }
         }

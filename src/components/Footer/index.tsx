@@ -12,6 +12,9 @@ import { BsGithub, BsTwitterX, BsDiscord } from "react-icons/bs";
 
 import s from "styling/modules/Footer/global.module.scss";
 
+// add import for the existing widget
+import TrustpilotWidget from './TrustpilotWidget';
+
 export const Footer: FC = () => {
   const pathname = usePathname();
 
@@ -62,35 +65,14 @@ export const Footer: FC = () => {
       <div className="container ">
         <section className={`${s.Wrapper}`}>
           <section className={s.Content}>
-            <Link className={s.Logo} href={"/"}>
-              <Logo />
-              <span translate="no" className="-ml-6">odeByte</span>
-            </Link>
-            <ul className={s.Actions}>
-              {BASE_LINKS.map((item, i) => (
-                <li key={i}>
-                  <h5 className="text-white">{item.title}</h5>
-                  <div>
-                    {item.links.map((link, i) => (
-                      <Link
-                        key={i}
-                        className="text-white/50 hover:text-gradient-4"
-                        href={link.href}
-                      >
-                        {link.value}
-                      </Link>
-                    ))}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <div className={s.Subscribe}>
-              <h5 className="text-white">Subscribe to our newsletter</h5>
-              <p className="text-white/50">
-                This is under Development!
-              </p>
-              <FooterForm />
-              <div className={s.Social}>
+            <div className={s.Brand}>
+              <Link className={s.Logo} href={"/"}>
+                <Logo />
+                <span translate="no" className="-ml-6">odeByte</span>
+              </Link>
+
+              {/* Social icons placed directly under branding */}
+              <div className={s.BrandSocial}>
                 {DATA_SOCIAL_ICONS.map((item, i) => (
                   <Tooltip
                     key={i}
@@ -99,29 +81,59 @@ export const Footer: FC = () => {
                     showArrow
                     content={item.title}
                   >
-                    <Link target="_blank" href={item.href}>
+                    <Link target="_blank" href={item.href} aria-label={item.title}>
                       {item.icon}
                     </Link>
                   </Tooltip>
                 ))}
               </div>
+            </div>
 
-              {/* Example TrustBox container */}
-              <div
-                className="trustpilot-widget"
-                data-locale="en-GB"
-                data-template-id="53aa8807dec7e10d38f59f36"
-                data-businessunit-id="YOUR_BUSINESS_UNIT_ID"
-                data-style-height="150px"
-                data-style-width="100%"
-                data-theme="dark"
-              >
+            <ul className={s.Actions}>
+              {BASE_LINKS.map((item, i) => (
+                <li key={i}>
+                  <h5 className="text-white">{item.title}</h5>
+                  <div>
+                    {item.links.map((link, i) => (
+                      // prefer explicit disabled flag; if disabled render plain text
+                      link.disabled ? (
+                        <span key={i} className="text-white/50">
+                          {link.value}
+                        </span>
+                      ) : link.href ? (
+                        <Link
+                          key={i}
+                          className="text-white/50 hover:text-gradient-4"
+                          href={link.href}
+                        >
+                          {link.value}
+                        </Link>
+                      ) : (
+                        <span key={i} className="text-white/50">
+                          {link.value}
+                        </span>
+                      )
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className={s.Subscribe}>
+              {/**<h5 className="text-white">Subscribe to our newsletter</h5>
+              <p className="text-white/50">
+                This is under Development!
+              </p>
+              <FooterForm />*/}
+              <div className={s.TrustpilotContainer}>
+                <TrustpilotWidget />
                 <a
                   href="https://uk.trustpilot.com/review/nodebyte.host"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-sm text-white/60 hover:text-white mt-2"
                 >
-                  Trustpilot
+                  Read our reviews
                 </a>
               </div>
             </div>
@@ -130,7 +142,7 @@ export const Footer: FC = () => {
       </div>
       <section className={`${s.Copyright} bg-gray/5 border-t-1 border-gray/10`}>
         <div className="text-gray">
-          &copy; 2025 NodeByte LTD | <Link href="https://toxicdev.me" className="hover:underline">All Rights Reserved | </Link><Link href="https://find-and-update.company-information.service.gov.uk/company/15432941" className="hover:underline">Registered Number: 15432941</Link> | Tel: 03301334561 | <Link href="https://maps.app.goo.gl/iPZVk4URKJsLFaMV6" className="hover:underline">20 Wenlock Road, London, England, N1 7GU</Link>
+          <Link href="https://nodebyte.co.uk" className="hover:underline">&copy; 2025 NodeByte LTD | All Rights Reserved | </Link><Link href="https://find-and-update.company-information.service.gov.uk/company/15432941" className="hover:underline">Registered Number: 15432941</Link>
         </div>
       </section>
     </footer>
