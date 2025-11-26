@@ -7,6 +7,8 @@
 .yarn/install-state.gz
 .contentlayer
 package-lock.json
+bun.lock
+bun.lockb
 
 # Experimental auth
 src/configs/nextauth.ts
