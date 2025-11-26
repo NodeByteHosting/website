@@ -58,15 +58,6 @@ export default withContentlayer({
         TAWK_TO_EMBED_URL: process.env.TAWK_TO_EMBED_URL,
         UR_API_KEY: process.env.UR_API_KEY,
     },
-    webpack(config) {
-        config.ignoreWarnings = config.ignoreWarnings || [];
-        config.ignoreWarnings.push((warning) => {
-            const msg = (warning && (warning.message || warning)) || '';
-            // match the Contentlayer generate-dotpkg parsing warning
-            return /generate-dotpkg\.js for build dependencies failed/.test(String(msg));
-        });
-        return config;
-    },
     eslint: {
        ignoreDuringBuilds: true,
     },
