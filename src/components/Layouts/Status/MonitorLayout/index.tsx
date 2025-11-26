@@ -21,6 +21,26 @@ interface MonitorLayoutProps {
     title: string;
 }
 
+export function getResponseTimeStats(responseTimes: Array<{ datetime?: number; value?: number } | number> = []) {
+    // normalize to numeric values
+    const values: number[] = responseTimes
+        .map((r) => {
+            if (typeof r === 'number') return r;
+            if (r && typeof r === 'object') return Number(r.value ?? 0);
+            return 0;
+        })
+        .filter((v) => Number.isFinite(v)) as number[];
+
+    if (values.length === 0) return { average: 0, min: 0, max: 0 };
+
+    const sum = values.reduce((a, b) => a + b, 0);
+    const average = Math.round(sum / values.length);
+    const min = Math.round(Math.min(...values));
+    const max = Math.round(Math.max(...values));
+
+    return { average, min, max };
+}
+
 const MonitorLayout: FC<MonitorLayoutProps> = ({ monitors, title }) => {
     const [expandedId, setExpandedId] = useState<number | null>(null);
 
