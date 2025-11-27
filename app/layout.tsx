@@ -19,8 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "NodeByte Hosting",
-  description:
-    "Crafted for secure internet access, designed for everyone, everywhere. Multi-protocol VPN with no saved data and no registration required."
+  description: "Fast, reliable, scalable and secure hosting services for your gaming experience. Launch dedicated and managed game servers (Minecraft, Rust) with instant setup, DDoS protection and global low-latency networking."
 }
 
 export default async function RootLayout({
