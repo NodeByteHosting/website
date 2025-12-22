@@ -1,4 +1,4 @@
 [phases.setup]
-nixPkgs = ["bun", "nodejs_20", "git"]
+nixPkgs = ["bun", "nodejs_22", "git"]
+cmds = ["git submodule update --init --recursive --remote"]
 includeNode = false
-cmds = ["git submodule update --init --recursive"]

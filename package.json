@@ -2,12 +2,13 @@
   "name": "@nodebyte/hosting-site",
   "description": "The official website for NodeByte Hosting.",
   "license": "GPL-3.0-only",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
