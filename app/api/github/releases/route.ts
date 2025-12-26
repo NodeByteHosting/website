@@ -1,19 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const REPOSITORIES = [
-  'NodeByteHosting/Bot',
-  'NodeByteHosting/wings',
-  'NodeByteHosting/website',
-  'NodeByteHosting/translations',
-  'NodeByteHosting/module-dokploy-whmcs',
-  'NodeByteHosting/module-pterodactyl-whmcs',
-  'NodeByteHosting/module-pterodactyl',
-  'NodeByteHosting/whmcs-sdk',
-  'NodeByteHosting/nodebyte.js',
-  'NodeByteHosting/Game-Panel',
-  'NodeByteHosting/assets',
-  'NodeByteHosting/echo'
-]
+const DEFAULT_REPOSITORIES = ['NodeByteHosting/website'];
 
 export interface GitHubRelease {
   id: number
@@ -50,6 +37,55 @@ export interface ReleasesResponse {
   repositories: string[]
   totalCount: number
   lastUpdated: string | null
+}
+
+async function getConfiguredRepositories(): Promise<string[]> {
+  try {
+    const { getConfig } = await import("@/packages/core/lib/config")
+    const repos = await getConfig("github_repositories")
+    
+    if (repos) {
+      try {
+        let repoParsed: any = JSON.parse(repos)
+        // handle double-encoded strings like '"[\"A\"]"'
+        if (typeof repoParsed === "string") {
+          try {
+            const double = JSON.parse(repoParsed)
+            if (Array.isArray(double)) repoParsed = double
+          } catch {
+            // leave as string
+          }
+        }
+
+        if (Array.isArray(repoParsed) && repoParsed.length > 0) {
+          return repoParsed
+        }
+      } catch (e) {
+        console.error("[GitHub] Failed to parse stored repositories:", e)
+      }
+    }
+  } catch (error) {
+    console.error("[GitHub] Failed to fetch repositories from database:", error)
+  }
+
+  // Return defaults if no custom repos configured
+  return DEFAULT_REPOSITORIES
+}
+
+async function getGithubToken(): Promise<string | null> {
+  try {
+    const { getConfig } = await import("@/packages/core/lib/config")
+    
+    const token = await getConfig("github_token")
+    if (token) {
+      return token
+    }
+  } catch (error) {
+    console.error("[GitHub] Failed to fetch token from database:", error)
+  }
+
+  // Fallback to environment variable
+  return process.env.GITHUB_TOKEN || null
 }
 
 async function fetchRepoReleases(repo: string, token?: string): Promise<GitHubRelease[]> {
@@ -114,16 +150,17 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const repo = searchParams.get('repo') // Optional: filter by specific repo
   
-  const token = process.env.GITHUB_TOKEN
+  const token = await getGithubToken()
+  const repositories = await getConfiguredRepositories()
 
   try {
     const reposToFetch = repo 
-      ? REPOSITORIES.filter(r => r.toLowerCase().includes(repo.toLowerCase()))
-      : REPOSITORIES
+      ? repositories.filter(r => r.toLowerCase().includes(repo.toLowerCase()))
+      : repositories
 
     // Fetch releases from all repositories in parallel
     const allReleasesArrays = await Promise.all(
-      reposToFetch.map(r => fetchRepoReleases(r, token))
+      reposToFetch.map(r => fetchRepoReleases(r, token || undefined))
     )
 
     // Flatten and sort by published date (newest first)
@@ -141,11 +178,11 @@ export async function GET(request: Request) {
       : null
 
     // Get unique repositories that have releases
-    const repositories = [...new Set(allReleases.map(r => r.repository.full_name))]
+    const repositoriesWithReleases = [...new Set(allReleases.map(r => r.repository.full_name))]
 
     const response: ReleasesResponse = {
       releases: allReleases,
-      repositories,
+      repositories: repositoriesWithReleases,
       totalCount: allReleases.length,
       lastUpdated: latestUpdate
     }

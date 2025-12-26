@@ -212,7 +212,7 @@ export function Footer() {
               </li>
               <li>
                 <Link 
-                  href="/changelog"
+                  href="/about"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.company.aboutNodeByte")}

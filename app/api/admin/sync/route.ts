@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/packages/auth"
+import { auth, requireAdmin } from "@/packages/auth"
 import {
   syncLocations,
   syncNodes,
@@ -11,6 +11,7 @@ import {
   getSyncStatus,
 } from "@/packages/core/lib/sync"
 import { prisma } from "@/packages/core/lib/prisma"
+import { getPterodactylSettings } from "@/packages/core/lib/config"
 
 // Types for sync targets
 type SyncTarget = "locations" | "nodes" | "allocations" | "nests" | "servers" | "databases" | "users" | "all"
@@ -21,10 +22,9 @@ type SyncTarget = "locations" | "nodes" | "allocations" | "nests" | "servers" | 
  */
 async function syncAllPanelUsers(): Promise<{ success: boolean; created: number; updated: number; error?: string }> {
   try {
-    const PANEL_URL = process.env.GAMEPANEL_URL
-    const API_KEY = process.env.GAMEPANEL_API_KEY
+    const settings = await getPterodactylSettings()
 
-    if (!PANEL_URL || !API_KEY) {
+    if (!settings.url || !settings.apiKey) {
       return { success: false, created: 0, updated: 0, error: "Missing panel configuration" }
     }
 
@@ -35,10 +35,10 @@ async function syncAllPanelUsers(): Promise<{ success: boolean; created: number;
 
     while (hasMore) {
       const response = await fetch(
-        `${PANEL_URL}/api/application/users?page=${page}`,
+        `${settings.url}/api/application/users?page=${page}`,
         {
           headers: {
-            Authorization: `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${settings.apiKey}`,
             Accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -76,7 +76,7 @@ async function syncAllPanelUsers(): Promise<{ success: boolean; created: number;
                 username: attrs.username,
                 firstName: attrs.first_name || null,
                 lastName: attrs.last_name || null,
-                isAdmin: attrs.root_admin,
+                isPterodactylAdmin: attrs.root_admin,
                 lastSyncedAt: new Date(),
               },
             })
@@ -90,7 +90,7 @@ async function syncAllPanelUsers(): Promise<{ success: boolean; created: number;
                 username: attrs.username,
                 firstName: attrs.first_name || null,
                 lastName: attrs.last_name || null,
-                isAdmin: attrs.root_admin,
+                isPterodactylAdmin: attrs.root_admin,
                 pterodactylId: attrs.id,
                 isMigrated: false, // Must register to complete migration
                 lastSyncedAt: new Date(),
@@ -121,28 +121,15 @@ async function syncAllPanelUsers(): Promise<{ success: boolean; created: number;
  */
 export async function POST(request: Request) {
   try {
-    // Check authentication
-    const session = await auth()
-    
-    if (!session?.user) {
+    // Require admin auth (centralized check)
+    const authResult = await requireAdmin()
+    if (!authResult.authorized) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
+        { success: false, error: authResult.error },
+        { status: authResult.status }
       )
     }
-
-    // Check admin status from DATABASE (not JWT - it might be stale)
-    const dbUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { isAdmin: true },
-    })
-
-    if (!dbUser?.isAdmin) {
-      return NextResponse.json(
-        { success: false, error: "Forbidden - Admin access required" },
-        { status: 403 }
-      )
-    }
+    const session = { user: authResult.user }
 
     const body = await request.json()
     const target: SyncTarget = body.target || "all"
@@ -220,28 +207,15 @@ export async function POST(request: Request) {
  */
 export async function GET() {
   try {
-    // Check authentication
-    const session = await auth()
-    
-    if (!session?.user) {
+    // Require admin auth (centralized check)
+    const authResult = await requireAdmin()
+    if (!authResult.authorized) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
+        { success: false, error: authResult.error },
+        { status: authResult.status }
       )
     }
-
-    // Check admin status from DATABASE (not JWT - it might be stale)
-    const dbUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { isAdmin: true },
-    })
-
-    if (!dbUser?.isAdmin) {
-      return NextResponse.json(
-        { success: false, error: "Forbidden - Admin access required" },
-        { status: 403 }
-      )
-    }
+    const session = { user: authResult.user }
 
     const status = await getSyncStatus()
 

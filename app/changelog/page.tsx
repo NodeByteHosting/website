@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()
   
   return {
-    title: `${t("changelog.title")} | NodeByte Hosting`,
+    title: `${t("changelog.title")}`,
     description: t("changelog.description"),
   }
 }

@@ -47,7 +47,7 @@ export function AboutPage() {
     },
   ]
 
-  const stats = [
+  const displayStats = [
     { value: "99.6%", label: t("aboutPage.stats.uptime"), icon: Server },
     { value: "50ms", label: t("aboutPage.stats.latency"), icon: Zap },
     { value: "24/7", label: t("aboutPage.stats.support"), icon: Clock },
@@ -150,7 +150,7 @@ export function AboutPage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4">
-              {stats.map((stat) => (
+              {displayStats.map((stat) => (
                 <Card
                   key={stat.label}
                   className={cn(

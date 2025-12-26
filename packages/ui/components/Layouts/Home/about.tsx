@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useEffect, useState } from "react"
 import { Card } from "@/packages/ui/components/ui/card"
 import { Users, Heart, Code, Gamepad2, Server, Sparkles, ArrowRight } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -8,8 +9,49 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 
+interface Stats {
+  totalServers?: number
+  totalUsers?: number
+  activeUsers?: number
+  uptime?: string
+}
+
 export function About() {
   const t = useTranslations()
+  const [stats, setStats] = useState<Stats>({
+    totalServers: 0,
+    totalUsers: 0,
+    activeUsers: 0,
+    uptime: "99.6%",
+  })
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/stats")
+        if (response.ok) {
+          const data = await response.json()
+          setStats({
+            totalServers: data.totalServers || 0,
+            totalUsers: data.totalUsers || 0,
+            activeUsers: data.activeUsers || 0,
+            uptime: "99.6%",
+          })
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats:", error)
+      }
+    }
+
+    fetchStats()
+  }, [mounted])
 
   const values = [
     {
@@ -30,13 +72,6 @@ export function About() {
       description: t("about.values.open.description"),
       gradient: "from-violet-500 to-blue-500",
     },
-  ]
-
-  const stats = [
-    { value: "99.6%", label: t("about.stats.uptime") },
-    { value: "50ms", label: t("about.stats.latency") },
-    { value: "24/7", label: t("about.stats.support") },
-    { value: "1000+", label: t("about.stats.servers") },
   ]
 
   return (
@@ -77,7 +112,12 @@ export function About() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {stats.map((stat, index) => (
+            {[
+              { value: stats.uptime || "99.6%", label: t("about.stats.uptime") },
+              { value: "50ms", label: t("about.stats.latency") },
+              { value: "24/7", label: t("about.stats.support") },
+              { value: stats.totalServers?.toLocaleString() || "0", label: t("about.stats.servers") },
+            ].map((stat, index) => (
               <div
                 key={stat.label}
                 className={cn(

@@ -11,7 +11,7 @@ import type { Metadata } from "next"
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()
   return {
-    title: `${t("gamesPage.title")} | NodeByte Hosting`,
+    title: `${t("gamesPage.title")}`,
     description: t("gamesPage.description"),
   }
 }

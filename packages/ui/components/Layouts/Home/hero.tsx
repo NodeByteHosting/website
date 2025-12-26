@@ -198,7 +198,7 @@ export function Hero() {
                   </svg>
                 ))}
               </div>
-              <span className="font-medium text-foreground">4.8/5</span>
+              <span className="font-medium text-foreground">4.1/5</span>
               <a 
                 href="https://uk.trustpilot.com/review/nodebyte.host" 
                 target="_blank" 

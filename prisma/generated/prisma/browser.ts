@@ -58,6 +58,11 @@ export type Nest = Prisma.NestModel
  */
 export type Egg = Prisma.EggModel
 /**
+ * Model EggProperty
+ * 
+ */
+export type EggProperty = Prisma.EggPropertyModel
+/**
  * Model EggVariable
  * 
  */
@@ -67,6 +72,11 @@ export type EggVariable = Prisma.EggVariableModel
  * 
  */
 export type Server = Prisma.ServerModel
+/**
+ * Model ServerProperty
+ * 
+ */
+export type ServerProperty = Prisma.ServerPropertyModel
 /**
  * Model ServerVariable
  * 
@@ -87,3 +97,43 @@ export type ServerBackup = Prisma.ServerBackupModel
  * 
  */
 export type SyncLog = Prisma.SyncLogModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model InvoiceItem
+ * 
+ */
+export type InvoiceItem = Prisma.InvoiceItemModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model SupportTicket
+ * 
+ */
+export type SupportTicket = Prisma.SupportTicketModel
+/**
+ * Model SupportTicketReply
+ * 
+ */
+export type SupportTicketReply = Prisma.SupportTicketReplyModel
+/**
+ * Model DiscordWebhook
+ * 
+ */
+export type DiscordWebhook = Prisma.DiscordWebhookModel
+/**
+ * Model Config
+ * 
+ */
+export type Config = Prisma.ConfigModel

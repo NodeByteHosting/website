@@ -59,12 +59,22 @@ export const ModelName = {
   Allocation: 'Allocation',
   Nest: 'Nest',
   Egg: 'Egg',
+  EggProperty: 'EggProperty',
   EggVariable: 'EggVariable',
   Server: 'Server',
+  ServerProperty: 'ServerProperty',
   ServerVariable: 'ServerVariable',
   ServerDatabase: 'ServerDatabase',
   ServerBackup: 'ServerBackup',
-  SyncLog: 'SyncLog'
+  SyncLog: 'SyncLog',
+  Product: 'Product',
+  Invoice: 'Invoice',
+  InvoiceItem: 'InvoiceItem',
+  Payment: 'Payment',
+  SupportTicket: 'SupportTicket',
+  SupportTicketReply: 'SupportTicketReply',
+  DiscordWebhook: 'DiscordWebhook',
+  Config: 'Config'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,11 +100,21 @@ export const UserScalarFieldEnum = {
   username: 'username',
   firstName: 'firstName',
   lastName: 'lastName',
-  isAdmin: 'isAdmin',
+  roles: 'roles',
+  isPterodactylAdmin: 'isPterodactylAdmin',
+  isVirtfusionAdmin: 'isVirtfusionAdmin',
+  isSystemAdmin: 'isSystemAdmin',
   pterodactylId: 'pterodactylId',
+  virtfusionId: 'virtfusionId',
   isMigrated: 'isMigrated',
   emailVerified: 'emailVerified',
   isActive: 'isActive',
+  avatarUrl: 'avatarUrl',
+  companyName: 'companyName',
+  phoneNumber: 'phoneNumber',
+  billingEmail: 'billingEmail',
+  accountBalance: 'accountBalance',
+  accountStatus: 'accountStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   lastLoginAt: 'lastLoginAt',
@@ -144,6 +164,7 @@ export const NodeScalarFieldEnum = {
   fqdn: 'fqdn',
   scheme: 'scheme',
   behindProxy: 'behindProxy',
+  panelType: 'panelType',
   memory: 'memory',
   memoryOverallocate: 'memoryOverallocate',
   disk: 'disk',
@@ -196,18 +217,26 @@ export const EggScalarFieldEnum = {
   name: 'name',
   description: 'description',
   author: 'author',
-  dockerImage: 'dockerImage',
-  dockerImages: 'dockerImages',
-  startup: 'startup',
-  configFrom: 'configFrom',
-  scriptIsPrivileged: 'scriptIsPrivileged',
-  copyScriptFrom: 'copyScriptFrom',
+  panelType: 'panelType',
   nestId: 'nestId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type EggScalarFieldEnum = (typeof EggScalarFieldEnum)[keyof typeof EggScalarFieldEnum]
+
+
+export const EggPropertyScalarFieldEnum = {
+  id: 'id',
+  eggId: 'eggId',
+  key: 'key',
+  value: 'value',
+  panelType: 'panelType',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EggPropertyScalarFieldEnum = (typeof EggPropertyScalarFieldEnum)[keyof typeof EggPropertyScalarFieldEnum]
 
 
 export const EggVariableScalarFieldEnum = {
@@ -230,25 +259,16 @@ export type EggVariableScalarFieldEnum = (typeof EggVariableScalarFieldEnum)[key
 export const ServerScalarFieldEnum = {
   id: 'id',
   pterodactylId: 'pterodactylId',
+  virtfusionId: 'virtfusionId',
   uuid: 'uuid',
   uuidShort: 'uuidShort',
   externalId: 'externalId',
+  panelType: 'panelType',
   name: 'name',
   description: 'description',
   status: 'status',
   isSuspended: 'isSuspended',
-  memory: 'memory',
-  swap: 'swap',
-  disk: 'disk',
-  io: 'io',
-  cpu: 'cpu',
-  oomDisabled: 'oomDisabled',
-  databaseLimit: 'databaseLimit',
-  allocationLimit: 'allocationLimit',
-  backupLimit: 'backupLimit',
-  startup: 'startup',
-  image: 'image',
-  featureLimits: 'featureLimits',
+  productId: 'productId',
   ownerId: 'ownerId',
   nodeId: 'nodeId',
   eggId: 'eggId',
@@ -259,6 +279,18 @@ export const ServerScalarFieldEnum = {
 } as const
 
 export type ServerScalarFieldEnum = (typeof ServerScalarFieldEnum)[keyof typeof ServerScalarFieldEnum]
+
+
+export const ServerPropertyScalarFieldEnum = {
+  id: 'id',
+  serverId: 'serverId',
+  key: 'key',
+  value: 'value',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServerPropertyScalarFieldEnum = (typeof ServerPropertyScalarFieldEnum)[keyof typeof ServerPropertyScalarFieldEnum]
 
 
 export const ServerVariableScalarFieldEnum = {
@@ -319,6 +351,133 @@ export const SyncLogScalarFieldEnum = {
 } as const
 
 export type SyncLogScalarFieldEnum = (typeof SyncLogScalarFieldEnum)[keyof typeof SyncLogScalarFieldEnum]
+
+
+export const ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  basePrice: 'basePrice',
+  setupFee: 'setupFee',
+  currency: 'currency',
+  billingCycle: 'billingCycle',
+  isActive: 'isActive',
+  displayOrder: 'displayOrder',
+  creatorId: 'creatorId',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  userId: 'userId',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  total: 'total',
+  paid: 'paid',
+  status: 'status',
+  dueDate: 'dueDate',
+  paidDate: 'paidDate',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const InvoiceItemScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  productId: 'productId',
+  description: 'description',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  total: 'total'
+} as const
+
+export type InvoiceItemScalarFieldEnum = (typeof InvoiceItemScalarFieldEnum)[keyof typeof InvoiceItemScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  amount: 'amount',
+  method: 'method',
+  reference: 'reference',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const SupportTicketScalarFieldEnum = {
+  id: 'id',
+  ticketNumber: 'ticketNumber',
+  userId: 'userId',
+  serverId: 'serverId',
+  subject: 'subject',
+  category: 'category',
+  priority: 'priority',
+  status: 'status',
+  assignedToId: 'assignedToId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type SupportTicketScalarFieldEnum = (typeof SupportTicketScalarFieldEnum)[keyof typeof SupportTicketScalarFieldEnum]
+
+
+export const SupportTicketReplyScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  userId: 'userId',
+  message: 'message',
+  isInternal: 'isInternal',
+  attachments: 'attachments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportTicketReplyScalarFieldEnum = (typeof SupportTicketReplyScalarFieldEnum)[keyof typeof SupportTicketReplyScalarFieldEnum]
+
+
+export const DiscordWebhookScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  webhookUrl: 'webhookUrl',
+  type: 'type',
+  scope: 'scope',
+  description: 'description',
+  userId: 'userId',
+  enabled: 'enabled',
+  testSuccessAt: 'testSuccessAt',
+  avatarUrl: 'avatarUrl',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscordWebhookScalarFieldEnum = (typeof DiscordWebhookScalarFieldEnum)[keyof typeof DiscordWebhookScalarFieldEnum]
+
+
+export const ConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConfigScalarFieldEnum = (typeof ConfigScalarFieldEnum)[keyof typeof ConfigScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -18,12 +18,19 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
-  password      String?   // bcrypt hashed - null for migrated users who haven't registered yet
-  username      String
+  password      String?
+  username      String?
   firstName     String?
   lastName      String?
-  isAdmin       Boolean   @default(false)
-  pterodactylId Int?      @unique // Link to Pterodactyl panel user ID
+  
+  roles         Role[]    @default([MEMBER])
+  isPterodactylAdmin Boolean @default(false) // Can manage Pterodactyl panel
+  isVirtfusionAdmin  Boolean @default(false) // Can manage Virtfusion panel
+  isSystemAdmin      Boolean @default(false) // Full system access (billing, users, settings)
+  
+  // Panel IDs - support multiple panels
+  pterodactylId Int?      // Link to Pterodactyl panel user ID
+  virtfusionId  Int?      // Link to Virtfusion panel user ID
   
   // Migration status
   isMigrated    Boolean   @default(false) // True once user registers/sets password on our site
@@ -34,15 +41,31 @@ model User {
   // Account status
   isActive      Boolean   @default(true)
   
+  // Profile & billing
+  avatarUrl     String?
+  companyName   String?
+  phoneNumber   String?
+  billingEmail  String?   // May differ from primary email
+  
+  // Billing & account
+  accountBalance Decimal  @default(0) @db.Decimal(10, 2) // Account credit balance
+  accountStatus  String   @default("active") // active, suspended, cancelled
+  
   // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastLoginAt   DateTime?
-  lastSyncedAt  DateTime? // Last time data was synced from panel
+  lastSyncedAt  DateTime? // Last time data was synced from panels
   
   // Relations
   sessions      Session[]
+  passwordResetToken PasswordResetToken? // Password reset token
   servers       Server[]  // Servers owned by this user
+  discordWebhooks DiscordWebhook[] // Webhooks created by this user
+  invoices      Invoice[]
+  tickets       SupportTicket[]  // Support tickets created by this user
+  ticketReplies SupportTicketReply[] // Replies to tickets
+  products      Product[] // Products this user has created/selling
   
   @@map("users")
 }
@@ -58,6 +81,19 @@ model Session {
   createdAt    DateTime @default(now())
   
   @@map("sessions")
+}
+
+// Password reset tokens for secure password recovery
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("password_reset_tokens")
 }
 
 // Verification tokens for email verification, password reset, etc.
@@ -99,6 +135,9 @@ model Node {
   scheme              String   @default("https") // http or https
   behindProxy         Boolean  @default(false)
   
+  // Panel type
+  panelType           String   @default("pterodactyl") // pterodactyl or virtfusion
+  
   // Resources
   memory              BigInt   // Total memory in MB
   memoryOverallocate  Int      @default(0) // Percentage
@@ -124,6 +163,7 @@ model Node {
   allocations         Allocation[]
   servers             Server[]
   
+  @@index([panelType])
   @@map("nodes")
 }
 
@@ -174,17 +214,8 @@ model Egg {
   description     String?
   author          String?
   
-  // Docker configuration
-  dockerImage     String?
-  dockerImages    Json?    // Available docker images
-  
-  // Startup configuration
-  startup         String?  // Startup command
-  configFrom      Int?     // Inherit config from another egg
-  
-  // Feature flags
-  scriptIsPrivileged Boolean @default(false)
-  copyScriptFrom     Int?
+  // Panel type support
+  panelType       String   @default("pterodactyl") // pterodactyl, virtfusion, etc.
   
   nestId          Int
   nest            Nest     @relation(fields: [nestId], references: [id], onDelete: Cascade)
@@ -194,8 +225,28 @@ model Egg {
   
   servers         Server[]
   variables       EggVariable[]
+  properties      EggProperty[] // Flexible key-value for panel-specific config
   
+  @@index([panelType])
   @@map("eggs")
+}
+
+// Egg Property - Key-value store for egg-specific configurations
+model EggProperty {
+  id              String   @id @default(cuid())
+  eggId           Int
+  egg             Egg      @relation(fields: [eggId], references: [id], onDelete: Cascade)
+  
+  key             String   // e.g., "docker_image", "startup_command", "docker_images_json"
+  value           String   // Stored as JSON if needed
+  panelType       String?  // null = applies to all panels, "pterodactyl" or "virtfusion" for specific panels
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([eggId, key, panelType])
+  @@index([eggId])
+  @@map("egg_properties")
 }
 
 // Egg Variable (configuration options for an egg)
@@ -226,10 +277,14 @@ model EggVariable {
 
 model Server {
   id                String   @id @default(cuid()) // Our internal ID
-  pterodactylId     Int      @unique // Pterodactyl server ID
+  pterodactylId     Int?     @unique // Pterodactyl server ID (null if virtfusion)
+  virtfusionId      Int?     @unique // Virtfusion server ID (null if pterodactyl)
   uuid              String   @unique // Pterodactyl UUID
   uuidShort         String?  // Short UUID for panel URLs
   externalId        String?  @unique // External ID (e.g., billing system ID)
+  
+  // Panel identification
+  panelType         String   @default("pterodactyl") // pterodactyl or virtfusion
   
   name              String
   description       String?
@@ -238,37 +293,19 @@ model Server {
   status            ServerStatus @default(INSTALLING)
   isSuspended       Boolean  @default(false)
   
-  // Resource limits
-  memory            Int      // Memory limit in MB
-  swap              Int      @default(0)
-  disk              Int      // Disk limit in MB
-  io                Int      @default(500) // IO weight
-  cpu               Int      // CPU limit percentage
-  
-  // Network
-  oomDisabled       Boolean  @default(false) // OOM killer disabled
-  
-  // Database limits
-  databaseLimit     Int      @default(0)
-  allocationLimit   Int      @default(0)
-  backupLimit       Int      @default(0)
-  
-  // Startup
-  startup           String?  // Custom startup command
-  image             String?  // Docker image
-  
-  // Feature toggles
-  featureLimits     Json?    // Additional feature limits
+  // Billing
+  productId         String?  // Link to billing product
+  product           Product? @relation("ServerProduct", fields: [productId], references: [id], onDelete: SetNull)
   
   // Relations
   ownerId           String
-  owner             User     @relation(fields: [ownerId], references: [id])
+  owner             User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   
   nodeId            Int
-  node              Node     @relation(fields: [nodeId], references: [id])
+  node              Node     @relation(fields: [nodeId], references: [id], onDelete: Restrict)
   
-  eggId             Int
-  egg               Egg      @relation(fields: [eggId], references: [id])
+  eggId             Int?     // Optional for virtfusion
+  egg               Egg?     @relation(fields: [eggId], references: [id], onDelete: SetNull)
   
   // Timestamps
   createdAt         DateTime @default(now())
@@ -281,8 +318,30 @@ model Server {
   variables         ServerVariable[]
   databases         ServerDatabase[]
   backups           ServerBackup[]
+  properties        ServerProperty[] // Flexible key-value for specs and config
+  tickets           SupportTicket[]
   
+  @@index([panelType])
+  @@index([ownerId])
+  @@index([productId])
   @@map("servers")
+}
+
+// Server Property - Key-value store for server specs and configuration
+model ServerProperty {
+  id              String   @id @default(cuid())
+  serverId        String
+  server          Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  
+  key             String   // e.g., "memory", "disk", "cpu", "swap", "io", "oom_disabled", "backup_limit"
+  value           String   // Stored as string - parse as int/bool as needed
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([serverId, key])
+  @@index([serverId])
+  @@map("server_properties")
 }
 
 enum ServerStatus {
@@ -375,9 +434,266 @@ model SyncLog {
   @@map("sync_logs")
 }
 
+// ============================================================================
+// BILLING & PRODUCTS - Lightweight WHMCS alternative
+// ============================================================================
+
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  category        String   // game-server, vps, addon, etc.
+  
+  // Pricing
+  basePrice       Decimal  @db.Decimal(10, 2) // Monthly price
+  setupFee        Decimal  @default(0) @db.Decimal(10, 2)
+  currency        String   @default("USD")
+  
+  // Billing
+  billingCycle    String   @default("monthly") // monthly, quarterly, semiannual, annual, oneoff
+  
+  // Availability
+  isActive        Boolean  @default(true)
+  displayOrder    Int      @default(0)
+  
+  // Creator
+  creatorId       String
+  creator         User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  
+  // Customization
+  metadata        Json?    // Additional product metadata
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  servers         Server[] @relation("ServerProduct")
+  invoices        InvoiceItem[]
+  
+  @@index([category])
+  @@index([isActive])
+  @@map("products")
+}
+
+model Invoice {
+  id              String   @id @default(cuid())
+  invoiceNumber   String   @unique
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Amounts
+  subtotal        Decimal  @db.Decimal(10, 2)
+  tax             Decimal  @default(0) @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+  paid            Decimal  @default(0) @db.Decimal(10, 2)
+  
+  // Status
+  status          String   @default("unpaid") // unpaid, partially_paid, paid, overdue, cancelled
+  
+  // Dates
+  dueDate         DateTime?
+  paidDate        DateTime?
+  
+  // Notes
+  notes           String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  items           InvoiceItem[]
+  payments        Payment[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id              String   @id @default(cuid())
+  invoiceId       String
+  invoice         Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  productId       String?
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  
+  description     String
+  quantity        Int      @default(1)
+  unitPrice       Decimal  @db.Decimal(10, 2)
+  total           Decimal  @db.Decimal(10, 2)
+  
+  @@map("invoice_items")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  invoiceId       String
+  invoice         Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  amount          Decimal  @db.Decimal(10, 2)
+  method          String   // stripe, paypal, manual, credit, etc.
+  reference       String?  // Transaction/Reference ID
+  
+  status          String   @default("completed") // pending, completed, failed, refunded
+  notes           String?
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([invoiceId])
+  @@index([status])
+  @@map("payments")
+}
+
+// ============================================================================
+// SUPPORT TICKETS - Integrated ticket system
+// ============================================================================
+
+model SupportTicket {
+  id              String   @id @default(cuid())
+  ticketNumber    String   @unique
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  serverId        String?
+  server          Server?  @relation(fields: [serverId], references: [id], onDelete: SetNull)
+  
+  // Ticket info
+  subject         String
+  category        String   // billing, technical, abuse, general, feature_request, etc.
+  priority        String   @default("normal") // low, normal, high, urgent
+  
+  // Status
+  status          String   @default("open") // open, pending, in_progress, resolved, closed
+  
+  // Assignment
+  assignedToId    String?  // Admin user ID if assigned
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  resolvedAt      DateTime?
+  
+  // Relations
+  replies         SupportTicketReply[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([priority])
+  @@index([category])
+  @@index([assignedToId])
+  @@map("support_tickets")
+}
+
+model SupportTicketReply {
+  id              String   @id @default(cuid())
+  ticketId        String
+  ticket          SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  message         String
+  isInternal      Boolean  @default(false) // Internal note not visible to user
+  
+  attachments     Json?    // File attachment metadata
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([ticketId])
+  @@index([userId])
+  @@map("support_ticket_replies")
+}
+
+// ============================================================================
+// DISCORD WEBHOOKS - Notification webhook management
+// ============================================================================
+
+model DiscordWebhook {
+  id              String   @id @default(cuid())
+  
+  // Webhook identification
+  name            String
+  webhookUrl      String
+  
+  // Webhook categorization
+  type            DiscordWebhookType
+  scope           DiscordWebhookScope @default(ADMIN)
+  description     String?
+  
+  // Owner information
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Settings
+  enabled         Boolean  @default(true)
+  testSuccessAt   DateTime?
+  
+  // Metadata
+  avatarUrl       String?
+  metadata        Json?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@unique([webhookUrl, userId])
+  @@index([userId])
+  @@index([type])
+  @@index([scope])
+  @@map("discord_webhooks")
+}
+
+// ============================================================================
+// CONFIG - Simple key value store for all system settings
+// ============================================================================
+
+model Config {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   // Stored as JSON string
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@map("config")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum DiscordWebhookType {
+  GAME_SERVER      // Game server notifications (start, stop, crash, etc.)
+  VPS              // VPS/Node notifications (resource, status, etc.)
+  SYSTEM           // System notifications (maintenance, updates, etc.)
+  BILLING          // Billing/Account notifications
+  SECURITY         // Security notifications (login attempts, etc.)
+  SUPPORT          // Support/Ticket notifications
+  CUSTOM           // User-defined/custom notifications
+}
+
+enum DiscordWebhookScope {
+  ADMIN            // Admin-only webhook (global system notifications)
+  USER             // User-specific webhook (their own server/account notifications)
+  PUBLIC           // Public webhook (shared/testing)
+}
+
 enum SyncStatus {
   PENDING
   RUNNING
   COMPLETED
   FAILED
+}
+
+enum Role {
+  MEMBER
+  PARTNER
+  SPONSOR
+  TECH_TEAM
+  SUPPORT_TEAM
+  ADMINISTRATOR
+  SUPER_ADMIN
 }

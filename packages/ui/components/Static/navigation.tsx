@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSession } from "next-auth/react"
 import { Button } from "@/packages/ui/components/ui/button"
 import {
@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, Blocks, ExternalLink, MessageCircle, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn } from "lucide-react"
+import { Server, Gamepad2, Blocks, ExternalLink, MessageCircle, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -22,6 +22,7 @@ import { useTranslations } from "next-intl"
 
 export function Navigation() {
   const t = useTranslations()
+  const mountedRef = useRef(false)
   
   const company = [
     {
@@ -107,9 +108,16 @@ export function Navigation() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false)
   const [mobileExtrasOpen, setMobileExtrasOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
+    setMounted(true)
+    mountedRef.current = true
+  }, [])
+
+  useEffect(() => {
+    if (!mountedRef.current) return
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
@@ -753,6 +761,14 @@ function MobileUserSection({
               {translations.viewPanel}
             </a>
           </Button>
+          {session.user.isAdmin && (
+            <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
+              <Link href="/admin">
+                <Shield className="mr-2 h-4 w-4" />
+                {translations.admin}
+              </Link>
+            </Button>
+          )}
           <Button 
             variant="ghost" 
             className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10"

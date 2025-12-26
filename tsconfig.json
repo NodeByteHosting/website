@@ -27,16 +27,16 @@
         "./*"
       ],
       "@/components/*": [
-        "packages/ui/components/*"
+        "./packages/ui/components/*"
       ],
       "@/hooks/*": [
-        "packages/core/hooks/*"
+        "./packages/core/hooks/*"
       ],
       "@/i18n/*": [
-        "packages/i18n/*"
+        "./packages/i18n/*"
       ],
       "@/lib/*": [
-        "packages/core/lib/*"
+        "./packages/core/lib/*"
       ]
     }
   },

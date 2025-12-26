@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
 import { requireAdmin } from "@/packages/auth"
 import { prisma } from "@/packages/core/lib/prisma"
+import { getConfig } from "@/packages/core/lib/config"
+import { testPanelConnection } from "@/packages/core/lib/db-test"
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   // Require admin authentication
   const authResult = await requireAdmin()
   if (!authResult.authorized) {
@@ -15,6 +17,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get("type")
+    const body = await request.json()
 
     if (type === "database") {
       const start = Date.now()
@@ -34,42 +37,47 @@ export async function GET(request: Request) {
     }
 
     if (type === "pterodactyl") {
-      const panelUrl = process.env.PTERODACTYL_API_URL
-      const apiKey = process.env.PTERODACTYL_API_KEY
+      // Get settings from config store
+      const pterodactylUrl = body.pterodactylUrl || (await getConfig("pterodactyl_url"))
+      const pterodactylApiKey = body.pterodactylApiKey || (await getConfig("pterodactyl_api_key"))
 
-      if (!panelUrl || !apiKey) {
+      if (!pterodactylUrl || !pterodactylApiKey) {
         return NextResponse.json({
           success: false,
-          error: "Pterodactyl API not configured",
+          error: "Pterodactyl credentials not configured",
         })
       }
 
-      const start = Date.now()
       try {
-        const response = await fetch(`${panelUrl}/api/application/users?per_page=1`, {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            Accept: "application/json",
-          },
-        })
-        const latency = Date.now() - start
-
-        if (response.ok) {
-          return NextResponse.json({
-            success: true,
-            latency,
-            version: "1.x", // Could parse from response if available
-          })
-        } else {
-          return NextResponse.json({
-            success: false,
-            error: `Panel returned status ${response.status}`,
-          })
-        }
+        const testResult = await testPanelConnection(pterodactylUrl, pterodactylApiKey, "pterodactyl")
+        return NextResponse.json(testResult)
       } catch (error) {
         return NextResponse.json({
           success: false,
           error: "Failed to connect to Pterodactyl panel",
+        })
+      }
+    }
+
+    if (type === "virtfusion") {
+      // Get settings from config store
+      const virtfusionUrl = body.virtfusionUrl || (await getConfig("virtfusion_url"))
+      const virtfusionApiKey = body.virtfusionApiKey || (await getConfig("virtfusion_api_key"))
+
+      if (!virtfusionUrl || !virtfusionApiKey) {
+        return NextResponse.json({
+          success: false,
+          error: "Virtfusion credentials not configured",
+        })
+      }
+
+      try {
+        const testResult = await testPanelConnection(virtfusionUrl, virtfusionApiKey, "virtfusion")
+        return NextResponse.json(testResult)
+      } catch (error) {
+        return NextResponse.json({
+          success: false,
+          error: "Failed to connect to Virtfusion panel",
         })
       }
     }

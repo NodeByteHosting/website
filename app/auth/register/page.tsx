@@ -2,7 +2,7 @@ import { RegisterForm } from "@/packages/auth/components/register-form"
 import { getTranslations } from "next-intl/server"
 
 export const metadata = {
-  title: "Register | NodeByte Hosting",
+  title: "Register",
   description: "Create your NodeByte Hosting account to access your game servers and services.",
 }
 
@@ -22,8 +22,6 @@ export default async function RegisterPage() {
     registering: t("registering"),
     alreadyHaveAccount: t("alreadyHaveAccount"),
     signIn: t("signIn"),
-    panelAccountRequired: t("panelAccountRequired"),
-    panelAccountRequiredDescription: t("panelAccountRequiredDescription"),
     errors: {
       emailExists: t("errors.emailExists"),
       notInPanel: t("errors.notInPanel"),

@@ -6,8 +6,8 @@ import { getTranslations } from "next-intl/server"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Rust Server Hosting | NodeByte Hosting",
-  description: "High-performance Rust server hosting with Oxide/uMod support, custom maps, and DDoS protection. Instant setup with 24/7 expert support.",
+  title: "Rust Server Hosting",
+  description: "High performance Rust server hosting with Oxide/uMod support, custom maps, and DDoS protection. Instant setup with 24/7 expert support.",
 }
 
 export default async function RustPage() {

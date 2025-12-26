@@ -50,7 +50,6 @@ export async function POST(request: Request) {
       // Map errors to appropriate status codes
       const statusMap: Record<string, number> = {
         email_exists: 409,
-        not_in_panel: 404,
         panel_account_linked: 409,
         server_error: 500,
       }
@@ -76,7 +75,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Check if email exists in panel (for pre-registration validation)
+// Check if email exists in panel (informational - for UI hints)
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -89,11 +88,13 @@ export async function GET(request: Request) {
       )
     }
 
+    // Check if email exists in Pterodactyl panel (optional info for UI)
     const pteroUser = await verifyPterodactylUser(email)
 
     return NextResponse.json({
       success: true,
-      exists: !!pteroUser,
+      // Whether this email exists in the panel (for UI hints)
+      existsInPanel: !!pteroUser,
       username: pteroUser?.username || null,
     })
   } catch (error) {

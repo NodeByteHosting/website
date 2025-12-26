@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import { Navigation } from "@/packages/ui/components/Static/navigation"
 import { Footer } from "@/packages/ui/components/Static/footer"
+import { useEffect, useState } from "react"
 
 interface LayoutChromeProps {
   children: React.ReactNode
@@ -15,17 +16,24 @@ interface LayoutChromeProps {
  */
 export function LayoutChrome({ children }: LayoutChromeProps) {
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   
   // Hide navigation and footer on admin and dashboard routes
   const hideChrome = pathname.startsWith("/admin") || pathname.startsWith("/dashboard")
 
+  // Only render Navigation/Footer after hydration to prevent mismatch
   return (
     <>
-      {!hideChrome && <Navigation />}
+      {!hideChrome && mounted && <Navigation />}
       <main className="relative min-h-screen overflow-hidden">
         {children}
       </main>
-      {!hideChrome && <Footer />}
+      {!hideChrome && mounted && <Footer />}
     </>
   )
 }
+

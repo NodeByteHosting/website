@@ -10,9 +10,13 @@
 
 import { prisma } from "./prisma"
 import type { SyncStatus } from "../../../prisma/generated/prisma"
+import { dispatchSyncCompletion } from "../dispatchers/webhooks"
+import { getPterodactylSettings } from "./config"
+import { setServerProperties } from "../../panels/properties/server"
+import { setEggProperties } from "../../panels/properties/egg"
 
-const PANEL_URL = process.env.GAMEPANEL_URL
-const API_KEY = process.env.GAMEPANEL_API_KEY
+// Configurable batch size for allocation syncing (can be overridden via env)
+const ALLOCATION_BATCH_SIZE = Number(process.env.SYNC_ALLOCATION_BATCH_SIZE) || 100
 
 interface PterodactylPagination {
   total: number
@@ -35,6 +39,21 @@ interface PterodactylSingleResponse<T> {
   attributes: T
 }
 
+// Get panel credentials
+async function getPanelCredentials(): Promise<{ panelUrl: string; apiKey: string } | null> {
+  const settings = await getPterodactylSettings()
+
+  if (settings.url && settings.apiKey) {
+    return {
+      panelUrl: settings.url,
+      apiKey: settings.apiKey,
+    }
+  }
+
+  console.error("[Sync] Pterodactyl panel not configured")
+  return null
+}
+
 // ============================================================================
 // API HELPERS
 // ============================================================================
@@ -43,12 +62,14 @@ async function fetchFromPanel<T>(
   endpoint: string,
   options: { include?: string[] } = {}
 ): Promise<T | null> {
-  if (!PANEL_URL || !API_KEY) {
-    console.error("[Sync] Missing GAMEPANEL_URL or GAMEPANEL_API_KEY")
+  const credentials = await getPanelCredentials()
+  if (!credentials) {
+    console.error("[Sync] Missing panel credentials")
     return null
   }
 
-  const url = new URL(`${PANEL_URL}/api/application${endpoint}`)
+  const { panelUrl, apiKey } = credentials
+  const url = new URL(`${panelUrl}/api/application${endpoint}`)
   if (options.include?.length) {
     url.searchParams.set("include", options.include.join(","))
   }
@@ -56,7 +77,7 @@ async function fetchFromPanel<T>(
   try {
     const response = await fetch(url.toString(), {
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         Accept: "application/json",
         "Content-Type": "application/json",
         "User-Agent": "NodeByte-Sync/1.0",
@@ -72,6 +93,17 @@ async function fetchFromPanel<T>(
   } catch (error) {
     console.error("[Sync] Fetch error:", error)
     return null
+  }
+}
+
+// Check whether cancellation has been requested for a given sync log
+async function isCancellationRequested(logId: string): Promise<boolean> {
+  try {
+    const log = await prisma.syncLog.findUnique({ where: { id: logId } })
+    const meta: any = (log as any)?.metadata || {}
+    return !!meta.cancelRequested
+  } catch (e) {
+    return false
   }
 }
 
@@ -168,6 +200,23 @@ export async function syncLocations(): Promise<{ success: boolean; synced: numbe
           },
         })
         synced++
+        if (synced % 5 === 0) {
+          await updateSyncLog(log.id, {
+            itemsSynced: synced,
+            itemsFailed: locations.length - synced,
+            metadata: { lastMessage: `Synced ${synced} locations` },
+          })
+
+          if (await isCancellationRequested(log.id)) {
+            await updateSyncLog(log.id, {
+              status: "FAILED",
+              error: "Cancelled by user",
+              completedAt: new Date(),
+              metadata: { cancelled: true },
+            })
+            return { success: false, synced: synced, error: "Cancelled by user" }
+          }
+        }
       } catch (error) {
         console.error(`[Sync] Failed to sync location ${location.id}:`, error)
       }
@@ -278,6 +327,23 @@ export async function syncNodes(): Promise<{ success: boolean; synced: number; e
           },
         })
         synced++
+        if (synced % 5 === 0) {
+          await updateSyncLog(log.id, {
+            itemsSynced: synced,
+            itemsFailed: nodes.length - synced,
+            metadata: { lastMessage: `Synced ${synced} nodes` },
+          })
+
+          if (await isCancellationRequested(log.id)) {
+            await updateSyncLog(log.id, {
+              status: "FAILED",
+              error: "Cancelled by user",
+              completedAt: new Date(),
+              metadata: { cancelled: true },
+            })
+            return { success: false, synced: synced, error: "Cancelled by user" }
+          }
+        }
       } catch (error) {
         console.error(`[Sync] Failed to sync node ${node.id}:`, error)
       }
@@ -333,33 +399,59 @@ export async function syncAllocations(): Promise<{ success: boolean; synced: num
 
         totalAllocations += response.data.length
 
-        for (const allocData of response.data) {
-          const alloc = allocData.attributes
-          try {
-            await prisma.allocation.upsert({
-              where: { id: alloc.id },
-              update: {
-                ip: alloc.ip,
-                port: alloc.port,
-                alias: alloc.alias,
-                notes: alloc.notes,
-                isAssigned: alloc.assigned,
-                nodeId: node.id,
-                updatedAt: new Date(),
-              },
-              create: {
-                id: alloc.id,
-                ip: alloc.ip,
-                port: alloc.port,
-                alias: alloc.alias,
-                notes: alloc.notes,
-                isAssigned: alloc.assigned,
-                nodeId: node.id,
-              },
+
+        // Process allocations in configurable batches to avoid long blocking loops
+        const batchSize = ALLOCATION_BATCH_SIZE
+        for (let i = 0; i < response.data.length; i += batchSize) {
+          const batch = response.data.slice(i, i + batchSize)
+
+          for (const allocData of batch) {
+            const alloc = allocData.attributes
+            try {
+              await prisma.allocation.upsert({
+                where: { id: alloc.id },
+                update: {
+                  ip: alloc.ip,
+                  port: alloc.port,
+                  alias: alloc.alias,
+                  notes: alloc.notes,
+                  isAssigned: alloc.assigned,
+                  nodeId: node.id,
+                  updatedAt: new Date(),
+                },
+                create: {
+                  id: alloc.id,
+                  ip: alloc.ip,
+                  port: alloc.port,
+                  alias: alloc.alias,
+                  notes: alloc.notes,
+                  isAssigned: alloc.assigned,
+                  nodeId: node.id,
+                },
+              })
+              totalSynced++
+            } catch (error) {
+              console.error(`[Sync] Failed to sync allocation ${alloc.id}:`, error)
+            }
+          }
+
+          // Update progress after each batch
+          await updateSyncLog(log.id, {
+            itemsTotal: totalAllocations,
+            itemsSynced: totalSynced,
+            itemsFailed: totalAllocations - totalSynced,
+            metadata: { lastMessage: `Node ${node.id} - processed page ${page} batch ${Math.floor(i / batchSize) + 1}` },
+          })
+
+          // Check for cancellation
+          if (await isCancellationRequested(log.id)) {
+            await updateSyncLog(log.id, {
+              status: "FAILED",
+              error: "Cancelled by user",
+              completedAt: new Date(),
+              metadata: { cancelled: true },
             })
-            totalSynced++
-          } catch (error) {
-            console.error(`[Sync] Failed to sync allocation ${alloc.id}:`, error)
+            return { success: false, synced: totalSynced, error: "Cancelled by user" }
           }
         }
 
@@ -465,6 +557,12 @@ export async function syncNestsAndEggs(): Promise<{ success: boolean; nests: num
           },
         })
         nestsSynced++
+        if (nestsSynced % 5 === 0) {
+          await updateSyncLog(log.id, {
+            itemsSynced: nestsSynced,
+            metadata: { lastMessage: `Synced ${nestsSynced} nests` },
+          })
+        }
       } catch (error) {
         console.error(`[Sync] Failed to sync nest ${nest.id}:`, error)
       }
@@ -485,17 +583,11 @@ export async function syncNestsAndEggs(): Promise<{ success: boolean; nests: num
       for (const eggData of eggsResponse.data) {
         const egg = eggData.attributes
         try {
-          await prisma.egg.upsert({
+          const eggRecord = await prisma.egg.upsert({
             where: { id: egg.id },
             update: {
               uuid: egg.uuid,
               name: egg.name,
-              description: egg.description,
-              author: egg.author,
-              dockerImage: egg.docker_image,
-              dockerImages: egg.docker_images,
-              startup: egg.startup,
-              scriptIsPrivileged: egg.script?.privileged ?? false,
               nestId: nest.id,
               updatedAt: new Date(),
             },
@@ -503,15 +595,26 @@ export async function syncNestsAndEggs(): Promise<{ success: boolean; nests: num
               id: egg.id,
               uuid: egg.uuid,
               name: egg.name,
-              description: egg.description,
-              author: egg.author,
-              dockerImage: egg.docker_image,
-              dockerImages: egg.docker_images,
-              startup: egg.startup,
-              scriptIsPrivileged: egg.script?.privileged ?? false,
               nestId: nest.id,
             },
           })
+
+          // Save all egg metadata as properties
+          await setEggProperties(eggRecord.id, {
+            description: egg.description,
+            author: egg.author,
+            dockerImage: egg.docker_image,
+            dockerImages: egg.docker_images,
+            startup: egg.startup,
+            scriptPrivileged: egg.script?.privileged ?? false,
+            scriptInstall: egg.script?.install,
+            scriptEntry: egg.script?.entry,
+            scriptContainer: egg.script?.container,
+            scriptExtends: egg.script?.extends || null,
+            panelId: egg.id.toString(),
+            nestId: nest.id,
+          })
+
           eggsSynced++
           
           // Sync egg variables if included
@@ -547,6 +650,23 @@ export async function syncNestsAndEggs(): Promise<{ success: boolean; nests: num
               variablesSynced++
             } catch (error) {
               console.error(`[Sync] Failed to sync egg variable ${variable.id}:`, error)
+            }
+          }
+          // Update progress periodically for eggs/variables
+          if ((eggsSynced + variablesSynced) % 10 === 0) {
+            await updateSyncLog(log.id, {
+              itemsSynced: nestsSynced + eggsSynced + variablesSynced,
+              metadata: { lastMessage: `Synced ${eggsSynced} eggs and ${variablesSynced} variables so far` },
+            })
+
+            if (await isCancellationRequested(log.id)) {
+              await updateSyncLog(log.id, {
+                status: "FAILED",
+                error: "Cancelled by user",
+                completedAt: new Date(),
+                metadata: { cancelled: true },
+              })
+              return { success: false, nests: nestsSynced, eggs: eggsSynced, variables: variablesSynced, error: "Cancelled by user" }
             }
           }
         } catch (error) {
@@ -628,7 +748,7 @@ export async function syncServers(): Promise<{ success: boolean; synced: number;
     for (const server of servers) {
       try {
         // Find the local user by pterodactylId
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
           where: { pterodactylId: server.user },
         })
 
@@ -648,27 +768,16 @@ export async function syncServers(): Promise<{ success: boolean; synced: number;
           ? "SUSPENDED" 
           : statusMap[server.status || ""] || "OFFLINE"
 
-        await prisma.server.upsert({
+        // Upsert server record (minimal columns)
+        const serverRecord = await prisma.server.upsert({
           where: { pterodactylId: server.id },
           update: {
             uuid: server.uuid,
             uuidShort: server.identifier,
-            externalId: server.external_id,
             name: server.name,
             description: server.description,
             status,
             isSuspended: server.suspended,
-            memory: server.limits.memory,
-            swap: server.limits.swap,
-            disk: server.limits.disk,
-            io: server.limits.io,
-            cpu: server.limits.cpu,
-            oomDisabled: server.limits.oom_disabled,
-            databaseLimit: server.feature_limits.databases,
-            allocationLimit: server.feature_limits.allocations,
-            backupLimit: server.feature_limits.backups,
-            startup: server.container.startup_command,
-            image: server.container.image,
             ownerId: user.id,
             nodeId: server.node,
             eggId: server.egg,
@@ -679,29 +788,55 @@ export async function syncServers(): Promise<{ success: boolean; synced: number;
             pterodactylId: server.id,
             uuid: server.uuid,
             uuidShort: server.identifier,
-            externalId: server.external_id,
             name: server.name,
             description: server.description,
             status,
             isSuspended: server.suspended,
-            memory: server.limits.memory,
-            swap: server.limits.swap,
-            disk: server.limits.disk,
-            io: server.limits.io,
-            cpu: server.limits.cpu,
-            oomDisabled: server.limits.oom_disabled,
-            databaseLimit: server.feature_limits.databases,
-            allocationLimit: server.feature_limits.allocations,
-            backupLimit: server.feature_limits.backups,
-            startup: server.container.startup_command,
-            image: server.container.image,
             ownerId: user.id,
             nodeId: server.node,
             eggId: server.egg,
             installedAt: server.container.installed === 1 ? new Date() : null,
           },
         })
+
+        // Save all server specifications as properties
+        await setServerProperties(serverRecord.id, {
+          panelId: server.id.toString(),
+          externalId: server.external_id,
+          status,
+          suspended: server.suspended,
+          memory: server.limits.memory,
+          swap: server.limits.swap,
+          disk: server.limits.disk,
+          io: server.limits.io,
+          cpu: server.limits.cpu,
+          threads: server.limits.threads,
+          oomDisabled: server.limits.oom_disabled,
+          databaseLimit: server.feature_limits.databases,
+          allocationLimit: server.feature_limits.allocations,
+          backupLimit: server.feature_limits.backups,
+          dockerImage: server.container.image,
+          startupCommand: server.container.startup_command,
+        })
+
         synced++
+        if (synced % 10 === 0) {
+          await updateSyncLog(log.id, {
+            itemsSynced: synced,
+            itemsFailed: servers.length - synced,
+            metadata: { lastMessage: `Synced ${synced} servers` },
+          })
+
+          if (await isCancellationRequested(log.id)) {
+            await updateSyncLog(log.id, {
+              status: "FAILED",
+              error: "Cancelled by user",
+              completedAt: new Date(),
+              metadata: { cancelled: true },
+            })
+            return { success: false, synced, error: "Cancelled by user" }
+          }
+        }
       } catch (error) {
         console.error(`[Sync] Failed to sync server ${server.id}:`, error)
       }
@@ -873,7 +1008,7 @@ export async function syncUserFromPanel(userId: string): Promise<{ success: bool
         username: attributes.username,
         firstName: attributes.first_name,
         lastName: attributes.last_name,
-        isAdmin: attributes.root_admin,
+        isPterodactylAdmin: attributes.root_admin,
         lastSyncedAt: new Date(),
       },
     })
@@ -900,6 +1035,7 @@ export async function runFullSync(): Promise<{
     databases: { success: boolean; synced: number }
   }
 }> {
+  const startTime = Date.now()
   console.log("[Sync] Starting full sync...")
 
   // Sync in order (dependencies first)
@@ -922,8 +1058,16 @@ export async function runFullSync(): Promise<{
   console.log(`[Sync] Databases: ${databases.synced} synced`)
 
   const allSuccess = locations.success && nodes.success && allocations.success && nests.success && servers.success && databases.success
+  const duration = Date.now() - startTime
+  const durationSeconds = (duration / 1000).toFixed(2)
 
-  console.log(`[Sync] Full sync ${allSuccess ? "completed" : "completed with errors"}`)
+  console.log(`[Sync] Full sync ${allSuccess ? "completed" : "completed with errors"} in ${durationSeconds}s`)
+
+  // Dispatch webhook notification for sync completion (async, non-blocking)
+  const syncSummary = `Locations: ${locations.synced}, Nodes: ${nodes.synced}, Allocations: ${allocations.synced}, Servers: ${servers.synced}, Databases: ${databases.synced}`
+  dispatchSyncCompletion(allSuccess, syncSummary, `${durationSeconds}s`).catch((error) => {
+    console.error("[Sync] Failed to dispatch sync completion webhook:", error)
+  })
 
   return {
     success: allSuccess,

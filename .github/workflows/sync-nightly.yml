@@ -1,0 +1,87 @@
+name: Sync development → nightly
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-dev-nightly
+  cancel-in-progress: true
+
+jobs:
+  create-and-merge:
+    name: Create PR and merge into nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update PR and merge when possible
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = 'development';
+            const base = 'nightly';
+            const title = `chore: sync ${head} → ${base} (${new Date().toISOString().split('T')[0]})`;
+            const body = `Automated sync of ${head} into ${base} by workflow.`;
+
+            // Look for an existing open PR from development -> nightly
+            const { data: existing } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${head}`,
+              base,
+            });
+
+            let pr;
+            if (existing.length > 0) {
+              pr = existing[0];
+              core.info(`Found existing PR #${pr.number}`);
+            } else {
+              const { data: created } = await github.rest.pulls.create({
+                owner,
+                repo,
+                title,
+                head,
+                base,
+                body,
+                maintainer_can_modify: true,
+              });
+              pr = created;
+              core.info(`Created PR #${pr.number}`);
+            }
+
+            // Wait for GitHub to compute mergeability (it may be null initially)
+            let refreshed = pr;
+            for (let i = 0; i < 10; i++) {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: pr.number });
+              refreshed = data;
+              if (refreshed.mergeable !== null) break;
+              await new Promise((r) => setTimeout(r, 2000));
+            }
+
+            if (!refreshed.mergeable) {
+              core.setOutput('pr-number', String(pr.number));
+              core.info(`PR #${pr.number} is not mergeable (state=${refreshed.mergeable_state}). Leaving PR open for manual resolution.`);
+              return;
+            }
+
+            // Merge the PR
+            try {
+              const mergeRes = await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number: pr.number,
+                merge_method: 'merge',
+              });
+              core.info(`Merged PR #${pr.number} — sha: ${mergeRes.data.sha}`);
+              core.setOutput('pr-number', String(pr.number));
+            } catch (err) {
+              core.setFailed(`Failed to merge PR #${pr.number}: ${err.message}`);
+            }

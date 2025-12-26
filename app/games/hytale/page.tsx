@@ -5,7 +5,7 @@ import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Hytale Server Hosting | NodeByte Hosting",
+  title: "Hytale Server Hosting",
   description: "Be ready for Hytale launch with NodeByte Hosting. Join our waitlist for early access to our Hytale server hosting platform.",
 }
 

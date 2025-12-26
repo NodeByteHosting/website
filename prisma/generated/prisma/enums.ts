@@ -23,6 +23,28 @@ export const ServerStatus = {
 export type ServerStatus = (typeof ServerStatus)[keyof typeof ServerStatus]
 
 
+export const DiscordWebhookType = {
+  GAME_SERVER: 'GAME_SERVER',
+  VPS: 'VPS',
+  SYSTEM: 'SYSTEM',
+  BILLING: 'BILLING',
+  SECURITY: 'SECURITY',
+  SUPPORT: 'SUPPORT',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type DiscordWebhookType = (typeof DiscordWebhookType)[keyof typeof DiscordWebhookType]
+
+
+export const DiscordWebhookScope = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+  PUBLIC: 'PUBLIC'
+} as const
+
+export type DiscordWebhookScope = (typeof DiscordWebhookScope)[keyof typeof DiscordWebhookScope]
+
+
 export const SyncStatus = {
   PENDING: 'PENDING',
   RUNNING: 'RUNNING',
@@ -31,3 +53,16 @@ export const SyncStatus = {
 } as const
 
 export type SyncStatus = (typeof SyncStatus)[keyof typeof SyncStatus]
+
+
+export const Role = {
+  MEMBER: 'MEMBER',
+  PARTNER: 'PARTNER',
+  SPONSOR: 'SPONSOR',
+  TECH_TEAM: 'TECH_TEAM',
+  SUPPORT_TEAM: 'SUPPORT_TEAM',
+  ADMINISTRATOR: 'ADMINISTRATOR',
+  SUPER_ADMIN: 'SUPER_ADMIN'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]

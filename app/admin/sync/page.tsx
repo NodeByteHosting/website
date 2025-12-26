@@ -91,6 +91,76 @@ export default function SyncPage() {
     }
   }
 
+  // Poll server sync logs while a sync is running to show live progress/messages
+  const serverPollRef = useRef<number | null>(null)
+  const lastServerLogId = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!isRunning) {
+      if (serverPollRef.current) {
+        clearInterval(serverPollRef.current)
+        serverPollRef.current = null
+      }
+      return
+    }
+
+    const poll = async () => {
+      try {
+        const res = await fetch('/api/admin/sync/logs?limit=5')
+        const data = await res.json()
+        if (data.success && Array.isArray(data.logs) && data.logs.length > 0) {
+          const latest = data.logs[0]
+          // Update progress if available
+          const itemsTotal = latest.itemsTotal || 0
+          const itemsSynced = latest.itemsSynced || 0
+          if (itemsTotal > 0) {
+            setProgress(Math.round((itemsSynced / itemsTotal) * 100))
+          }
+
+          // Add message if there's a new server-side message
+          const lastMessage = latest.metadata?.lastMessage
+          if (latest.id !== lastServerLogId.current && lastMessage) {
+            addLog(lastMessage, 'progress')
+            lastServerLogId.current = latest.id
+          }
+        }
+      } catch (e) {
+        console.error('Failed to poll sync logs', e)
+      }
+    }
+
+    // initial fetch
+    poll()
+    serverPollRef.current = window.setInterval(poll, 2000)
+
+    return () => {
+      if (serverPollRef.current) clearInterval(serverPollRef.current)
+      serverPollRef.current = null
+    }
+  }, [isRunning])
+
+  const requestCancel = async () => {
+    try {
+      const res = await fetch('/api/admin/sync/cancel', { method: 'POST' })
+      const data = await res.json()
+      if (data.success) {
+        addLog('Cancellation requested', 'info')
+        toast({ title: 'Cancellation requested' })
+      } else {
+        addLog(`Cancel failed: ${data.error}`, 'error')
+        toast({ title: 'Cancel failed', variant: 'destructive' })
+      }
+    } catch (e) {
+      addLog('Cancel failed: network error', 'error')
+      toast({ title: 'Cancel failed', variant: 'destructive' })
+    }
+  }
+
+  const scrollToLogsMobile = () => {
+    // smooth scroll to logs area for mobile users
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+  }
+
   useEffect(() => {
     fetchStatus()
   }, [])
@@ -257,6 +327,16 @@ export default function SyncPage() {
             </>
           )}
         </Button>
+        {isRunning && (
+          <div className="ml-3 flex flex-col sm:flex-row gap-2">
+            <Button variant="destructive" onClick={requestCancel}>
+              Cancel
+            </Button>
+            <Button variant="outline" onClick={scrollToLogsMobile} className="sm:hidden">
+              View Logs
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Main Content Grid */}

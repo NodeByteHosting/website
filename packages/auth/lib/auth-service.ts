@@ -1,6 +1,9 @@
 import { prisma } from "@/packages/core/lib/prisma"
 import { syncUserFromPanel } from "@/packages/core/lib/sync"
+import { getPterodactylSettings, getConfig } from "@/packages/core/lib/config"
+import { sendWelcomeEmail, sendVerificationEmail } from "@/packages/core/dispatchers/email"
 import bcrypt from "bcryptjs"
+import { randomBytes } from "crypto"
 import type { User } from "@prisma/client"
 
 const SALT_ROUNDS = 12
@@ -29,21 +32,20 @@ interface PterodactylListResponse {
  * Uses the Application API with admin key
  */
 export async function verifyPterodactylUser(email: string): Promise<PterodactylUser | null> {
-  const panelUrl = process.env.GAMEPANEL_URL
-  const apiKey = process.env.GAMEPANEL_API_KEY
+  const settings = await getPterodactylSettings()
 
-  if (!panelUrl || !apiKey) {
-    console.error("[Auth] Missing GAMEPANEL_URL or GAMEPANEL_API_KEY")
+  if (!settings.url || !settings.apiKey) {
+    console.error("[Auth] Pterodactyl panel not configured")
     return null
   }
 
   try {
     // Search for user by email using the Application API
     const response = await fetch(
-      `${panelUrl}/api/application/users?filter[email]=${encodeURIComponent(email)}`,
+      `${settings.url}/api/application/users?filter[email]=${encodeURIComponent(email)}`,
       {
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${settings.apiKey}`,
           Accept: "application/json",
           "Content-Type": "application/json",
           "User-Agent": "NodeByte-Website/1.0 (https://nodebyte.host)",
@@ -75,8 +77,45 @@ export async function verifyPterodactylUser(email: string): Promise<PterodactylU
 }
 
 /**
+ * Send email verification to user
+ */
+async function sendEmailVerificationToken(userId: string, email: string): Promise<void> {
+  try {
+    // Generate verification token
+    const token = randomBytes(32).toString("hex")
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+
+    // Store verification token in database
+    await prisma.verificationToken.create({
+      data: {
+        identifier: userId,
+        token,
+        expires,
+        type: "email",
+      },
+    })
+
+    // Get site URL for verification link
+    const siteUrl = await getConfig("site_url") || "http://localhost:3000"
+    const verificationUrl = `${siteUrl}/api/auth/verify-email?token=${token}&id=${userId}`
+
+    // Send verification email
+    await sendVerificationEmail({
+      email,
+      verificationToken: token,
+      verificationUrl,
+    })
+
+    console.log(`[Auth] Verification email sent to ${email}`)
+  } catch (error) {
+    console.error(`[Auth] Failed to send verification email to ${email}:`, error)
+    // Don't throw - verification email failure shouldn't block registration
+  }
+}
+
+/**
  * Register a new user
- * Verifies the user exists in the panel before creating account
+ * Allows anyone to register - panel users will be synced via automated sync jobs
  * Handles migrated users (synced from panel but haven't set password yet)
  */
 export async function registerUser(
@@ -107,62 +146,53 @@ export async function registerUser(
           emailVerified: new Date(),
         },
       })
+
+      // Send welcome email
+      await sendWelcomeEmail(email)
       
       return { success: true, user: updatedUser }
     }
 
-    // User doesn't exist in our DB - verify they exist in Pterodactyl panel
-    const pteroUser = await verifyPterodactylUser(email)
+    // Check if this is the first user
+    const userCount = await prisma.user.count()
+    const isFirstUser = userCount === 0
 
-    if (!pteroUser) {
-      return { success: false, error: "not_in_panel" }
-    }
-
-    // Check if pterodactyl ID is already linked to another account
-    const existingPteroLink = await prisma.user.findUnique({
-      where: { pterodactylId: pteroUser.id },
-    })
-
-    if (existingPteroLink) {
-      // This pterodactyl account is linked to a different email
-      // Check if that account is migrated
-      if (existingPteroLink.isMigrated) {
-        return { success: false, error: "panel_account_linked" }
-      }
-      
-      // The linked account hasn't migrated - might be email change in panel
-      // Update the email and let them register
-      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-      
-      const updatedUser = await prisma.user.update({
-        where: { id: existingPteroLink.id },
-        data: {
-          email: email.toLowerCase(),
-          password: hashedPassword,
-          isMigrated: true,
-          emailVerified: new Date(),
-        },
-      })
-      
-      return { success: true, user: updatedUser }
-    }
-
-    // Brand new user - create account
+    // Brand new user - create account without requiring panel account
+    // They will be synced with panel on next automated sync if they exist there
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
     const user = await prisma.user.create({
       data: {
         email: email.toLowerCase(),
         password: hashedPassword,
-        username: pteroUser.username,
-        firstName: pteroUser.first_name || null,
-        lastName: pteroUser.last_name || null,
-        isAdmin: pteroUser.admin,
-        pterodactylId: pteroUser.id,
-        isMigrated: true, // Registering directly = already migrated
-        emailVerified: new Date(), // Auto-verify since they exist in panel
+        isMigrated: true, // They've completed registration
+        emailVerified: null, // Not yet verified - user needs to verify via email
+        isActive: true, // Enable account by default
+        // First user gets SUPER_ADMIN access
+        ...(isFirstUser && {
+          isSystemAdmin: true,
+          roles: ["MEMBER", "SUPER_ADMIN"],
+        }),
       },
     })
+
+    if (isFirstUser) {
+      console.log(`[Auth] First user registered as SUPER_ADMIN: ${email}`)
+      // Mark first user as verified (they're setting up the system)
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      })
+    } else {
+      // Send verification email to new users
+      await sendEmailVerificationToken(user.id, email)
+      
+      // Attempt to sync user data from panel in the background (non-blocking)
+      // This allows users without panel accounts to still register
+      syncUserFromPanel(user.id).catch((err) => {
+        console.log(`[Auth] No panel sync available for new user ${email}: ${err instanceof Error ? err.message : String(err)}`)
+      })
+    }
 
     return { success: true, user }
   } catch (error) {
@@ -217,6 +247,7 @@ export async function authenticateUser(
     })
 
     // Return the current user (sync happens in background)
+    // Note: Email verification requirement is checked via emailVerified field in JWT
     return { success: true, user }
   } catch (error) {
     console.error("[Auth] Authentication error:", error)

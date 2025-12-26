@@ -47,6 +47,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/packages/ui/components/ui/tooltip"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/packages/ui/components/ui/dialog"
+import { Label } from "@/packages/ui/components/ui/label"
+import { Switch } from "@/packages/ui/components/ui/switch"
+import { Checkbox } from "@/packages/ui/components/ui/checkbox"
 import { useToast } from "@/packages/ui/components/ui/use-toast"
 import { cn } from "@/packages/core/lib/utils"
 
@@ -56,7 +66,9 @@ interface User {
   username: string
   firstName: string | null
   lastName: string | null
+  roles?: string[]
   isAdmin: boolean
+  isSystemAdmin?: boolean
   isMigrated: boolean
   isActive: boolean
   pterodactylId: number | null
@@ -94,6 +106,12 @@ export default function UsersPage() {
   const [sortField, setSortField] = useState<SortField>("createdAt")
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all")
+  
+  // Role management dialog state
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editingRoles, setEditingRoles] = useState({ isAdmin: false, isSystemAdmin: false, isActive: true, roles: [] as string[] })
+  const [savingRole, setSavingRole] = useState(false)
 
   // Debounce search
   useEffect(() => {
@@ -186,8 +204,60 @@ export default function UsersPage() {
     )
   }
 
+  const handleOpenEditDialog = (user: User) => {
+    setEditingUser(user)
+    setEditingRoles({
+      isAdmin: user.isAdmin,
+      isSystemAdmin: user.isSystemAdmin || false,
+      isActive: user.isActive,
+      roles: user.roles || [],
+    })
+    setEditDialogOpen(true)
+  }
+
+  const handleSaveRoles = async () => {
+    if (!editingUser) return
+    setSavingRole(true)
+    try {
+      const response = await fetch("/api/admin/users/roles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: editingUser.id,
+          isAdmin: editingRoles.isAdmin,
+          isSystemAdmin: editingRoles.isSystemAdmin,
+          isActive: editingRoles.isActive,
+          roles: editingRoles.roles,
+        }),
+      })
+      const data = await response.json()
+      if (data.success) {
+        toast({
+          title: "Role updated",
+          description: `${editingUser.username}'s role has been updated successfully`,
+        })
+        setEditDialogOpen(false)
+        fetchUsers(true)
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to update user role",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update user role",
+        variant: "destructive",
+      })
+    } finally {
+      setSavingRole(false)
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -278,8 +348,8 @@ export default function UsersPage() {
           <CardTitle className="text-base">{t("users.filters.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative flex-1">
+          <div className="space-y-3">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={t("users.filters.searchPlaceholder")}
@@ -288,9 +358,9 @@ export default function UsersPage() {
                 className="pl-9"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-2 md:flex md:gap-2 md:items-center">
               <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v as FilterStatus); setCurrentPage(1) }}>
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-full sm:w-auto">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
@@ -304,7 +374,7 @@ export default function UsersPage() {
                 </SelectContent>
               </Select>
               <Select value={perPage.toString()} onValueChange={(v) => { setPerPage(parseInt(v)); setCurrentPage(1) }}>
-                <SelectTrigger className="w-[100px]">
+                <SelectTrigger className="w-full sm:w-auto">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -320,14 +390,13 @@ export default function UsersPage() {
       </Card>
 
       {/* Users Table */}
-      <Card>
+      <Card className="overflow-hidden">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
+          <Table className="text-xs sm:text-sm table-fixed w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead 
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/50 w-[45%] sm:w-auto"
                     onClick={() => handleSort("username")}
                   >
                     <div className="flex items-center">
@@ -336,7 +405,7 @@ export default function UsersPage() {
                     </div>
                   </TableHead>
                   <TableHead 
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="hidden sm:table-cell cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("email")}
                   >
                     <div className="flex items-center">
@@ -344,7 +413,7 @@ export default function UsersPage() {
                       <SortIcon field="email" />
                     </div>
                   </TableHead>
-                  <TableHead>{t("users.table.status")}</TableHead>
+                  <TableHead className="w-[55%] sm:w-auto">{t("users.table.status")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("users.table.pterodactyl")}</TableHead>
                   <TableHead 
                     className="hidden lg:table-cell cursor-pointer hover:bg-muted/50"
@@ -364,18 +433,19 @@ export default function UsersPage() {
                       <SortIcon field="lastLoginAt" />
                     </div>
                   </TableHead>
+                  <TableHead className="text-right w-16">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell><Skeleton className="h-8 w-32" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                      <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-16" /></TableCell>
-                      <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
-                      <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="py-2 sm:py-4"><Skeleton className="h-10 w-full" /></TableCell>
+                      <TableCell className="hidden sm:table-cell py-2 sm:py-4"><Skeleton className="h-4 w-full" /></TableCell>
+                      <TableCell className="py-2 sm:py-4"><Skeleton className="h-5 w-full" /></TableCell>
+                      <TableCell className="hidden md:table-cell py-2 sm:py-4"><Skeleton className="h-4 w-16" /></TableCell>
+                      <TableCell className="hidden lg:table-cell py-2 sm:py-4"><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="hidden xl:table-cell py-2 sm:py-4"><Skeleton className="h-4 w-24" /></TableCell>
                     </TableRow>
                   ))
                 ) : users.length === 0 ? (
@@ -393,21 +463,21 @@ export default function UsersPage() {
                 ) : (
                   users.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                            <span className="text-sm font-medium">
+                      <TableCell className="py-2 sm:py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0 text-xs">
+                            <span className="font-medium">
                               {user.username.charAt(0).toUpperCase()}
                             </span>
                           </div>
-                          <div>
-                            <div className="font-medium flex items-center gap-2">
-                              {user.username}
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium flex items-center gap-1 text-xs sm:text-sm">
+                              <span className="truncate">{user.username}</span>
                               {user.isAdmin && (
                                 <TooltipProvider>
                                   <Tooltip>
-                                    <TooltipTrigger>
-                                      <Shield className="h-3.5 w-3.5 text-amber-500" />
+                                    <TooltipTrigger asChild>
+                                      <Shield className="h-3 w-3 text-amber-500 shrink-0" />
                                     </TooltipTrigger>
                                     <TooltipContent>
                                       {t("users.badges.admin")}
@@ -416,66 +486,79 @@ export default function UsersPage() {
                                 </TooltipProvider>
                               )}
                             </div>
+                            {/* Show email under username on mobile */}
+                            <p className="text-xs text-muted-foreground truncate sm:hidden">
+                              {user.email}
+                            </p>
                             {(user.firstName || user.lastName) && (
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-muted-foreground hidden sm:block truncate">
                                 {[user.firstName, user.lastName].filter(Boolean).join(" ")}
                               </p>
                             )}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="text-sm">{user.email}</span>
+                      <TableCell className="hidden sm:table-cell py-2 sm:py-4">
+                        <div className="flex items-center gap-1 text-sm">
+                          <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                          <span className="truncate">{user.email}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
+                      <TableCell className="py-2 sm:py-4">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
                           {user.isActive ? (
-                            <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                            <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 text-xs w-fit">
                               {t("users.badges.active")}
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20">
+                            <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 text-xs w-fit">
                               {t("users.badges.inactive")}
                             </Badge>
                           )}
                           {user.isMigrated && (
-                            <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                            <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 text-xs w-fit">
                               {t("users.badges.migrated")}
                             </Badge>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
+                      <TableCell className="hidden md:table-cell py-2 sm:py-4">
                         {user.pterodactylId ? (
-                          <Badge variant="secondary">#{user.pterodactylId}</Badge>
+                          <Badge variant="secondary" className="text-xs">#{user.pterodactylId}</Badge>
                         ) : (
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-3.5 w-3.5" />
+                      <TableCell className="hidden lg:table-cell py-2 sm:py-4">
+                        <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
+                          <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
                           {formatDate(user.createdAt)}
                         </div>
                       </TableCell>
-                      <TableCell className="hidden xl:table-cell">
-                        <span className="text-sm text-muted-foreground">
+                      <TableCell className="hidden xl:table-cell py-2 sm:py-4">
+                        <span className="text-xs xl:text-sm text-muted-foreground">
                           {formatDateTime(user.lastLoginAt)}
                         </span>
+                      </TableCell>
+                      <TableCell className="py-2 sm:py-4 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenEditDialog(user)}
+                          className="text-xs h-7"
+                        >
+                          Edit
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
-          </div>
 
           {/* Pagination */}
           {meta && meta.totalPages > 1 && (
-            <div className="flex items-center justify-between border-t px-4 py-3">
+            <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
                 {t("users.pagination.showing", {
                   from: (currentPage - 1) * perPage + 1,
@@ -483,15 +566,16 @@ export default function UsersPage() {
                   total: meta.total,
                 })}
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2 sm:justify-end">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
+                  className="flex-1 sm:flex-none"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  {t("users.pagination.previous")}
+                  <span className="hidden sm:inline ml-1">{t("users.pagination.previous")}</span>
                 </Button>
                 <div className="flex items-center gap-1 text-sm">
                   <span>{currentPage}</span>
@@ -503,8 +587,9 @@ export default function UsersPage() {
                   size="sm"
                   onClick={() => setCurrentPage((p) => Math.min(meta.totalPages, p + 1))}
                   disabled={currentPage === meta.totalPages}
+                  className="flex-1 sm:flex-none"
                 >
-                  {t("users.pagination.next")}
+                  <span className="hidden sm:inline mr-1">{t("users.pagination.next")}</span>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -512,6 +597,110 @@ export default function UsersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Role Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Edit User Roles</DialogTitle>
+            <DialogDescription>
+              {editingUser?.username} - {editingUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isActive" className="cursor-pointer flex-1">
+                Account Active
+              </Label>
+              <Switch
+                id="isActive"
+                checked={editingRoles.isActive}
+                onCheckedChange={(checked) =>
+                  setEditingRoles((s) => ({ ...s, isActive: checked }))
+                }
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isAdmin" className="cursor-pointer flex-1">
+                Admin
+              </Label>
+              <Switch
+                id="isAdmin"
+                checked={editingRoles.isAdmin}
+                onCheckedChange={(checked) =>
+                  setEditingRoles((s) => ({ ...s, isAdmin: checked }))
+                }
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isSystemAdmin" className="cursor-pointer flex-1">
+                System Admin
+              </Label>
+              <Switch
+                id="isSystemAdmin"
+                checked={editingRoles.isSystemAdmin}
+                onCheckedChange={(checked) =>
+                  setEditingRoles((s) => ({ ...s, isSystemAdmin: checked }))
+                }
+              />
+            </div>
+            
+            {/* User Roles */}
+            <div className="border-t pt-4">
+              <p className="text-sm font-medium mb-3">User Roles</p>
+              <div className="space-y-2">
+                {["MEMBER", "PARTNER", "SPONSOR", "TECH_TEAM", "SUPPORT_TEAM", "ADMINISTRATOR", "SUPER_ADMIN"].map(
+                  (role) => (
+                    <div key={role} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`role-${role}`}
+                        checked={editingRoles.roles.includes(role)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setEditingRoles((s) => ({
+                              ...s,
+                              roles: [...s.roles, role],
+                            }))
+                          } else {
+                            setEditingRoles((s) => ({
+                              ...s,
+                              roles: s.roles.filter((r) => r !== role),
+                            }))
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={`role-${role}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {role.replace(/_/g, " ")}
+                      </label>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+              disabled={savingRole}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveRoles}
+              disabled={savingRole}
+              className="flex-1"
+            >
+              {savingRole ? "Saving..." : "Save"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
+

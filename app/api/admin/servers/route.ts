@@ -66,9 +66,6 @@ export async function GET(request: Request) {
         description: true,
         status: true,
         isSuspended: true,
-        memory: true,
-        disk: true,
-        cpu: true,
         createdAt: true,
         owner: {
           select: {
@@ -87,6 +84,12 @@ export async function GET(request: Request) {
           select: {
             id: true,
             name: true,
+          },
+        },
+        properties: {
+          select: {
+            key: true,
+            value: true,
           },
         },
         allocations: {

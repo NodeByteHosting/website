@@ -1,5 +1,8 @@
 export { LoginForm } from "./login-form"
+export { LoginFormMultiStep } from "./login-form-multistep"
 export { RegisterForm } from "./register-form"
 export { LogoutButton } from "./logout-button"
 export { UserMenu } from "./user-menu"
 export { AuthProvider } from "./auth-provider"
+export { ForgotPasswordForm } from "./forgot-password-form"
+export { ResetPasswordForm } from "./reset-password-form"

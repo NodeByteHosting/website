@@ -28,15 +28,11 @@ export type AggregateEgg = {
 
 export type EggAvgAggregateOutputType = {
   id: number | null
-  configFrom: number | null
-  copyScriptFrom: number | null
   nestId: number | null
 }
 
 export type EggSumAggregateOutputType = {
   id: number | null
-  configFrom: number | null
-  copyScriptFrom: number | null
   nestId: number | null
 }
 
@@ -46,11 +42,7 @@ export type EggMinAggregateOutputType = {
   name: string | null
   description: string | null
   author: string | null
-  dockerImage: string | null
-  startup: string | null
-  configFrom: number | null
-  scriptIsPrivileged: boolean | null
-  copyScriptFrom: number | null
+  panelType: string | null
   nestId: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -62,11 +54,7 @@ export type EggMaxAggregateOutputType = {
   name: string | null
   description: string | null
   author: string | null
-  dockerImage: string | null
-  startup: string | null
-  configFrom: number | null
-  scriptIsPrivileged: boolean | null
-  copyScriptFrom: number | null
+  panelType: string | null
   nestId: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -78,12 +66,7 @@ export type EggCountAggregateOutputType = {
   name: number
   description: number
   author: number
-  dockerImage: number
-  dockerImages: number
-  startup: number
-  configFrom: number
-  scriptIsPrivileged: number
-  copyScriptFrom: number
+  panelType: number
   nestId: number
   createdAt: number
   updatedAt: number
@@ -93,15 +76,11 @@ export type EggCountAggregateOutputType = {
 
 export type EggAvgAggregateInputType = {
   id?: true
-  configFrom?: true
-  copyScriptFrom?: true
   nestId?: true
 }
 
 export type EggSumAggregateInputType = {
   id?: true
-  configFrom?: true
-  copyScriptFrom?: true
   nestId?: true
 }
 
@@ -111,11 +90,7 @@ export type EggMinAggregateInputType = {
   name?: true
   description?: true
   author?: true
-  dockerImage?: true
-  startup?: true
-  configFrom?: true
-  scriptIsPrivileged?: true
-  copyScriptFrom?: true
+  panelType?: true
   nestId?: true
   createdAt?: true
   updatedAt?: true
@@ -127,11 +102,7 @@ export type EggMaxAggregateInputType = {
   name?: true
   description?: true
   author?: true
-  dockerImage?: true
-  startup?: true
-  configFrom?: true
-  scriptIsPrivileged?: true
-  copyScriptFrom?: true
+  panelType?: true
   nestId?: true
   createdAt?: true
   updatedAt?: true
@@ -143,12 +114,7 @@ export type EggCountAggregateInputType = {
   name?: true
   description?: true
   author?: true
-  dockerImage?: true
-  dockerImages?: true
-  startup?: true
-  configFrom?: true
-  scriptIsPrivileged?: true
-  copyScriptFrom?: true
+  panelType?: true
   nestId?: true
   createdAt?: true
   updatedAt?: true
@@ -247,12 +213,7 @@ export type EggGroupByOutputType = {
   name: string
   description: string | null
   author: string | null
-  dockerImage: string | null
-  dockerImages: runtime.JsonValue | null
-  startup: string | null
-  configFrom: number | null
-  scriptIsPrivileged: boolean
-  copyScriptFrom: number | null
+  panelType: string
   nestId: number
   createdAt: Date
   updatedAt: Date
@@ -287,18 +248,14 @@ export type EggWhereInput = {
   name?: Prisma.StringFilter<"Egg"> | string
   description?: Prisma.StringNullableFilter<"Egg"> | string | null
   author?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImage?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImages?: Prisma.JsonNullableFilter<"Egg">
-  startup?: Prisma.StringNullableFilter<"Egg"> | string | null
-  configFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
-  scriptIsPrivileged?: Prisma.BoolFilter<"Egg"> | boolean
-  copyScriptFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
+  panelType?: Prisma.StringFilter<"Egg"> | string
   nestId?: Prisma.IntFilter<"Egg"> | number
   createdAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
   nest?: Prisma.XOR<Prisma.NestScalarRelationFilter, Prisma.NestWhereInput>
   servers?: Prisma.ServerListRelationFilter
   variables?: Prisma.EggVariableListRelationFilter
+  properties?: Prisma.EggPropertyListRelationFilter
 }
 
 export type EggOrderByWithRelationInput = {
@@ -307,18 +264,14 @@ export type EggOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrderInput | Prisma.SortOrder
-  dockerImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  dockerImages?: Prisma.SortOrderInput | Prisma.SortOrder
-  startup?: Prisma.SortOrderInput | Prisma.SortOrder
-  configFrom?: Prisma.SortOrderInput | Prisma.SortOrder
-  scriptIsPrivileged?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   nest?: Prisma.NestOrderByWithRelationInput
   servers?: Prisma.ServerOrderByRelationAggregateInput
   variables?: Prisma.EggVariableOrderByRelationAggregateInput
+  properties?: Prisma.EggPropertyOrderByRelationAggregateInput
 }
 
 export type EggWhereUniqueInput = Prisma.AtLeast<{
@@ -330,18 +283,14 @@ export type EggWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Egg"> | string
   description?: Prisma.StringNullableFilter<"Egg"> | string | null
   author?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImage?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImages?: Prisma.JsonNullableFilter<"Egg">
-  startup?: Prisma.StringNullableFilter<"Egg"> | string | null
-  configFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
-  scriptIsPrivileged?: Prisma.BoolFilter<"Egg"> | boolean
-  copyScriptFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
+  panelType?: Prisma.StringFilter<"Egg"> | string
   nestId?: Prisma.IntFilter<"Egg"> | number
   createdAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
   nest?: Prisma.XOR<Prisma.NestScalarRelationFilter, Prisma.NestWhereInput>
   servers?: Prisma.ServerListRelationFilter
   variables?: Prisma.EggVariableListRelationFilter
+  properties?: Prisma.EggPropertyListRelationFilter
 }, "id" | "uuid">
 
 export type EggOrderByWithAggregationInput = {
@@ -350,12 +299,7 @@ export type EggOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.SortOrderInput | Prisma.SortOrder
-  dockerImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  dockerImages?: Prisma.SortOrderInput | Prisma.SortOrder
-  startup?: Prisma.SortOrderInput | Prisma.SortOrder
-  configFrom?: Prisma.SortOrderInput | Prisma.SortOrder
-  scriptIsPrivileged?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -375,12 +319,7 @@ export type EggScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Egg"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Egg"> | string | null
   author?: Prisma.StringNullableWithAggregatesFilter<"Egg"> | string | null
-  dockerImage?: Prisma.StringNullableWithAggregatesFilter<"Egg"> | string | null
-  dockerImages?: Prisma.JsonNullableWithAggregatesFilter<"Egg">
-  startup?: Prisma.StringNullableWithAggregatesFilter<"Egg"> | string | null
-  configFrom?: Prisma.IntNullableWithAggregatesFilter<"Egg"> | number | null
-  scriptIsPrivileged?: Prisma.BoolWithAggregatesFilter<"Egg"> | boolean
-  copyScriptFrom?: Prisma.IntNullableWithAggregatesFilter<"Egg"> | number | null
+  panelType?: Prisma.StringWithAggregatesFilter<"Egg"> | string
   nestId?: Prisma.IntWithAggregatesFilter<"Egg"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Egg"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Egg"> | Date | string
@@ -392,17 +331,13 @@ export type EggCreateInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   nest: Prisma.NestCreateNestedOneWithoutEggsInput
   servers?: Prisma.ServerCreateNestedManyWithoutEggInput
   variables?: Prisma.EggVariableCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyCreateNestedManyWithoutEggInput
 }
 
 export type EggUncheckedCreateInput = {
@@ -411,17 +346,13 @@ export type EggUncheckedCreateInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   nestId: number
   createdAt?: Date | string
   updatedAt?: Date | string
   servers?: Prisma.ServerUncheckedCreateNestedManyWithoutEggInput
   variables?: Prisma.EggVariableUncheckedCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyUncheckedCreateNestedManyWithoutEggInput
 }
 
 export type EggUpdateInput = {
@@ -430,17 +361,13 @@ export type EggUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nest?: Prisma.NestUpdateOneRequiredWithoutEggsNestedInput
   servers?: Prisma.ServerUpdateManyWithoutEggNestedInput
   variables?: Prisma.EggVariableUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUpdateManyWithoutEggNestedInput
 }
 
 export type EggUncheckedUpdateInput = {
@@ -449,17 +376,13 @@ export type EggUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   nestId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   servers?: Prisma.ServerUncheckedUpdateManyWithoutEggNestedInput
   variables?: Prisma.EggVariableUncheckedUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUncheckedUpdateManyWithoutEggNestedInput
 }
 
 export type EggCreateManyInput = {
@@ -468,12 +391,7 @@ export type EggCreateManyInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   nestId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -485,12 +403,7 @@ export type EggUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -501,12 +414,7 @@ export type EggUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   nestId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -528,12 +436,7 @@ export type EggCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   author?: Prisma.SortOrder
-  dockerImage?: Prisma.SortOrder
-  dockerImages?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  configFrom?: Prisma.SortOrder
-  scriptIsPrivileged?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -541,8 +444,6 @@ export type EggCountOrderByAggregateInput = {
 
 export type EggAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  configFrom?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
 }
 
@@ -552,11 +453,7 @@ export type EggMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   author?: Prisma.SortOrder
-  dockerImage?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  configFrom?: Prisma.SortOrder
-  scriptIsPrivileged?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -568,11 +465,7 @@ export type EggMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   author?: Prisma.SortOrder
-  dockerImage?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  configFrom?: Prisma.SortOrder
-  scriptIsPrivileged?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -580,14 +473,17 @@ export type EggMinOrderByAggregateInput = {
 
 export type EggSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  configFrom?: Prisma.SortOrder
-  copyScriptFrom?: Prisma.SortOrder
   nestId?: Prisma.SortOrder
 }
 
 export type EggScalarRelationFilter = {
   is?: Prisma.EggWhereInput
   isNot?: Prisma.EggWhereInput
+}
+
+export type EggNullableScalarRelationFilter = {
+  is?: Prisma.EggWhereInput | null
+  isNot?: Prisma.EggWhereInput | null
 }
 
 export type EggCreateNestedManyWithoutNestInput = {
@@ -632,6 +528,20 @@ export type EggUncheckedUpdateManyWithoutNestNestedInput = {
   deleteMany?: Prisma.EggScalarWhereInput | Prisma.EggScalarWhereInput[]
 }
 
+export type EggCreateNestedOneWithoutPropertiesInput = {
+  create?: Prisma.XOR<Prisma.EggCreateWithoutPropertiesInput, Prisma.EggUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.EggCreateOrConnectWithoutPropertiesInput
+  connect?: Prisma.EggWhereUniqueInput
+}
+
+export type EggUpdateOneRequiredWithoutPropertiesNestedInput = {
+  create?: Prisma.XOR<Prisma.EggCreateWithoutPropertiesInput, Prisma.EggUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.EggCreateOrConnectWithoutPropertiesInput
+  upsert?: Prisma.EggUpsertWithoutPropertiesInput
+  connect?: Prisma.EggWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EggUpdateToOneWithWhereWithoutPropertiesInput, Prisma.EggUpdateWithoutPropertiesInput>, Prisma.EggUncheckedUpdateWithoutPropertiesInput>
+}
+
 export type EggCreateNestedOneWithoutVariablesInput = {
   create?: Prisma.XOR<Prisma.EggCreateWithoutVariablesInput, Prisma.EggUncheckedCreateWithoutVariablesInput>
   connectOrCreate?: Prisma.EggCreateOrConnectWithoutVariablesInput
@@ -652,10 +562,12 @@ export type EggCreateNestedOneWithoutServersInput = {
   connect?: Prisma.EggWhereUniqueInput
 }
 
-export type EggUpdateOneRequiredWithoutServersNestedInput = {
+export type EggUpdateOneWithoutServersNestedInput = {
   create?: Prisma.XOR<Prisma.EggCreateWithoutServersInput, Prisma.EggUncheckedCreateWithoutServersInput>
   connectOrCreate?: Prisma.EggCreateOrConnectWithoutServersInput
   upsert?: Prisma.EggUpsertWithoutServersInput
+  disconnect?: Prisma.EggWhereInput | boolean
+  delete?: Prisma.EggWhereInput | boolean
   connect?: Prisma.EggWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EggUpdateToOneWithWhereWithoutServersInput, Prisma.EggUpdateWithoutServersInput>, Prisma.EggUncheckedUpdateWithoutServersInput>
 }
@@ -666,16 +578,12 @@ export type EggCreateWithoutNestInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   servers?: Prisma.ServerCreateNestedManyWithoutEggInput
   variables?: Prisma.EggVariableCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyCreateNestedManyWithoutEggInput
 }
 
 export type EggUncheckedCreateWithoutNestInput = {
@@ -684,16 +592,12 @@ export type EggUncheckedCreateWithoutNestInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   servers?: Prisma.ServerUncheckedCreateNestedManyWithoutEggInput
   variables?: Prisma.EggVariableUncheckedCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyUncheckedCreateNestedManyWithoutEggInput
 }
 
 export type EggCreateOrConnectWithoutNestInput = {
@@ -731,15 +635,82 @@ export type EggScalarWhereInput = {
   name?: Prisma.StringFilter<"Egg"> | string
   description?: Prisma.StringNullableFilter<"Egg"> | string | null
   author?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImage?: Prisma.StringNullableFilter<"Egg"> | string | null
-  dockerImages?: Prisma.JsonNullableFilter<"Egg">
-  startup?: Prisma.StringNullableFilter<"Egg"> | string | null
-  configFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
-  scriptIsPrivileged?: Prisma.BoolFilter<"Egg"> | boolean
-  copyScriptFrom?: Prisma.IntNullableFilter<"Egg"> | number | null
+  panelType?: Prisma.StringFilter<"Egg"> | string
   nestId?: Prisma.IntFilter<"Egg"> | number
   createdAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Egg"> | Date | string
+}
+
+export type EggCreateWithoutPropertiesInput = {
+  id: number
+  uuid: string
+  name: string
+  description?: string | null
+  author?: string | null
+  panelType?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  nest: Prisma.NestCreateNestedOneWithoutEggsInput
+  servers?: Prisma.ServerCreateNestedManyWithoutEggInput
+  variables?: Prisma.EggVariableCreateNestedManyWithoutEggInput
+}
+
+export type EggUncheckedCreateWithoutPropertiesInput = {
+  id: number
+  uuid: string
+  name: string
+  description?: string | null
+  author?: string | null
+  panelType?: string
+  nestId: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutEggInput
+  variables?: Prisma.EggVariableUncheckedCreateNestedManyWithoutEggInput
+}
+
+export type EggCreateOrConnectWithoutPropertiesInput = {
+  where: Prisma.EggWhereUniqueInput
+  create: Prisma.XOR<Prisma.EggCreateWithoutPropertiesInput, Prisma.EggUncheckedCreateWithoutPropertiesInput>
+}
+
+export type EggUpsertWithoutPropertiesInput = {
+  update: Prisma.XOR<Prisma.EggUpdateWithoutPropertiesInput, Prisma.EggUncheckedUpdateWithoutPropertiesInput>
+  create: Prisma.XOR<Prisma.EggCreateWithoutPropertiesInput, Prisma.EggUncheckedCreateWithoutPropertiesInput>
+  where?: Prisma.EggWhereInput
+}
+
+export type EggUpdateToOneWithWhereWithoutPropertiesInput = {
+  where?: Prisma.EggWhereInput
+  data: Prisma.XOR<Prisma.EggUpdateWithoutPropertiesInput, Prisma.EggUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type EggUpdateWithoutPropertiesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nest?: Prisma.NestUpdateOneRequiredWithoutEggsNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutEggNestedInput
+  variables?: Prisma.EggVariableUpdateManyWithoutEggNestedInput
+}
+
+export type EggUncheckedUpdateWithoutPropertiesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  nestId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutEggNestedInput
+  variables?: Prisma.EggVariableUncheckedUpdateManyWithoutEggNestedInput
 }
 
 export type EggCreateWithoutVariablesInput = {
@@ -748,16 +719,12 @@ export type EggCreateWithoutVariablesInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   nest: Prisma.NestCreateNestedOneWithoutEggsInput
   servers?: Prisma.ServerCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyCreateNestedManyWithoutEggInput
 }
 
 export type EggUncheckedCreateWithoutVariablesInput = {
@@ -766,16 +733,12 @@ export type EggUncheckedCreateWithoutVariablesInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   nestId: number
   createdAt?: Date | string
   updatedAt?: Date | string
   servers?: Prisma.ServerUncheckedCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyUncheckedCreateNestedManyWithoutEggInput
 }
 
 export type EggCreateOrConnectWithoutVariablesInput = {
@@ -800,16 +763,12 @@ export type EggUpdateWithoutVariablesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nest?: Prisma.NestUpdateOneRequiredWithoutEggsNestedInput
   servers?: Prisma.ServerUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUpdateManyWithoutEggNestedInput
 }
 
 export type EggUncheckedUpdateWithoutVariablesInput = {
@@ -818,16 +777,12 @@ export type EggUncheckedUpdateWithoutVariablesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   nestId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   servers?: Prisma.ServerUncheckedUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUncheckedUpdateManyWithoutEggNestedInput
 }
 
 export type EggCreateWithoutServersInput = {
@@ -836,16 +791,12 @@ export type EggCreateWithoutServersInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   nest: Prisma.NestCreateNestedOneWithoutEggsInput
   variables?: Prisma.EggVariableCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyCreateNestedManyWithoutEggInput
 }
 
 export type EggUncheckedCreateWithoutServersInput = {
@@ -854,16 +805,12 @@ export type EggUncheckedCreateWithoutServersInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   nestId: number
   createdAt?: Date | string
   updatedAt?: Date | string
   variables?: Prisma.EggVariableUncheckedCreateNestedManyWithoutEggInput
+  properties?: Prisma.EggPropertyUncheckedCreateNestedManyWithoutEggInput
 }
 
 export type EggCreateOrConnectWithoutServersInput = {
@@ -888,16 +835,12 @@ export type EggUpdateWithoutServersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   nest?: Prisma.NestUpdateOneRequiredWithoutEggsNestedInput
   variables?: Prisma.EggVariableUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUpdateManyWithoutEggNestedInput
 }
 
 export type EggUncheckedUpdateWithoutServersInput = {
@@ -906,16 +849,12 @@ export type EggUncheckedUpdateWithoutServersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   nestId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   variables?: Prisma.EggVariableUncheckedUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUncheckedUpdateManyWithoutEggNestedInput
 }
 
 export type EggCreateManyNestInput = {
@@ -924,12 +863,7 @@ export type EggCreateManyNestInput = {
   name: string
   description?: string | null
   author?: string | null
-  dockerImage?: string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: string | null
-  configFrom?: number | null
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: number | null
+  panelType?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -940,16 +874,12 @@ export type EggUpdateWithoutNestInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   servers?: Prisma.ServerUpdateManyWithoutEggNestedInput
   variables?: Prisma.EggVariableUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUpdateManyWithoutEggNestedInput
 }
 
 export type EggUncheckedUpdateWithoutNestInput = {
@@ -958,16 +888,12 @@ export type EggUncheckedUpdateWithoutNestInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   servers?: Prisma.ServerUncheckedUpdateManyWithoutEggNestedInput
   variables?: Prisma.EggVariableUncheckedUpdateManyWithoutEggNestedInput
+  properties?: Prisma.EggPropertyUncheckedUpdateManyWithoutEggNestedInput
 }
 
 export type EggUncheckedUpdateManyWithoutNestInput = {
@@ -976,12 +902,7 @@ export type EggUncheckedUpdateManyWithoutNestInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dockerImages?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  configFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scriptIsPrivileged?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  copyScriptFrom?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -994,11 +915,13 @@ export type EggUncheckedUpdateManyWithoutNestInput = {
 export type EggCountOutputType = {
   servers: number
   variables: number
+  properties: number
 }
 
 export type EggCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   servers?: boolean | EggCountOutputTypeCountServersArgs
   variables?: boolean | EggCountOutputTypeCountVariablesArgs
+  properties?: boolean | EggCountOutputTypeCountPropertiesArgs
 }
 
 /**
@@ -1025,6 +948,13 @@ export type EggCountOutputTypeCountVariablesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.EggVariableWhereInput
 }
 
+/**
+ * EggCountOutputType without action
+ */
+export type EggCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EggPropertyWhereInput
+}
+
 
 export type EggSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1032,18 +962,14 @@ export type EggSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   name?: boolean
   description?: boolean
   author?: boolean
-  dockerImage?: boolean
-  dockerImages?: boolean
-  startup?: boolean
-  configFrom?: boolean
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: boolean
+  panelType?: boolean
   nestId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   nest?: boolean | Prisma.NestDefaultArgs<ExtArgs>
   servers?: boolean | Prisma.Egg$serversArgs<ExtArgs>
   variables?: boolean | Prisma.Egg$variablesArgs<ExtArgs>
+  properties?: boolean | Prisma.Egg$propertiesArgs<ExtArgs>
   _count?: boolean | Prisma.EggCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["egg"]>
 
@@ -1053,12 +979,7 @@ export type EggSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   name?: boolean
   description?: boolean
   author?: boolean
-  dockerImage?: boolean
-  dockerImages?: boolean
-  startup?: boolean
-  configFrom?: boolean
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: boolean
+  panelType?: boolean
   nestId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1071,12 +992,7 @@ export type EggSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   name?: boolean
   description?: boolean
   author?: boolean
-  dockerImage?: boolean
-  dockerImages?: boolean
-  startup?: boolean
-  configFrom?: boolean
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: boolean
+  panelType?: boolean
   nestId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1089,22 +1005,18 @@ export type EggSelectScalar = {
   name?: boolean
   description?: boolean
   author?: boolean
-  dockerImage?: boolean
-  dockerImages?: boolean
-  startup?: boolean
-  configFrom?: boolean
-  scriptIsPrivileged?: boolean
-  copyScriptFrom?: boolean
+  panelType?: boolean
   nestId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EggOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uuid" | "name" | "description" | "author" | "dockerImage" | "dockerImages" | "startup" | "configFrom" | "scriptIsPrivileged" | "copyScriptFrom" | "nestId" | "createdAt" | "updatedAt", ExtArgs["result"]["egg"]>
+export type EggOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uuid" | "name" | "description" | "author" | "panelType" | "nestId" | "createdAt" | "updatedAt", ExtArgs["result"]["egg"]>
 export type EggInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nest?: boolean | Prisma.NestDefaultArgs<ExtArgs>
   servers?: boolean | Prisma.Egg$serversArgs<ExtArgs>
   variables?: boolean | Prisma.Egg$variablesArgs<ExtArgs>
+  properties?: boolean | Prisma.Egg$propertiesArgs<ExtArgs>
   _count?: boolean | Prisma.EggCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EggIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1120,6 +1032,7 @@ export type $EggPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     nest: Prisma.$NestPayload<ExtArgs>
     servers: Prisma.$ServerPayload<ExtArgs>[]
     variables: Prisma.$EggVariablePayload<ExtArgs>[]
+    properties: Prisma.$EggPropertyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1127,12 +1040,7 @@ export type $EggPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     name: string
     description: string | null
     author: string | null
-    dockerImage: string | null
-    dockerImages: runtime.JsonValue | null
-    startup: string | null
-    configFrom: number | null
-    scriptIsPrivileged: boolean
-    copyScriptFrom: number | null
+    panelType: string
     nestId: number
     createdAt: Date
     updatedAt: Date
@@ -1533,6 +1441,7 @@ export interface Prisma__EggClient<T, Null = never, ExtArgs extends runtime.Type
   nest<T extends Prisma.NestDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NestDefaultArgs<ExtArgs>>): Prisma.Prisma__NestClient<runtime.Types.Result.GetResult<Prisma.$NestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   servers<T extends Prisma.Egg$serversArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Egg$serversArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   variables<T extends Prisma.Egg$variablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Egg$variablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EggVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  properties<T extends Prisma.Egg$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Egg$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EggPropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1567,12 +1476,7 @@ export interface EggFieldRefs {
   readonly name: Prisma.FieldRef<"Egg", 'String'>
   readonly description: Prisma.FieldRef<"Egg", 'String'>
   readonly author: Prisma.FieldRef<"Egg", 'String'>
-  readonly dockerImage: Prisma.FieldRef<"Egg", 'String'>
-  readonly dockerImages: Prisma.FieldRef<"Egg", 'Json'>
-  readonly startup: Prisma.FieldRef<"Egg", 'String'>
-  readonly configFrom: Prisma.FieldRef<"Egg", 'Int'>
-  readonly scriptIsPrivileged: Prisma.FieldRef<"Egg", 'Boolean'>
-  readonly copyScriptFrom: Prisma.FieldRef<"Egg", 'Int'>
+  readonly panelType: Prisma.FieldRef<"Egg", 'String'>
   readonly nestId: Prisma.FieldRef<"Egg", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Egg", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Egg", 'DateTime'>
@@ -2017,6 +1921,30 @@ export type Egg$variablesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.EggVariableScalarFieldEnum | Prisma.EggVariableScalarFieldEnum[]
+}
+
+/**
+ * Egg.properties
+ */
+export type Egg$propertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EggProperty
+   */
+  select?: Prisma.EggPropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EggProperty
+   */
+  omit?: Prisma.EggPropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EggPropertyInclude<ExtArgs> | null
+  where?: Prisma.EggPropertyWhereInput
+  orderBy?: Prisma.EggPropertyOrderByWithRelationInput | Prisma.EggPropertyOrderByWithRelationInput[]
+  cursor?: Prisma.EggPropertyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EggPropertyScalarFieldEnum | Prisma.EggPropertyScalarFieldEnum[]
 }
 
 /**

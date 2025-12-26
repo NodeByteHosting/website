@@ -1,12 +1,9 @@
-name: Sync development → nightly
+name: Sync nightly → production
 
 on:
-  push:
-    branches:
-      - development
   schedule:
-    # Run daily at midnight UTC
-    - cron: '0 0 * * *'
+    # Run weekly on Sundays at midnight UTC
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -14,12 +11,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: sync-dev-nightly
+  group: sync-nightly-production
   cancel-in-progress: true
 
 jobs:
   create-and-merge:
-    name: Create PR and merge into nightly
+    name: Create PR and merge into production
     runs-on: ubuntu-latest
     steps:
       - name: Create or update PR and merge when possible
@@ -28,12 +25,12 @@ jobs:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const head = 'development';
-            const base = 'nightly';
+            const head = 'nightly';
+            const base = 'production';
             const title = `chore: sync ${head} → ${base} (${new Date().toISOString().split('T')[0]})`;
             const body = `Automated sync of ${head} into ${base} by workflow.`;
 
-            // Look for an existing open PR from development -> nightly
+            // Look for an existing open PR from nightly -> production
             const { data: existing } = await github.rest.pulls.list({
               owner,
               repo,

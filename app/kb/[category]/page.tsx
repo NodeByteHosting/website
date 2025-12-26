@@ -42,12 +42,12 @@ export async function generateMetadata({
 
   if (!categoryData) {
     return {
-      title: "Category Not Found | Knowledge Base | NodeByte Hosting",
+      title: "Category Not Found | Knowledge Base",
     };
   }
 
   return {
-    title: `${categoryData.title} | Knowledge Base | NodeByte Hosting`,
+    title: `${categoryData.title} | Knowledge Base`,
     description: categoryData.description,
   };
 }

@@ -23,11 +23,8 @@ interface RegisterFormProps {
     registering: string
     alreadyHaveAccount: string
     signIn: string
-    panelAccountRequired: string
-    panelAccountRequiredDescription: string
     errors: {
       emailExists: string
-      notInPanel: string
       panelAccountLinked: string
       passwordsDontMatch: string
       passwordTooShort: string
@@ -86,7 +83,6 @@ export function RegisterForm({ translations: t }: RegisterFormProps) {
       if (!data.success) {
         const errorMap: Record<string, string> = {
           email_exists: t.errors.emailExists,
-          not_in_panel: t.errors.notInPanel,
           panel_account_linked: t.errors.panelAccountLinked,
           passwords_dont_match: t.errors.passwordsDontMatch,
           password_too_short: t.errors.passwordTooShort,
@@ -183,15 +179,6 @@ export function RegisterForm({ translations: t }: RegisterFormProps) {
             <h2 className="text-3xl font-bold tracking-tight">{t.title}</h2>
             <p className="text-muted-foreground">{t.description}</p>
           </div>
-
-          {/* Important notice */}
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertTitle>{t.panelAccountRequired}</AlertTitle>
-            <AlertDescription>
-              {t.panelAccountRequiredDescription}
-            </AlertDescription>
-          </Alert>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {formError && (

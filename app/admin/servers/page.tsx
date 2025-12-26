@@ -60,9 +60,6 @@ interface ServerData {
   description: string | null
   status: string
   isSuspended: boolean
-  memory: number
-  disk: number
-  cpu: number
   owner: {
     id: string
     username: string
@@ -76,6 +73,10 @@ interface ServerData {
     id: number
     name: string
   }
+  properties: Array<{
+    key: string
+    value: string
+  }>
   createdAt: string
   allocations: Array<{
     ip: string
@@ -366,6 +367,15 @@ export default function ServersPage() {
                     const StatusIcon = statusCfg.icon
                     const primaryAllocation = server.allocations?.find((a) => a.isAssigned)
                     
+                    // Extract resource properties
+                    const getProperty = (key: string) => {
+                      const prop = server.properties?.find(p => p.key === key)
+                      return prop?.value ? parseInt(prop.value, 10) : null
+                    }
+                    const memory = getProperty("memory")
+                    const disk = getProperty("disk")
+                    const cpu = getProperty("cpu")
+                    
                     return (
                       <TableRow key={server.id}>
                         <TableCell>
@@ -403,33 +413,39 @@ export default function ServersPage() {
                         <TableCell className="hidden lg:table-cell">
                           <div className="space-y-1 text-xs">
                             <TooltipProvider>
-                              <div className="flex items-center gap-2">
-                                <HardDrive className="h-3 w-3 text-muted-foreground" />
-                                <Tooltip>
-                                  <TooltipTrigger className="cursor-default">
-                                    <span>{formatBytes(server.memory)}</span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>{t("servers.resources.memory")}</TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Database className="h-3 w-3 text-muted-foreground" />
-                                <Tooltip>
-                                  <TooltipTrigger className="cursor-default">
-                                    <span>{formatBytes(server.disk)}</span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>{t("servers.resources.disk")}</TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Cpu className="h-3 w-3 text-muted-foreground" />
-                                <Tooltip>
-                                  <TooltipTrigger className="cursor-default">
-                                    <span>{server.cpu}%</span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>{t("servers.resources.cpu")}</TooltipContent>
-                                </Tooltip>
-                              </div>
+                              {memory !== null && (
+                                <div className="flex items-center gap-2">
+                                  <HardDrive className="h-3 w-3 text-muted-foreground" />
+                                  <Tooltip>
+                                    <TooltipTrigger className="cursor-default">
+                                      <span>{formatBytes(memory)}</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{t("servers.resources.memory")}</TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              )}
+                              {disk !== null && (
+                                <div className="flex items-center gap-2">
+                                  <Database className="h-3 w-3 text-muted-foreground" />
+                                  <Tooltip>
+                                    <TooltipTrigger className="cursor-default">
+                                      <span>{formatBytes(disk)}</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{t("servers.resources.disk")}</TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              )}
+                              {cpu !== null && (
+                                <div className="flex items-center gap-2">
+                                  <Cpu className="h-3 w-3 text-muted-foreground" />
+                                  <Tooltip>
+                                    <TooltipTrigger className="cursor-default">
+                                      <span>{cpu}%</span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{t("servers.resources.cpu")}</TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              )}
                             </TooltipProvider>
                           </div>
                         </TableCell>

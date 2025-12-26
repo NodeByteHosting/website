@@ -47,8 +47,9 @@ export function UserMenu({ translations: t }: UserMenuProps) {
       </Button>
     )
   }
-
   const initials = `${session.user.firstName?.[0] || ""}${session.user.lastName?.[0] || ""}`.toUpperCase() || session.user.username?.[0]?.toUpperCase() || "U"
+  
+  const isAdmin = session.user.isPterodactylAdmin || session.user.isVirtfusionAdmin || session.user.isSystemAdmin
 
   return (
     <DropdownMenu>
@@ -59,7 +60,7 @@ export function UserMenu({ translations: t }: UserMenuProps) {
               {initials}
             </AvatarFallback>
           </Avatar>
-          {session.user.isAdmin && (
+          {isAdmin && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500">
               <Shield className="h-2.5 w-2.5 text-white" />
             </span>
@@ -73,7 +74,7 @@ export function UserMenu({ translations: t }: UserMenuProps) {
               <p className="text-sm font-medium leading-none">
                 {session.user.firstName} {session.user.lastName}
               </p>
-              {session.user.isAdmin && (
+              {isAdmin && (
                 <Badge variant="secondary" className="text-xs px-1 py-0">
                   {t.admin}
                 </Badge>
@@ -96,7 +97,7 @@ export function UserMenu({ translations: t }: UserMenuProps) {
             {t.viewPanel}
           </Link>
         </DropdownMenuItem>
-        {session.user.isAdmin && (
+        {isAdmin && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

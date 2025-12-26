@@ -18,7 +18,7 @@ import {
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
   return {
-    title: `${t("kb.title")} | NodeByte Hosting`,
+    title: `${t("kb.title")}`,
     description: t("kb.description"),
   };
 }

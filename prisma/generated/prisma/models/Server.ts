@@ -28,28 +28,14 @@ export type AggregateServer = {
 
 export type ServerAvgAggregateOutputType = {
   pterodactylId: number | null
-  memory: number | null
-  swap: number | null
-  disk: number | null
-  io: number | null
-  cpu: number | null
-  databaseLimit: number | null
-  allocationLimit: number | null
-  backupLimit: number | null
+  virtfusionId: number | null
   nodeId: number | null
   eggId: number | null
 }
 
 export type ServerSumAggregateOutputType = {
   pterodactylId: number | null
-  memory: number | null
-  swap: number | null
-  disk: number | null
-  io: number | null
-  cpu: number | null
-  databaseLimit: number | null
-  allocationLimit: number | null
-  backupLimit: number | null
+  virtfusionId: number | null
   nodeId: number | null
   eggId: number | null
 }
@@ -57,24 +43,16 @@ export type ServerSumAggregateOutputType = {
 export type ServerMinAggregateOutputType = {
   id: string | null
   pterodactylId: number | null
+  virtfusionId: number | null
   uuid: string | null
   uuidShort: string | null
   externalId: string | null
+  panelType: string | null
   name: string | null
   description: string | null
   status: $Enums.ServerStatus | null
   isSuspended: boolean | null
-  memory: number | null
-  swap: number | null
-  disk: number | null
-  io: number | null
-  cpu: number | null
-  oomDisabled: boolean | null
-  databaseLimit: number | null
-  allocationLimit: number | null
-  backupLimit: number | null
-  startup: string | null
-  image: string | null
+  productId: string | null
   ownerId: string | null
   nodeId: number | null
   eggId: number | null
@@ -87,24 +65,16 @@ export type ServerMinAggregateOutputType = {
 export type ServerMaxAggregateOutputType = {
   id: string | null
   pterodactylId: number | null
+  virtfusionId: number | null
   uuid: string | null
   uuidShort: string | null
   externalId: string | null
+  panelType: string | null
   name: string | null
   description: string | null
   status: $Enums.ServerStatus | null
   isSuspended: boolean | null
-  memory: number | null
-  swap: number | null
-  disk: number | null
-  io: number | null
-  cpu: number | null
-  oomDisabled: boolean | null
-  databaseLimit: number | null
-  allocationLimit: number | null
-  backupLimit: number | null
-  startup: string | null
-  image: string | null
+  productId: string | null
   ownerId: string | null
   nodeId: number | null
   eggId: number | null
@@ -117,25 +87,16 @@ export type ServerMaxAggregateOutputType = {
 export type ServerCountAggregateOutputType = {
   id: number
   pterodactylId: number
+  virtfusionId: number
   uuid: number
   uuidShort: number
   externalId: number
+  panelType: number
   name: number
   description: number
   status: number
   isSuspended: number
-  memory: number
-  swap: number
-  disk: number
-  io: number
-  cpu: number
-  oomDisabled: number
-  databaseLimit: number
-  allocationLimit: number
-  backupLimit: number
-  startup: number
-  image: number
-  featureLimits: number
+  productId: number
   ownerId: number
   nodeId: number
   eggId: number
@@ -149,28 +110,14 @@ export type ServerCountAggregateOutputType = {
 
 export type ServerAvgAggregateInputType = {
   pterodactylId?: true
-  memory?: true
-  swap?: true
-  disk?: true
-  io?: true
-  cpu?: true
-  databaseLimit?: true
-  allocationLimit?: true
-  backupLimit?: true
+  virtfusionId?: true
   nodeId?: true
   eggId?: true
 }
 
 export type ServerSumAggregateInputType = {
   pterodactylId?: true
-  memory?: true
-  swap?: true
-  disk?: true
-  io?: true
-  cpu?: true
-  databaseLimit?: true
-  allocationLimit?: true
-  backupLimit?: true
+  virtfusionId?: true
   nodeId?: true
   eggId?: true
 }
@@ -178,24 +125,16 @@ export type ServerSumAggregateInputType = {
 export type ServerMinAggregateInputType = {
   id?: true
   pterodactylId?: true
+  virtfusionId?: true
   uuid?: true
   uuidShort?: true
   externalId?: true
+  panelType?: true
   name?: true
   description?: true
   status?: true
   isSuspended?: true
-  memory?: true
-  swap?: true
-  disk?: true
-  io?: true
-  cpu?: true
-  oomDisabled?: true
-  databaseLimit?: true
-  allocationLimit?: true
-  backupLimit?: true
-  startup?: true
-  image?: true
+  productId?: true
   ownerId?: true
   nodeId?: true
   eggId?: true
@@ -208,24 +147,16 @@ export type ServerMinAggregateInputType = {
 export type ServerMaxAggregateInputType = {
   id?: true
   pterodactylId?: true
+  virtfusionId?: true
   uuid?: true
   uuidShort?: true
   externalId?: true
+  panelType?: true
   name?: true
   description?: true
   status?: true
   isSuspended?: true
-  memory?: true
-  swap?: true
-  disk?: true
-  io?: true
-  cpu?: true
-  oomDisabled?: true
-  databaseLimit?: true
-  allocationLimit?: true
-  backupLimit?: true
-  startup?: true
-  image?: true
+  productId?: true
   ownerId?: true
   nodeId?: true
   eggId?: true
@@ -238,25 +169,16 @@ export type ServerMaxAggregateInputType = {
 export type ServerCountAggregateInputType = {
   id?: true
   pterodactylId?: true
+  virtfusionId?: true
   uuid?: true
   uuidShort?: true
   externalId?: true
+  panelType?: true
   name?: true
   description?: true
   status?: true
   isSuspended?: true
-  memory?: true
-  swap?: true
-  disk?: true
-  io?: true
-  cpu?: true
-  oomDisabled?: true
-  databaseLimit?: true
-  allocationLimit?: true
-  backupLimit?: true
-  startup?: true
-  image?: true
-  featureLimits?: true
+  productId?: true
   ownerId?: true
   nodeId?: true
   eggId?: true
@@ -355,29 +277,20 @@ export type ServerGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type ServerGroupByOutputType = {
   id: string
-  pterodactylId: number
+  pterodactylId: number | null
+  virtfusionId: number | null
   uuid: string
   uuidShort: string | null
   externalId: string | null
+  panelType: string
   name: string
   description: string | null
   status: $Enums.ServerStatus
   isSuspended: boolean
-  memory: number
-  swap: number
-  disk: number
-  io: number
-  cpu: number
-  oomDisabled: boolean
-  databaseLimit: number
-  allocationLimit: number
-  backupLimit: number
-  startup: string | null
-  image: string | null
-  featureLimits: runtime.JsonValue | null
+  productId: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId: number | null
   createdAt: Date
   updatedAt: Date
   installedAt: Date | null
@@ -409,71 +322,57 @@ export type ServerWhereInput = {
   OR?: Prisma.ServerWhereInput[]
   NOT?: Prisma.ServerWhereInput | Prisma.ServerWhereInput[]
   id?: Prisma.StringFilter<"Server"> | string
-  pterodactylId?: Prisma.IntFilter<"Server"> | number
+  pterodactylId?: Prisma.IntNullableFilter<"Server"> | number | null
+  virtfusionId?: Prisma.IntNullableFilter<"Server"> | number | null
   uuid?: Prisma.StringFilter<"Server"> | string
   uuidShort?: Prisma.StringNullableFilter<"Server"> | string | null
   externalId?: Prisma.StringNullableFilter<"Server"> | string | null
+  panelType?: Prisma.StringFilter<"Server"> | string
   name?: Prisma.StringFilter<"Server"> | string
   description?: Prisma.StringNullableFilter<"Server"> | string | null
   status?: Prisma.EnumServerStatusFilter<"Server"> | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFilter<"Server"> | boolean
-  memory?: Prisma.IntFilter<"Server"> | number
-  swap?: Prisma.IntFilter<"Server"> | number
-  disk?: Prisma.IntFilter<"Server"> | number
-  io?: Prisma.IntFilter<"Server"> | number
-  cpu?: Prisma.IntFilter<"Server"> | number
-  oomDisabled?: Prisma.BoolFilter<"Server"> | boolean
-  databaseLimit?: Prisma.IntFilter<"Server"> | number
-  allocationLimit?: Prisma.IntFilter<"Server"> | number
-  backupLimit?: Prisma.IntFilter<"Server"> | number
-  startup?: Prisma.StringNullableFilter<"Server"> | string | null
-  image?: Prisma.StringNullableFilter<"Server"> | string | null
-  featureLimits?: Prisma.JsonNullableFilter<"Server">
+  productId?: Prisma.StringNullableFilter<"Server"> | string | null
   ownerId?: Prisma.StringFilter<"Server"> | string
   nodeId?: Prisma.IntFilter<"Server"> | number
-  eggId?: Prisma.IntFilter<"Server"> | number
+  eggId?: Prisma.IntNullableFilter<"Server"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   installedAt?: Prisma.DateTimeNullableFilter<"Server"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"Server"> | Date | string | null
+  product?: Prisma.XOR<Prisma.ProductNullableScalarRelationFilter, Prisma.ProductWhereInput> | null
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   node?: Prisma.XOR<Prisma.NodeScalarRelationFilter, Prisma.NodeWhereInput>
-  egg?: Prisma.XOR<Prisma.EggScalarRelationFilter, Prisma.EggWhereInput>
+  egg?: Prisma.XOR<Prisma.EggNullableScalarRelationFilter, Prisma.EggWhereInput> | null
   allocations?: Prisma.AllocationListRelationFilter
   variables?: Prisma.ServerVariableListRelationFilter
   databases?: Prisma.ServerDatabaseListRelationFilter
   backups?: Prisma.ServerBackupListRelationFilter
+  properties?: Prisma.ServerPropertyListRelationFilter
+  tickets?: Prisma.SupportTicketListRelationFilter
 }
 
 export type ServerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  pterodactylId?: Prisma.SortOrder
+  pterodactylId?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrderInput | Prisma.SortOrder
   uuid?: Prisma.SortOrder
   uuidShort?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isSuspended?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  oomDisabled?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
-  startup?: Prisma.SortOrderInput | Prisma.SortOrder
-  image?: Prisma.SortOrderInput | Prisma.SortOrder
-  featureLimits?: Prisma.SortOrderInput | Prisma.SortOrder
+  productId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
-  eggId?: Prisma.SortOrder
+  eggId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   installedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  product?: Prisma.ProductOrderByWithRelationInput
   owner?: Prisma.UserOrderByWithRelationInput
   node?: Prisma.NodeOrderByWithRelationInput
   egg?: Prisma.EggOrderByWithRelationInput
@@ -481,74 +380,61 @@ export type ServerOrderByWithRelationInput = {
   variables?: Prisma.ServerVariableOrderByRelationAggregateInput
   databases?: Prisma.ServerDatabaseOrderByRelationAggregateInput
   backups?: Prisma.ServerBackupOrderByRelationAggregateInput
+  properties?: Prisma.ServerPropertyOrderByRelationAggregateInput
+  tickets?: Prisma.SupportTicketOrderByRelationAggregateInput
 }
 
 export type ServerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   pterodactylId?: number
+  virtfusionId?: number
   uuid?: string
   externalId?: string
   AND?: Prisma.ServerWhereInput | Prisma.ServerWhereInput[]
   OR?: Prisma.ServerWhereInput[]
   NOT?: Prisma.ServerWhereInput | Prisma.ServerWhereInput[]
   uuidShort?: Prisma.StringNullableFilter<"Server"> | string | null
+  panelType?: Prisma.StringFilter<"Server"> | string
   name?: Prisma.StringFilter<"Server"> | string
   description?: Prisma.StringNullableFilter<"Server"> | string | null
   status?: Prisma.EnumServerStatusFilter<"Server"> | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFilter<"Server"> | boolean
-  memory?: Prisma.IntFilter<"Server"> | number
-  swap?: Prisma.IntFilter<"Server"> | number
-  disk?: Prisma.IntFilter<"Server"> | number
-  io?: Prisma.IntFilter<"Server"> | number
-  cpu?: Prisma.IntFilter<"Server"> | number
-  oomDisabled?: Prisma.BoolFilter<"Server"> | boolean
-  databaseLimit?: Prisma.IntFilter<"Server"> | number
-  allocationLimit?: Prisma.IntFilter<"Server"> | number
-  backupLimit?: Prisma.IntFilter<"Server"> | number
-  startup?: Prisma.StringNullableFilter<"Server"> | string | null
-  image?: Prisma.StringNullableFilter<"Server"> | string | null
-  featureLimits?: Prisma.JsonNullableFilter<"Server">
+  productId?: Prisma.StringNullableFilter<"Server"> | string | null
   ownerId?: Prisma.StringFilter<"Server"> | string
   nodeId?: Prisma.IntFilter<"Server"> | number
-  eggId?: Prisma.IntFilter<"Server"> | number
+  eggId?: Prisma.IntNullableFilter<"Server"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   installedAt?: Prisma.DateTimeNullableFilter<"Server"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"Server"> | Date | string | null
+  product?: Prisma.XOR<Prisma.ProductNullableScalarRelationFilter, Prisma.ProductWhereInput> | null
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   node?: Prisma.XOR<Prisma.NodeScalarRelationFilter, Prisma.NodeWhereInput>
-  egg?: Prisma.XOR<Prisma.EggScalarRelationFilter, Prisma.EggWhereInput>
+  egg?: Prisma.XOR<Prisma.EggNullableScalarRelationFilter, Prisma.EggWhereInput> | null
   allocations?: Prisma.AllocationListRelationFilter
   variables?: Prisma.ServerVariableListRelationFilter
   databases?: Prisma.ServerDatabaseListRelationFilter
   backups?: Prisma.ServerBackupListRelationFilter
-}, "id" | "pterodactylId" | "uuid" | "externalId">
+  properties?: Prisma.ServerPropertyListRelationFilter
+  tickets?: Prisma.SupportTicketListRelationFilter
+}, "id" | "pterodactylId" | "virtfusionId" | "uuid" | "externalId">
 
 export type ServerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  pterodactylId?: Prisma.SortOrder
+  pterodactylId?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrderInput | Prisma.SortOrder
   uuid?: Prisma.SortOrder
   uuidShort?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isSuspended?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  oomDisabled?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
-  startup?: Prisma.SortOrderInput | Prisma.SortOrder
-  image?: Prisma.SortOrderInput | Prisma.SortOrder
-  featureLimits?: Prisma.SortOrderInput | Prisma.SortOrder
+  productId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
-  eggId?: Prisma.SortOrder
+  eggId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   installedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -565,29 +451,20 @@ export type ServerScalarWhereWithAggregatesInput = {
   OR?: Prisma.ServerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ServerScalarWhereWithAggregatesInput | Prisma.ServerScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Server"> | string
-  pterodactylId?: Prisma.IntWithAggregatesFilter<"Server"> | number
+  pterodactylId?: Prisma.IntNullableWithAggregatesFilter<"Server"> | number | null
+  virtfusionId?: Prisma.IntNullableWithAggregatesFilter<"Server"> | number | null
   uuid?: Prisma.StringWithAggregatesFilter<"Server"> | string
   uuidShort?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
   externalId?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
+  panelType?: Prisma.StringWithAggregatesFilter<"Server"> | string
   name?: Prisma.StringWithAggregatesFilter<"Server"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
   status?: Prisma.EnumServerStatusWithAggregatesFilter<"Server"> | $Enums.ServerStatus
   isSuspended?: Prisma.BoolWithAggregatesFilter<"Server"> | boolean
-  memory?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  swap?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  disk?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  io?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  cpu?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  oomDisabled?: Prisma.BoolWithAggregatesFilter<"Server"> | boolean
-  databaseLimit?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  allocationLimit?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  backupLimit?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  startup?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
-  image?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
-  featureLimits?: Prisma.JsonNullableWithAggregatesFilter<"Server">
+  productId?: Prisma.StringNullableWithAggregatesFilter<"Server"> | string | null
   ownerId?: Prisma.StringWithAggregatesFilter<"Server"> | string
   nodeId?: Prisma.IntWithAggregatesFilter<"Server"> | number
-  eggId?: Prisma.IntWithAggregatesFilter<"Server"> | number
+  eggId?: Prisma.IntNullableWithAggregatesFilter<"Server"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Server"> | Date | string
   installedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Server"> | Date | string | null
@@ -596,64 +473,48 @@ export type ServerScalarWhereWithAggregatesInput = {
 
 export type ServerCreateInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -662,68 +523,54 @@ export type ServerUncheckedCreateInput = {
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -732,33 +579,26 @@ export type ServerUncheckedUpdateInput = {
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateManyInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -767,26 +607,16 @@ export type ServerCreateManyInput = {
 
 export type ServerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -795,29 +625,20 @@ export type ServerUpdateManyMutationInput = {
 
 export type ServerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -842,25 +663,16 @@ export type ServerNullableScalarRelationFilter = {
 export type ServerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   uuid?: Prisma.SortOrder
   uuidShort?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isSuspended?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  oomDisabled?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  image?: Prisma.SortOrder
-  featureLimits?: Prisma.SortOrder
+  productId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
   eggId?: Prisma.SortOrder
@@ -872,14 +684,7 @@ export type ServerCountOrderByAggregateInput = {
 
 export type ServerAvgOrderByAggregateInput = {
   pterodactylId?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
   eggId?: Prisma.SortOrder
 }
@@ -887,24 +692,16 @@ export type ServerAvgOrderByAggregateInput = {
 export type ServerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   uuid?: Prisma.SortOrder
   uuidShort?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isSuspended?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  oomDisabled?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  image?: Prisma.SortOrder
+  productId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
   eggId?: Prisma.SortOrder
@@ -917,24 +714,16 @@ export type ServerMaxOrderByAggregateInput = {
 export type ServerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   uuid?: Prisma.SortOrder
   uuidShort?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isSuspended?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  oomDisabled?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
-  startup?: Prisma.SortOrder
-  image?: Prisma.SortOrder
+  productId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
   eggId?: Prisma.SortOrder
@@ -946,14 +735,7 @@ export type ServerMinOrderByAggregateInput = {
 
 export type ServerSumOrderByAggregateInput = {
   pterodactylId?: Prisma.SortOrder
-  memory?: Prisma.SortOrder
-  swap?: Prisma.SortOrder
-  disk?: Prisma.SortOrder
-  io?: Prisma.SortOrder
-  cpu?: Prisma.SortOrder
-  databaseLimit?: Prisma.SortOrder
-  allocationLimit?: Prisma.SortOrder
-  backupLimit?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   nodeId?: Prisma.SortOrder
   eggId?: Prisma.SortOrder
 }
@@ -1109,6 +891,20 @@ export type EnumServerStatusFieldUpdateOperationsInput = {
   set?: $Enums.ServerStatus
 }
 
+export type ServerCreateNestedOneWithoutPropertiesInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutPropertiesInput, Prisma.ServerUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutPropertiesInput
+  connect?: Prisma.ServerWhereUniqueInput
+}
+
+export type ServerUpdateOneRequiredWithoutPropertiesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutPropertiesInput, Prisma.ServerUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutPropertiesInput
+  upsert?: Prisma.ServerUpsertWithoutPropertiesInput
+  connect?: Prisma.ServerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServerUpdateToOneWithWhereWithoutPropertiesInput, Prisma.ServerUpdateWithoutPropertiesInput>, Prisma.ServerUncheckedUpdateWithoutPropertiesInput>
+}
+
 export type ServerCreateNestedOneWithoutVariablesInput = {
   create?: Prisma.XOR<Prisma.ServerCreateWithoutVariablesInput, Prisma.ServerUncheckedCreateWithoutVariablesInput>
   connectOrCreate?: Prisma.ServerCreateOrConnectWithoutVariablesInput
@@ -1151,64 +947,106 @@ export type ServerUpdateOneRequiredWithoutBackupsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServerUpdateToOneWithWhereWithoutBackupsInput, Prisma.ServerUpdateWithoutBackupsInput>, Prisma.ServerUncheckedUpdateWithoutBackupsInput>
 }
 
+export type ServerCreateNestedManyWithoutProductInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput> | Prisma.ServerCreateWithoutProductInput[] | Prisma.ServerUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutProductInput | Prisma.ServerCreateOrConnectWithoutProductInput[]
+  createMany?: Prisma.ServerCreateManyProductInputEnvelope
+  connect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+}
+
+export type ServerUncheckedCreateNestedManyWithoutProductInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput> | Prisma.ServerCreateWithoutProductInput[] | Prisma.ServerUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutProductInput | Prisma.ServerCreateOrConnectWithoutProductInput[]
+  createMany?: Prisma.ServerCreateManyProductInputEnvelope
+  connect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+}
+
+export type ServerUpdateManyWithoutProductNestedInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput> | Prisma.ServerCreateWithoutProductInput[] | Prisma.ServerUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutProductInput | Prisma.ServerCreateOrConnectWithoutProductInput[]
+  upsert?: Prisma.ServerUpsertWithWhereUniqueWithoutProductInput | Prisma.ServerUpsertWithWhereUniqueWithoutProductInput[]
+  createMany?: Prisma.ServerCreateManyProductInputEnvelope
+  set?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  disconnect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  delete?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  connect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  update?: Prisma.ServerUpdateWithWhereUniqueWithoutProductInput | Prisma.ServerUpdateWithWhereUniqueWithoutProductInput[]
+  updateMany?: Prisma.ServerUpdateManyWithWhereWithoutProductInput | Prisma.ServerUpdateManyWithWhereWithoutProductInput[]
+  deleteMany?: Prisma.ServerScalarWhereInput | Prisma.ServerScalarWhereInput[]
+}
+
+export type ServerUncheckedUpdateManyWithoutProductNestedInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput> | Prisma.ServerCreateWithoutProductInput[] | Prisma.ServerUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutProductInput | Prisma.ServerCreateOrConnectWithoutProductInput[]
+  upsert?: Prisma.ServerUpsertWithWhereUniqueWithoutProductInput | Prisma.ServerUpsertWithWhereUniqueWithoutProductInput[]
+  createMany?: Prisma.ServerCreateManyProductInputEnvelope
+  set?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  disconnect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  delete?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  connect?: Prisma.ServerWhereUniqueInput | Prisma.ServerWhereUniqueInput[]
+  update?: Prisma.ServerUpdateWithWhereUniqueWithoutProductInput | Prisma.ServerUpdateWithWhereUniqueWithoutProductInput[]
+  updateMany?: Prisma.ServerUpdateManyWithWhereWithoutProductInput | Prisma.ServerUpdateManyWithWhereWithoutProductInput[]
+  deleteMany?: Prisma.ServerScalarWhereInput | Prisma.ServerScalarWhereInput[]
+}
+
+export type ServerCreateNestedOneWithoutTicketsInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutTicketsInput, Prisma.ServerUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutTicketsInput
+  connect?: Prisma.ServerWhereUniqueInput
+}
+
+export type ServerUpdateOneWithoutTicketsNestedInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutTicketsInput, Prisma.ServerUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutTicketsInput
+  upsert?: Prisma.ServerUpsertWithoutTicketsInput
+  disconnect?: Prisma.ServerWhereInput | boolean
+  delete?: Prisma.ServerWhereInput | boolean
+  connect?: Prisma.ServerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServerUpdateToOneWithWhereWithoutTicketsInput, Prisma.ServerUpdateWithoutTicketsInput>, Prisma.ServerUncheckedUpdateWithoutTicketsInput>
+}
+
 export type ServerCreateWithoutOwnerInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutOwnerInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1217,6 +1055,8 @@ export type ServerUncheckedCreateWithoutOwnerInput = {
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutOwnerInput = {
@@ -1250,29 +1090,20 @@ export type ServerScalarWhereInput = {
   OR?: Prisma.ServerScalarWhereInput[]
   NOT?: Prisma.ServerScalarWhereInput | Prisma.ServerScalarWhereInput[]
   id?: Prisma.StringFilter<"Server"> | string
-  pterodactylId?: Prisma.IntFilter<"Server"> | number
+  pterodactylId?: Prisma.IntNullableFilter<"Server"> | number | null
+  virtfusionId?: Prisma.IntNullableFilter<"Server"> | number | null
   uuid?: Prisma.StringFilter<"Server"> | string
   uuidShort?: Prisma.StringNullableFilter<"Server"> | string | null
   externalId?: Prisma.StringNullableFilter<"Server"> | string | null
+  panelType?: Prisma.StringFilter<"Server"> | string
   name?: Prisma.StringFilter<"Server"> | string
   description?: Prisma.StringNullableFilter<"Server"> | string | null
   status?: Prisma.EnumServerStatusFilter<"Server"> | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFilter<"Server"> | boolean
-  memory?: Prisma.IntFilter<"Server"> | number
-  swap?: Prisma.IntFilter<"Server"> | number
-  disk?: Prisma.IntFilter<"Server"> | number
-  io?: Prisma.IntFilter<"Server"> | number
-  cpu?: Prisma.IntFilter<"Server"> | number
-  oomDisabled?: Prisma.BoolFilter<"Server"> | boolean
-  databaseLimit?: Prisma.IntFilter<"Server"> | number
-  allocationLimit?: Prisma.IntFilter<"Server"> | number
-  backupLimit?: Prisma.IntFilter<"Server"> | number
-  startup?: Prisma.StringNullableFilter<"Server"> | string | null
-  image?: Prisma.StringNullableFilter<"Server"> | string | null
-  featureLimits?: Prisma.JsonNullableFilter<"Server">
+  productId?: Prisma.StringNullableFilter<"Server"> | string | null
   ownerId?: Prisma.StringFilter<"Server"> | string
   nodeId?: Prisma.IntFilter<"Server"> | number
-  eggId?: Prisma.IntFilter<"Server"> | number
+  eggId?: Prisma.IntNullableFilter<"Server"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   installedAt?: Prisma.DateTimeNullableFilter<"Server"> | Date | string | null
@@ -1281,62 +1112,46 @@ export type ServerScalarWhereInput = {
 
 export type ServerCreateWithoutNodeInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutNodeInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1345,6 +1160,8 @@ export type ServerUncheckedCreateWithoutNodeInput = {
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutNodeInput = {
@@ -1375,63 +1192,47 @@ export type ServerUpdateManyWithWhereWithoutNodeInput = {
 
 export type ServerCreateWithoutAllocationsInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutAllocationsInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1439,6 +1240,8 @@ export type ServerUncheckedCreateWithoutAllocationsInput = {
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutAllocationsInput = {
@@ -1459,63 +1262,47 @@ export type ServerUpdateToOneWithWhereWithoutAllocationsInput = {
 
 export type ServerUpdateWithoutAllocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutAllocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1523,64 +1310,50 @@ export type ServerUncheckedUpdateWithoutAllocationsInput = {
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateWithoutEggInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutEggInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
   createdAt?: Date | string
@@ -1591,6 +1364,8 @@ export type ServerUncheckedCreateWithoutEggInput = {
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutEggInput = {
@@ -1619,65 +1394,173 @@ export type ServerUpdateManyWithWhereWithoutEggInput = {
   data: Prisma.XOR<Prisma.ServerUpdateManyMutationInput, Prisma.ServerUncheckedUpdateManyWithoutEggInput>
 }
 
-export type ServerCreateWithoutVariablesInput = {
+export type ServerCreateWithoutPropertiesInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
-export type ServerUncheckedCreateWithoutVariablesInput = {
+export type ServerUncheckedCreateWithoutPropertiesInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
+}
+
+export type ServerCreateOrConnectWithoutPropertiesInput = {
+  where: Prisma.ServerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServerCreateWithoutPropertiesInput, Prisma.ServerUncheckedCreateWithoutPropertiesInput>
+}
+
+export type ServerUpsertWithoutPropertiesInput = {
+  update: Prisma.XOR<Prisma.ServerUpdateWithoutPropertiesInput, Prisma.ServerUncheckedUpdateWithoutPropertiesInput>
+  create: Prisma.XOR<Prisma.ServerCreateWithoutPropertiesInput, Prisma.ServerUncheckedCreateWithoutPropertiesInput>
+  where?: Prisma.ServerWhereInput
+}
+
+export type ServerUpdateToOneWithWhereWithoutPropertiesInput = {
+  where?: Prisma.ServerWhereInput
+  data: Prisma.XOR<Prisma.ServerUpdateWithoutPropertiesInput, Prisma.ServerUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type ServerUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
+  node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
+  allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
+}
+
+export type ServerUncheckedUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  nodeId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
+}
+
+export type ServerCreateWithoutVariablesInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
+  owner: Prisma.UserCreateNestedOneWithoutServersInput
+  node: Prisma.NodeCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
+  allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
+}
+
+export type ServerUncheckedCreateWithoutVariablesInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  productId?: string | null
+  ownerId: string
+  nodeId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1685,6 +1568,8 @@ export type ServerUncheckedCreateWithoutVariablesInput = {
   allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutVariablesInput = {
@@ -1705,63 +1590,47 @@ export type ServerUpdateToOneWithWhereWithoutVariablesInput = {
 
 export type ServerUpdateWithoutVariablesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutVariablesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1769,67 +1638,53 @@ export type ServerUncheckedUpdateWithoutVariablesInput = {
   allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateWithoutDatabasesInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutDatabasesInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1837,6 +1692,8 @@ export type ServerUncheckedCreateWithoutDatabasesInput = {
   allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutDatabasesInput = {
@@ -1857,63 +1714,47 @@ export type ServerUpdateToOneWithWhereWithoutDatabasesInput = {
 
 export type ServerUpdateWithoutDatabasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutDatabasesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1921,67 +1762,53 @@ export type ServerUncheckedUpdateWithoutDatabasesInput = {
   allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateWithoutBackupsInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
   owner: Prisma.UserCreateNestedOneWithoutServersInput
   node: Prisma.NodeCreateNestedOneWithoutServersInput
-  egg: Prisma.EggCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
   allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutBackupsInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -1989,6 +1816,8 @@ export type ServerUncheckedCreateWithoutBackupsInput = {
   allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
   variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
   databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutBackupsInput = {
@@ -2009,63 +1838,47 @@ export type ServerUpdateToOneWithWhereWithoutBackupsInput = {
 
 export type ServerUpdateWithoutBackupsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutBackupsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2073,32 +1886,229 @@ export type ServerUncheckedUpdateWithoutBackupsInput = {
   allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
-export type ServerCreateManyOwnerInput = {
+export type ServerCreateWithoutProductInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  owner: Prisma.UserCreateNestedOneWithoutServersInput
+  node: Prisma.NodeCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
+  allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutServerInput
+}
+
+export type ServerUncheckedCreateWithoutProductInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  ownerId: string
   nodeId: number
-  eggId: number
+  eggId?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutServerInput
+}
+
+export type ServerCreateOrConnectWithoutProductInput = {
+  where: Prisma.ServerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput>
+}
+
+export type ServerCreateManyProductInputEnvelope = {
+  data: Prisma.ServerCreateManyProductInput | Prisma.ServerCreateManyProductInput[]
+  skipDuplicates?: boolean
+}
+
+export type ServerUpsertWithWhereUniqueWithoutProductInput = {
+  where: Prisma.ServerWhereUniqueInput
+  update: Prisma.XOR<Prisma.ServerUpdateWithoutProductInput, Prisma.ServerUncheckedUpdateWithoutProductInput>
+  create: Prisma.XOR<Prisma.ServerCreateWithoutProductInput, Prisma.ServerUncheckedCreateWithoutProductInput>
+}
+
+export type ServerUpdateWithWhereUniqueWithoutProductInput = {
+  where: Prisma.ServerWhereUniqueInput
+  data: Prisma.XOR<Prisma.ServerUpdateWithoutProductInput, Prisma.ServerUncheckedUpdateWithoutProductInput>
+}
+
+export type ServerUpdateManyWithWhereWithoutProductInput = {
+  where: Prisma.ServerScalarWhereInput
+  data: Prisma.XOR<Prisma.ServerUpdateManyMutationInput, Prisma.ServerUncheckedUpdateManyWithoutProductInput>
+}
+
+export type ServerCreateWithoutTicketsInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  product?: Prisma.ProductCreateNestedOneWithoutServersInput
+  owner: Prisma.UserCreateNestedOneWithoutServersInput
+  node: Prisma.NodeCreateNestedOneWithoutServersInput
+  egg?: Prisma.EggCreateNestedOneWithoutServersInput
+  allocations?: Prisma.AllocationCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyCreateNestedManyWithoutServerInput
+}
+
+export type ServerUncheckedCreateWithoutTicketsInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  productId?: string | null
+  ownerId: string
+  nodeId: number
+  eggId?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  allocations?: Prisma.AllocationUncheckedCreateNestedManyWithoutServerInput
+  variables?: Prisma.ServerVariableUncheckedCreateNestedManyWithoutServerInput
+  databases?: Prisma.ServerDatabaseUncheckedCreateNestedManyWithoutServerInput
+  backups?: Prisma.ServerBackupUncheckedCreateNestedManyWithoutServerInput
+  properties?: Prisma.ServerPropertyUncheckedCreateNestedManyWithoutServerInput
+}
+
+export type ServerCreateOrConnectWithoutTicketsInput = {
+  where: Prisma.ServerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServerCreateWithoutTicketsInput, Prisma.ServerUncheckedCreateWithoutTicketsInput>
+}
+
+export type ServerUpsertWithoutTicketsInput = {
+  update: Prisma.XOR<Prisma.ServerUpdateWithoutTicketsInput, Prisma.ServerUncheckedUpdateWithoutTicketsInput>
+  create: Prisma.XOR<Prisma.ServerCreateWithoutTicketsInput, Prisma.ServerUncheckedCreateWithoutTicketsInput>
+  where?: Prisma.ServerWhereInput
+}
+
+export type ServerUpdateToOneWithWhereWithoutTicketsInput = {
+  where?: Prisma.ServerWhereInput
+  data: Prisma.XOR<Prisma.ServerUpdateWithoutTicketsInput, Prisma.ServerUncheckedUpdateWithoutTicketsInput>
+}
+
+export type ServerUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
+  node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
+  allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+}
+
+export type ServerUncheckedUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  nodeId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+}
+
+export type ServerCreateManyOwnerInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  productId?: string | null
+  nodeId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -2107,62 +2117,46 @@ export type ServerCreateManyOwnerInput = {
 
 export type ServerUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2171,32 +2165,25 @@ export type ServerUncheckedUpdateWithoutOwnerInput = {
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2205,28 +2192,19 @@ export type ServerUncheckedUpdateManyWithoutOwnerInput = {
 
 export type ServerCreateManyNodeInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
-  eggId: number
+  eggId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   installedAt?: Date | string | null
@@ -2235,62 +2213,46 @@ export type ServerCreateManyNodeInput = {
 
 export type ServerUpdateWithoutNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
-  egg?: Prisma.EggUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2299,32 +2261,25 @@ export type ServerUncheckedUpdateWithoutNodeInput = {
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateManyWithoutNodeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
-  eggId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2333,26 +2288,17 @@ export type ServerUncheckedUpdateManyWithoutNodeInput = {
 
 export type ServerCreateManyEggInput = {
   id?: string
-  pterodactylId: number
+  pterodactylId?: number | null
+  virtfusionId?: number | null
   uuid: string
   uuidShort?: string | null
   externalId?: string | null
+  panelType?: string
   name: string
   description?: string | null
   status?: $Enums.ServerStatus
   isSuspended?: boolean
-  memory: number
-  swap?: number
-  disk: number
-  io?: number
-  cpu: number
-  oomDisabled?: boolean
-  databaseLimit?: number
-  allocationLimit?: number
-  backupLimit?: number
-  startup?: string | null
-  image?: string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: string | null
   ownerId: string
   nodeId: number
   createdAt?: Date | string
@@ -2363,60 +2309,44 @@ export type ServerCreateManyEggInput = {
 
 export type ServerUpdateWithoutEggInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product?: Prisma.ProductUpdateOneWithoutServersNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
   node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
   allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
   variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutEggInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2427,32 +2357,121 @@ export type ServerUncheckedUpdateWithoutEggInput = {
   variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
   databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
   backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateManyWithoutEggInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  pterodactylId?: Prisma.IntFieldUpdateOperationsInput | number
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   uuid?: Prisma.StringFieldUpdateOperationsInput | string
   uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
   isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  memory?: Prisma.IntFieldUpdateOperationsInput | number
-  swap?: Prisma.IntFieldUpdateOperationsInput | number
-  disk?: Prisma.IntFieldUpdateOperationsInput | number
-  io?: Prisma.IntFieldUpdateOperationsInput | number
-  cpu?: Prisma.IntFieldUpdateOperationsInput | number
-  oomDisabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  databaseLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  allocationLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  backupLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  startup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  featureLimits?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  productId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   nodeId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type ServerCreateManyProductInput = {
+  id?: string
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  uuid: string
+  uuidShort?: string | null
+  externalId?: string | null
+  panelType?: string
+  name: string
+  description?: string | null
+  status?: $Enums.ServerStatus
+  isSuspended?: boolean
+  ownerId: string
+  nodeId: number
+  eggId?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  installedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+}
+
+export type ServerUpdateWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
+  node?: Prisma.NodeUpdateOneRequiredWithoutServersNestedInput
+  egg?: Prisma.EggUpdateOneWithoutServersNestedInput
+  allocations?: Prisma.AllocationUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutServerNestedInput
+}
+
+export type ServerUncheckedUpdateWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  nodeId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  allocations?: Prisma.AllocationUncheckedUpdateManyWithoutServerNestedInput
+  variables?: Prisma.ServerVariableUncheckedUpdateManyWithoutServerNestedInput
+  databases?: Prisma.ServerDatabaseUncheckedUpdateManyWithoutServerNestedInput
+  backups?: Prisma.ServerBackupUncheckedUpdateManyWithoutServerNestedInput
+  properties?: Prisma.ServerPropertyUncheckedUpdateManyWithoutServerNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutServerNestedInput
+}
+
+export type ServerUncheckedUpdateManyWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  uuid?: Prisma.StringFieldUpdateOperationsInput | string
+  uuidShort?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumServerStatusFieldUpdateOperationsInput | $Enums.ServerStatus
+  isSuspended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  nodeId?: Prisma.IntFieldUpdateOperationsInput | number
+  eggId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   installedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2469,6 +2488,8 @@ export type ServerCountOutputType = {
   variables: number
   databases: number
   backups: number
+  properties: number
+  tickets: number
 }
 
 export type ServerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2476,6 +2497,8 @@ export type ServerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   variables?: boolean | ServerCountOutputTypeCountVariablesArgs
   databases?: boolean | ServerCountOutputTypeCountDatabasesArgs
   backups?: boolean | ServerCountOutputTypeCountBackupsArgs
+  properties?: boolean | ServerCountOutputTypeCountPropertiesArgs
+  tickets?: boolean | ServerCountOutputTypeCountTicketsArgs
 }
 
 /**
@@ -2516,29 +2539,34 @@ export type ServerCountOutputTypeCountBackupsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.ServerBackupWhereInput
 }
 
+/**
+ * ServerCountOutputType without action
+ */
+export type ServerCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServerPropertyWhereInput
+}
+
+/**
+ * ServerCountOutputType without action
+ */
+export type ServerCountOutputTypeCountTicketsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupportTicketWhereInput
+}
+
 
 export type ServerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   uuid?: boolean
   uuidShort?: boolean
   externalId?: boolean
+  panelType?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   isSuspended?: boolean
-  memory?: boolean
-  swap?: boolean
-  disk?: boolean
-  io?: boolean
-  cpu?: boolean
-  oomDisabled?: boolean
-  databaseLimit?: boolean
-  allocationLimit?: boolean
-  backupLimit?: boolean
-  startup?: boolean
-  image?: boolean
-  featureLimits?: boolean
+  productId?: boolean
   ownerId?: boolean
   nodeId?: boolean
   eggId?: boolean
@@ -2546,38 +2574,32 @@ export type ServerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   installedAt?: boolean
   lastSyncedAt?: boolean
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
   allocations?: boolean | Prisma.Server$allocationsArgs<ExtArgs>
   variables?: boolean | Prisma.Server$variablesArgs<ExtArgs>
   databases?: boolean | Prisma.Server$databasesArgs<ExtArgs>
   backups?: boolean | Prisma.Server$backupsArgs<ExtArgs>
+  properties?: boolean | Prisma.Server$propertiesArgs<ExtArgs>
+  tickets?: boolean | Prisma.Server$ticketsArgs<ExtArgs>
   _count?: boolean | Prisma.ServerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["server"]>
 
 export type ServerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   uuid?: boolean
   uuidShort?: boolean
   externalId?: boolean
+  panelType?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   isSuspended?: boolean
-  memory?: boolean
-  swap?: boolean
-  disk?: boolean
-  io?: boolean
-  cpu?: boolean
-  oomDisabled?: boolean
-  databaseLimit?: boolean
-  allocationLimit?: boolean
-  backupLimit?: boolean
-  startup?: boolean
-  image?: boolean
-  featureLimits?: boolean
+  productId?: boolean
   ownerId?: boolean
   nodeId?: boolean
   eggId?: boolean
@@ -2585,33 +2607,25 @@ export type ServerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   updatedAt?: boolean
   installedAt?: boolean
   lastSyncedAt?: boolean
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
 }, ExtArgs["result"]["server"]>
 
 export type ServerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   uuid?: boolean
   uuidShort?: boolean
   externalId?: boolean
+  panelType?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   isSuspended?: boolean
-  memory?: boolean
-  swap?: boolean
-  disk?: boolean
-  io?: boolean
-  cpu?: boolean
-  oomDisabled?: boolean
-  databaseLimit?: boolean
-  allocationLimit?: boolean
-  backupLimit?: boolean
-  startup?: boolean
-  image?: boolean
-  featureLimits?: boolean
+  productId?: boolean
   ownerId?: boolean
   nodeId?: boolean
   eggId?: boolean
@@ -2619,33 +2633,25 @@ export type ServerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   updatedAt?: boolean
   installedAt?: boolean
   lastSyncedAt?: boolean
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
 }, ExtArgs["result"]["server"]>
 
 export type ServerSelectScalar = {
   id?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   uuid?: boolean
   uuidShort?: boolean
   externalId?: boolean
+  panelType?: boolean
   name?: boolean
   description?: boolean
   status?: boolean
   isSuspended?: boolean
-  memory?: boolean
-  swap?: boolean
-  disk?: boolean
-  io?: boolean
-  cpu?: boolean
-  oomDisabled?: boolean
-  databaseLimit?: boolean
-  allocationLimit?: boolean
-  backupLimit?: boolean
-  startup?: boolean
-  image?: boolean
-  featureLimits?: boolean
+  productId?: boolean
   ownerId?: boolean
   nodeId?: boolean
   eggId?: boolean
@@ -2655,64 +2661,63 @@ export type ServerSelectScalar = {
   lastSyncedAt?: boolean
 }
 
-export type ServerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "pterodactylId" | "uuid" | "uuidShort" | "externalId" | "name" | "description" | "status" | "isSuspended" | "memory" | "swap" | "disk" | "io" | "cpu" | "oomDisabled" | "databaseLimit" | "allocationLimit" | "backupLimit" | "startup" | "image" | "featureLimits" | "ownerId" | "nodeId" | "eggId" | "createdAt" | "updatedAt" | "installedAt" | "lastSyncedAt", ExtArgs["result"]["server"]>
+export type ServerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "pterodactylId" | "virtfusionId" | "uuid" | "uuidShort" | "externalId" | "panelType" | "name" | "description" | "status" | "isSuspended" | "productId" | "ownerId" | "nodeId" | "eggId" | "createdAt" | "updatedAt" | "installedAt" | "lastSyncedAt", ExtArgs["result"]["server"]>
 export type ServerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
   allocations?: boolean | Prisma.Server$allocationsArgs<ExtArgs>
   variables?: boolean | Prisma.Server$variablesArgs<ExtArgs>
   databases?: boolean | Prisma.Server$databasesArgs<ExtArgs>
   backups?: boolean | Prisma.Server$backupsArgs<ExtArgs>
+  properties?: boolean | Prisma.Server$propertiesArgs<ExtArgs>
+  tickets?: boolean | Prisma.Server$ticketsArgs<ExtArgs>
   _count?: boolean | Prisma.ServerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
 }
 export type ServerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  product?: boolean | Prisma.Server$productArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   node?: boolean | Prisma.NodeDefaultArgs<ExtArgs>
-  egg?: boolean | Prisma.EggDefaultArgs<ExtArgs>
+  egg?: boolean | Prisma.Server$eggArgs<ExtArgs>
 }
 
 export type $ServerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Server"
   objects: {
+    product: Prisma.$ProductPayload<ExtArgs> | null
     owner: Prisma.$UserPayload<ExtArgs>
     node: Prisma.$NodePayload<ExtArgs>
-    egg: Prisma.$EggPayload<ExtArgs>
+    egg: Prisma.$EggPayload<ExtArgs> | null
     allocations: Prisma.$AllocationPayload<ExtArgs>[]
     variables: Prisma.$ServerVariablePayload<ExtArgs>[]
     databases: Prisma.$ServerDatabasePayload<ExtArgs>[]
     backups: Prisma.$ServerBackupPayload<ExtArgs>[]
+    properties: Prisma.$ServerPropertyPayload<ExtArgs>[]
+    tickets: Prisma.$SupportTicketPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    pterodactylId: number
+    pterodactylId: number | null
+    virtfusionId: number | null
     uuid: string
     uuidShort: string | null
     externalId: string | null
+    panelType: string
     name: string
     description: string | null
     status: $Enums.ServerStatus
     isSuspended: boolean
-    memory: number
-    swap: number
-    disk: number
-    io: number
-    cpu: number
-    oomDisabled: boolean
-    databaseLimit: number
-    allocationLimit: number
-    backupLimit: number
-    startup: string | null
-    image: string | null
-    featureLimits: runtime.JsonValue | null
+    productId: string | null
     ownerId: string
     nodeId: number
-    eggId: number
+    eggId: number | null
     createdAt: Date
     updatedAt: Date
     installedAt: Date | null
@@ -3111,13 +3116,16 @@ readonly fields: ServerFieldRefs;
  */
 export interface Prisma__ServerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  product<T extends Prisma.Server$productArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$productArgs<ExtArgs>>): Prisma.Prisma__ProductClient<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   node<T extends Prisma.NodeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NodeDefaultArgs<ExtArgs>>): Prisma.Prisma__NodeClient<runtime.Types.Result.GetResult<Prisma.$NodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  egg<T extends Prisma.EggDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EggDefaultArgs<ExtArgs>>): Prisma.Prisma__EggClient<runtime.Types.Result.GetResult<Prisma.$EggPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  egg<T extends Prisma.Server$eggArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$eggArgs<ExtArgs>>): Prisma.Prisma__EggClient<runtime.Types.Result.GetResult<Prisma.$EggPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   allocations<T extends Prisma.Server$allocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$allocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   variables<T extends Prisma.Server$variablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$variablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   databases<T extends Prisma.Server$databasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$databasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerDatabasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   backups<T extends Prisma.Server$backupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$backupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerBackupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  properties<T extends Prisma.Server$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerPropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tickets<T extends Prisma.Server$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3149,25 +3157,16 @@ export interface Prisma__ServerClient<T, Null = never, ExtArgs extends runtime.T
 export interface ServerFieldRefs {
   readonly id: Prisma.FieldRef<"Server", 'String'>
   readonly pterodactylId: Prisma.FieldRef<"Server", 'Int'>
+  readonly virtfusionId: Prisma.FieldRef<"Server", 'Int'>
   readonly uuid: Prisma.FieldRef<"Server", 'String'>
   readonly uuidShort: Prisma.FieldRef<"Server", 'String'>
   readonly externalId: Prisma.FieldRef<"Server", 'String'>
+  readonly panelType: Prisma.FieldRef<"Server", 'String'>
   readonly name: Prisma.FieldRef<"Server", 'String'>
   readonly description: Prisma.FieldRef<"Server", 'String'>
   readonly status: Prisma.FieldRef<"Server", 'ServerStatus'>
   readonly isSuspended: Prisma.FieldRef<"Server", 'Boolean'>
-  readonly memory: Prisma.FieldRef<"Server", 'Int'>
-  readonly swap: Prisma.FieldRef<"Server", 'Int'>
-  readonly disk: Prisma.FieldRef<"Server", 'Int'>
-  readonly io: Prisma.FieldRef<"Server", 'Int'>
-  readonly cpu: Prisma.FieldRef<"Server", 'Int'>
-  readonly oomDisabled: Prisma.FieldRef<"Server", 'Boolean'>
-  readonly databaseLimit: Prisma.FieldRef<"Server", 'Int'>
-  readonly allocationLimit: Prisma.FieldRef<"Server", 'Int'>
-  readonly backupLimit: Prisma.FieldRef<"Server", 'Int'>
-  readonly startup: Prisma.FieldRef<"Server", 'String'>
-  readonly image: Prisma.FieldRef<"Server", 'String'>
-  readonly featureLimits: Prisma.FieldRef<"Server", 'Json'>
+  readonly productId: Prisma.FieldRef<"Server", 'String'>
   readonly ownerId: Prisma.FieldRef<"Server", 'String'>
   readonly nodeId: Prisma.FieldRef<"Server", 'Int'>
   readonly eggId: Prisma.FieldRef<"Server", 'Int'>
@@ -3571,6 +3570,44 @@ export type ServerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * Server.product
+ */
+export type Server$productArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Product
+   */
+  select?: Prisma.ProductSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Product
+   */
+  omit?: Prisma.ProductOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null
+  where?: Prisma.ProductWhereInput
+}
+
+/**
+ * Server.egg
+ */
+export type Server$eggArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Egg
+   */
+  select?: Prisma.EggSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Egg
+   */
+  omit?: Prisma.EggOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EggInclude<ExtArgs> | null
+  where?: Prisma.EggWhereInput
+}
+
+/**
  * Server.allocations
  */
 export type Server$allocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3664,6 +3701,54 @@ export type Server$backupsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.ServerBackupScalarFieldEnum | Prisma.ServerBackupScalarFieldEnum[]
+}
+
+/**
+ * Server.properties
+ */
+export type Server$propertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServerProperty
+   */
+  select?: Prisma.ServerPropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ServerProperty
+   */
+  omit?: Prisma.ServerPropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServerPropertyInclude<ExtArgs> | null
+  where?: Prisma.ServerPropertyWhereInput
+  orderBy?: Prisma.ServerPropertyOrderByWithRelationInput | Prisma.ServerPropertyOrderByWithRelationInput[]
+  cursor?: Prisma.ServerPropertyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServerPropertyScalarFieldEnum | Prisma.ServerPropertyScalarFieldEnum[]
+}
+
+/**
+ * Server.tickets
+ */
+export type Server$ticketsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SupportTicket
+   */
+  select?: Prisma.SupportTicketSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SupportTicket
+   */
+  omit?: Prisma.SupportTicketOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupportTicketInclude<ExtArgs> | null
+  where?: Prisma.SupportTicketWhereInput
+  orderBy?: Prisma.SupportTicketOrderByWithRelationInput | Prisma.SupportTicketOrderByWithRelationInput[]
+  cursor?: Prisma.SupportTicketWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupportTicketScalarFieldEnum | Prisma.SupportTicketScalarFieldEnum[]
 }
 
 /**

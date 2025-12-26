@@ -656,3 +656,160 @@
 .hljs-strong {
   font-weight: bold;
 }
+
+/* Custom Themes: Stranger, Christmas (with snow), NewYear */
+.stranger {
+  --background: #0b0303;
+  --foreground: #ffd6e7;
+  --card: #130606;
+  --card-foreground: #ffd6e7;
+  --popover: #120405;
+  --popover-foreground: #ffd6e7;
+  --primary: #ff2d55;
+  --primary-foreground: #0b0303;
+  --secondary: #6b1b6a;
+  --secondary-foreground: #ffd6e7;
+  --muted: #1a0707;
+  --muted-foreground: #b08ea9;
+  --accent: #ff4d94;
+  --accent-foreground: #0b0303;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: rgba(255,45,85,0.08);
+  --input: #130606;
+  --ring: rgba(255,45,85,0.18);
+  --chart-1: #ff2d55;
+  --chart-2: #ff4d94;
+  --chart-3: #b08ea9;
+  --chart-4: #6b1b6a;
+  --chart-5: #3a102a;
+  --radius: 0.75rem;
+  --sidebar: #0f0202;
+  --sidebar-foreground: #ffd6e7;
+  --sidebar-primary: #2a0810;
+  --sidebar-primary-foreground: #ffd6e7;
+  --sidebar-accent: #1b0420;
+  --sidebar-accent-foreground: #ffd6e7;
+  --sidebar-border: rgba(255,45,85,0.04);
+  --sidebar-ring: rgba(255,45,85,0.12);
+}
+
+.christmas {
+  --background: #07221a;
+  --foreground: #fffbf0;
+  --card: #0b3a2e;
+  --card-foreground: #fffbf0;
+  --popover: #0a3a2b;
+  --popover-foreground: #fffbf0;
+  --primary: #c4122e;
+  --primary-foreground: #ffffff;
+  --secondary: #0fa64a;
+  --secondary-foreground: #ffffff;
+  --muted: #083226;
+  --muted-foreground: #bfe7c7;
+  --accent: #ffd700;
+  --accent-foreground: #07221a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: rgba(255,215,0,0.06);
+  --input: #082a20;
+  --ring: rgba(255,215,0,0.12);
+  --chart-1: #c4122e;
+  --chart-2: #0fa64a;
+  --chart-3: #ffd700;
+  --chart-4: #8bbf6b;
+  --chart-5: #0b3a2e;
+  --radius: 0.75rem;
+  --sidebar: #062016;
+  --sidebar-foreground: #fffbf0;
+  --sidebar-primary: #0d3f2b;
+  --sidebar-primary-foreground: #fffbf0;
+  --sidebar-accent: #092a1f;
+  --sidebar-accent-foreground: #bfe7c7;
+  --sidebar-border: rgba(255,215,0,0.03);
+  --sidebar-ring: rgba(255,215,0,0.08);
+}
+
+/* Snow effect: simple repeating-dot layer that animates downward when `.christmas` is applied */
+.christmas::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  top: -15vh;
+  width: 100%;
+  height: 130vh;
+  /* sparse, subtle snow */
+  background-image: radial-gradient(circle, rgba(255,255,255,0.95) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.08; /* very subtle */
+  mix-blend-mode: lighten;
+  filter: blur(0.6px);
+  animation: nb-snow 28s linear infinite;
+  z-index: 0;
+}
+
+@keyframes nb-snow {
+  from { transform: translateY(-5vh); }
+  to { transform: translateY(30vh); }
+}
+
+.newyear {
+  --background: #08142a;
+  --foreground: #fefefe;
+  --card: #0f1f3a;
+  --card-foreground: #fefefe;
+  --popover: #0e1b32;
+  --popover-foreground: #fefefe;
+  --primary: #ffd166;
+  --primary-foreground: #08142a;
+  --secondary: #8bd3ff;
+  --secondary-foreground: #08142a;
+  --muted: #0b1628;
+  --muted-foreground: #c9d6e6;
+  --accent: #ff6b6b;
+  --accent-foreground: #08142a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: rgba(255,209,102,0.04);
+  --input: #0b1628;
+  --ring: rgba(255,209,102,0.10);
+  --chart-1: #ffd166;
+  --chart-2: #8bd3ff;
+  --chart-3: #ff6b6b;
+  --chart-4: #ffd0a6;
+  --chart-5: #0f1f3a;
+  --radius: 0.75rem;
+  --sidebar: #061029;
+  --sidebar-foreground: #fefefe;
+  --sidebar-primary: #0a223e;
+  --sidebar-primary-foreground: #fefefe;
+  --sidebar-accent: #072037;
+  --sidebar-accent-foreground: #8bd3ff;
+  --sidebar-border: rgba(255,209,102,0.02);
+  --sidebar-ring: rgba(255,209,102,0.06);
+}
+
+/* Subtle confetti / twinkle for New Year using animated background dots */
+.newyear::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 10% 20%, rgba(255,215,0,0.95) 2px, transparent 4px),
+                    radial-gradient(circle at 80% 40%, rgba(255,105,180,0.95) 2px, transparent 4px),
+                    radial-gradient(circle at 30% 70%, rgba(139,211,255,0.95) 2px, transparent 4px);
+  background-repeat: no-repeat;
+  opacity: 0.06; /* very subtle */
+  filter: blur(0.4px);
+  animation: nb-twinkle 6s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes nb-twinkle {
+  from { opacity: 0.04; transform: scale(1); }
+  to { opacity: 0.10; transform: scale(1.01); }
+}

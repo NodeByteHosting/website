@@ -43,7 +43,14 @@ export async function GET(request: Request) {
         where.isActive = false
         break
       case "admin":
-        where.isAdmin = true
+        // Match any administrative indicator: system admin, panel-specific admin, or admin roles
+        where.OR = [
+          { isSystemAdmin: true },
+          { isPterodactylAdmin: true },
+          { isVirtfusionAdmin: true },
+          { roles: { has: "ADMINISTRATOR" } },
+          { roles: { has: "SUPER_ADMIN" } },
+        ]
         break
       case "migrated":
         where.isMigrated = true
@@ -73,7 +80,10 @@ export async function GET(request: Request) {
         username: true,
         firstName: true,
         lastName: true,
-        isAdmin: true,
+        isSystemAdmin: true,
+        isPterodactylAdmin: true,
+        isVirtfusionAdmin: true,
+        roles: true,
         isMigrated: true,
         isActive: true,
         pterodactylId: true,

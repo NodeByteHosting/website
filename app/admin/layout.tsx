@@ -72,8 +72,16 @@ export default function AdminLayout({
     )
   }
 
-  if (!session?.user?.isAdmin) {
-    return null
+  // Redirect if not authenticated or not system admin
+  if (!session?.user?.isSystemAdmin) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Unauthorized access</p>
+          <Button onClick={() => router.push("/")}>Return home</Button>
+        </div>
+      </div>
+    )
   }
 
   const navItems: NavItem[] = [
@@ -81,6 +89,7 @@ export default function AdminLayout({
     { title: t("nav.users"), href: "/admin/users", icon: Users },
     { title: t("nav.servers"), href: "/admin/servers", icon: Server },
     { title: t("nav.sync"), href: "/admin/sync", icon: RefreshCw },
+    { title: t("nav.syncLogs"), href: "/admin/sync/logs", icon: RefreshCw },
     { title: t("nav.settings"), href: "/admin/settings", icon: Settings },
   ]
 

@@ -28,10 +28,14 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   pterodactylId: number | null
+  virtfusionId: number | null
+  accountBalance: runtime.Decimal | null
 }
 
 export type UserSumAggregateOutputType = {
   pterodactylId: number | null
+  virtfusionId: number | null
+  accountBalance: runtime.Decimal | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -41,11 +45,20 @@ export type UserMinAggregateOutputType = {
   username: string | null
   firstName: string | null
   lastName: string | null
-  isAdmin: boolean | null
+  isPterodactylAdmin: boolean | null
+  isVirtfusionAdmin: boolean | null
+  isSystemAdmin: boolean | null
   pterodactylId: number | null
+  virtfusionId: number | null
   isMigrated: boolean | null
   emailVerified: Date | null
   isActive: boolean | null
+  avatarUrl: string | null
+  companyName: string | null
+  phoneNumber: string | null
+  billingEmail: string | null
+  accountBalance: runtime.Decimal | null
+  accountStatus: string | null
   createdAt: Date | null
   updatedAt: Date | null
   lastLoginAt: Date | null
@@ -59,11 +72,20 @@ export type UserMaxAggregateOutputType = {
   username: string | null
   firstName: string | null
   lastName: string | null
-  isAdmin: boolean | null
+  isPterodactylAdmin: boolean | null
+  isVirtfusionAdmin: boolean | null
+  isSystemAdmin: boolean | null
   pterodactylId: number | null
+  virtfusionId: number | null
   isMigrated: boolean | null
   emailVerified: Date | null
   isActive: boolean | null
+  avatarUrl: string | null
+  companyName: string | null
+  phoneNumber: string | null
+  billingEmail: string | null
+  accountBalance: runtime.Decimal | null
+  accountStatus: string | null
   createdAt: Date | null
   updatedAt: Date | null
   lastLoginAt: Date | null
@@ -77,11 +99,21 @@ export type UserCountAggregateOutputType = {
   username: number
   firstName: number
   lastName: number
-  isAdmin: number
+  roles: number
+  isPterodactylAdmin: number
+  isVirtfusionAdmin: number
+  isSystemAdmin: number
   pterodactylId: number
+  virtfusionId: number
   isMigrated: number
   emailVerified: number
   isActive: number
+  avatarUrl: number
+  companyName: number
+  phoneNumber: number
+  billingEmail: number
+  accountBalance: number
+  accountStatus: number
   createdAt: number
   updatedAt: number
   lastLoginAt: number
@@ -92,10 +124,14 @@ export type UserCountAggregateOutputType = {
 
 export type UserAvgAggregateInputType = {
   pterodactylId?: true
+  virtfusionId?: true
+  accountBalance?: true
 }
 
 export type UserSumAggregateInputType = {
   pterodactylId?: true
+  virtfusionId?: true
+  accountBalance?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -105,11 +141,20 @@ export type UserMinAggregateInputType = {
   username?: true
   firstName?: true
   lastName?: true
-  isAdmin?: true
+  isPterodactylAdmin?: true
+  isVirtfusionAdmin?: true
+  isSystemAdmin?: true
   pterodactylId?: true
+  virtfusionId?: true
   isMigrated?: true
   emailVerified?: true
   isActive?: true
+  avatarUrl?: true
+  companyName?: true
+  phoneNumber?: true
+  billingEmail?: true
+  accountBalance?: true
+  accountStatus?: true
   createdAt?: true
   updatedAt?: true
   lastLoginAt?: true
@@ -123,11 +168,20 @@ export type UserMaxAggregateInputType = {
   username?: true
   firstName?: true
   lastName?: true
-  isAdmin?: true
+  isPterodactylAdmin?: true
+  isVirtfusionAdmin?: true
+  isSystemAdmin?: true
   pterodactylId?: true
+  virtfusionId?: true
   isMigrated?: true
   emailVerified?: true
   isActive?: true
+  avatarUrl?: true
+  companyName?: true
+  phoneNumber?: true
+  billingEmail?: true
+  accountBalance?: true
+  accountStatus?: true
   createdAt?: true
   updatedAt?: true
   lastLoginAt?: true
@@ -141,11 +195,21 @@ export type UserCountAggregateInputType = {
   username?: true
   firstName?: true
   lastName?: true
-  isAdmin?: true
+  roles?: true
+  isPterodactylAdmin?: true
+  isVirtfusionAdmin?: true
+  isSystemAdmin?: true
   pterodactylId?: true
+  virtfusionId?: true
   isMigrated?: true
   emailVerified?: true
   isActive?: true
+  avatarUrl?: true
+  companyName?: true
+  phoneNumber?: true
+  billingEmail?: true
+  accountBalance?: true
+  accountStatus?: true
   createdAt?: true
   updatedAt?: true
   lastLoginAt?: true
@@ -243,14 +307,24 @@ export type UserGroupByOutputType = {
   id: string
   email: string
   password: string | null
-  username: string
+  username: string | null
   firstName: string | null
   lastName: string | null
-  isAdmin: boolean
+  roles: $Enums.Role[]
+  isPterodactylAdmin: boolean
+  isVirtfusionAdmin: boolean
+  isSystemAdmin: boolean
   pterodactylId: number | null
+  virtfusionId: number | null
   isMigrated: boolean
   emailVerified: Date | null
   isActive: boolean
+  avatarUrl: string | null
+  companyName: string | null
+  phoneNumber: string | null
+  billingEmail: string | null
+  accountBalance: runtime.Decimal
+  accountStatus: string
   createdAt: Date
   updatedAt: Date
   lastLoginAt: Date | null
@@ -284,77 +358,132 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringNullableFilter<"User"> | string | null
-  username?: Prisma.StringFilter<"User"> | string
+  username?: Prisma.StringNullableFilter<"User"> | string | null
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
+  roles?: Prisma.EnumRoleNullableListFilter<"User">
+  isPterodactylAdmin?: Prisma.BoolFilter<"User"> | boolean
+  isVirtfusionAdmin?: Prisma.BoolFilter<"User"> | boolean
+  isSystemAdmin?: Prisma.BoolFilter<"User"> | boolean
   pterodactylId?: Prisma.IntNullableFilter<"User"> | number | null
+  virtfusionId?: Prisma.IntNullableFilter<"User"> | number | null
   isMigrated?: Prisma.BoolFilter<"User"> | boolean
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  companyName?: Prisma.StringNullableFilter<"User"> | string | null
+  phoneNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  billingEmail?: Prisma.StringNullableFilter<"User"> | string | null
+  accountBalance?: Prisma.DecimalFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   servers?: Prisma.ServerListRelationFilter
+  discordWebhooks?: Prisma.DiscordWebhookListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
+  tickets?: Prisma.SupportTicketListRelationFilter
+  ticketReplies?: Prisma.SupportTicketReplyListRelationFilter
+  products?: Prisma.ProductListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
-  username?: Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  isPterodactylAdmin?: Prisma.SortOrder
+  isVirtfusionAdmin?: Prisma.SortOrder
+  isSystemAdmin?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrderInput | Prisma.SortOrder
   isMigrated?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
+  accountStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   servers?: Prisma.ServerOrderByRelationAggregateInput
+  discordWebhooks?: Prisma.DiscordWebhookOrderByRelationAggregateInput
+  invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  tickets?: Prisma.SupportTicketOrderByRelationAggregateInput
+  ticketReplies?: Prisma.SupportTicketReplyOrderByRelationAggregateInput
+  products?: Prisma.ProductOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  pterodactylId?: number
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringNullableFilter<"User"> | string | null
-  username?: Prisma.StringFilter<"User"> | string
+  username?: Prisma.StringNullableFilter<"User"> | string | null
   firstName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringNullableFilter<"User"> | string | null
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
+  roles?: Prisma.EnumRoleNullableListFilter<"User">
+  isPterodactylAdmin?: Prisma.BoolFilter<"User"> | boolean
+  isVirtfusionAdmin?: Prisma.BoolFilter<"User"> | boolean
+  isSystemAdmin?: Prisma.BoolFilter<"User"> | boolean
+  pterodactylId?: Prisma.IntNullableFilter<"User"> | number | null
+  virtfusionId?: Prisma.IntNullableFilter<"User"> | number | null
   isMigrated?: Prisma.BoolFilter<"User"> | boolean
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  companyName?: Prisma.StringNullableFilter<"User"> | string | null
+  phoneNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  billingEmail?: Prisma.StringNullableFilter<"User"> | string | null
+  accountBalance?: Prisma.DecimalFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   servers?: Prisma.ServerListRelationFilter
-}, "id" | "email" | "pterodactylId">
+  discordWebhooks?: Prisma.DiscordWebhookListRelationFilter
+  invoices?: Prisma.InvoiceListRelationFilter
+  tickets?: Prisma.SupportTicketListRelationFilter
+  ticketReplies?: Prisma.SupportTicketReplyListRelationFilter
+  products?: Prisma.ProductListRelationFilter
+}, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
-  username?: Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  isPterodactylAdmin?: Prisma.SortOrder
+  isVirtfusionAdmin?: Prisma.SortOrder
+  isSystemAdmin?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrderInput | Prisma.SortOrder
   isMigrated?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
+  accountStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -373,14 +502,24 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  username?: Prisma.StringWithAggregatesFilter<"User"> | string
+  username?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  roles?: Prisma.EnumRoleNullableListFilter<"User">
+  isPterodactylAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isVirtfusionAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isSystemAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   pterodactylId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  virtfusionId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   isMigrated?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   emailVerified?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  companyName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  phoneNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  billingEmail?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  accountBalance?: Prisma.DecimalWithAggregatesFilter<"User"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -391,94 +530,164 @@ export type UserCreateInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
@@ -489,14 +698,24 @@ export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -507,18 +726,36 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EnumRoleNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel> | null
+  has?: $Enums.Role | Prisma.EnumRoleFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.Role[] | Prisma.ListEnumRoleFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -528,11 +765,21 @@ export type UserCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  roles?: Prisma.SortOrder
+  isPterodactylAdmin?: Prisma.SortOrder
+  isVirtfusionAdmin?: Prisma.SortOrder
+  isSystemAdmin?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   isMigrated?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  billingEmail?: Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
+  accountStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -541,6 +788,8 @@ export type UserCountOrderByAggregateInput = {
 
 export type UserAvgOrderByAggregateInput = {
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -550,11 +799,20 @@ export type UserMaxOrderByAggregateInput = {
   username?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  isPterodactylAdmin?: Prisma.SortOrder
+  isVirtfusionAdmin?: Prisma.SortOrder
+  isSystemAdmin?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   isMigrated?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  billingEmail?: Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
+  accountStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -568,11 +826,20 @@ export type UserMinOrderByAggregateInput = {
   username?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  isPterodactylAdmin?: Prisma.SortOrder
+  isVirtfusionAdmin?: Prisma.SortOrder
+  isSystemAdmin?: Prisma.SortOrder
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
   isMigrated?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
+  billingEmail?: Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
+  accountStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
@@ -581,11 +848,22 @@ export type UserMinOrderByAggregateInput = {
 
 export type UserSumOrderByAggregateInput = {
   pterodactylId?: Prisma.SortOrder
+  virtfusionId?: Prisma.SortOrder
+  accountBalance?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
+export type UserCreaterolesInput = {
+  set: $Enums.Role[]
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -594,6 +872,11 @@ export type StringFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type UserUpdaterolesInput = {
+  set?: $Enums.Role[]
+  push?: $Enums.Role | $Enums.Role[]
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -610,6 +893,14 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -644,42 +935,144 @@ export type UserUpdateOneRequiredWithoutServersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutServersInput, Prisma.UserUpdateWithoutServersInput>, Prisma.UserUncheckedUpdateWithoutServersInput>
 }
 
+export type UserCreateNestedOneWithoutProductsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProductsInput, Prisma.UserUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProductsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutProductsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProductsInput, Prisma.UserUncheckedCreateWithoutProductsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProductsInput
+  upsert?: Prisma.UserUpsertWithoutProductsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProductsInput, Prisma.UserUpdateWithoutProductsInput>, Prisma.UserUncheckedUpdateWithoutProductsInput>
+}
+
+export type UserCreateNestedOneWithoutInvoicesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvoicesInput, Prisma.UserUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvoicesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvoicesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvoicesInput, Prisma.UserUncheckedCreateWithoutInvoicesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvoicesInput
+  upsert?: Prisma.UserUpsertWithoutInvoicesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvoicesInput, Prisma.UserUpdateWithoutInvoicesInput>, Prisma.UserUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type UserCreateNestedOneWithoutTicketsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsInput, Prisma.UserUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTicketsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketsInput, Prisma.UserUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketsInput
+  upsert?: Prisma.UserUpsertWithoutTicketsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTicketsInput, Prisma.UserUpdateWithoutTicketsInput>, Prisma.UserUncheckedUpdateWithoutTicketsInput>
+}
+
+export type UserCreateNestedOneWithoutTicketRepliesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketRepliesInput, Prisma.UserUncheckedCreateWithoutTicketRepliesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketRepliesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTicketRepliesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTicketRepliesInput, Prisma.UserUncheckedCreateWithoutTicketRepliesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTicketRepliesInput
+  upsert?: Prisma.UserUpsertWithoutTicketRepliesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTicketRepliesInput, Prisma.UserUpdateWithoutTicketRepliesInput>, Prisma.UserUncheckedUpdateWithoutTicketRepliesInput>
+}
+
+export type UserCreateNestedOneWithoutDiscordWebhooksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscordWebhooksInput, Prisma.UserUncheckedCreateWithoutDiscordWebhooksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscordWebhooksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutDiscordWebhooksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscordWebhooksInput, Prisma.UserUncheckedCreateWithoutDiscordWebhooksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscordWebhooksInput
+  upsert?: Prisma.UserUpsertWithoutDiscordWebhooksInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscordWebhooksInput, Prisma.UserUpdateWithoutDiscordWebhooksInput>, Prisma.UserUncheckedUpdateWithoutDiscordWebhooksInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -702,76 +1095,136 @@ export type UserUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutServersInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutServersInput = {
   id?: string
   email: string
   password?: string | null
-  username: string
+  username?: string | null
   firstName?: string | null
   lastName?: string | null
-  isAdmin?: boolean
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: number | null
+  virtfusionId?: number | null
   isMigrated?: boolean
   emailVerified?: Date | string | null
   isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   lastLoginAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutServersInput = {
@@ -794,38 +1247,828 @@ export type UserUpdateWithoutServersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutServersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  username?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
   pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutProductsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutProductsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutProductsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProductsInput, Prisma.UserUncheckedCreateWithoutProductsInput>
+}
+
+export type UserUpsertWithoutProductsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProductsInput, Prisma.UserUncheckedUpdateWithoutProductsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProductsInput, Prisma.UserUncheckedCreateWithoutProductsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProductsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProductsInput, Prisma.UserUncheckedUpdateWithoutProductsInput>
+}
+
+export type UserUpdateWithoutProductsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProductsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvoicesInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutInvoicesInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutInvoicesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvoicesInput, Prisma.UserUncheckedCreateWithoutInvoicesInput>
+}
+
+export type UserUpsertWithoutInvoicesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvoicesInput, Prisma.UserUncheckedUpdateWithoutInvoicesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvoicesInput, Prisma.UserUncheckedCreateWithoutInvoicesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvoicesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvoicesInput, Prisma.UserUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type UserUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvoicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutTicketsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutTicketsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutTicketsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTicketsInput, Prisma.UserUncheckedCreateWithoutTicketsInput>
+}
+
+export type UserUpsertWithoutTicketsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTicketsInput, Prisma.UserUncheckedUpdateWithoutTicketsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTicketsInput, Prisma.UserUncheckedCreateWithoutTicketsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTicketsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTicketsInput, Prisma.UserUncheckedUpdateWithoutTicketsInput>
+}
+
+export type UserUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutTicketRepliesInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutTicketRepliesInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutTicketRepliesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTicketRepliesInput, Prisma.UserUncheckedCreateWithoutTicketRepliesInput>
+}
+
+export type UserUpsertWithoutTicketRepliesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTicketRepliesInput, Prisma.UserUncheckedUpdateWithoutTicketRepliesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTicketRepliesInput, Prisma.UserUncheckedCreateWithoutTicketRepliesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTicketRepliesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTicketRepliesInput, Prisma.UserUncheckedUpdateWithoutTicketRepliesInput>
+}
+
+export type UserUpdateWithoutTicketRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTicketRepliesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  discordWebhooks?: Prisma.DiscordWebhookUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutDiscordWebhooksInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutDiscordWebhooksInput = {
+  id?: string
+  email: string
+  password?: string | null
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  roles?: Prisma.UserCreaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
+  pterodactylId?: number | null
+  virtfusionId?: number | null
+  isMigrated?: boolean
+  emailVerified?: Date | string | null
+  isActive?: boolean
+  avatarUrl?: string | null
+  companyName?: string | null
+  phoneNumber?: string | null
+  billingEmail?: string | null
+  accountBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lastLoginAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  tickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutUserInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedCreateNestedManyWithoutUserInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutDiscordWebhooksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscordWebhooksInput, Prisma.UserUncheckedCreateWithoutDiscordWebhooksInput>
+}
+
+export type UserUpsertWithoutDiscordWebhooksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscordWebhooksInput, Prisma.UserUncheckedUpdateWithoutDiscordWebhooksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscordWebhooksInput, Prisma.UserUncheckedCreateWithoutDiscordWebhooksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscordWebhooksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscordWebhooksInput, Prisma.UserUncheckedUpdateWithoutDiscordWebhooksInput>
+}
+
+export type UserUpdateWithoutDiscordWebhooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscordWebhooksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserUpdaterolesInput | $Enums.Role[]
+  isPterodactylAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVirtfusionAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isSystemAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pterodactylId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  virtfusionId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMigrated?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accountStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  tickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+  ticketReplies?: Prisma.SupportTicketReplyUncheckedUpdateManyWithoutUserNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 
@@ -836,11 +2079,21 @@ export type UserUncheckedUpdateWithoutServersInput = {
 export type UserCountOutputType = {
   sessions: number
   servers: number
+  discordWebhooks: number
+  invoices: number
+  tickets: number
+  ticketReplies: number
+  products: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   servers?: boolean | UserCountOutputTypeCountServersArgs
+  discordWebhooks?: boolean | UserCountOutputTypeCountDiscordWebhooksArgs
+  invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
+  tickets?: boolean | UserCountOutputTypeCountTicketsArgs
+  ticketReplies?: boolean | UserCountOutputTypeCountTicketRepliesArgs
+  products?: boolean | UserCountOutputTypeCountProductsArgs
 }
 
 /**
@@ -867,6 +2120,41 @@ export type UserCountOutputTypeCountServersArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.ServerWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscordWebhooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscordWebhookWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoiceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTicketsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupportTicketWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTicketRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupportTicketReplyWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProductsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -875,17 +2163,32 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   username?: boolean
   firstName?: boolean
   lastName?: boolean
-  isAdmin?: boolean
+  roles?: boolean
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   isMigrated?: boolean
   emailVerified?: boolean
   isActive?: boolean
+  avatarUrl?: boolean
+  companyName?: boolean
+  phoneNumber?: boolean
+  billingEmail?: boolean
+  accountBalance?: boolean
+  accountStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLoginAt?: boolean
   lastSyncedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   servers?: boolean | Prisma.User$serversArgs<ExtArgs>
+  discordWebhooks?: boolean | Prisma.User$discordWebhooksArgs<ExtArgs>
+  invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  tickets?: boolean | Prisma.User$ticketsArgs<ExtArgs>
+  ticketReplies?: boolean | Prisma.User$ticketRepliesArgs<ExtArgs>
+  products?: boolean | Prisma.User$productsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -896,11 +2199,21 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   firstName?: boolean
   lastName?: boolean
-  isAdmin?: boolean
+  roles?: boolean
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   isMigrated?: boolean
   emailVerified?: boolean
   isActive?: boolean
+  avatarUrl?: boolean
+  companyName?: boolean
+  phoneNumber?: boolean
+  billingEmail?: boolean
+  accountBalance?: boolean
+  accountStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLoginAt?: boolean
@@ -914,11 +2227,21 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   username?: boolean
   firstName?: boolean
   lastName?: boolean
-  isAdmin?: boolean
+  roles?: boolean
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   isMigrated?: boolean
   emailVerified?: boolean
   isActive?: boolean
+  avatarUrl?: boolean
+  companyName?: boolean
+  phoneNumber?: boolean
+  billingEmail?: boolean
+  accountBalance?: boolean
+  accountStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLoginAt?: boolean
@@ -932,21 +2255,36 @@ export type UserSelectScalar = {
   username?: boolean
   firstName?: boolean
   lastName?: boolean
-  isAdmin?: boolean
+  roles?: boolean
+  isPterodactylAdmin?: boolean
+  isVirtfusionAdmin?: boolean
+  isSystemAdmin?: boolean
   pterodactylId?: boolean
+  virtfusionId?: boolean
   isMigrated?: boolean
   emailVerified?: boolean
   isActive?: boolean
+  avatarUrl?: boolean
+  companyName?: boolean
+  phoneNumber?: boolean
+  billingEmail?: boolean
+  accountBalance?: boolean
+  accountStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lastLoginAt?: boolean
   lastSyncedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "username" | "firstName" | "lastName" | "isAdmin" | "pterodactylId" | "isMigrated" | "emailVerified" | "isActive" | "createdAt" | "updatedAt" | "lastLoginAt" | "lastSyncedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "username" | "firstName" | "lastName" | "roles" | "isPterodactylAdmin" | "isVirtfusionAdmin" | "isSystemAdmin" | "pterodactylId" | "virtfusionId" | "isMigrated" | "emailVerified" | "isActive" | "avatarUrl" | "companyName" | "phoneNumber" | "billingEmail" | "accountBalance" | "accountStatus" | "createdAt" | "updatedAt" | "lastLoginAt" | "lastSyncedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   servers?: boolean | Prisma.User$serversArgs<ExtArgs>
+  discordWebhooks?: boolean | Prisma.User$discordWebhooksArgs<ExtArgs>
+  invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  tickets?: boolean | Prisma.User$ticketsArgs<ExtArgs>
+  ticketReplies?: boolean | Prisma.User$ticketRepliesArgs<ExtArgs>
+  products?: boolean | Prisma.User$productsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -957,19 +2295,34 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     servers: Prisma.$ServerPayload<ExtArgs>[]
+    discordWebhooks: Prisma.$DiscordWebhookPayload<ExtArgs>[]
+    invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    tickets: Prisma.$SupportTicketPayload<ExtArgs>[]
+    ticketReplies: Prisma.$SupportTicketReplyPayload<ExtArgs>[]
+    products: Prisma.$ProductPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
     password: string | null
-    username: string
+    username: string | null
     firstName: string | null
     lastName: string | null
-    isAdmin: boolean
+    roles: $Enums.Role[]
+    isPterodactylAdmin: boolean
+    isVirtfusionAdmin: boolean
+    isSystemAdmin: boolean
     pterodactylId: number | null
+    virtfusionId: number | null
     isMigrated: boolean
     emailVerified: Date | null
     isActive: boolean
+    avatarUrl: string | null
+    companyName: string | null
+    phoneNumber: string | null
+    billingEmail: string | null
+    accountBalance: runtime.Decimal
+    accountStatus: string
     createdAt: Date
     updatedAt: Date
     lastLoginAt: Date | null
@@ -1370,6 +2723,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   servers<T extends Prisma.User$serversArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serversArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discordWebhooks<T extends Prisma.User$discordWebhooksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discordWebhooksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordWebhookPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoices<T extends Prisma.User$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tickets<T extends Prisma.User$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ticketReplies<T extends Prisma.User$ticketRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportTicketReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  products<T extends Prisma.User$productsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$productsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1405,11 +2763,21 @@ export interface UserFieldRefs {
   readonly username: Prisma.FieldRef<"User", 'String'>
   readonly firstName: Prisma.FieldRef<"User", 'String'>
   readonly lastName: Prisma.FieldRef<"User", 'String'>
-  readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
+  readonly roles: Prisma.FieldRef<"User", 'Role[]'>
+  readonly isPterodactylAdmin: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isVirtfusionAdmin: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isSystemAdmin: Prisma.FieldRef<"User", 'Boolean'>
   readonly pterodactylId: Prisma.FieldRef<"User", 'Int'>
+  readonly virtfusionId: Prisma.FieldRef<"User", 'Int'>
   readonly isMigrated: Prisma.FieldRef<"User", 'Boolean'>
   readonly emailVerified: Prisma.FieldRef<"User", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly companyName: Prisma.FieldRef<"User", 'String'>
+  readonly phoneNumber: Prisma.FieldRef<"User", 'String'>
+  readonly billingEmail: Prisma.FieldRef<"User", 'String'>
+  readonly accountBalance: Prisma.FieldRef<"User", 'Decimal'>
+  readonly accountStatus: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -1847,6 +3215,126 @@ export type User$serversArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ServerScalarFieldEnum | Prisma.ServerScalarFieldEnum[]
+}
+
+/**
+ * User.discordWebhooks
+ */
+export type User$discordWebhooksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscordWebhook
+   */
+  select?: Prisma.DiscordWebhookSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscordWebhook
+   */
+  omit?: Prisma.DiscordWebhookOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscordWebhookInclude<ExtArgs> | null
+  where?: Prisma.DiscordWebhookWhereInput
+  orderBy?: Prisma.DiscordWebhookOrderByWithRelationInput | Prisma.DiscordWebhookOrderByWithRelationInput[]
+  cursor?: Prisma.DiscordWebhookWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscordWebhookScalarFieldEnum | Prisma.DiscordWebhookScalarFieldEnum[]
+}
+
+/**
+ * User.invoices
+ */
+export type User$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoice
+   */
+  select?: Prisma.InvoiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoice
+   */
+  omit?: Prisma.InvoiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceInclude<ExtArgs> | null
+  where?: Prisma.InvoiceWhereInput
+  orderBy?: Prisma.InvoiceOrderByWithRelationInput | Prisma.InvoiceOrderByWithRelationInput[]
+  cursor?: Prisma.InvoiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * User.tickets
+ */
+export type User$ticketsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SupportTicket
+   */
+  select?: Prisma.SupportTicketSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SupportTicket
+   */
+  omit?: Prisma.SupportTicketOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupportTicketInclude<ExtArgs> | null
+  where?: Prisma.SupportTicketWhereInput
+  orderBy?: Prisma.SupportTicketOrderByWithRelationInput | Prisma.SupportTicketOrderByWithRelationInput[]
+  cursor?: Prisma.SupportTicketWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupportTicketScalarFieldEnum | Prisma.SupportTicketScalarFieldEnum[]
+}
+
+/**
+ * User.ticketReplies
+ */
+export type User$ticketRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SupportTicketReply
+   */
+  select?: Prisma.SupportTicketReplySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SupportTicketReply
+   */
+  omit?: Prisma.SupportTicketReplyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupportTicketReplyInclude<ExtArgs> | null
+  where?: Prisma.SupportTicketReplyWhereInput
+  orderBy?: Prisma.SupportTicketReplyOrderByWithRelationInput | Prisma.SupportTicketReplyOrderByWithRelationInput[]
+  cursor?: Prisma.SupportTicketReplyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupportTicketReplyScalarFieldEnum | Prisma.SupportTicketReplyScalarFieldEnum[]
+}
+
+/**
+ * User.products
+ */
+export type User$productsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Product
+   */
+  select?: Prisma.ProductSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Product
+   */
+  omit?: Prisma.ProductOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductInclude<ExtArgs> | null
+  where?: Prisma.ProductWhereInput
+  orderBy?: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[]
+  cursor?: Prisma.ProductWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductScalarFieldEnum | Prisma.ProductScalarFieldEnum[]
 }
 
 /**

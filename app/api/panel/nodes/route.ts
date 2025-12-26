@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getNodes } from "@/packages/core/lib/pterodactyl"
+import { getNodes } from "@/packages/panels/pterodactyl"
 import { requireAdmin } from "@/packages/auth"
 
 export const revalidate = 60 // Cache for 60 seconds

@@ -56,6 +56,7 @@ export type NodeMinAggregateOutputType = {
   fqdn: string | null
   scheme: string | null
   behindProxy: boolean | null
+  panelType: string | null
   memory: bigint | null
   memoryOverallocate: number | null
   disk: bigint | null
@@ -78,6 +79,7 @@ export type NodeMaxAggregateOutputType = {
   fqdn: string | null
   scheme: string | null
   behindProxy: boolean | null
+  panelType: string | null
   memory: bigint | null
   memoryOverallocate: number | null
   disk: bigint | null
@@ -100,6 +102,7 @@ export type NodeCountAggregateOutputType = {
   fqdn: number
   scheme: number
   behindProxy: number
+  panelType: number
   memory: number
   memoryOverallocate: number
   disk: number
@@ -146,6 +149,7 @@ export type NodeMinAggregateInputType = {
   fqdn?: true
   scheme?: true
   behindProxy?: true
+  panelType?: true
   memory?: true
   memoryOverallocate?: true
   disk?: true
@@ -168,6 +172,7 @@ export type NodeMaxAggregateInputType = {
   fqdn?: true
   scheme?: true
   behindProxy?: true
+  panelType?: true
   memory?: true
   memoryOverallocate?: true
   disk?: true
@@ -190,6 +195,7 @@ export type NodeCountAggregateInputType = {
   fqdn?: true
   scheme?: true
   behindProxy?: true
+  panelType?: true
   memory?: true
   memoryOverallocate?: true
   disk?: true
@@ -299,6 +305,7 @@ export type NodeGroupByOutputType = {
   fqdn: string
   scheme: string
   behindProxy: boolean
+  panelType: string
   memory: bigint
   memoryOverallocate: number
   disk: bigint
@@ -344,6 +351,7 @@ export type NodeWhereInput = {
   fqdn?: Prisma.StringFilter<"Node"> | string
   scheme?: Prisma.StringFilter<"Node"> | string
   behindProxy?: Prisma.BoolFilter<"Node"> | boolean
+  panelType?: Prisma.StringFilter<"Node"> | string
   memory?: Prisma.BigIntFilter<"Node"> | bigint | number
   memoryOverallocate?: Prisma.IntFilter<"Node"> | number
   disk?: Prisma.BigIntFilter<"Node"> | bigint | number
@@ -369,6 +377,7 @@ export type NodeOrderByWithRelationInput = {
   fqdn?: Prisma.SortOrder
   scheme?: Prisma.SortOrder
   behindProxy?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   memory?: Prisma.SortOrder
   memoryOverallocate?: Prisma.SortOrder
   disk?: Prisma.SortOrder
@@ -397,6 +406,7 @@ export type NodeWhereUniqueInput = Prisma.AtLeast<{
   fqdn?: Prisma.StringFilter<"Node"> | string
   scheme?: Prisma.StringFilter<"Node"> | string
   behindProxy?: Prisma.BoolFilter<"Node"> | boolean
+  panelType?: Prisma.StringFilter<"Node"> | string
   memory?: Prisma.BigIntFilter<"Node"> | bigint | number
   memoryOverallocate?: Prisma.IntFilter<"Node"> | number
   disk?: Prisma.BigIntFilter<"Node"> | bigint | number
@@ -422,6 +432,7 @@ export type NodeOrderByWithAggregationInput = {
   fqdn?: Prisma.SortOrder
   scheme?: Prisma.SortOrder
   behindProxy?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   memory?: Prisma.SortOrder
   memoryOverallocate?: Prisma.SortOrder
   disk?: Prisma.SortOrder
@@ -452,6 +463,7 @@ export type NodeScalarWhereWithAggregatesInput = {
   fqdn?: Prisma.StringWithAggregatesFilter<"Node"> | string
   scheme?: Prisma.StringWithAggregatesFilter<"Node"> | string
   behindProxy?: Prisma.BoolWithAggregatesFilter<"Node"> | boolean
+  panelType?: Prisma.StringWithAggregatesFilter<"Node"> | string
   memory?: Prisma.BigIntWithAggregatesFilter<"Node"> | bigint | number
   memoryOverallocate?: Prisma.IntWithAggregatesFilter<"Node"> | number
   disk?: Prisma.BigIntWithAggregatesFilter<"Node"> | bigint | number
@@ -474,6 +486,7 @@ export type NodeCreateInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -498,6 +511,7 @@ export type NodeUncheckedCreateInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -522,6 +536,7 @@ export type NodeUpdateInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -546,6 +561,7 @@ export type NodeUncheckedUpdateInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -570,6 +586,7 @@ export type NodeCreateManyInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -592,6 +609,7 @@ export type NodeUpdateManyMutationInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -613,6 +631,7 @@ export type NodeUncheckedUpdateManyInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -645,6 +664,7 @@ export type NodeCountOrderByAggregateInput = {
   fqdn?: Prisma.SortOrder
   scheme?: Prisma.SortOrder
   behindProxy?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   memory?: Prisma.SortOrder
   memoryOverallocate?: Prisma.SortOrder
   disk?: Prisma.SortOrder
@@ -678,6 +698,7 @@ export type NodeMaxOrderByAggregateInput = {
   fqdn?: Prisma.SortOrder
   scheme?: Prisma.SortOrder
   behindProxy?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   memory?: Prisma.SortOrder
   memoryOverallocate?: Prisma.SortOrder
   disk?: Prisma.SortOrder
@@ -700,6 +721,7 @@ export type NodeMinOrderByAggregateInput = {
   fqdn?: Prisma.SortOrder
   scheme?: Prisma.SortOrder
   behindProxy?: Prisma.SortOrder
+  panelType?: Prisma.SortOrder
   memory?: Prisma.SortOrder
   memoryOverallocate?: Prisma.SortOrder
   disk?: Prisma.SortOrder
@@ -816,6 +838,7 @@ export type NodeCreateWithoutLocationInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -839,6 +862,7 @@ export type NodeUncheckedCreateWithoutLocationInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -891,6 +915,7 @@ export type NodeScalarWhereInput = {
   fqdn?: Prisma.StringFilter<"Node"> | string
   scheme?: Prisma.StringFilter<"Node"> | string
   behindProxy?: Prisma.BoolFilter<"Node"> | boolean
+  panelType?: Prisma.StringFilter<"Node"> | string
   memory?: Prisma.BigIntFilter<"Node"> | bigint | number
   memoryOverallocate?: Prisma.IntFilter<"Node"> | number
   disk?: Prisma.BigIntFilter<"Node"> | bigint | number
@@ -913,6 +938,7 @@ export type NodeCreateWithoutAllocationsInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -936,6 +962,7 @@ export type NodeUncheckedCreateWithoutAllocationsInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -975,6 +1002,7 @@ export type NodeUpdateWithoutAllocationsInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -998,6 +1026,7 @@ export type NodeUncheckedUpdateWithoutAllocationsInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1021,6 +1050,7 @@ export type NodeCreateWithoutServersInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -1044,6 +1074,7 @@ export type NodeUncheckedCreateWithoutServersInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -1083,6 +1114,7 @@ export type NodeUpdateWithoutServersInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1106,6 +1138,7 @@ export type NodeUncheckedUpdateWithoutServersInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1129,6 +1162,7 @@ export type NodeCreateManyLocationInput = {
   fqdn: string
   scheme?: string
   behindProxy?: boolean
+  panelType?: string
   memory: bigint | number
   memoryOverallocate?: number
   disk: bigint | number
@@ -1150,6 +1184,7 @@ export type NodeUpdateWithoutLocationInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1173,6 +1208,7 @@ export type NodeUncheckedUpdateWithoutLocationInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1196,6 +1232,7 @@ export type NodeUncheckedUpdateManyWithoutLocationInput = {
   fqdn?: Prisma.StringFieldUpdateOperationsInput | string
   scheme?: Prisma.StringFieldUpdateOperationsInput | string
   behindProxy?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  panelType?: Prisma.StringFieldUpdateOperationsInput | string
   memory?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   memoryOverallocate?: Prisma.IntFieldUpdateOperationsInput | number
   disk?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1257,6 +1294,7 @@ export type NodeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fqdn?: boolean
   scheme?: boolean
   behindProxy?: boolean
+  panelType?: boolean
   memory?: boolean
   memoryOverallocate?: boolean
   disk?: boolean
@@ -1283,6 +1321,7 @@ export type NodeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fqdn?: boolean
   scheme?: boolean
   behindProxy?: boolean
+  panelType?: boolean
   memory?: boolean
   memoryOverallocate?: boolean
   disk?: boolean
@@ -1306,6 +1345,7 @@ export type NodeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fqdn?: boolean
   scheme?: boolean
   behindProxy?: boolean
+  panelType?: boolean
   memory?: boolean
   memoryOverallocate?: boolean
   disk?: boolean
@@ -1329,6 +1369,7 @@ export type NodeSelectScalar = {
   fqdn?: boolean
   scheme?: boolean
   behindProxy?: boolean
+  panelType?: boolean
   memory?: boolean
   memoryOverallocate?: boolean
   disk?: boolean
@@ -1343,7 +1384,7 @@ export type NodeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uuid" | "name" | "description" | "fqdn" | "scheme" | "behindProxy" | "memory" | "memoryOverallocate" | "disk" | "diskOverallocate" | "isPublic" | "isMaintenanceMode" | "daemonListenPort" | "daemonSftpPort" | "daemonBase" | "locationId" | "createdAt" | "updatedAt", ExtArgs["result"]["node"]>
+export type NodeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uuid" | "name" | "description" | "fqdn" | "scheme" | "behindProxy" | "panelType" | "memory" | "memoryOverallocate" | "disk" | "diskOverallocate" | "isPublic" | "isMaintenanceMode" | "daemonListenPort" | "daemonSftpPort" | "daemonBase" | "locationId" | "createdAt" | "updatedAt", ExtArgs["result"]["node"]>
 export type NodeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>
   allocations?: boolean | Prisma.Node$allocationsArgs<ExtArgs>
@@ -1372,6 +1413,7 @@ export type $NodePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     fqdn: string
     scheme: string
     behindProxy: boolean
+    panelType: string
     memory: bigint
     memoryOverallocate: number
     disk: bigint
@@ -1817,6 +1859,7 @@ export interface NodeFieldRefs {
   readonly fqdn: Prisma.FieldRef<"Node", 'String'>
   readonly scheme: Prisma.FieldRef<"Node", 'String'>
   readonly behindProxy: Prisma.FieldRef<"Node", 'Boolean'>
+  readonly panelType: Prisma.FieldRef<"Node", 'String'>
   readonly memory: Prisma.FieldRef<"Node", 'BigInt'>
   readonly memoryOverallocate: Prisma.FieldRef<"Node", 'Int'>
   readonly disk: Prisma.FieldRef<"Node", 'BigInt'>

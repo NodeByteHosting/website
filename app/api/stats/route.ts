@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getServerCount, getUserCount, getNodeCount } from "@/packages/core/lib/pterodactyl"
+import { getServerCount, getUserCount, getNodeCount } from "@/packages/panels/pterodactyl/application"
 
 export const revalidate = 300 // Cache for 5 minutes - public route
 

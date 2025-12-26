@@ -28,12 +28,12 @@ export async function generateMetadata({
 
   if (!articleData) {
     return {
-      title: "Article Not Found | Knowledge Base | NodeByte Hosting",
+      title: "Article Not Found | Knowledge Base",
     };
   }
 
   return {
-    title: `${articleData.meta.title} | Knowledge Base | NodeByte Hosting`,
+    title: `${articleData.meta.title} | Knowledge Base`,
     description: articleData.meta.description,
     keywords: articleData.meta.tags,
   };
