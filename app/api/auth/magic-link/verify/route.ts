@@ -6,8 +6,8 @@
 
 import { NextResponse, NextRequest } from "next/server"
 import { prisma } from "@/packages/core/lib/prisma"
+import { signIn } from "@/packages/auth"
 import crypto from "crypto"
-import jwt from "jsonwebtoken"
 
 /**
  * GET /api/auth/magic-link/verify?token=xxx
@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
     const token = searchParams.get("token")
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, error: "token_required" },
-        { status: 400 }
+      // Redirect to login with error
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/login?error=token_required`
       )
     }
 
@@ -40,9 +40,8 @@ export async function GET(request: NextRequest) {
     })
 
     if (!verificationToken) {
-      return NextResponse.json(
-        { success: false, error: "invalid_token" },
-        { status: 400 }
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/login?error=invalid_token`
       )
     }
 
@@ -58,34 +57,21 @@ export async function GET(request: NextRequest) {
         },
       })
 
-      return NextResponse.json(
-        { success: false, error: "token_expired" },
-        { status: 400 }
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/login?error=token_expired`
       )
     }
 
-    // Get the user
+    // Get the user with all required fields
     const user = await prisma.user.findUnique({
       where: { id: verificationToken.identifier },
     })
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: "user_not_found" },
-        { status: 400 }
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/login?error=user_not_found`
       )
     }
-
-    // Create JWT token for session
-    const jwtToken = jwt.sign(
-      {
-        sub: user.id,
-        email: user.email,
-        roles: user.roles,
-      },
-      process.env.NEXTAUTH_SECRET || "your-secret-key",
-      { expiresIn: "30d" }
-    )
 
     // Delete the magic link token (one-time use)
     await prisma.verificationToken.delete({
@@ -97,38 +83,58 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Update email verified status if not already done
-    if (!user.emailVerified) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      })
-    }
+    // Update email verified status and last login
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { 
+        emailVerified: user.emailVerified || new Date(),
+        lastLoginAt: new Date(),
+        isMigrated: true, // Mark as migrated since they've logged in
+      },
+    })
 
     console.log(`[Auth] Magic link login successful for user: ${user.email}`)
 
-    // Create response with auth cookie and redirect
+    // Create a session by storing in the database (NextAuth will recognize this)
+    const sessionToken = crypto.randomBytes(32).toString("hex")
+    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+
+    // Store the session in the database
+    await prisma.session.create({
+      data: {
+        sessionToken,
+        userId: user.id,
+        expires,
+      },
+    })
+
+    console.log(`[Auth] Session created for user: ${user.id}`)
+
+    // Create response with redirect to dashboard
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     const response = NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard?magicLink=success`,
-      {
-        status: 302,
-      }
+      `${baseUrl}/dashboard?login=magic-link`,
+      { status: 302 }
     )
 
-    // Set JWT in httpOnly cookie
-    response.cookies.set("next-auth.session-token", jwtToken, {
+    // Set the session cookie
+    const cookieName = process.env.NODE_ENV === "production" 
+      ? "__Secure-next-auth.session-token"
+      : "next-auth.session-token"
+
+    response.cookies.set(cookieName, sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      path: "/",
       maxAge: 30 * 24 * 60 * 60, // 30 days
     })
 
     return response
   } catch (error) {
     console.error("[Auth] Magic link verification error:", error)
-    return NextResponse.json(
-      { success: false, error: "server_error" },
-      { status: 500 }
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/login?error=server_error`
     )
   }
 }

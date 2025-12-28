@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { useSession } from "next-auth/react"
 import { Button } from "@/packages/ui/components/ui/button"
 import {
@@ -14,7 +14,7 @@ import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
 import { Logo } from "@/packages/ui/components/logo"
-import { UserMenu } from "@/packages/auth/components/user-menu"
+import { UserMenuContent } from "@/packages/auth/components/user-menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -22,9 +22,11 @@ import { useTranslations } from "next-intl"
 
 export function Navigation() {
   const t = useTranslations()
+  const { data: session, status } = useSession()
   const mountedRef = useRef(false)
   
-  const company = [
+  // Memoize menu items to prevent recreation on every render
+  const company = useMemo(() => [
     {
       title: t("company.contact.title"),
       href: "/contact",
@@ -37,9 +39,9 @@ export function Navigation() {
       description: t("company.about.description"),
       icon: Users,
     },
-  ]
+  ], [t])
 
-  const services = [
+  const services = useMemo(() => [
     {
       title: t("services.minecraft.title"),
       href: "/games/minecraft",
@@ -64,9 +66,9 @@ export function Navigation() {
       description: t("services.all.description"),
       icon: Server,
     },
-  ]
+  ], [t])
 
-  const resources = [
+  const resources = useMemo(() => [
     {
       title: t("resources.clientArea.title"),
       href: "https://billing.nodebyte.host/login",
@@ -81,9 +83,9 @@ export function Navigation() {
       icon: Gamepad2,
       external: true,
     },
-  ]
+  ], [t])
 
-  const extras = [
+  const extras = useMemo(() => [
     {
       title: t("extras.kb.title"),
       href: "/kb",
@@ -96,7 +98,7 @@ export function Navigation() {
       description: t("extras.changelog.description"),
       icon: Sparkles,
     },
-  ]
+  ], [t])
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -110,6 +112,28 @@ export function Navigation() {
   const [mobileExtrasOpen, setMobileExtrasOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+
+  // Memoize translations to avoid recreating objects
+  const userMenuTranslations = useMemo(() => ({
+    myAccount: t("auth.userMenu.myAccount"),
+    viewPanel: t("auth.userMenu.viewPanel"),
+    admin: t("auth.userMenu.admin"),
+    logout: t("auth.userMenu.logout"),
+    signIn: t("auth.userMenu.signIn"),
+  }), [t])
+
+  const navLabels = useMemo(() => ({
+    company: t("nav.company"),
+    services: t("nav.services"),
+    resources: t("nav.resources"),
+    extras: t("nav.extras"),
+    discord: t("nav.discord"),
+    settings: t("nav.settings"),
+    language: t("nav.language"),
+    currency: t("nav.currency"),
+    theme: t("nav.theme"),
+    joinDiscord: t("nav.joinDiscord"),
+  }), [t])
 
   useEffect(() => {
     setMounted(true)
@@ -384,14 +408,10 @@ export function Navigation() {
                 <LanguageSelector />
                 <CurrencySelector />
                 <ThemeToggle />
-                <UserMenu 
-                  translations={{
-                    myAccount: t("auth.userMenu.myAccount"),
-                    viewPanel: t("auth.userMenu.viewPanel"),
-                    admin: t("auth.userMenu.admin"),
-                    logout: t("auth.userMenu.logout"),
-                    signIn: t("auth.userMenu.signIn"),
-                  }}
+                <UserMenuContent 
+                  session={session}
+                  status={status}
+                  translations={userMenuTranslations}
                 />
                 <Button 
                   size="sm" 
@@ -400,7 +420,7 @@ export function Navigation() {
                 >
                   <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
                     <MessageCircle className="h-4 w-4" />
-                    {t("nav.discord")}
+                    {navLabels.discord}
                   </Link>
                 </Button>
               </div>
@@ -463,7 +483,7 @@ export function Navigation() {
                 onClick={toggleMobileCompany}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
-                <span className="font-medium">{t("nav.company")}</span>
+                <span className="font-medium">{navLabels.company}</span>
                 <ChevronDown className={cn(
                   "h-5 w-5 text-muted-foreground transition-transform duration-200",
                   mobileCompanyOpen && "rotate-180"
@@ -503,7 +523,7 @@ export function Navigation() {
                 onClick={toggleMobileServices}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
-                <span className="font-medium">{t("nav.services")}</span>
+                <span className="font-medium">{navLabels.services}</span>
                 <ChevronDown className={cn(
                   "h-5 w-5 text-muted-foreground transition-transform duration-200",
                   mobileServicesOpen && "rotate-180"
@@ -543,7 +563,7 @@ export function Navigation() {
                 onClick={toggleMobileResources}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
-                <span className="font-medium">{t("nav.resources")}</span>
+                <span className="font-medium">{navLabels.resources}</span>
                 <ChevronDown className={cn(
                   "h-5 w-5 text-muted-foreground transition-transform duration-200",
                   mobileResourcesOpen && "rotate-180"
@@ -587,7 +607,7 @@ export function Navigation() {
                 onClick={toggleMobileExtras}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
-                <span className="font-medium">{t("nav.extras")}</span>
+                <span className="font-medium">{navLabels.extras}</span>
                 <ChevronDown className={cn(
                   "h-5 w-5 text-muted-foreground transition-transform duration-200",
                   mobileExtrasOpen && "rotate-180"
@@ -626,11 +646,7 @@ export function Navigation() {
 
             {/* User Account Section */}
             <MobileUserSection translations={{
-              myAccount: t("auth.userMenu.myAccount"),
-              viewPanel: t("auth.userMenu.viewPanel"),
-              admin: t("auth.userMenu.admin"),
-              logout: t("auth.userMenu.logout"),
-              signIn: t("auth.userMenu.signIn"),
+              ...userMenuTranslations,
               register: t("auth.login.createAccount"),
             }} onClose={() => setIsMobileMenuOpen(false)} />
 
@@ -640,18 +656,18 @@ export function Navigation() {
             {/* Settings Section */}
             <div className="space-y-3">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
-                {t("nav.settings")}
+                {navLabels.settings}
               </h4>
               <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
-                <span className="text-sm font-medium">{t("nav.language")}</span>
+                <span className="text-sm font-medium">{navLabels.language}</span>
                 <LanguageSelector />
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
-                <span className="text-sm font-medium">{t("nav.currency")}</span>
+                <span className="text-sm font-medium">{navLabels.currency}</span>
                 <CurrencySelector />
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30">
-                <span className="text-sm font-medium">{t("nav.theme")}</span>
+                <span className="text-sm font-medium">{navLabels.theme}</span>
                 <ThemeToggle />
               </div>
             </div>
@@ -665,7 +681,7 @@ export function Navigation() {
               >
                 <Link href="https://discord.gg/wN58bTzzpW" target="_blank" onClick={() => setIsMobileMenuOpen(false)}>
                   <MessageCircle className="h-5 w-5" />
-                  {t("nav.joinDiscord")}
+                  {navLabels.joinDiscord}
                 </Link>
               </Button>
             </div>
@@ -756,12 +772,18 @@ function MobileUserSection({
         </div>
         <div className="space-y-2">
           <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
+            <Link href="/dashboard">
+              <User className="mr-2 h-4 w-4" />
+              {translations.myAccount}
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
             <a href="https://panel.nodebyte.host" target="_blank" rel="noopener noreferrer">
               <ExternalLink className="mr-2 h-4 w-4" />
               {translations.viewPanel}
             </a>
           </Button>
-          {session.user.isAdmin && (
+          {(session.user.isSystemAdmin || session.user.roles.includes('SUPER_ADMIN') || session.user.roles.includes('ADMINISTRATOR')) && (
             <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
               <Link href="/admin">
                 <Shield className="mr-2 h-4 w-4" />
