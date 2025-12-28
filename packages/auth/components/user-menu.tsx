@@ -15,20 +15,34 @@ import { Badge } from "@/packages/ui/components/ui/badge"
 import { signOut } from "next-auth/react"
 import { User, LogOut, Shield, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import type { Session } from "next-auth"
 
 interface UserMenuProps {
   translations: {
     myAccount: string
     viewPanel: string
+    dashboard: string
     admin: string
     logout: string
     signIn: string
   }
 }
 
-export function UserMenu({ translations: t }: UserMenuProps) {
-  const { data: session, status } = useSession()
+interface UserMenuContentProps {
+  session: Session | null
+  status: string
+  translations: {
+    myAccount: string
+    viewPanel: string
+    dashboard: string
+    admin: string
+    logout: string
+    signIn: string
+  }
+}
 
+// Standalone menu content that accepts session as prop (used in Navigation)
+export function UserMenuContent({ session, status, translations: t }: UserMenuContentProps) {
   if (status === "loading") {
     return (
       <Button variant="ghost" size="icon" disabled>
@@ -47,8 +61,8 @@ export function UserMenu({ translations: t }: UserMenuProps) {
       </Button>
     )
   }
+
   const initials = `${session.user.firstName?.[0] || ""}${session.user.lastName?.[0] || ""}`.toUpperCase() || session.user.username?.[0]?.toUpperCase() || "U"
-  
   const isAdmin = session.user.isPterodactylAdmin || session.user.isVirtfusionAdmin || session.user.isSystemAdmin
 
   return (
@@ -87,6 +101,12 @@ export function UserMenu({ translations: t }: UserMenuProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            {t.dashboard}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link
             href="https://panel.nodebyte.host"
             target="_blank"
@@ -98,20 +118,17 @@ export function UserMenu({ translations: t }: UserMenuProps) {
           </Link>
         </DropdownMenuItem>
         {isAdmin && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/admin" className="cursor-pointer">
-                <Shield className="mr-2 h-4 w-4" />
-                {t.admin}
-              </Link>
-            </DropdownMenuItem>
-          </>
+          <DropdownMenuItem asChild>
+            <Link href="/admin" className="cursor-pointer">
+              <Shield className="mr-2 h-4 w-4" />
+              {t.admin}
+            </Link>
+          </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer text-destructive focus:text-destructive"
           onClick={() => signOut({ callbackUrl: "/" })}
+          className="text-destructive focus:text-destructive cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
           {t.logout}
@@ -119,4 +136,11 @@ export function UserMenu({ translations: t }: UserMenuProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   )
+}
+
+// Original UserMenu export for backwards compatibility (when not in Navigation)
+export function UserMenu({ translations: t }: UserMenuProps) {
+  const { data: session, status } = useSession()
+  
+  return <UserMenuContent session={session} status={status} translations={t} />
 }

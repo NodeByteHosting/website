@@ -16,6 +16,11 @@ interface Stats {
   uptime?: string
 }
 
+interface RotatingStatItem {
+  value: string | number
+  label: string
+}
+
 export function About() {
   const t = useTranslations()
   const [stats, setStats] = useState<Stats>({
@@ -25,6 +30,7 @@ export function About() {
     uptime: "99.6%",
   })
   const [mounted, setMounted] = useState(false)
+  const [rotatingStatIndex, setRotatingStatIndex] = useState(0)
 
   useEffect(() => {
     setMounted(true)
@@ -37,11 +43,13 @@ export function About() {
       try {
         const response = await fetch("/api/stats")
         if (response.ok) {
-          const data = await response.json()
+          const result = await response.json()
+          // Stats are nested under 'data' key in the API response
+          const apiData = result.data || {}
           setStats({
-            totalServers: data.totalServers || 0,
-            totalUsers: data.totalUsers || 0,
-            activeUsers: data.activeUsers || 0,
+            totalServers: apiData.totalServers || 0,
+            totalUsers: apiData.totalUsers || 0,
+            activeUsers: apiData.activeUsers || 0,
             uptime: "99.6%",
           })
         }
@@ -52,6 +60,33 @@ export function About() {
 
     fetchStats()
   }, [mounted])
+
+  // Rotating stats effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotatingStatIndex((prev) => (prev + 1) % 4)
+    }, 3000) // Change every 3 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const rotatingStats: RotatingStatItem[] = [
+    { value: stats.totalServers?.toLocaleString() || "0", label: t("about.stats.servers") },
+    { value: stats.totalUsers?.toLocaleString() || "0", label: t("about.stats.users") },
+    { value: stats.activeUsers?.toLocaleString() || "0", label: t("about.stats.activeUsers") },
+    { value: (stats.totalServers || 0) * 4, label: t("about.stats.allocations") },
+  ]
+
+  const staticStats = [
+    { value: stats.uptime || "99.6%", label: t("about.stats.uptime") },
+    { value: "50ms", label: t("about.stats.latency") },
+    { value: "24/7", label: t("about.stats.support") },
+    { 
+      value: rotatingStats[rotatingStatIndex].value, 
+      label: rotatingStats[rotatingStatIndex].label,
+      isRotating: true 
+    },
+  ]
 
   const values = [
     {
@@ -112,23 +147,27 @@ export function About() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {[
-              { value: stats.uptime || "99.6%", label: t("about.stats.uptime") },
-              { value: "50ms", label: t("about.stats.latency") },
-              { value: "24/7", label: t("about.stats.support") },
-              { value: stats.totalServers?.toLocaleString() || "0", label: t("about.stats.servers") },
-            ].map((stat, index) => (
+            {staticStats.map((stat, index) => (
               <div
                 key={stat.label}
                 className={cn(
                   "p-6 rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm text-center",
-                  "hover:border-primary/30 hover:bg-card/50 transition-all duration-300"
+                  "hover:border-primary/30 hover:bg-card/50 transition-all duration-300",
+                  stat.isRotating && "relative overflow-hidden"
                 )}
               >
-                <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
+                <div className={cn(
+                  "text-3xl sm:text-4xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent transition-all duration-500",
+                  stat.isRotating && "animate-fade-in-out"
+                )}>
                   {stat.value}
                 </div>
-                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                <div className={cn(
+                  "text-sm text-muted-foreground mt-1 transition-all duration-500",
+                  stat.isRotating && "animate-fade-in-out"
+                )}>
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -169,6 +208,18 @@ export function About() {
           ))}
         </div>
       </div>
+
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes fadeInOut {
+          0%, 100% { opacity: 1; }
+          45%, 55% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .animate-fade-in-out {
+          animation: fadeInOut 3s ease-in-out infinite;
+        }
+      `}</style>
     </section>
   )
 }
