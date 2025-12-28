@@ -1,2 +1,1 @@
-export * from "./pterodactyl"
-export * from "./pterodactyl"
+export * from "./pterodactyl/index"
