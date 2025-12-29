@@ -51,6 +51,29 @@ export default auth(async (req) => {
     }
   }
 
+  // Protect dashboard routes - require authentication
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/dashboard")) {
+    // API dashboard routes: check auth
+    if (pathname.startsWith("/api/dashboard")) {
+      if (!req.auth?.user?.id) {
+        return NextResponse.json(
+          { success: false, error: "Unauthorized" },
+          { status: 401 }
+        )
+      }
+      return response
+    }
+
+    // Frontend dashboard: require active session
+    if (!req.auth?.user?.id) {
+      const loginUrl = new URL("/auth/login", req.url)
+      loginUrl.searchParams.set("callbackUrl", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return response
+  }
+
   // Protect admin panel and API routes - requireAdmin() in each route handles DB checks
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     // API admin routes: let API endpoints perform DB-backed authorization
@@ -76,7 +99,6 @@ export default auth(async (req) => {
     const hasAdminRole = roles.includes("SUPER_ADMIN") || roles.includes("ADMINISTRATOR")
 
     if (!isAdmin && !hasAdminRole) {
-      // Redirect non-admin users away from admin UI to homepage
       return NextResponse.redirect(new URL("/", req.url))
     }
 
