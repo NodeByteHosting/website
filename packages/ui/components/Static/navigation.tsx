@@ -115,7 +115,7 @@ export function Navigation() {
 
   // Memoize translations to avoid recreating objects
   const userMenuTranslations = useMemo(() => ({
-    myAccount: t("auth.userMenu.myAccount"),
+    dashboard: t("auth.userMenu.myAccount"),
     viewPanel: t("auth.userMenu.viewPanel"),
     admin: t("auth.userMenu.admin"),
     logout: t("auth.userMenu.logout"),
