@@ -189,6 +189,17 @@ To cancel a service:
 
 > **Note:** Cancellation requests are reviewed by our team. You'll receive confirmation via email.
 
+**For PayPal Customers:**
+This is important to do as failing to do this will result in you still being charged. Our Finance Team check the cancellions and cancel them on your behalf, but this may not always be the case.
+
+1. Log into your payal
+2. Click on the settings icon (Gear) at the top right of the page
+3. Go to the "Payments" tab
+4. Search for "NodeByte LTD"
+5. Cancel the pre-approved service.
+
+Once done you will no longer be charged for any services. 
+
 ### Service Renewal
 
 Services renew automatically if:
