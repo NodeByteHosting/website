@@ -134,6 +134,7 @@ export async function GET() {
       settings: {
         pterodactylUrl: allSettings.pterodactyl_url || "",
         pterodactylApiKey: isSuperAdmin(userRoles) && allSettings.pterodactyl_api_key ? allSettings.pterodactyl_api_key : (allSettings.pterodactyl_api_key ? "••••••••••••••••••••" : ""),
+        pterodactylClientApiKey: isSuperAdmin(userRoles) && allSettings.pterodactyl_client_api_key ? allSettings.pterodactyl_client_api_key : (allSettings.pterodactyl_client_api_key ? "••••••••••••••••••••" : ""),
         pterodactylApi: allSettings.pterodactyl_api || "",
         virtfusionUrl: allSettings.virtfusion_url || "",
         virtfusionApiKey: isSuperAdmin(userRoles) && allSettings.virtfusion_api_key ? allSettings.virtfusion_api_key : (allSettings.virtfusion_api_key ? "••••••••••••••••••••" : ""),
@@ -239,6 +240,11 @@ export async function POST(request: Request) {
     if (body.pterodactylApiKey && body.pterodactylApiKey !== MASKED_VALUE) {
       await setConfig("pterodactyl_api_key", body.pterodactylApiKey)
       changedFields.push("Pterodactyl API Key")
+    }
+
+    if (body.pterodactylClientApiKey && body.pterodactylClientApiKey !== MASKED_VALUE) {
+      await setConfig("pterodactyl_client_api_key", body.pterodactylClientApiKey)
+      changedFields.push("Pterodactyl Client API Key")
     }
 
     if (body.virtfusionUrl) {
