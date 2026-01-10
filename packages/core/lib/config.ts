@@ -5,6 +5,7 @@
  * Configuration Keys - Panel Settings:
  *   - pterodactyl_url: Pterodactyl panel URL
  *   - pterodactyl_api_key: Pterodactyl admin API key
+ *   - pterodactyl_client_api_key: Pterodactyl client API key
  *   - pterodactyl_api: Pterodactyl API endpoint path (default: /api/application)
  *   - virtfusion_url: Virtfusion panel URL
  *   - virtfusion_api_key: Virtfusion API key
@@ -51,6 +52,7 @@ import { prisma } from "./prisma"
 export interface PterodactylSettings {
   url: string | null
   apiKey: string | null
+  clientapiKey: string | null
   api: string | null
 }
 
@@ -175,6 +177,7 @@ export async function getPanelSettings(): Promise<PanelSettings> {
   const config = await getConfigs(
     "pterodactyl_url",
     "pterodactyl_api_key",
+    "pterodactyl_client_api_key",
     "pterodactyl_api",
     "virtfusion_url",
     "virtfusion_api_key",
@@ -185,6 +188,7 @@ export async function getPanelSettings(): Promise<PanelSettings> {
     pterodactyl: {
       url: config.pterodactyl_url,
       apiKey: config.pterodactyl_api_key,
+      clientapiKey: config.pterodactyl_client_api_key,
       api: config.pterodactyl_api,
     },
     virtfusion: {

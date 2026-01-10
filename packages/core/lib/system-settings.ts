@@ -8,6 +8,7 @@ export interface SystemState {
 export interface PterodactylSettings {
   url: string | null
   apiKey: string | null
+  clientapiKey: string | null
   api: string | null
 }
 
