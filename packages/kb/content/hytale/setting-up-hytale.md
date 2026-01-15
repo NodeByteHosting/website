@@ -7,6 +7,8 @@ lastUpdated: 2025-01-15
 order: 1
 ---
 
+Please note the below is temporary and will be changed in the near future.
+
 # Installing
 
 Once you have purchased Hytale you will need to quickly make your way to the panel and sign in. 
