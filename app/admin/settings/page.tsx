@@ -69,8 +69,9 @@ interface SystemSettings {
   // Pterodactyl
   pterodactylUrl: string
   pterodactylApiKey: string
+  pterodactylClientApiKey: string
   pterodactylApi: string
-  
+
   // Virtfusion
   virtfusionUrl: string
   virtfusionApiKey: string
@@ -117,6 +118,7 @@ export default function SettingsPage() {
   const [resetting, setResetting] = useState<string | null>(null)
   const [testingConnection, setTestingConnection] = useState<string | null>(null)
   const [showApiKey, setShowApiKey] = useState(false)
+  const [showApiKeyclient, setShowApiKeyclient] = useState(false)
   const [showResend, setShowResend] = useState(false)
   const [showCrowdin, setShowCrowdin] = useState(false)
   const [showGithub, setShowGithub] = useState(false)
@@ -153,6 +155,7 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<SystemSettings>({
     pterodactylUrl: "",
     pterodactylApiKey: "",
+    pterodactylClientApiKey: "",
     pterodactylApi: "",
     virtfusionUrl: "",
     virtfusionApiKey: "",
@@ -189,6 +192,7 @@ export default function SettingsPage() {
         // Track which fields are masked (already set)
         const masked = new Set<string>()
         if (data.settings.pterodactylApiKey === MASKED_VALUE) masked.add("pterodactylApiKey")
+        if (data.settings.pterodactylClientApiKey === MASKED_VALUE) masked.add("pterodactylClientApiKey")
         if (data.settings.virtfusionApiKey === MASKED_VALUE) masked.add("virtfusionApiKey")
         if (data.settings.crowdinPersonalToken === MASKED_VALUE) masked.add("crowdinPersonalToken")
         if (data.settings.githubToken === MASKED_VALUE) masked.add("githubToken")
@@ -255,6 +259,7 @@ export default function SettingsPage() {
         body: JSON.stringify({
           pterodactylUrl: settings.pterodactylUrl,
           pterodactylApiKey: settings.pterodactylApiKey,
+          pterodactylClientApiKey: settings.pterodactylClientApiKey,
           virtfusionUrl: settings.virtfusionUrl,
           virtfusionApiKey: settings.virtfusionApiKey,
         }),
@@ -776,21 +781,73 @@ export default function SettingsPage() {
                   </p>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="panel-api">{t("settings.pterodactyl.apiUrl")}</Label>
-                <Input
-                  id="panel-api"
-                  placeholder="https://panel.example.com/api"
-                  value={settings.pterodactylApi}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    pterodactylApi: e.target.value
-                  })}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t("settings.pterodactyl.apiUrlNote")}
-                </p>
-              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="panel-api">{t("settings.pterodactyl.apiUrl")}</Label>
+                  <Input
+                    id="panel-api"
+                    placeholder="https://panel.example.com/api"
+                    value={settings.pterodactylApi}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      pterodactylApi: e.target.value
+                    })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {t("settings.pterodactyl.apiUrlNote")}
+                  </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="panel-client-key">{t("settings.pterodactyl.apiKeyclient")}</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Input
+                          id="panel-client-key"
+                          type={showApiKeyclient ? "text" : "password"}
+                          placeholder="ptlc_xxxxxxxxxx"
+                          className="pr-10"
+                          value={settings.pterodactylClientApiKey ?? ''}
+                          onChange={(e) => setSettings({
+                          ...settings,
+                          pterodactylClientApiKey: e.target.value
+                          })}
+                          disabled={maskedFields.has("pterodactylClientApiKey")}
+                        />
+                        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0"
+                            onClick={() => setShowApiKeyclient(!showApiKeyclient)}
+                          >
+                            {showApiKeyclient ? (
+                              <EyeOff className="h-3.5 w-3.5" />
+                            ) : (
+                              <Eye className="h-3.5 w-3.5" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                      {maskedFields.has("pterodactylClientApiKey") && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => resetKey("pterodactylClientApiKey")}
+                          disabled={resetting === "pterodactylClientApiKey"}
+                        >
+                          {resetting === "pterodactylClientApiKey" ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("settings.pterodactyl.apiKeyNoteclient")}
+                    </p>
+                  </div>
+                </div>
               {pterodactylStatus.version && (
                 <div className="text-sm text-muted-foreground">
                   {t("settings.pterodactyl.version")}: <span className="font-medium">{pterodactylStatus.version}</span>
