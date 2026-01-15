@@ -23,6 +23,8 @@ It may seem it's not doing anything, but there is a delay of 1 minute for the pa
 Once you see this:
 ![](image-1.png)
 
+<b>If you do not see this and it's been a minute, please wait 5 minutes then reinstall the server under "Settings" on your server.</b>
+
 Click on the first link to authorize the server.
 
 You will be taken to this page below - Click on "Approve" then sign in (if required). 
