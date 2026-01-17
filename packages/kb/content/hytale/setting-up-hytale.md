@@ -11,6 +11,11 @@ order: 1
 
 Once the installaion is complete please run `auth login device`
 
+You will see a message like this in your console
+![](/kb/hytale/auth3.png)
+
+Click on the bottom link (easier)
+
 You will then be taken back to this page. Click on approve.
 ![](/kb/hytale/auth1.png)
 
