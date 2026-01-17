@@ -37,9 +37,9 @@ You MUST have a QUERY port enabled for this. Follow this [guide](https://nodebyt
 
 ![](/kb/rust/connecting/connectsteam.png)
 
-![](https://nodebyte.host/kb/Rust/connectrust.png)
+![](/kb/rust/connecting/connectrust.png)
 
-![](https://nodebyte.host/kb/Rust/connectrust2.png)
+![](/kb/rust/connecting/connectrust2.png)
 
 ## Rust
 
