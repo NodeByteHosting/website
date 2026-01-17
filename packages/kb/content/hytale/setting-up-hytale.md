@@ -2,7 +2,7 @@
 title: Setting up your hytale server
 description: Learn how to setup your hytale server
 tags: [game, hytale]
-author: NodeByte Team
+author: Rizon
 lastUpdated: 2025-01-17
 order: 1
 ---
