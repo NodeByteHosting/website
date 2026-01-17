@@ -9,34 +9,6 @@ order: 1
 
 Please note the below is temporary and will be changed in the near future.
 
-# Installing
-
-Once you have purchased Hytale you will need to quickly make your way to the panel and sign in. 
-
-Once you are signed in open your hytale server.
-
-Once loaded you will be greeted by this page:
-![](/public/kb/hytale/image.png)
-
-It may seem it's not doing anything, but there is a delay of 1 minute for the panel to provide you with a authorization code for the downloader to continue. 
-
-Once you see this:
-![](/public/kb/hytale/image-1.png)
-
-<b>If you do not see this and it's been a minute, please wait 5 minutes then reinstall the server under "Settings" on your server.</b>
-
-Click on the first link to authorize the server.
-
-You will be taken to this page below - Click on "Approve" then sign in (if required). 
-![alt text](/public/kb/hytale/image-2.png)
-
-
-Once approved you will be greeted by this page - You may close this tab
-![alt text](/public/kb/hytale/image-3.png)
-
-Back on the panel the server will begin to install.
-![alt text](/public/kb/hytale/image-4.png)
-
 # Logging in on the panel
 
 Once the installaion is complete please run `auth login device`
