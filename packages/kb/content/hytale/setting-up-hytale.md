@@ -12,10 +12,10 @@ order: 1
 Once the installaion is complete please run `auth login device`
 
 You will then be taken back to this page. Click on approve.
-![](/kb/hytale/image-2.png)
+![](/kb/hytale/auth1.png)
 
 Once you see this page you can close the tab. 
-![](/kb/hytale/image-3.png)
+![](/kb/hytale/auth2.png)
 
 Back on the panel run `auth persistence Encrypted` this will save your details to the files encryted. Failing to do this means you will have to sign in everytime the server is rebooted. 
 
