@@ -4,7 +4,7 @@ description: Learn how to Change your hytale server name
 tags: [game, hytale]
 author: NodeByte Team
 lastUpdated: 2025-01-17
-order: 2
+order: 3
 ---
 
 1. Stop your server before making any changes
