@@ -21,15 +21,15 @@ To do this please follow the below
 
 4. Click on "Create allocation"
 
-![](./images/ports/createallocation.png)
+![](/kb/rust/ports/createallocation.png)
 
 5. Add a note so you know what this is being used for (optional)
 
-![](./images/ports/createallocationnote.png)
+![](/kb/rust/ports/createallocationnote.png)
 
 6. Once you have created the Allocation go to the "Startup" tab and look for "QUERY PORT" then enter the PORT provided
 
-![](./images/ports/queryport.png)
+![](/kb/rust/ports/queryport.png)
 
 7. Start/Restart your server for the changes to take affect
 

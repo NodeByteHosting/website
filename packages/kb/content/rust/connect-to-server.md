@@ -17,25 +17,25 @@ You MUST have a QUERY port enabled for this. Follow this [guide](https://nodebyt
 
 2. Go to View > Game Servers
 
-![](./images/connecting/steamgameservers.png)
+![](/kb/rust/connecting/steamgameservers.png)
 
 3. Click on the "Favorites" Tab and then click on "+"
 
-![](./images/connecting/addserver.png)
+![](/kb/rust/connecting/addserver.png)
 
 4. Add your IP + QUERY PORT (You can find this on the panel Under "Network")
 
-![](./images/connecting/query.png)
+![](/kb/rust/connecting/query.png)
 
-![](./images/connecting/addserverfilled.png)
+![](/kb/rust/connecting/addserverfilled.png)
 
 5. Click on "OK" and the server will be added to the list
 
-![](./images/connecting/addserverlisted.png)
+![](/kb/rust/connecting/addserverlisted.png)
 
 6. You can either connect directly from Steam or Load up Rust and connect under the "Favorites" inside of Rust's Server List
 
-![](./images/connecting/connectsteam.png)
+![](/kb/rust/connecting/connectsteam.png)
 
 ![](https://nodebyte.host/kb/Rust/connectrust.png)
 
@@ -49,7 +49,7 @@ You MUST have a QUERY port enabled for this. Follow this [guide](https://nodebyt
 
 3. Type in `connect <yourip:port>` (The port will be your main server port)
 
-![](./images/connecting/connectrust3.png)
+![](/kb/rust/connecting/connectrust3.png)
 
 4. Press "Esc" to close the console
 
