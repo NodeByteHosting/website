@@ -6,16 +6,16 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Hytale Server Hosting",
-  description: "Be ready for Hytale launch with NodeByte Hosting. Join our waitlist for early access to our Hytale server hosting platform.",
+  description: "Set out on an adventure built for both creation and play. Hytale blends the freedom of a sandbox with the momentum of an RPG: explore a procedurally generated world full of dungeons, secrets, and a variety of creatures, then shape it block by block.",
 }
 
 const features = [
   {
-    title: "Day One Support",
-    description: "We're preparing our infrastructure to support Hytale from day one of release.",
+    title: "Instant Setup",
+    description: "One purchased, the server will install instantly and will install a performance plugin for optimal performance.",
     icon: "Zap" as const,
     highlights: [
-      "Launch-day availability",
+      "Fast Install",
       "Optimized configurations",
       "Pre-built templates",
       "Quick deployment",
@@ -29,7 +29,6 @@ const features = [
       "Custom mod support",
       "Easy mod management",
       "Auto-updates",
-      "Version control",
     ],
   },
   {
@@ -80,51 +79,89 @@ const features = [
 
 const faqs = [
   {
-    question: "When will Hytale hosting be available?",
-    answer: "We'll launch our Hytale hosting service as soon as the game releases. Join our Discord to be notified when we go live!",
+    question: "What features are supported?",
+    answer: "We support all Hytale server features including mods, custom worlds, and multiplayer.",
   },
   {
-    question: "Can I join a waitlist?",
-    answer: "Yes! Join our Discord server to be added to the waitlist. You'll get early access and special launch pricing.",
-  },
-  {
-    question: "What features will be supported?",
-    answer: "We plan to support all Hytale server features including mods, custom worlds, and multiplayer. Specific features will be confirmed closer to launch.",
-  },
-  {
-    question: "Will there be mod support?",
-    answer: "Yes, we'll support Hytale's modding capabilities. You'll be able to install and manage mods through our control panel.",
+    question: "Is there be mod support?",
+    answer: "Yes, we support Hytale's modding capabilities.",
   },
   {
     question: "What regions will be available?",
     answer: "We offer Hytale hosting from our UK data centers with London POPs powered by FyfeWeb, providing excellent coverage across the UK and Europe.",
   },
-  {
-    question: "How can I stay updated?",
-    answer: "Join our Discord server for the latest updates on our Hytale hosting plans. We'll announce pricing and features as we get closer to launch.",
-  },
 ]
+
+const plans = [
+    {
+      name: "Starter",
+      description: "Perfect for small communities and testing.",
+      priceGBP: 4,
+      period: "£5.00",
+      features: [
+        "AMD Ryzen™ 9 5900X",
+        "4GB RAM",
+        "40GB SSD Storage",
+        "10 Database",
+        "DDoS Protection",
+        "BytePanel",
+        "99.9% Uptime SLA",
+      ],
+      url: "https://billing.nodebyte.host/store/hytale-hosting/starter"
+    },
+    {
+      name: "Standard",
+      description: "Perfect for growing communities and performance.",
+      priceGBP: 6,
+      period: "£7.50",
+      features: [
+        "AMD Ryzen™ 9 5900X",
+        "6GB RAM",
+        "60GB SSD Storage",
+        "10 Database",
+        "DDoS Protection",
+        "BytePanel",
+        "99.9% Uptime SLA",
+      ],
+      url: "https://billing.nodebyte.host/store/hytale-hosting/standard"
+    },
+    {
+      name: "Performance",
+      description: "Perfect for large communities and high performance.",
+      priceGBP: 7.5,
+      period: "£10.00",
+      popular: true,
+      features: [
+        "AMD Ryzen™ 9 5900X",
+        "8GB RAM",
+        "80GB SSD Storage",
+        "10 Database",
+        "DDoS Protection",
+        "BytePanel",
+        "99.9% Uptime SLA",
+      ],
+      url: "https://billing.nodebyte.host/store/hytale-hosting/performance"
+    },
+  ]
 
 export default function HytalePage() {
   return (
     <>
       <GameHero
         name="Hytale"
-        description="Be ready for Hytale launch with NodeByte Hosting. We're preparing enterprise grade infrastructure for the best Hytale server experience."
+        description="Set out on an adventure built for both creation and play. Hytale blends the freedom of a sandbox with the momentum of an RPG: explore a procedurally generated world full of dungeons, secrets, and a variety of creatures, then shape it block by block."
         banner="/hytale.png"
         icon="Sparkles"
-        tag="Coming Soon"
+        tag="Early Access Game"
         tagColor="bg-muted border border-border text-muted-foreground"
-        billingUrl="https://discord.gg/wN58bTzzpW"
+        billingUrl="https://billing.nodebyte.host/store/hytale-hosting"
         features={["Mod Support", "Custom Maps", "DDoS Protection", "24/7 Support"]}
-        comingSoon
       />
       <GameFeatures gameName="Hytale" features={features} />
       <GamePricing
         gameName="Hytale"
-        billingUrl="https://discord.gg/wN58bTzzpW"
-        plans={[]}
-        comingSoon
+        billingUrl="https://billing.nodebyte.host/store/hytale-hosting"
+        plans={plans}
       />
       <GameFAQ gameName="Hytale" faqs={faqs} />
     </>
