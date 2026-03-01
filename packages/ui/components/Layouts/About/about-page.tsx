@@ -51,7 +51,7 @@ export function AboutPage() {
     { value: "99.6%", label: t("aboutPage.stats.uptime"), icon: Server },
     { value: "50ms", label: t("aboutPage.stats.latency"), icon: Zap },
     { value: "24/7", label: t("aboutPage.stats.support"), icon: Clock },
-    { value: "1000+", label: t("aboutPage.stats.servers"), icon: Globe },
+    { value: "100+", label: t("aboutPage.stats.servers"), icon: Globe },
   ]
 
   const timeline = [
@@ -77,7 +77,7 @@ export function AboutPage() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-32 overflow-hidden">
         {/* Background gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
+        <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background" />
         
         {/* Animated background orbs */}
         <div className="absolute inset-0 overflow-hidden">
@@ -87,7 +87,7 @@ export function AboutPage() {
         </div>
 
         {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">

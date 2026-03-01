@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { useRouter, usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
@@ -18,6 +18,10 @@ import {
   Menu,
   Home,
   LogOut,
+  HardDrive,
+  Layers,
+  Network,
+  MapPin,
 } from "lucide-react"
 import { cn } from "@/packages/core/lib/utils"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -39,6 +43,7 @@ import {
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
 import { UserMenu } from "@/packages/auth/components/user-menu"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
+import { canAccessAdmin } from "@/packages/auth"
 
 interface NavItem {
   title: string
@@ -51,7 +56,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations("admin")
@@ -64,7 +69,21 @@ export default function AdminLayout({
     setMobileOpen(false)
   }, [pathname])
 
-  if (status === "loading") {
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push(`/auth/login?callbackUrl=/admin`)
+    }
+  }, [user, isLoading, router])
+
+  // Redirect to home if not a system admin
+  useEffect(() => {
+    if (!isLoading && user && !canAccessAdmin(user)) {
+      router.push("/")
+    }
+  }, [user, isLoading, router])
+
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -72,8 +91,20 @@ export default function AdminLayout({
     )
   }
 
-  // Redirect if not authenticated or not system admin
-  if (!session?.user?.isSystemAdmin) {
+  // Redirect if not authenticated
+  if (!user) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Please log in to access admin panel</p>
+          <Button onClick={() => router.push("/auth/login")}>Go to login</Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Redirect if not a system admin
+  if (!canAccessAdmin(user)) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -88,6 +119,10 @@ export default function AdminLayout({
     { title: t("nav.dashboard"), href: "/admin", icon: LayoutDashboard },
     { title: t("nav.users"), href: "/admin/users", icon: Users },
     { title: t("nav.servers"), href: "/admin/servers", icon: Server },
+    { title: t("nav.nodes"), href: "/admin/nodes", icon: HardDrive },
+    { title: t("nav.locations"), href: "/admin/locations", icon: MapPin },
+    { title: t("nav.allocations"), href: "/admin/allocations", icon: Network },
+    { title: t("nav.eggs"), href: "/admin/eggs", icon: Layers },
     { title: t("nav.sync"), href: "/admin/sync", icon: RefreshCw },
     { title: t("nav.syncLogs"), href: "/admin/sync/logs", icon: RefreshCw },
     { title: t("nav.settings"), href: "/admin/settings", icon: Settings },
@@ -286,7 +321,7 @@ export default function AdminLayout({
                     }}
                   />
                   <span className="text-sm truncate">
-                    {session?.user?.firstName || session?.user?.username}
+                    {user?.firstName || user?.username}
                   </span>
                 </div>
               </div>

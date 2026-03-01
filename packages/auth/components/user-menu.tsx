@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { Avatar, AvatarFallback } from "@/packages/ui/components/ui/avatar"
 import {
   DropdownMenu,
@@ -12,10 +12,10 @@ import {
 } from "@/packages/ui/components/ui/dropdown-menu"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Badge } from "@/packages/ui/components/ui/badge"
-import { signOut } from "next-auth/react"
 import { User, LogOut, Shield, ExternalLink } from "lucide-react"
 import Link from "next/link"
-import type { Session } from "next-auth"
+import type { User as UserType } from "@/packages/auth/lib/auth-client"
+import { canAccessAdmin, isStaffUser } from "@/packages/auth/lib/auth-client"
 
 interface UserMenuProps {
   translations: {
@@ -29,8 +29,9 @@ interface UserMenuProps {
 }
 
 interface UserMenuContentProps {
-  session: Session | null
-  status: string
+  user: UserType | null
+  isLoading: boolean
+  onLogout: () => Promise<void>
   translations: {
     myAccount: string
     viewPanel: string
@@ -41,9 +42,9 @@ interface UserMenuContentProps {
   }
 }
 
-// Standalone menu content that accepts session as prop (used in Navigation)
-export function UserMenuContent({ session, status, translations: t }: UserMenuContentProps) {
-  if (status === "loading") {
+// Standalone menu content that accepts user as prop (used in Navigation)
+export function UserMenuContent({ user, isLoading, onLogout, translations: t }: UserMenuContentProps) {
+  if (isLoading) {
     return (
       <Button variant="ghost" size="icon" disabled>
         <User className="h-5 w-5" />
@@ -51,7 +52,7 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
     )
   }
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <Button variant="outline" size="sm" asChild>
         <Link href="/auth/login">
@@ -62,8 +63,9 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
     )
   }
 
-  const initials = `${session.user.firstName?.[0] || ""}${session.user.lastName?.[0] || ""}`.toUpperCase() || session.user.username?.[0]?.toUpperCase() || "U"
-  const isAdmin = session.user.isPterodactylAdmin || session.user.isVirtfusionAdmin || session.user.isSystemAdmin
+  const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || user.username?.[0]?.toUpperCase() || "U"
+  const isAdmin = isStaffUser(user)
+  const canAdmin = canAccessAdmin(user)
 
   return (
     <DropdownMenu>
@@ -86,7 +88,7 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
           <div className="flex flex-col space-y-1">
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium leading-none">
-                {session.user.firstName} {session.user.lastName}
+                {user.firstName} {user.lastName}
               </p>
               {isAdmin && (
                 <Badge variant="secondary" className="text-xs px-1 py-0">
@@ -95,7 +97,7 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
               )}
             </div>
             <p className="text-xs leading-none text-muted-foreground">
-              {session.user.email}
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -117,7 +119,7 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
             {t.viewPanel}
           </Link>
         </DropdownMenuItem>
-        {isAdmin && (
+        {canAdmin && (
           <DropdownMenuItem asChild>
             <Link href="/admin" className="cursor-pointer">
               <Shield className="mr-2 h-4 w-4" />
@@ -127,7 +129,7 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={onLogout}
           className="text-destructive focus:text-destructive cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
@@ -138,9 +140,9 @@ export function UserMenuContent({ session, status, translations: t }: UserMenuCo
   )
 }
 
-// Original UserMenu export for backwards compatibility (when not in Navigation)
+// Original UserMenu export for backwards compatibility
 export function UserMenu({ translations: t }: UserMenuProps) {
-  const { data: session, status } = useSession()
+  const { user, isLoading, logout } = useAuth()
   
-  return <UserMenuContent session={session} status={status} translations={t} />
+  return <UserMenuContent user={user} isLoading={isLoading} onLogout={logout} translations={t} />
 }

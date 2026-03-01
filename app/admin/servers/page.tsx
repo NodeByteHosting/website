@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import {
   Server,
@@ -10,9 +10,6 @@ import {
   Cpu,
   Database,
   Calendar,
-  CheckCircle2,
-  XCircle,
-  Loader2,
   ChevronLeft,
   ChevronRight,
   Filter,
@@ -21,13 +18,19 @@ import {
   Square,
   Pause,
   Activity,
+  Loader2,
+  XCircle,
+  Users,
+  Monitor,
+  Mail,
+  Globe,
+  Network,
 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/packages/ui/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Badge } from "@/packages/ui/components/ui/badge"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Skeleton } from "@/packages/ui/components/ui/skeleton"
-import { Progress } from "@/packages/ui/components/ui/progress"
 import {
   Table,
   TableBody,
@@ -49,74 +52,70 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/packages/ui/components/ui/tooltip"
-import { useToast } from "@/packages/ui/components/ui/use-toast"
 import { cn } from "@/packages/core/lib/utils"
+import { useAdminServers } from "@/packages/core"
 
 interface ServerData {
   id: string
+  serverType: string
   pterodactylId: number
   uuid: string
   name: string
-  description: string | null
+  description: string
   status: string
   isSuspended: boolean
+  panelType: string
   owner: {
     id: string
     username: string
     email: string
-  }
+  } | null
   node: {
     id: number
     name: string
-  }
+    fqdn: string
+  } | null
   egg: {
     id: number
     name: string
-  }
-  properties: Array<{
-    key: string
-    value: string
-  }>
+    nest: string
+  } | null
+  memory: number
+  disk: number
+  cpu: number
   createdAt: string
-  allocations: Array<{
-    ip: string
-    port: number
-    isAssigned: boolean
-  }>
+  updatedAt: string
 }
 
-interface ServerMeta {
-  total: number
-  page: number
-  perPage: number
-  totalPages: number
-}
+type FilterStatus = "all" | "online" | "offline" | "suspended" | "installing"
+type FilterType = "all" | "game_server" | "vps" | "email" | "web_hosting"
 
-type FilterStatus = "all" | "running" | "offline" | "suspended" | "installing"
+const serverTypeConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
+  game_server: { label: "Game Server", icon: Server },
+  vps:         { label: "VPS",         icon: Monitor },
+  email:       { label: "Email",       icon: Mail },
+  web_hosting: { label: "Web Hosting", icon: Globe },
+}
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ComponentType<{ className?: string }> }> = {
-  RUNNING: { label: "Running", variant: "default", icon: Play },
-  OFFLINE: { label: "Offline", variant: "secondary", icon: Square },
-  STARTING: { label: "Starting", variant: "outline", icon: Activity },
-  STOPPING: { label: "Stopping", variant: "outline", icon: Pause },
-  INSTALLING: { label: "Installing", variant: "outline", icon: Loader2 },
-  INSTALL_FAILED: { label: "Install Failed", variant: "destructive", icon: XCircle },
-  SUSPENDED: { label: "Suspended", variant: "destructive", icon: AlertTriangle },
-  RESTORING_BACKUP: { label: "Restoring", variant: "outline", icon: RefreshCw },
+  online:    { label: "Online",    variant: "default",     icon: Play },
+  offline:   { label: "Offline",   variant: "secondary",   icon: Square },
+  starting:  { label: "Starting",  variant: "outline",     icon: Activity },
+  stopping:  { label: "Stopping",  variant: "outline",     icon: Pause },
+  installing: { label: "Installing", variant: "outline",   icon: Loader2 },
+  install_failed: { label: "Install Failed", variant: "destructive", icon: XCircle },
+  suspended: { label: "Suspended", variant: "destructive",  icon: AlertTriangle },
+  restoring_backup: { label: "Restoring", variant: "outline", icon: RefreshCw },
 }
 
 export default function ServersPage() {
   const t = useTranslations("admin")
-  const { toast } = useToast()
-  const [servers, setServers] = useState<ServerData[]>([])
-  const [meta, setMeta] = useState<ServerMeta | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(25)
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all")
+  const [filterType, setFilterType] = useState<FilterType>("all")
 
   // Debounce search
   useEffect(() => {
@@ -127,72 +126,38 @@ export default function ServersPage() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
-  const fetchServers = useCallback(async (showRefreshing = false) => {
-    if (showRefreshing) setRefreshing(true)
-    else setLoading(true)
+  const { data: response, isLoading, refetch } = useAdminServers({
+    page: currentPage,
+    perPage,
+    status: filterStatus,
+    serverType: filterType !== "all" ? filterType : undefined,
+    search: debouncedSearch || undefined,
+  })
 
-    try {
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        perPage: perPage.toString(),
-        filter: filterStatus,
-        ...(debouncedSearch && { search: debouncedSearch }),
-      })
-
-      const response = await fetch(`/api/admin/servers?${params}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setServers(data.data)
-        setMeta(data.meta)
-      } else {
-        toast({
-          title: t("error.title"),
-          description: data.error || "Failed to fetch servers",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      toast({
-        title: t("error.title"),
-        description: "Failed to connect to server",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-    }
-  }, [currentPage, perPage, filterStatus, debouncedSearch, t, toast])
-
-  useEffect(() => {
-    fetchServers()
-  }, [fetchServers])
+  const serversData = response as any
+  const servers: ServerData[] = serversData?.servers || []
+  const meta = serversData?.pagination || null
 
   const formatBytes = (mb: number) => {
-    if (mb >= 1024) {
-      return `${(mb / 1024).toFixed(1)} GB`
-    }
+    if (mb === 0) return "Unlimited"
+    if (mb >= 1024) return `${(mb / 1024).toFixed(1)} GB`
     return `${mb} MB`
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString(undefined, {
+      year: "numeric", month: "short", day: "numeric",
     })
-  }
 
   const getStatusConfig = (status: string, suspended: boolean) => {
-    if (suspended) return statusConfig.SUSPENDED
-    return statusConfig[status] || { label: status, variant: "outline" as const, icon: Activity }
+    if (suspended) return statusConfig.suspended
+    return statusConfig[status.toLowerCase()] || { label: status, variant: "outline" as const, icon: Activity }
   }
 
-  // Calculate stats
   const stats = {
     total: meta?.total || 0,
-    running: servers.filter((s) => s.status === "RUNNING" && !s.isSuspended).length,
-    offline: servers.filter((s) => s.status === "OFFLINE" && !s.isSuspended).length,
+    online: servers.filter((s) => s.status === "online" && !s.isSuspended).length,
+    offline: servers.filter((s) => s.status === "offline" && !s.isSuspended).length,
     suspended: servers.filter((s) => s.isSuspended).length,
   }
 
@@ -205,17 +170,10 @@ export default function ServersPage() {
             <Server className="h-6 w-6 sm:h-8 sm:w-8" />
             {t("servers.title")}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("servers.description")}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">{t("servers.description")}</p>
         </div>
-        <Button
-          onClick={() => fetchServers(true)}
-          disabled={refreshing}
-          variant="outline"
-          size="sm"
-        >
-          <RefreshCw className={cn("h-4 w-4 mr-2", refreshing && "animate-spin")} />
+        <Button onClick={() => refetch()} disabled={isLoading} variant="outline" size="sm">
+          <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
           {t("actions.refresh")}
         </Button>
       </div>
@@ -228,11 +186,7 @@ export default function ServersPage() {
             <Server className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <div className="text-2xl font-bold">{stats.total}</div>
-            )}
+            {isLoading ? <Skeleton className="h-8 w-16" /> : <div className="text-2xl font-bold">{stats.total}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -241,11 +195,7 @@ export default function ServersPage() {
             <Play className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <div className="text-2xl font-bold text-green-500">{stats.running}</div>
-            )}
+            {isLoading ? <Skeleton className="h-8 w-16" /> : <div className="text-2xl font-bold text-green-500">{stats.online}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -254,11 +204,7 @@ export default function ServersPage() {
             <Square className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <div className="text-2xl font-bold">{stats.offline}</div>
-            )}
+            {isLoading ? <Skeleton className="h-8 w-16" /> : <div className="text-2xl font-bold">{stats.offline}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -267,16 +213,12 @@ export default function ServersPage() {
             <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <Skeleton className="h-8 w-16" />
-            ) : (
-              <div className="text-2xl font-bold text-destructive">{stats.suspended}</div>
-            )}
+            {isLoading ? <Skeleton className="h-8 w-16" /> : <div className="text-2xl font-bold text-destructive">{stats.suspended}</div>}
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters and Search */}
+      {/* Filters */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">{t("servers.filters.title")}</CardTitle>
@@ -300,16 +242,27 @@ export default function ServersPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{t("servers.filters.all")}</SelectItem>
-                  <SelectItem value="running">{t("servers.filters.running")}</SelectItem>
+                  <SelectItem value="online">{t("servers.filters.running")}</SelectItem>
                   <SelectItem value="offline">{t("servers.filters.offline")}</SelectItem>
                   <SelectItem value="suspended">{t("servers.filters.suspended")}</SelectItem>
                   <SelectItem value="installing">{t("servers.filters.installing")}</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={perPage.toString()} onValueChange={(v) => { setPerPage(parseInt(v)); setCurrentPage(1) }}>
-                <SelectTrigger className="w-[100px]">
+              <Select value={filterType} onValueChange={(v) => { setFilterType(v as FilterType); setCurrentPage(1) }}>
+                <SelectTrigger className="w-[140px]">
+                  <Network className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="game_server">Game Server</SelectItem>
+                  <SelectItem value="vps">VPS</SelectItem>
+                  <SelectItem value="email">Email</SelectItem>
+                  <SelectItem value="web_hosting">Web Hosting</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={perPage.toString()} onValueChange={(v) => { setPerPage(parseInt(v)); setCurrentPage(1) }}>
+                <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="10">10</SelectItem>
                   <SelectItem value="25">25</SelectItem>
@@ -322,7 +275,7 @@ export default function ServersPage() {
         </CardContent>
       </Card>
 
-      {/* Servers Table */}
+      {/* Table */}
       <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -333,12 +286,13 @@ export default function ServersPage() {
                   <TableHead>{t("servers.table.status")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("servers.table.owner")}</TableHead>
                   <TableHead className="hidden lg:table-cell">{t("servers.table.resources")}</TableHead>
+                  <TableHead className="hidden xl:table-cell">Egg</TableHead>
                   <TableHead className="hidden xl:table-cell">{t("servers.table.node")}</TableHead>
                   <TableHead className="hidden xl:table-cell">{t("servers.table.created")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loading ? (
+                {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell><Skeleton className="h-10 w-40" /></TableCell>
@@ -346,18 +300,17 @@ export default function ServersPage() {
                       <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-32" /></TableCell>
                       <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
                       <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
+                      <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-20" /></TableCell>
                       <TableCell className="hidden xl:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
                     </TableRow>
                   ))
                 ) : servers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-32 text-center">
+                    <TableCell colSpan={7} className="h-32 text-center">
                       <div className="flex flex-col items-center gap-2 text-muted-foreground">
                         <Server className="h-8 w-8" />
                         <p>{t("servers.empty.title")}</p>
-                        {debouncedSearch && (
-                          <p className="text-sm">{t("servers.empty.searchHint")}</p>
-                        )}
+                        {debouncedSearch && <p className="text-sm">{t("servers.empty.searchHint")}</p>}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -365,92 +318,89 @@ export default function ServersPage() {
                   servers.map((server) => {
                     const statusCfg = getStatusConfig(server.status, server.isSuspended)
                     const StatusIcon = statusCfg.icon
-                    const primaryAllocation = server.allocations?.find((a) => a.isAssigned)
-                    
-                    // Extract resource properties
-                    const getProperty = (key: string) => {
-                      const prop = server.properties?.find(p => p.key === key)
-                      return prop?.value ? parseInt(prop.value, 10) : null
-                    }
-                    const memory = getProperty("memory")
-                    const disk = getProperty("disk")
-                    const cpu = getProperty("cpu")
-                    
                     return (
                       <TableRow key={server.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                              <Server className="h-5 w-5" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                              {(() => { const cfg = serverTypeConfig[server.serverType] || serverTypeConfig.game_server; const TypeIcon = cfg.icon; return <TypeIcon className="h-5 w-5" /> })()}
                             </div>
-                            <div>
-                              <div className="font-medium">{server.name}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {primaryAllocation ? (
-                                  `${primaryAllocation.ip}:${primaryAllocation.port}`
-                                ) : (
-                                  <span className="italic">No allocation</span>
-                                )}
+                            <div className="min-w-0">
+                              <div className="font-medium truncate">{server.name}</div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                <span className="capitalize">{(serverTypeConfig[server.serverType]?.label) || server.serverType}</span>
+                                {server.pterodactylId ? (
+                                  <span className="text-muted-foreground/60">· #{server.pterodactylId}</span>
+                                ) : null}
                               </div>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <Badge variant={statusCfg.variant} className="gap-1">
-                            <StatusIcon className={cn(
-                              "h-3 w-3",
-                              server.status === "INSTALLING" && "animate-spin"
-                            )} />
-                            {t(`servers.status.${server.status.toLowerCase()}`) || statusCfg.label}
+                            <StatusIcon className={cn("h-3 w-3", server.status === "installing" && "animate-spin")} />
+                            {statusCfg.label}
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          <div>
-                            <div className="text-sm">{server.owner.username}</div>
-                            <div className="text-xs text-muted-foreground">{server.owner.email}</div>
-                          </div>
+                          {server.owner ? (
+                            <div>
+                              <div className="text-sm">{server.owner.username}</div>
+                              <div className="text-xs text-muted-foreground">{server.owner.email}</div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Users className="h-3 w-3" />
+                              <span>Unassigned</span>
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="hidden lg:table-cell">
-                          <div className="space-y-1 text-xs">
-                            <TooltipProvider>
-                              {memory !== null && (
-                                <div className="flex items-center gap-2">
-                                  <HardDrive className="h-3 w-3 text-muted-foreground" />
-                                  <Tooltip>
-                                    <TooltipTrigger className="cursor-default">
-                                      <span>{formatBytes(memory)}</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{t("servers.resources.memory")}</TooltipContent>
-                                  </Tooltip>
-                                </div>
-                              )}
-                              {disk !== null && (
-                                <div className="flex items-center gap-2">
-                                  <Database className="h-3 w-3 text-muted-foreground" />
-                                  <Tooltip>
-                                    <TooltipTrigger className="cursor-default">
-                                      <span>{formatBytes(disk)}</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{t("servers.resources.disk")}</TooltipContent>
-                                  </Tooltip>
-                                </div>
-                              )}
-                              {cpu !== null && (
-                                <div className="flex items-center gap-2">
-                                  <Cpu className="h-3 w-3 text-muted-foreground" />
-                                  <Tooltip>
-                                    <TooltipTrigger className="cursor-default">
-                                      <span>{cpu}%</span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{t("servers.resources.cpu")}</TooltipContent>
-                                  </Tooltip>
-                                </div>
-                              )}
-                            </TooltipProvider>
-                          </div>
+                          <TooltipProvider>
+                            <div className="space-y-1 text-xs">
+                              <div className="flex items-center gap-2">
+                                <HardDrive className="h-3 w-3 text-muted-foreground" />
+                                <Tooltip>
+                                  <TooltipTrigger className="cursor-default">{formatBytes(server.memory)}</TooltipTrigger>
+                                  <TooltipContent>RAM</TooltipContent>
+                                </Tooltip>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Database className="h-3 w-3 text-muted-foreground" />
+                                <Tooltip>
+                                  <TooltipTrigger className="cursor-default">{formatBytes(server.disk)}</TooltipTrigger>
+                                  <TooltipContent>Disk</TooltipContent>
+                                </Tooltip>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Cpu className="h-3 w-3 text-muted-foreground" />
+                                <Tooltip>
+                                  <TooltipTrigger className="cursor-default">{server.cpu === 0 ? "Unlimited" : `${server.cpu}%`}</TooltipTrigger>
+                                  <TooltipContent>CPU</TooltipContent>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </TooltipProvider>
                         </TableCell>
                         <TableCell className="hidden xl:table-cell">
-                          <Badge variant="outline">{server.node.name}</Badge>
+                          {server.egg ? (
+                            <div>
+                              <div className="text-xs font-medium">{server.egg.name}</div>
+                              <div className="text-xs text-muted-foreground">{server.egg.nest}</div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="hidden xl:table-cell">
+                          {server.node ? (
+                            <div>
+                              <Badge variant="outline">{server.node.name}</Badge>
+                              <div className="text-xs text-muted-foreground mt-1">{server.node.fqdn}</div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="hidden xl:table-cell">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -478,8 +428,7 @@ export default function ServersPage() {
               </p>
               <div className="flex items-center gap-2">
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant="outline" size="sm"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
@@ -492,8 +441,7 @@ export default function ServersPage() {
                   <span>{meta.totalPages}</span>
                 </div>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant="outline" size="sm"
                   onClick={() => setCurrentPage((p) => Math.min(meta.totalPages, p + 1))}
                   disabled={currentPage === meta.totalPages}
                 >

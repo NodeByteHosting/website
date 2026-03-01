@@ -50,7 +50,7 @@ export function Download() {
       description: t("games.hytale.description"),
       banner: "/hytale.png",
       tag: t("games.hytale.tag"),
-      tagColor: "bg-muted text-muted-foreground",
+      tagColor: "bg-primary text-accent-foreground",
       features: [
         t("games.hytale.features.0"),
         t("games.hytale.features.1"),

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { useApiMutation } from "@/packages/core"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
 import { Loader2, CheckCircle2, AlertCircle, Mail } from "lucide-react"
@@ -19,6 +20,30 @@ export default function VerifyEmailPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
   const [message, setMessage] = useState("")
 
+  // Verify email mutation
+  const verifyMutation = useApiMutation<
+    { success: boolean },
+    { token: string; userId: string }
+  >("POST", "/api/v1/auth/verify-email", {
+    onSuccess: () => {
+      setStatus("success")
+      setMessage(t("successDescription"))
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        router.push("/auth/login")
+      }, 2000)
+    },
+    onError: (error) => {
+      setStatus("error")
+      const errorMap: Record<string, string> = {
+        token_expired: t("errors.tokenExpired"),
+        invalid_token: t("errors.invalidToken"),
+        already_verified: t("errors.alreadyVerified"),
+      }
+      setMessage(errorMap[error.message] || t("errors.generic"))
+    },
+  })
+
   useEffect(() => {
     if (!token || !userId) {
       setStatus("error")
@@ -26,42 +51,8 @@ export default function VerifyEmailPage() {
       return
     }
 
-    const verifyEmail = async () => {
-      try {
-        const response = await fetch("/api/auth/verify-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, userId }),
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          setStatus("error")
-          const errorMap: Record<string, string> = {
-            token_expired: t("errors.tokenExpired"),
-            invalid_token: t("errors.invalidToken"),
-            already_verified: t("errors.alreadyVerified"),
-          }
-          setMessage(errorMap[data.error] || t("errors.generic"))
-          return
-        }
-
-        setStatus("success")
-        setMessage(t("successDescription"))
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          router.push("/auth/login")
-        }, 2000)
-      } catch (error) {
-        setStatus("error")
-        setMessage(t("errors.networkError"))
-      }
-    }
-
-    verifyEmail()
-  }, [token, userId, router, t])
+    verifyMutation.mutate({ token, userId })
+  }, [token, userId])
 
   return (
     <main className="min-h-screen relative overflow-hidden">

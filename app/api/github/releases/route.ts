@@ -40,51 +40,14 @@ export interface ReleasesResponse {
 }
 
 async function getConfiguredRepositories(): Promise<string[]> {
-  try {
-    const { getConfig } = await import("@/packages/core/lib/config")
-    const repos = await getConfig("github_repositories")
-    
-    if (repos) {
-      try {
-        let repoParsed: any = JSON.parse(repos)
-        // handle double-encoded strings like '"[\"A\"]"'
-        if (typeof repoParsed === "string") {
-          try {
-            const double = JSON.parse(repoParsed)
-            if (Array.isArray(double)) repoParsed = double
-          } catch {
-            // leave as string
-          }
-        }
-
-        if (Array.isArray(repoParsed) && repoParsed.length > 0) {
-          return repoParsed
-        }
-      } catch (e) {
-        console.error("[GitHub] Failed to parse stored repositories:", e)
-      }
-    }
-  } catch (error) {
-    console.error("[GitHub] Failed to fetch repositories from database:", error)
-  }
-
-  // Return defaults if no custom repos configured
+  // Configuration is now handled by Go backend
+  // Return default repositories only
   return DEFAULT_REPOSITORIES
 }
 
 async function getGithubToken(): Promise<string | null> {
-  try {
-    const { getConfig } = await import("@/packages/core/lib/config")
-    
-    const token = await getConfig("github_token")
-    if (token) {
-      return token
-    }
-  } catch (error) {
-    console.error("[GitHub] Failed to fetch token from database:", error)
-  }
-
-  // Fallback to environment variable
+  // Token is managed via environment variables
+  // Go backend handles secure token storage
   return process.env.GITHUB_TOKEN || null
 }
 

@@ -73,7 +73,7 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-10">
       {/* Background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
+      <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background" />
       
       {/* Animated background orbs */}
       <div className="absolute inset-0 overflow-hidden">
@@ -83,7 +83,7 @@ export function Hero() {
       </div>
 
       {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -100,11 +100,11 @@ export function Hero() {
             {/* Main Heading */}
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight">
-                <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+                <span className="bg-linear-to-r from-foreground to-foreground/80 bg-clip-text">
                   {t("hero.title")}
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
                   {t("hero.titleHighlight")}
                 </span>
               </h1>
@@ -176,7 +176,7 @@ export function Hero() {
           <div className="relative hidden lg:flex items-center justify-center">
             <div className="relative">
               {/* Glow effect behind graphic */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 rounded-full blur-3xl scale-110" />
+              <div className="absolute inset-0 bg-linear-to-tr from-primary/20 via-transparent to-accent/20 rounded-full blur-3xl scale-110" />
               
               {/* Main graphic container */}
               <div className="relative">

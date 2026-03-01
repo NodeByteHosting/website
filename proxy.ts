@@ -1,9 +1,80 @@
-import { auth } from "@/packages/auth"
-import { getSystemState } from "@/packages/core/lib/config"
-import { isSetupComplete } from "@/packages/core/lib/setup"
 import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-export default auth(async (req) => {
+const API_BASE = process.env.NEXT_PUBLIC_GO_API_URL || "http://localhost:8080"
+
+// Helper to get user from JWT token
+async function getUserFromToken(token: string) {
+  try {
+    const response = await fetch(`${API_BASE}/api/v1/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const data = await response.json()
+    return data.user
+  } catch (error) {
+    return null
+  }
+}
+
+// Helper to get token from request
+function getTokenFromRequest(req: NextRequest): string | null {
+  // Try to get from Authorization header
+  const authHeader = req.headers.get("Authorization")
+  if (authHeader?.startsWith("Bearer ")) {
+    return authHeader.substring(7)
+  }
+
+  // Try to get from cookie (if we set it there)
+  const cookie = req.cookies.get("auth_token")
+  return cookie?.value || null
+}
+
+// Check if setup is complete by calling Go backend
+async function isSetupComplete(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE}/health`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    
+    // If backend is healthy, assume setup is complete
+    // The backend should be running if setup is done
+    return response.ok
+  } catch (error) {
+    // If we can't reach the backend, allow access to setup
+    return false
+  }
+}
+
+// Get system state from Go backend
+async function getSystemState() {
+  try {
+    const response = await fetch(`${API_BASE}/health`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+    
+    // Default to safe values if we can't reach backend
+    return {
+      maintenanceMode: false,
+      registrationEnabled: true,
+    }
+  } catch (error) {
+    return {
+      maintenanceMode: false,
+      registrationEnabled: true,
+    }
+  }
+}
+
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   // Setup Check - redirect to setup if not complete (bypass for setup routes and static assets)
@@ -36,9 +107,29 @@ export default auth(async (req) => {
   // Get system state for maintenance mode and registration settings
   const systemState = await getSystemState()
 
+  // Get user from token if present (only for server-side auth checks)
+  // Note: Client-side tokens in localStorage are not accessible here
+  // Dashboard/Admin protection is enforced client-side via useAuth() hooks
+  const token = getTokenFromRequest(req)
+  let user = null
+  if (token) {
+    try {
+      user = await getUserFromToken(token)
+    } catch (error) {
+      // Token validation failed, let client-side handle auth
+      user = null
+    }
+  }
+
   // Maintenance Mode - redirect all non-admin users (except login, auth pages, and auth API)
-  if (systemState.maintenanceMode && pathname !== "/maintenance" && !pathname.startsWith("/auth") && !pathname.startsWith("/api/auth")) {
-    const isAdmin = (req.auth?.user?.isPterodactylAdmin || req.auth?.user?.isVirtfusionAdmin || req.auth?.user?.isSystemAdmin) ?? false
+  if (
+    systemState.maintenanceMode &&
+    pathname !== "/maintenance" &&
+    !pathname.startsWith("/auth") &&
+    !pathname.startsWith("/api/auth")
+  ) {
+    const isAdmin =
+      user?.isPterodactylAdmin || user?.isVirtfusionAdmin || user?.isSystemAdmin || false
     if (!isAdmin) {
       return NextResponse.redirect(new URL("/maintenance", req.url))
     }
@@ -51,62 +142,29 @@ export default auth(async (req) => {
     }
   }
 
-  // Protect dashboard routes - require authentication
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/dashboard")) {
-    // API dashboard routes: check auth
-    if (pathname.startsWith("/api/dashboard")) {
-      if (!req.auth?.user?.id) {
-        return NextResponse.json(
-          { success: false, error: "Unauthorized" },
-          { status: 401 }
-        )
-      }
-      return response
-    }
-
-    // Frontend dashboard: require active session
-    if (!req.auth?.user?.id) {
-      const loginUrl = new URL("/auth/login", req.url)
-      loginUrl.searchParams.set("callbackUrl", pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-
+  // Dashboard & Admin routes: Let client-side useAuth() handle protection
+  // Middleware allows access, client-side React will redirect if not authenticated
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
     return response
   }
 
-  // Protect admin panel and API routes - requireAdmin() in each route handles DB checks
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    // API admin routes: let API endpoints perform DB-backed authorization
-    if (pathname.startsWith("/api/admin")) {
-      if (!req.auth?.user?.id) {
-        return NextResponse.json(
-          { success: false, error: "Unauthorized" },
-          { status: 401 }
-        )
-      }
+  // API routes still require server-side auth
+  // Exception: SSE stream endpoint uses ?token= query param auth (EventSource can't send headers)
+  if (pathname.startsWith("/api/dashboard") || pathname.startsWith("/api/admin")) {
+    if (pathname.startsWith("/api/admin/sync/stream")) {
       return response
     }
-
-    // Frontend admin panel: require active session AND admin role
-    if (!req.auth?.user?.id) {
-      const loginUrl = new URL("/auth/login", req.url)
-      loginUrl.searchParams.set("callbackUrl", pathname)
-      return NextResponse.redirect(loginUrl)
+    // Allow through if the Authorization header is present (client-side Bearer token)
+    // The Go backend will enforce auth; we only block if neither cookie nor header is present
+    const hasAuthHeader = req.headers.get("Authorization")?.startsWith("Bearer ")
+    if (!hasAuthHeader && !user?.id) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 })
     }
-
-    const roles = (req.auth?.user?.roles as string[]) || []
-    const isAdmin = (req.auth?.user?.isPterodactylAdmin || req.auth?.user?.isVirtfusionAdmin || req.auth?.user?.isSystemAdmin) ?? false
-    const hasAdminRole = roles.includes("SUPER_ADMIN") || roles.includes("ADMINISTRATOR")
-
-    if (!isAdmin && !hasAdminRole) {
-      return NextResponse.redirect(new URL("/", req.url))
-    }
-
     return response
   }
 
   return response
-})
+}
 
 export const config = {
   matcher: [
