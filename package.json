@@ -8,7 +8,8 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "git submodule update --init --recursive --remote"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
