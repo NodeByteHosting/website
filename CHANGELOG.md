@@ -5,6 +5,71 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-03-01
+
+### Added
+- **Admin Locations Page** - View and sync Pterodactyl panel locations
+  - Stats cards showing total locations, descriptions, and node counts
+  - Searchable data table with short code, long name, and associated nodes
+  - Individual sync button for locations data
+  - Navigation item added to admin sidebar with MapPin icon
+- **Admin Allocations Page** - View and manage server allocations across nodes
+  - Stats cards for total allocations, assigned/unassigned counts, and unique ports
+  - Filterable table by node with IP, port, alias, assigned server, and node columns
+  - Server name column now correctly populated from synced allocation data
+- **Admin Nodes Page** - Navigation and routing for server nodes management
+- **User Account Profile Management** - Full profile editing on dashboard account page
+  - Editable fields: first name, last name, username, phone number, company name, billing email
+  - Email verification status badge with resend verification button
+  - Email change request form with new email input and confirmation
+  - Security tab with password change form
+  - Account information section showing creation date, last login, and account ID
+- **Translation Keys** - Added missing i18n keys for new features
+  - `admin.nav.locations`, `admin.nav.allocations`, `admin.nav.nodes` navigation labels
+  - `admin.sync.started`, `admin.sync.running` toast message translations
+  - `dashboard.account` section with full profile and security form labels
+- **API Routes Migration to Go Backend** - Consolidated Next.js API routes to centralized Fiber backend
+  - Removed Next.js API routes from `/app/api/` directory
+  - All admin endpoints now served from unified Go Fiber backend with consistent error handling
+  - Bearer token authentication for all admin routes
+  - Admin settings endpoints: `GET/POST /api/admin/settings`
+  - GitHub repository management: `GET/POST/PUT/DELETE /api/admin/settings/repos`
+  - Discord webhook management: `GET/POST/PUT/PATCH/DELETE /api/admin/settings/webhooks`
+  - Sync controls: `GET/POST /api/admin/sync`, `GET /api/admin/sync/logs`, `GET/POST /api/admin/sync/settings`
+  - Server management: `GET /api/admin/servers`
+  - Improved API response consistency with backend-driven validation
+- **Admin Users Management Enhancements** - Improved user listing and filtering capabilities
+  - Pagination support with configurable page size (25 users per page)
+  - Sorting by user, email, status, created date, and last login
+  - Search and filter functionality for user discovery
+  - User role management dialog for updating admin status
+  - Statistics cards showing total users, migrated users, admins, and active users
+- **API Hooks Refactoring** - Updated all admin API hooks to work with Go backend
+  - `useAdminUsers()` - User listing with pagination and filtering
+  - `useAdminServers()` - Server management queries
+  - `useAdminSettings()` - Settings retrieval and updates
+  - `useAdminWebhooks()` - Webhook CRUD operations
+  - All hooks now construct proper query parameters for backend endpoints
+  - Consistent error handling and loading states across all admin operations
+
+### Fixed
+- **Nested Form Hydration Error** - Fixed React hydration mismatch on account page
+  - Converted nested `<form>` inside profile form to `<div>` with `onClick` handler
+  - Email change submission now works without triggering DOM nesting warnings
+- **Invisible Disabled Email Input** - Fixed dark mode styling for disabled inputs
+  - Added `text-foreground opacity-100` classes to ensure disabled email field text is visible
+  - Previously `bg-muted` made text invisible against dark backgrounds
+- **Admin Users Page Data Population** - Fixed empty users table in admin panel
+  - Corrected `useAdminUsers()` hook to accept and pass query parameters (page, pageSize, sortField, sortOrder, filter, search)
+  - Fixed data structure extraction from nested API response format (`data.users[]` and `data.pagination`)
+  - Corrected mutation payload to only send `userId` and `roles` fields
+  - User data now properly displays with pagination, sorting, and filtering working correctly
+  - Backend timestamp handling fixed to properly convert PostgreSQL TIMESTAMP columns to ISO 8601 format
+- **API Route Organization** - Eliminated duplicate API implementations
+  - Removed redundant Next.js API routes that are now handled by Go backend
+  - Centralized authentication and authorization in Go middleware
+  - Consistent response format across all API endpoints
+
 ## [3.2.0] - 2025-12-24
 
 ### Added

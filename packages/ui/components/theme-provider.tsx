@@ -13,7 +13,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      themes={["light", "dark", "slate", "midnight", "rose", "crimson", "forest", "emerald", "desert", "amber", "ocean", "teal", "lavender", "violet", "stranger", "christmas", "newyear", "system"]}
+      themes={["light", "dark", "slate", "midnight", "rose", "crimson", "forest", "emerald", "desert", "amber", "ocean", "teal", "lavender", "violet", "stranger", "christmas", "newyear", "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "catppuccin-latte", "dracula", "nord", "gruvbox", "solarized", "tokyo-night", "one-dark", "rose-pine", "system"]}
       {...props}
     >
       {children}

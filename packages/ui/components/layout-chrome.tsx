@@ -28,11 +28,11 @@ export function LayoutChrome({ children }: LayoutChromeProps) {
   // Only render Navigation/Footer after hydration to prevent mismatch
   return (
     <>
-      {!hideChrome && mounted && <Navigation />}
+      {!hideChrome && <Navigation />}
       <main className="relative min-h-screen overflow-hidden">
         {children}
       </main>
-      {!hideChrome && mounted && <Footer />}
+      {!hideChrome && <Footer />}
     </>
   )
 }

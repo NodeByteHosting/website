@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import {
   Users,
@@ -59,6 +59,8 @@ import { Switch } from "@/packages/ui/components/ui/switch"
 import { Checkbox } from "@/packages/ui/components/ui/checkbox"
 import { useToast } from "@/packages/ui/components/ui/use-toast"
 import { cn } from "@/packages/core/lib/utils"
+import { useAdminUsers, useUpdateUserRoles } from "@/packages/core"
+import { isStaffUser } from "@/packages/auth"
 
 interface User {
   id: string
@@ -66,19 +68,19 @@ interface User {
   username: string
   firstName: string | null
   lastName: string | null
-  roles?: string[]
-  isAdmin: boolean
-  isSystemAdmin?: boolean
+  pterodactylId: number | null
+  roles: string[]
+  isPterodactylAdmin: boolean
+  isVirtfusionAdmin: boolean
+  isSystemAdmin: boolean
   isMigrated: boolean
   isActive: boolean
-  pterodactylId: number | null
+  emailVerified: boolean
   createdAt: string
+  updatedAt: string
   lastLoginAt: string | null
-  lastSyncedAt: string | null
-  _count?: {
-    servers: number
-    sessions: number
-  }
+  serverCount: number
+  sessionCount: number
 }
 
 interface UserMeta {
@@ -95,10 +97,8 @@ type FilterStatus = "all" | "active" | "inactive" | "admin" | "migrated" | "not-
 export default function UsersPage() {
   const t = useTranslations("admin")
   const { toast } = useToast()
-  const [users, setUsers] = useState<User[]>([])
-  const [meta, setMeta] = useState<UserMeta | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
+  
+  // State
   const [searchQuery, setSearchQuery] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
@@ -111,7 +111,6 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [editingRoles, setEditingRoles] = useState({ isAdmin: false, isSystemAdmin: false, isActive: true, roles: [] as string[] })
-  const [savingRole, setSavingRole] = useState(false)
 
   // Debounce search
   useEffect(() => {
@@ -122,48 +121,20 @@ export default function UsersPage() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
-  const fetchUsers = useCallback(async (showRefreshing = false) => {
-    if (showRefreshing) setRefreshing(true)
-    else setLoading(true)
+  // Use TanStack Query hooks
+  const { data: usersData, isLoading, refetch } = useAdminUsers({
+    page: currentPage,
+    perPage,
+    sortField,
+    sortOrder,
+    filter: filterStatus,
+    search: debouncedSearch || undefined,
+  })
 
-    try {
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        perPage: perPage.toString(),
-        sortField,
-        sortOrder,
-        filter: filterStatus,
-        ...(debouncedSearch && { search: debouncedSearch }),
-      })
+  const updateRoles = useUpdateUserRoles()
 
-      const response = await fetch(`/api/admin/users?${params}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setUsers(data.data)
-        setMeta(data.meta)
-      } else {
-        toast({
-          title: t("error.title"),
-          description: data.error || "Failed to fetch users",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      toast({
-        title: t("error.title"),
-        description: "Failed to connect to server",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-    }
-  }, [currentPage, perPage, sortField, sortOrder, filterStatus, debouncedSearch, t, toast])
-
-  useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
+  const users = usersData?.users || []
+  const meta = usersData?.pagination || null
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -207,8 +178,8 @@ export default function UsersPage() {
   const handleOpenEditDialog = (user: User) => {
     setEditingUser(user)
     setEditingRoles({
-      isAdmin: user.isAdmin,
-      isSystemAdmin: user.isSystemAdmin || false,
+      isAdmin: user.isPterodactylAdmin || user.isVirtfusionAdmin,
+      isSystemAdmin: user.isSystemAdmin,
       isActive: user.isActive,
       roles: user.roles || [],
     })
@@ -217,43 +188,27 @@ export default function UsersPage() {
 
   const handleSaveRoles = async () => {
     if (!editingUser) return
-    setSavingRole(true)
-    try {
-      const response = await fetch("/api/admin/users/roles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: editingUser.id,
-          isAdmin: editingRoles.isAdmin,
-          isSystemAdmin: editingRoles.isSystemAdmin,
-          isActive: editingRoles.isActive,
-          roles: editingRoles.roles,
-        }),
-      })
-      const data = await response.json()
-      if (data.success) {
+    
+    updateRoles.mutate({
+      userId: editingUser.id,
+      roles: editingRoles.roles,
+    }, {
+      onSuccess: () => {
         toast({
           title: "Role updated",
           description: `${editingUser.username}'s role has been updated successfully`,
         })
         setEditDialogOpen(false)
-        fetchUsers(true)
-      } else {
+        refetch()
+      },
+      onError: (error: any) => {
         toast({
           title: "Error",
-          description: data.error || "Failed to update user role",
+          description: error.message || "Failed to update user role",
           variant: "destructive",
         })
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update user role",
-        variant: "destructive",
-      })
-    } finally {
-      setSavingRole(false)
-    }
+    })
   }
 
   return (
@@ -270,12 +225,12 @@ export default function UsersPage() {
           </p>
         </div>
         <Button
-          onClick={() => fetchUsers(true)}
-          disabled={refreshing}
+          onClick={() => refetch()}
+          disabled={isLoading}
           variant="outline"
           size="sm"
         >
-          <RefreshCw className={cn("h-4 w-4 mr-2", refreshing && "animate-spin")} />
+          <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
           {t("actions.refresh")}
         </Button>
       </div>
@@ -288,7 +243,7 @@ export default function UsersPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="text-2xl font-bold">{meta?.total || 0}</div>
@@ -301,7 +256,7 @@ export default function UsersPage() {
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="text-2xl font-bold">
@@ -316,11 +271,11 @@ export default function UsersPage() {
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="text-2xl font-bold">
-                {users.filter((u) => u.isAdmin).length}
+                {users.filter((u: User) => isStaffUser(u as any)).length}
               </div>
             )}
           </CardContent>
@@ -331,7 +286,7 @@ export default function UsersPage() {
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="h-8 w-16" />
             ) : (
               <div className="text-2xl font-bold">
@@ -415,6 +370,7 @@ export default function UsersPage() {
                   </TableHead>
                   <TableHead className="w-[55%] sm:w-auto">{t("users.table.status")}</TableHead>
                   <TableHead className="hidden md:table-cell">{t("users.table.pterodactyl")}</TableHead>
+                  <TableHead className="hidden md:table-cell">Servers</TableHead>
                   <TableHead 
                     className="hidden lg:table-cell cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort("createdAt")}
@@ -437,7 +393,7 @@ export default function UsersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loading ? (
+                {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell className="py-2 sm:py-4"><Skeleton className="h-10 w-full" /></TableCell>
@@ -473,7 +429,7 @@ export default function UsersPage() {
                           <div className="min-w-0 flex-1">
                             <div className="font-medium flex items-center gap-1 text-xs sm:text-sm">
                               <span className="truncate">{user.username}</span>
-                              {user.isAdmin && (
+                              {(isStaffUser(user as any)) && (
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
@@ -529,9 +485,12 @@ export default function UsersPage() {
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
+                      <TableCell className="hidden md:table-cell py-2 sm:py-4">
+                        <span className="text-sm font-medium">{user.serverCount ?? 0}</span>
+                      </TableCell>
                       <TableCell className="hidden lg:table-cell py-2 sm:py-4">
                         <div className="flex items-center gap-2 text-xs lg:text-sm text-muted-foreground">
-                          <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                          <Calendar className="h-3.5 w-3.5 shrink-0" />
                           {formatDate(user.createdAt)}
                         </div>
                       </TableCell>
@@ -685,17 +644,17 @@ export default function UsersPage() {
             <Button
               variant="outline"
               onClick={() => setEditDialogOpen(false)}
-              disabled={savingRole}
+              disabled={updateRoles.isPending}
               className="flex-1"
             >
               Cancel
             </Button>
             <Button
               onClick={handleSaveRoles}
-              disabled={savingRole}
+              disabled={updateRoles.isPending}
               className="flex-1"
             >
-              {savingRole ? "Saving..." : "Save"}
+              {updateRoles.isPending ? "Saving..." : "Save"}
             </Button>
           </div>
         </DialogContent>

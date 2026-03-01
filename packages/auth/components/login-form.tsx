@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useAuth } from "@/packages/auth/lib/auth-context"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
@@ -34,6 +34,7 @@ interface LoginFormProps {
 export function LoginForm({ translations: t }: LoginFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { login } = useAuth()
   const callbackUrl = searchParams.get("callbackUrl") || "/"
   const error = searchParams.get("error")
 
@@ -48,21 +49,11 @@ export function LoginForm({ translations: t }: LoginFormProps) {
     setIsLoading(true)
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
-      })
-
-      if (result?.error) {
-        setFormError(t.errors.invalid)
-      } else if (result?.ok) {
-        router.push(callbackUrl)
-        router.refresh()
-      }
-    } catch {
-      setFormError(t.errors.networkError)
+      await login(email, password)
+      router.push(callbackUrl)
+      router.refresh()
+    } catch (err: any) {
+      setFormError(err.message || t.errors.invalid)
     } finally {
       setIsLoading(false)
     }

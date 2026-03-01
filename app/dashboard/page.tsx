@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
 import { useTranslations } from "next-intl"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { useApiQuery } from "@/packages/core"
+import { useAuth } from "@/packages/auth"
 import {
   Server,
   Activity,
@@ -165,17 +166,17 @@ function ServerCard({ server, loading }: { server?: Server; loading?: boolean })
               <MemoryStick className="h-3 w-3" />
               Memory
             </span>
-            <span>{Math.round((server.resources.memory.used / server.resources.memory.limit) * 100)}%</span>
+            <span>{server.resources.memory.limit > 0 ? Math.round((server.resources.memory.used / server.resources.memory.limit) * 100) : 0}%</span>
           </div>
-          <Progress value={(server.resources.memory.used / server.resources.memory.limit) * 100} className="h-1.5" />
+          <Progress value={server.resources.memory.limit > 0 ? (server.resources.memory.used / server.resources.memory.limit) * 100 : 0} className="h-1.5" />
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground flex items-center gap-1">
               <Cpu className="h-3 w-3" />
               CPU
             </span>
-            <span>{Math.round((server.resources.cpu.used / server.resources.cpu.limit) * 100)}%</span>
+            <span>{server.resources.cpu.limit > 0 ? Math.round((server.resources.cpu.used / server.resources.cpu.limit) * 100) : 0}%</span>
           </div>
-          <Progress value={(server.resources.cpu.used / server.resources.cpu.limit) * 100} className="h-1.5" />
+          <Progress value={server.resources.cpu.limit > 0 ? (server.resources.cpu.used / server.resources.cpu.limit) * 100 : 0} className="h-1.5" />
         </div>
         <div className="mt-4 flex justify-end">
           <Button variant="ghost" size="sm" className="h-8 text-xs" asChild>
@@ -190,12 +191,26 @@ function ServerCard({ server, loading }: { server?: Server; loading?: boolean })
 }
 
 export default function DashboardPage() {
-  const { data: session } = useSession()
+  const { user, isLoading: authLoading } = useAuth()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const t = useTranslations("dashboard")
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [loading, setLoading] = useState(true)
   const [showWelcome, setShowWelcome] = useState(false)
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push(`/auth/login?callbackUrl=/dashboard`)
+    }
+  }, [user, authLoading, router])
+
+  // Fetch dashboard stats using React Query
+  const { data: statsResponse, isLoading: loading } = useApiQuery<{ success: boolean; data: DashboardStats }>(
+    "/api/v1/dashboard/stats",
+    undefined,
+    { enabled: !!user }
+  )
+  const stats = statsResponse?.data
 
   // Show welcome message if coming from magic link
   useEffect(() => {
@@ -206,24 +221,19 @@ export default function DashboardPage() {
     }
   }, [searchParams])
 
-  // Fetch dashboard stats
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch("/api/dashboard/stats")
-        const data = await response.json()
-        if (data.success) {
-          setStats(data.data)
-        }
-      } catch (error) {
-        console.error("Failed to fetch stats:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Show loading while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
-    fetchStats()
-  }, [])
+  // Should not reach here, but just in case
+  if (!user) {
+    return null
+  }
 
   const greeting = () => {
     const hour = new Date().getHours()
@@ -249,7 +259,7 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            {greeting()}, {session?.user?.firstName || session?.user?.username || "there"}!
+            {greeting()}, {user?.firstName || user?.username || "there"}!
           </h1>
           <p className="text-muted-foreground mt-1">
             {t("subtitle")}

@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server"
 import { LoginFormMultiStep } from "@/packages/auth/components"
-import { auth } from "@/packages/auth"
+import { auth } from "@/packages/auth/lib/auth-server"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
+
+export const dynamic = "force-dynamic"
 
 export default async function LoginPage() {
   // Redirect if already logged in

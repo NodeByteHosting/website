@@ -12,7 +12,7 @@ import { CurrencyProvider } from "@/packages/core/hooks/use-currency"
 import { LocaleProvider } from "@/packages/core/hooks/use-locale"
 import { LayoutChrome } from "@/packages/ui/components/layout-chrome"
 import { AuthProvider } from "@/packages/auth/components"
-import { startScheduler } from "@/packages/core/lib/scheduler"
+import { QueryClientProvider } from "@/packages/core/lib/query-client"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -81,17 +81,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // Ensure background scheduler is started (idempotent)
-  try {
-    // don't await to avoid delaying SSR
-    startScheduler()
-  } catch (e) {
-    console.error("Failed to start scheduler:", e)
-  }
   // Read theme preference from cookie on the server so SSR can render the correct class
   const cookieStore = await cookies()
   const themeCookie = cookieStore.get("theme")?.value
-  const knownThemes = ["light", "dark", "midnight", "rose", "forest", "desert", "ocean"]
+  const knownThemes = ["light", "dark", "midnight", "rose", "forest", "desert", "ocean", "slate", "crimson", "emerald", "amber", "teal", "lavender", "violet", "stranger", "christmas", "newyear", "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "catppuccin-latte", "dracula", "nord", "gruvbox", "solarized", "tokyo-night", "one-dark", "rose-pine"]
   const themeClass = themeCookie && knownThemes.includes(themeCookie) ? themeCookie : undefined
 
   // Get locale and messages for next-intl
@@ -113,19 +106,21 @@ export default async function RootLayout({
         <meta name="google" content="notranslate" />
       </head>
       <body className={`font-sans antialiased notranslate`}>
-        <AuthProvider>
-          <NextIntlClientProvider messages={messages}>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <CurrencyProvider>
-                <LocaleProvider initialLocale={locale as any}>
-                  <LayoutChrome>
-                    {children}
-                  </LayoutChrome>
-                </LocaleProvider>
-              </CurrencyProvider>
-            </ThemeProvider>
-          </NextIntlClientProvider>
-        </AuthProvider>
+        <QueryClientProvider>
+          <AuthProvider>
+            <NextIntlClientProvider messages={messages}>
+              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <CurrencyProvider>
+                  <LocaleProvider initialLocale={locale as any}>
+                    <LayoutChrome>
+                      {children}
+                    </LayoutChrome>
+                  </LocaleProvider>
+                </CurrencyProvider>
+              </ThemeProvider>
+            </NextIntlClientProvider>
+          </AuthProvider>
+        </QueryClientProvider>
         <Toaster />
         <Analytics />
       </body>

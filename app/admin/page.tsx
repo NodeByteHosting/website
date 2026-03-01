@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
+import { useApiQuery, useApiMutation } from "@/packages/core"
 import {
   Users,
   Server,
@@ -88,38 +89,51 @@ function StatCard({ title, value, icon: Icon, description, loading }: StatCardPr
 export default function AdminDashboard() {
   const t = useTranslations("admin")
   const { toast } = useToast()
-  const [stats, setStats] = useState<SyncStats | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [syncing, setSyncing] = useState(false)
   const [syncProgress, setSyncProgress] = useState(0)
   const [currentSyncTarget, setCurrentSyncTarget] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
-  const fetchStats = async () => {
-    try {
-      setError(null)
-      const response = await fetch("/api/admin/sync")
-      const data = await response.json()
-      
+  // Fetch sync stats using React Query
+  const { data: statsResponse, isLoading: loading, refetch } = useApiQuery<SyncStats>("/api/admin/sync")
+
+  const stats = statsResponse ?? null
+  const error = statsResponse?.error ?? null
+
+  // Start sync mutation
+  const syncMutation = useApiMutation<
+    { success: boolean; error?: string },
+    { target: string }
+  >("POST", "/api/admin/sync", {
+    onSuccess: (data) => {
+      setSyncProgress(100)
       if (!data.success) {
-        setError(data.error || "Failed to fetch stats")
-        return
+        toast({
+          title: t("sync.error"),
+          description: data.error,
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: t("sync.started"),
+          description: t("sync.running"),
+        })
+        // Refetch stats after a delay
+        setTimeout(() => refetch(), 2000)
       }
-      
-      setStats(data)
-    } catch (err) {
-      setError("Failed to connect to server")
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    onError: (error) => {
+      toast({
+        title: t("sync.error"),
+        description: error.message,
+        variant: "destructive",
+      })
+    },
+    onSettled: () => {
+      setSyncProgress(0)
+      setCurrentSyncTarget(null)
+    },
+  })
 
-  useEffect(() => {
-    fetchStats()
-  }, [])
-
-  const runSync = async (target: string = "all") => {
-    setSyncing(true)
+  const runSync = (target: string = "all") => {
     setSyncProgress(0)
     setCurrentSyncTarget(target)
 
@@ -131,56 +145,30 @@ export default function AdminDashboard() {
       })
     }, 500)
 
-    try {
-      const response = await fetch("/api/admin/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ target }),
-      })
-
-      const data = await response.json()
-      clearInterval(progressInterval)
-      setSyncProgress(100)
-
-      if (!data.success) {
-        toast({
-          title: t("sync.error"),
-          description: data.error,
-          variant: "destructive",
-        })
-        return
-      }
-
-      toast({
-        title: t("sync.success"),
-        description: t("sync.completed", { target }),
-      })
-
-      // Refresh stats after sync
-      await fetchStats()
-    } catch (err) {
-      clearInterval(progressInterval)
-      toast({
-        title: t("sync.error"),
-        description: "Failed to connect to server",
-        variant: "destructive",
-      })
-    } finally {
-      setTimeout(() => {
-        setSyncing(false)
-        setSyncProgress(0)
-        setCurrentSyncTarget(null)
-      }, 1000)
-    }
+    syncMutation.mutate({ target })
   }
 
-  const formatLastSync = (dateString: string | null) => {
-    if (!dateString) return t("sync.never")
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(date)
+  const isSyncing = syncMutation.isPending
+
+  const formatLastSync = (value: any) => {
+    if (!value) return t("sync.never")
+    
+    // If it's an object with startedAt property, use that
+    let dateString = typeof value === "object" && value.startedAt ? value.startedAt : value
+    
+    // If dateString is still not a string, return never
+    if (typeof dateString !== "string") return t("sync.never")
+    
+    try {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) return t("sync.never")
+      return new Intl.DateTimeFormat("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(date)
+    } catch {
+      return t("sync.never")
+    }
   }
 
   return (
@@ -196,7 +184,7 @@ export default function AdminDashboard() {
             onClick={() => fetchStats()}
             variant="outline"
             size="sm"
-            disabled={loading || syncing}
+            disabled={loading || isSyncing}
           >
             <RefreshCw className={`h-4 w-4 sm:mr-2 ${loading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">{t("actions.refresh")}</span>
@@ -204,21 +192,21 @@ export default function AdminDashboard() {
           <Button
             onClick={() => runSync("all")}
             size="sm"
-            disabled={syncing}
+            disabled={isSyncing}
           >
-            {syncing ? (
+            {isSyncing ? (
               <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
             ) : (
               <RefreshCw className="h-4 w-4 sm:mr-2" />
             )}
-            <span className="hidden sm:inline">{syncing ? t("sync.syncing") : t("sync.runFull")}</span>
-            <span className="sm:hidden">{syncing ? t("sync.syncing") : "Sync"}</span>
+            <span className="hidden sm:inline">{isSyncing ? t("sync.syncing") : t("sync.runFull")}</span>
+            <span className="sm:hidden">{isSyncing ? t("sync.syncing") : "Sync"}</span>
           </Button>
         </div>
       </div>
 
       {/* Sync Progress */}
-      {syncing && (
+      {isSyncing && (
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -357,9 +345,9 @@ export default function AdminDashboard() {
                   variant="outline"
                   size="sm"
                   onClick={() => runSync(target)}
-                  disabled={syncing}
+                  disabled={isSyncing}
                 >
-                  <RefreshCw className={`h-3 w-3 mr-1 ${syncing && currentSyncTarget === target ? "animate-spin" : ""}`} />
+                  <RefreshCw className={`h-3 w-3 mr-1 ${isSyncing && currentSyncTarget === target ? "animate-spin" : ""}`} />
                   {t(`sync.targets.${target}`)}
                 </Button>
               ))}

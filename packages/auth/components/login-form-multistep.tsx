@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
@@ -9,6 +9,7 @@ import { Label } from "@/packages/ui/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
 import { Loader2, Mail, Lock, AlertCircle, Shield, ArrowRight, Server, Zap, Clock, Gamepad2, Wand2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { api } from "@/packages/core/lib/api"
 
 interface LoginFormProps {
   translations: {
@@ -57,6 +58,7 @@ interface LoginFormProps {
 export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { login } = useAuth()
   const callbackUrl = searchParams.get("callbackUrl") || "/"
   const error = searchParams.get("error")
 
@@ -87,21 +89,11 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
     setIsLoading(true)
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
-      })
-
-      if (result?.error) {
-        setFormError(t.errors.invalid)
-      } else if (result?.ok) {
-        router.push(callbackUrl)
-        router.refresh()
-      }
-    } catch {
-      setFormError(t.errors.networkError)
+      await login(email, password)
+      router.push(callbackUrl)
+      router.refresh()
+    } catch (err: any) {
+      setFormError(err.message || t.errors.invalid)
     } finally {
       setIsLoading(false)
     }
@@ -112,20 +104,7 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/auth/magic-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        setFormError(data.message || t.errors.generic)
-        setIsLoading(false)
-        return
-      }
-
+      await api.post("/api/v1/auth/magic-link", { email })
       // Show success state - email is being sent
       setMagicLinkSent(true)
       setIsLoading(false)

@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { useTranslations } from "next-intl"
+import { useApiQuery, useApiMutation } from "@/packages/core"
 import {
   User,
   Mail,
@@ -19,6 +20,7 @@ import {
   Eye,
   EyeOff,
   KeyRound,
+  RefreshCw,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -40,25 +42,27 @@ interface UserProfile {
   phoneNumber: string | null
   companyName: string | null
   billingEmail: string | null
-  emailVerified: string | null
+  emailVerified: boolean
   roles: string[]
   createdAt: string
   lastLoginAt: string | null
 }
 
 export default function AccountPage() {
-  const { data: session, update: updateSession } = useSession()
+  const { user, refreshAuth } = useAuth()
   const t = useTranslations("dashboard.account")
   const { toast } = useToast()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showEmailPassword, setShowEmailPassword] = useState(false)
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+  })
+  const [emailChangeForm, setEmailChangeForm] = useState({
+    newEmail: "",
+    currentPassword: "",
   })
 
   // Form state for profile
@@ -71,68 +75,117 @@ export default function AccountPage() {
     billingEmail: "",
   })
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/api/dashboard/account")
-        const data = await response.json()
-        if (data.success) {
-          setProfile(data.data)
-          setFormData({
-            firstName: data.data.firstName || "",
-            lastName: data.data.lastName || "",
-            username: data.data.username || "",
-            phoneNumber: data.data.phoneNumber || "",
-            companyName: data.data.companyName || "",
-            billingEmail: data.data.billingEmail || "",
-          })
-        }
-      } catch (error) {
-        console.error("Failed to fetch profile:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  // Fetch profile using React Query
+  const { data: response, isLoading: loading } = useApiQuery<{
+    success: boolean
+    data: UserProfile
+  }>("/api/v1/dashboard/account", {}, {
+    enabled: !!user,
+  })
 
-    fetchProfile()
-  }, [])
+  const profile = response?.data ?? null
 
-  const handleProfileSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSaving(true)
-
-    try {
-      const response = await fetch("/api/dashboard/account", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        setProfile(data.data)
-        await updateSession()
+  // Update profile mutation
+  const updateProfileMutation = useApiMutation<
+    { success: boolean; data: UserProfile },
+    typeof formData
+  >("PUT", "/api/v1/dashboard/account", {
+    onSuccess: async (data) => {
+      if (data.data) {
+        await refreshAuth()
         toast({
           title: t("profile.success"),
           description: t("profile.successDescription"),
         })
-      } else {
-        toast({
-          title: t("profile.error"),
-          description: data.error || t("profile.errorDescription"),
-          variant: "destructive",
-        })
       }
-    } catch {
+    },
+    onError: (error) => {
       toast({
         title: t("profile.error"),
-        description: t("profile.errorDescription"),
+        description: error.message || t("profile.errorDescription"),
         variant: "destructive",
       })
-    } finally {
-      setSaving(false)
+    },
+  })
+
+  // Change password mutation
+  const changePasswordMutation = useApiMutation<
+    { success: boolean },
+    { currentPassword: string; newPassword: string }
+  >("PUT", "/api/v1/dashboard/account/password", {
+    onSuccess: () => {
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
+      toast({
+        title: t("security.passwordChanged"),
+        description: t("security.passwordChangedDescription"),
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: t("security.error"),
+        description: error.message || t("security.errorDescription"),
+        variant: "destructive",
+      })
+    },
+  })
+
+  // Resend verification email mutation
+  const resendVerificationMutation = useApiMutation<{ success: boolean }, Record<string, never>>(
+    "POST",
+    "/api/v1/dashboard/account/resend-verification",
+    {
+      onSuccess: () => {
+        toast({ title: "Verification email sent", description: "Check your inbox and spam folder." })
+      },
+      onError: (error) => {
+        toast({
+          title: "Failed to send",
+          description: error.message || "Could not resend verification email.",
+          variant: "destructive",
+        })
+      },
     }
+  )
+
+  // Email change mutation
+  const emailChangeMutation = useApiMutation<
+    { success: boolean },
+    { newEmail: string; currentPassword: string }
+  >("POST", "/api/v1/dashboard/account/change-email", {
+    onSuccess: async () => {
+      setEmailChangeForm({ newEmail: "", currentPassword: "" })
+      await refreshAuth()
+      toast({
+        title: "Email updated",
+        description: "Check your new email address for a verification link.",
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to update email",
+        description: error.message || "Could not update email address.",
+        variant: "destructive",
+      })
+    },
+  })
+
+  // Initialize form data when profile loads
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        username: profile.username || "",
+        phoneNumber: profile.phoneNumber || "",
+        companyName: profile.companyName || "",
+        billingEmail: profile.billingEmail || "",
+      })
+    }
+  }, [profile])
+
+  const handleProfileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    updateProfileMutation.mutate(formData)
   }
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -156,43 +209,19 @@ export default function AccountPage() {
       return
     }
 
-    setSaving(true)
-
-    try {
-      const response = await fetch("/api/dashboard/account/password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          currentPassword: passwordForm.currentPassword,
-          newPassword: passwordForm.newPassword,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
-        toast({
-          title: t("security.passwordChanged"),
-          description: t("security.passwordChangedDescription"),
-        })
-      } else {
-        toast({
-          title: t("security.error"),
-          description: data.error || t("security.errorDescription"),
-          variant: "destructive",
-        })
-      }
-    } catch {
-      toast({
-        title: t("security.error"),
-        description: t("security.errorDescription"),
-        variant: "destructive",
-      })
-    } finally {
-      setSaving(false)
-    }
+    changePasswordMutation.mutate({
+      currentPassword: passwordForm.currentPassword,
+      newPassword: passwordForm.newPassword,
+    })
   }
+
+  const handleEmailChangeSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e && 'preventDefault' in e) e.preventDefault()
+    if (!emailChangeForm.newEmail || !emailChangeForm.currentPassword) return
+    emailChangeMutation.mutate(emailChangeForm)
+  }
+
+  const isSaving = updateProfileMutation.isPending || changePasswordMutation.isPending
 
   if (loading) {
     return (
@@ -319,9 +348,65 @@ export default function AccountPage() {
                     id="email"
                     value={profile?.email || ""}
                     disabled
-                    className="bg-muted"
+                    className="bg-muted text-foreground opacity-100"
                   />
                   <p className="text-xs text-muted-foreground">{t("profile.emailNote")}</p>
+                </div>
+                {/* Email Change */}
+                <div className="rounded-lg border p-4 space-y-3">
+                  <div>
+                    <p className="text-sm font-medium">Change Email Address</p>
+                    <p className="text-xs text-muted-foreground">Your email will require re-verification after change.</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="newEmail" className="text-xs">New Email</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="newEmail"
+                            type="email"
+                            value={emailChangeForm.newEmail}
+                            onChange={(e) => setEmailChangeForm({ ...emailChangeForm, newEmail: e.target.value })}
+                            placeholder="new@example.com"
+                            className="pl-9"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="emailPassword" className="text-xs">Current Password</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="emailPassword"
+                            type={showEmailPassword ? "text" : "password"}
+                            value={emailChangeForm.currentPassword}
+                            onChange={(e) => setEmailChangeForm({ ...emailChangeForm, currentPassword: e.target.value })}
+                            placeholder="••••••••"
+                            className="pl-9 pr-10"
+                          />
+                          <Button
+                            type="button" variant="ghost" size="icon"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                            onClick={() => setShowEmailPassword(!showEmailPassword)}
+                          >
+                            {showEmailPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button
+                        type="button" variant="outline" size="sm"
+                        disabled={emailChangeMutation.isPending || !emailChangeForm.newEmail || !emailChangeForm.currentPassword}
+                        onClick={handleEmailChangeSubmit}
+                      >
+                        {emailChangeMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+                        Update Email
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -369,8 +454,8 @@ export default function AccountPage() {
                 </div>
 
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={saving}>
-                    {saving ? (
+                  <Button type="submit" disabled={isSaving}>
+                    {isSaving ? (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     ) : (
                       <Save className="h-4 w-4 mr-2" />
@@ -461,8 +546,8 @@ export default function AccountPage() {
                 </div>
 
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={saving}>
-                    {saving ? (
+                  <Button type="submit" disabled={isSaving}>
+                    {isSaving ? (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     ) : (
                       <Lock className="h-4 w-4 mr-2" />
@@ -483,7 +568,13 @@ export default function AccountPage() {
               </AlertTitle>
               <AlertDescription className="text-yellow-700 dark:text-yellow-400">
                 {t("security.emailNotVerifiedDescription")}
-                <Button variant="link" className="px-0 h-auto font-medium text-yellow-800 dark:text-yellow-300">
+                <Button
+                  variant="link"
+                  className="px-0 h-auto font-medium text-yellow-800 dark:text-yellow-300"
+                  onClick={() => resendVerificationMutation.mutate({})}
+                  disabled={resendVerificationMutation.isPending}
+                >
+                  {resendVerificationMutation.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <RefreshCw className="h-3 w-3 mr-1" />}
                   {t("security.resendVerification")}
                 </Button>
               </AlertDescription>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
 import { format } from "date-fns"
+import { useApiQuery, useApiMutation } from "@/packages/core"
 import { RefreshCw, Search, Settings2, Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/packages/ui/components/ui/card"
 import { ScrollArea } from "@/packages/ui/components/ui/scroll-area"
@@ -27,59 +28,48 @@ interface SyncLog {
 
 export default function SyncLogsPage() {
   const t = useTranslations("admin.syncLogs")
-  const [logs, setLogs] = useState<SyncLog[]>([])
   const [query, setQuery] = useState("")
   const [limit, setLimit] = useState(50)
-  const [loading, setLoading] = useState(false)
-  const [statusSummary, setStatusSummary] = useState<any>(null)
-  const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [settings, setSettings] = useState<any>({})
-  const [savingSettings, setSavingSettings] = useState(false)
 
-  const fetchData = async (opts?: { append?: boolean; cursor?: string | null }) => {
-    setLoading(true)
-    try {
-      const resStatus = await fetch("/api/admin/sync")
-      const statusData = await resStatus.json()
-      setStatusSummary(statusData.status || null)
+  // Fetch sync status
+  const { data: statusResponse } = useApiQuery<{
+    status: any
+  }>("/api/admin/sync")
+  const statusSummary = statusResponse?.status ?? null
 
-      const url = new URL("/api/admin/sync/logs", location.origin)
-      url.searchParams.set("limit", String(limit))
-      if (opts?.cursor) url.searchParams.set("cursor", opts.cursor)
+  // Fetch sync logs
+  const { data: logsResponse, isLoading: loading, refetch: refetchLogs } = useApiQuery<{
+    success: boolean
+    logs: SyncLog[]
+    limit: number
+    offset: number
+  }>("/api/admin/sync/logs", { limit: limit.toString() })
 
-      const res = await fetch(url.toString())
-      const data = await res.json()
-      if (data.success && Array.isArray(data.logs)) {
-        if (opts?.append) {
-          setLogs((prev) => [...prev, ...data.logs])
-        } else {
-          setLogs(data.logs)
-        }
-        setNextCursor(data.nextCursor || null)
-      } else {
-        setLogs([])
-        setNextCursor(null)
-      }
-    } catch (e) {
-      console.error("Failed to load sync logs", e)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const logs = logsResponse?.logs ?? []
 
+  // Fetch sync settings
+  const { data: settingsResponse } = useApiQuery<{
+    success: boolean
+    settings: any
+  }>("/api/admin/sync/settings")
+
+  // Save settings mutation
+  const saveSettingsMutation = useApiMutation<
+    { success: boolean },
+    { auto_sync_enabled: boolean; sync_interval: string }
+  >("POST", "/api/admin/sync/settings", {
+    onSuccess: () => {
+      refetchLogs()
+    },
+  })
+
+  // Initialize settings
   useEffect(() => {
-    fetchData()
-    // fetch scheduler settings
-    ;(async () => {
-      try {
-        const res = await fetch("/api/admin/sync/settings")
-        const body = await res.json()
-        if (body.success) setSettings(body.settings || {})
-      } catch (e) {
-        console.error("Failed to load sync settings", e)
-      }
-    })()
-  }, [limit])
+    if (settingsResponse?.settings) {
+      setSettings(settingsResponse.settings)
+    }
+  }, [settingsResponse])
 
   const filtered = useMemo(() => {
     if (!query) return logs
@@ -90,23 +80,11 @@ export default function SyncLogsPage() {
     })
   }, [logs, query])
 
-  const handleSaveSettings = async () => {
-    setSavingSettings(true)
-    try {
-      await fetch("/api/admin/sync/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          auto_sync_enabled: settings.auto_sync_enabled === "true",
-          sync_interval: settings.sync_interval,
-        }),
-      })
-      await fetchData()
-    } catch (e) {
-      console.error("Failed to save settings", e)
-    } finally {
-      setSavingSettings(false)
-    }
+  const handleSaveSettings = () => {
+    saveSettingsMutation.mutate({
+      auto_sync_enabled: settings.auto_sync_enabled === "true",
+      sync_interval: settings.sync_interval,
+    })
   }
 
   const getStatusBadge = (status: string) => {
@@ -204,8 +182,8 @@ export default function SyncLogsPage() {
                 placeholder="3600"
               />
             </div>
-            <Button onClick={handleSaveSettings} disabled={savingSettings} className="w-full sm:w-auto">
-              {savingSettings ? (
+            <Button onClick={handleSaveSettings} disabled={saveSettingsMutation.isPending} className="w-full sm:w-auto">
+              {saveSettingsMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t("saving")}
@@ -288,8 +266,8 @@ export default function SyncLogsPage() {
 
           {/* Load More */}
           <div className="flex justify-center pt-2">
-            {nextCursor ? (
-              <Button variant="outline" onClick={() => fetchData({ append: true, cursor: nextCursor })} disabled={loading}>
+            {logs.length >= limit ? (
+              <Button variant="outline" onClick={() => setLimit((l) => l + 50)} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 {t("loadMore")}
               </Button>
