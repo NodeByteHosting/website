@@ -71,8 +71,13 @@ Automatic Discord webhook notifications for system events, server state changes,
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/NodeByteHosting/website.git
+   git clone --recursive https://github.com/NodeByteHosting/website.git
    cd website
+   ```
+
+   Alternatively, if you've already cloned without `--recursive`, initialize the submodule:
+   ```bash
+   git submodule update --init --recursive --remote
    ```
 
 2. **Install dependencies**
