@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { register } from "@/packages/auth/lib/auth-client"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
@@ -68,19 +69,9 @@ export function RegisterForm({ translations: t }: RegisterFormProps) {
     }
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          confirmPassword,
-        }),
-      })
+      const response = await register(email, password, confirmPassword)
 
-      const data = await response.json()
-
-      if (!data.success) {
+      if (!response.success) {
         const errorMap: Record<string, string> = {
           email_exists: t.errors.emailExists,
           panel_account_linked: t.errors.panelAccountLinked,
@@ -88,7 +79,7 @@ export function RegisterForm({ translations: t }: RegisterFormProps) {
           password_too_short: t.errors.passwordTooShort,
           invalid_email: t.errors.invalidEmail,
         }
-        setFormError(errorMap[data.error] || t.errors.generic)
+        setFormError(errorMap[response.error || "generic"] || t.errors.generic)
         setIsLoading(false)
         return
       }
@@ -100,8 +91,8 @@ export function RegisterForm({ translations: t }: RegisterFormProps) {
       setTimeout(() => {
         router.push("/auth/login")
       }, 2000)
-    } catch {
-      setFormError(t.errors.networkError)
+    } catch (err: any) {
+      setFormError(err.message || t.errors.networkError)
     } finally {
       setIsLoading(false)
     }

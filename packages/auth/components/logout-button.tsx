@@ -1,6 +1,6 @@
 "use client"
 
-import { signOut } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { Button } from "@/packages/ui/components/ui/button"
 import { LogOut, Loader2 } from "lucide-react"
 import { useState } from "react"
@@ -21,11 +21,12 @@ export function LogoutButton({
   size = "default",
   showIcon = true,
 }: LogoutButtonProps) {
+  const { logout } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLogout = async () => {
     setIsLoading(true)
-    await signOut({ callbackUrl: "/" })
+    await logout()
   }
 
   return (

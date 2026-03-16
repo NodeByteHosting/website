@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useAuth } from "@/packages/auth"
 import { useRouter, usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
@@ -43,7 +43,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { data: session, status } = useSession()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
   const t = useTranslations("dashboard")
@@ -56,7 +56,8 @@ export default function DashboardLayout({
     setMobileOpen(false)
   }, [pathname])
 
-  if (status === "loading") {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -65,7 +66,7 @@ export default function DashboardLayout({
   }
 
   // Redirect if not authenticated
-  if (!session?.user) {
+  if (!user) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -258,7 +259,7 @@ export default function DashboardLayout({
                 }}
               />
               <span className="text-sm truncate">
-                {session?.user?.firstName || session?.user?.username || session?.user?.email}
+                {user?.firstName || user?.username || user?.email}
               </span>
             </div>
           </div>

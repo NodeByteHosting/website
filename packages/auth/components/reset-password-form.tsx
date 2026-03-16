@@ -7,6 +7,7 @@ import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
 import { Loader2, AlertCircle, CheckCircle2, Lock } from "lucide-react"
+import { api } from "@/packages/core/lib/api"
 
 interface ResetPasswordFormProps {
   token: string
@@ -64,32 +65,19 @@ export function ResetPasswordForm({ token, translations: t }: ResetPasswordFormP
     }
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        const errorMap: Record<string, string> = {
-          invalid_token: t.errors.invalidToken,
-          token_expired: t.errors.tokenExpired,
-        }
-        setError(errorMap[data.error] || t.errors.generic)
-        setIsLoading(false)
-        return
-      }
-
+      await api.post("/api/v1/auth/reset-password", { token, password })
       setIsSuccess(true)
 
       // Redirect to login after 2 seconds
       setTimeout(() => {
         router.push("/auth/login")
       }, 2000)
-    } catch (err) {
-      setError(t.errors.networkError)
+    } catch (err: any) {
+      const errorMap: Record<string, string> = {
+        invalid_token: t.errors.invalidToken,
+        token_expired: t.errors.tokenExpired,
+      }
+      setError(errorMap[err?.message] || t.errors.generic)
       console.error("Reset password error:", err)
       setIsLoading(false)
     }

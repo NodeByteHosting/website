@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
+import { useApiQuery, useApiMutation, api } from "@/packages/core"
 import {
   Settings,
   Save,
@@ -113,10 +114,8 @@ const MASKED_VALUE = "•••••••••••••••••••�
 export default function SettingsPage() {
   const t = useTranslations("admin")
   const { toast } = useToast()
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [resetting, setResetting] = useState<string | null>(null)
-  const [testingConnection, setTestingConnection] = useState<string | null>(null)
+  
+  // UI-only state (visibility, form inputs, editing)
   const [showApiKey, setShowApiKey] = useState(false)
   const [showApiKeyclient, setShowApiKeyclient] = useState(false)
   const [showResend, setShowResend] = useState(false)
@@ -130,11 +129,6 @@ export default function SettingsPage() {
   const [editingRepoIndex, setEditingRepoIndex] = useState<number | null>(null)
   const [editingRepoValue, setEditingRepoValue] = useState<string>("")
   const [newRepoInput, setNewRepoInput] = useState<string>("")
-  
-  // Webhook state
-  const [webhooks, setWebhooks] = useState<DiscordWebhook[]>([])
-  const [testingWebhook, setTestingWebhook] = useState<string | null>(null)
-  const [deletingWebhook, setDeletingWebhook] = useState<string | null>(null)
   const [editingWebhookId, setEditingWebhookId] = useState<string | null>(null)
   const [editingWebhookForm, setEditingWebhookForm] = useState<any>(null)
   const [newWebhookForm, setNewWebhookForm] = useState({
@@ -145,13 +139,6 @@ export default function SettingsPage() {
     scope: "ADMIN" as const,
   })
   const [showNewWebhookForm, setShowNewWebhookForm] = useState(false)
-  
-  // Connection statuses
-  const [pterodactylStatus, setPterodactylStatus] = useState<ConnectionStatus>({ connected: false })
-  const [virtfusionStatus, setVirtfusionStatus] = useState<ConnectionStatus>({ connected: false })
-  const [databaseStatus, setDatabaseStatus] = useState<ConnectionStatus>({ connected: false })
-  
-  // Settings state
   const [settings, setSettings] = useState<SystemSettings>({
     pterodactylUrl: "",
     pterodactylApiKey: "",
@@ -163,388 +150,334 @@ export default function SettingsPage() {
     crowdinProjectId: "",
     crowdinPersonalToken: "",
     githubToken: "",
-    githubRepositories: "[]",
-    registrationEnabled: true,
+    githubRepositories: "",
+    registrationEnabled: false,
     maintenanceMode: false,
-    autoSyncEnabled: true,
-    emailNotifications: true,
+    autoSyncEnabled: false,
+    emailNotifications: false,
     resendApiKey: "",
     discordNotifications: false,
     discordWebhooks: [],
-    cacheTimeout: 60,
-    syncInterval: 3600,
+    cacheTimeout: 300,
+    syncInterval: 60,
     adminEmail: "",
-    siteName: "NodeByte Hosting",
+    siteName: "",
     siteUrl: "",
   })
-
+  
+  // React Query hooks for data
+  const { data: settingsData, isLoading } = useApiQuery<any>("/api/admin/settings")
+  const { data: webhooksData } = useApiQuery<any>("/api/admin/settings/webhooks")
+  
+  const queriedSettings = settingsData?.settings || {}
+  const webhooks = webhooksData?.webhooks || settingsData?.settings?.discordWebhooks || []
+  const pterodactylStatus = settingsData?.pterodactylStatus || { connected: false }
+  const virtfusionStatus = settingsData?.virtfusionStatus || { connected: false }
+  const databaseStatus = settingsData?.databaseStatus || { connected: false }
+  
+  // Initialize form inputs from query data
   useEffect(() => {
-    fetchSettings()
-  }, [])
-
-  const fetchSettings = async () => {
-    setLoading(true)
-    try {
-      const response = await fetch("/api/admin/settings")
-      const data = await response.json()
-      
-      if (data.success) {
-        // Track which fields are masked (already set)
-        const masked = new Set<string>()
-        if (data.settings.pterodactylApiKey === MASKED_VALUE) masked.add("pterodactylApiKey")
-        if (data.settings.pterodactylClientApiKey === MASKED_VALUE) masked.add("pterodactylClientApiKey")
-        if (data.settings.virtfusionApiKey === MASKED_VALUE) masked.add("virtfusionApiKey")
-        if (data.settings.crowdinPersonalToken === MASKED_VALUE) masked.add("crowdinPersonalToken")
-        if (data.settings.githubToken === MASKED_VALUE) masked.add("githubToken")
-        if (data.settings.resendApiKey === MASKED_VALUE) masked.add("resendApiKey")
-        setMaskedFields(masked)
-
-        // `githubRepositories` may be an array (new API) or a JSON string (legacy)
-        let repos: string[] = []
-        const raw = data.settings.githubRepositories
-        if (Array.isArray(raw)) {
-          repos = raw
-        } else if (typeof raw === "string" && raw.length) {
-          try {
-            const parsed = JSON.parse(raw)
-            if (Array.isArray(parsed)) repos = parsed
-          } catch {
-            // fallback: treat as newline-separated or single value
-            repos = raw.split("\n").map((r: string) => r.trim()).filter(Boolean)
-          }
+    if (settingsData?.settings) {
+      setSettings(settingsData.settings)
+      const rawRepos = settingsData.settings.githubRepositories
+      let repos: string[] = []
+      if (Array.isArray(rawRepos)) {
+        repos = rawRepos
+      } else if (typeof rawRepos === "string" && rawRepos.length) {
+        try {
+          const parsed = JSON.parse(rawRepos)
+          if (Array.isArray(parsed)) repos = parsed
+        } catch {
+          repos = rawRepos.split("\n").map((r: string) => r.trim()).filter(Boolean)
         }
-        setGithubReposInput(repos.join("\n"))
-
-        setSettings({
-          ...data.settings,
-          discordWebhooks: Array.isArray(data.settings.discordWebhooks) 
-            ? data.settings.discordWebhooks 
-            : [],
-        })
-        
-        // Store webhooks separately
-        if (Array.isArray(data.settings.discordWebhooks)) {
-          setWebhooks(data.settings.discordWebhooks)
-        }
-        setPterodactylStatus({
-          connected: data.pterodactylStatus?.connected || false,
-          version: data.pterodactylStatus?.version,
-        })
-        setVirtfusionStatus({
-          connected: data.virtfusionStatus?.connected || false,
-          version: data.virtfusionStatus?.version,
-        })
-        setDatabaseStatus({
-          connected: data.databaseStatus?.connected || false,
-        })
       }
-    } catch (error) {
-      console.error("Failed to fetch settings:", error)
-      toast({
-        title: t("error.title"),
-        description: "Failed to fetch settings",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const testConnection = async (type: "pterodactyl" | "virtfusion" | "database") => {
-    setTestingConnection(type)
-    try {
-      const response = await fetch(`/api/admin/settings/test?type=${type}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pterodactylUrl: settings.pterodactylUrl,
-          pterodactylApiKey: settings.pterodactylApiKey,
-          pterodactylClientApiKey: settings.pterodactylClientApiKey,
-          virtfusionUrl: settings.virtfusionUrl,
-          virtfusionApiKey: settings.virtfusionApiKey,
-        }),
-      })
-      const data = await response.json()
+      setGithubReposInput(repos.join("\n"))
       
-      if (type === "pterodactyl") {
-        setPterodactylStatus({
-          connected: data.success,
-          latency: data.latency,
-          version: data.version,
-          error: data.error,
-        })
-      } else if (type === "virtfusion") {
-        setVirtfusionStatus({
-          connected: data.success,
-          latency: data.latency,
-          version: data.version,
-          error: data.error,
-        })
-      } else {
-        setDatabaseStatus({
-          connected: data.success,
-          latency: data.latency,
-          error: data.error,
-        })
+      // Track masked fields
+      const sensitiveFields = settingsData.sensitiveFields || [
+        "pterodactylApiKey",
+        "pterodactylClientApiKey",
+        "virtfusionApiKey",
+        "crowdinPersonalToken",
+        "githubToken",
+        "resendApiKey",
+      ]
+      const masked = new Set<string>()
+      for (const field of sensitiveFields) {
+        const value = (settingsData.settings as any)[field]
+        if (value && typeof value === "string" && value.length > 0) {
+          masked.add(field)
+        }
       }
-
-      toast({
-        title: data.success ? t("settings.connection.success") : t("settings.connection.failed"),
-        description: data.success 
-          ? t("settings.connection.successDesc", { type }) 
-          : data.error,
-        variant: data.success ? "default" : "destructive",
-      })
-    } catch (error) {
-      toast({
-        title: t("settings.connection.failed"),
-        description: t("settings.connection.error"),
-        variant: "destructive",
-      })
-    } finally {
-      setTestingConnection(null)
+      setMaskedFields(masked)
     }
-  }
+  }, [settingsData])
 
-  const saveSettings = async () => {
-    setSaving(true)
-    try {
-      // Parse GitHub repositories from textarea
-      const repos = githubReposInput
-        .split("\n")
-        .map(r => r.trim())
-        .filter(r => r.length > 0)
-
-      const response = await fetch("/api/admin/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...settings,
-          // Send array to the API and request merge to avoid accidental overwrites
-          githubRepositories: repos,
-          githubRepositoriesMerge: true,
-        }),
+  // Mutation hooks for operations
+  const saveSettingsMutation = useApiMutation("POST", "/api/admin/settings", {
+    onSuccess: () => {
+      toast({
+        title: t("settings.saved"),
+        description: t("settings.savedDesc"),
       })
-      const data = await response.json()
-
-      if (data.success) {
-        toast({
-          title: t("settings.saved"),
-          description: t("settings.savedDesc"),
-        })
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error) {
+    },
+    onError: (error: any) => {
       toast({
         title: t("error.title"),
         description: t("settings.saveError"),
         variant: "destructive",
       })
-    } finally {
-      setSaving(false)
-    }
-  }
+    },
+  })
 
-  // Repo management helpers (use per-repo endpoints)
-  const addRepo = async (repo: string) => {
-    const val = repo.trim()
-    if (!val) return
-    try {
-      const res = await fetch('/api/admin/settings/repos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repo: val }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setGithubReposInput(data.repos.join('\n'))
-        setNewRepoInput("")
-        toast({ title: 'Repository added' })
-      } else {
-        throw new Error(data.error || 'Failed to add')
+  const resetKeyMutation = useApiMutation("PUT", "/api/admin/settings", {
+    onSuccess: (data: any, variables: any) => {
+      const key = variables.keys?.[0]
+      if (key) {
+        const newMasked = new Set(maskedFields)
+        newMasked.delete(key)
+        setMaskedFields(newMasked)
       }
-    } catch (err: any) {
-      toast({ title: t('error.title'), description: err.message || 'Failed to add repository', variant: 'destructive' })
-    }
-  }
-
-  const updateRepo = async (oldRepo: string, newRepo: string) => {
-    const val = newRepo.trim()
-    if (!val) return
-    try {
-      const res = await fetch('/api/admin/settings/repos', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ oldRepo, repo: val }),
+      toast({
+        title: "Reset successful",
+        description: key ? `${key} has been reset` : "Key reset successful",
       })
-      const data = await res.json()
-      if (data.success) {
-        setGithubReposInput(data.repos.join('\n'))
-        setEditingRepoIndex(null)
-        setEditingRepoValue("")
-        toast({ title: 'Repository updated' })
-      } else {
-        throw new Error(data.error || 'Failed to update')
-      }
-    } catch (err: any) {
-      toast({ title: t('error.title'), description: err.message || 'Failed to update repository', variant: 'destructive' })
-    }
-  }
-
-  const removeRepo = async (repo: string, idx?: number) => {
-    try {
-      const res = await fetch('/api/admin/settings/repos', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repo }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setGithubReposInput(data.repos.join('\n'))
-        toast({ title: 'Repository removed' })
-      } else {
-        throw new Error(data.error || 'Failed to remove')
-      }
-    } catch (err: any) {
-      toast({ title: t('error.title'), description: err.message || 'Failed to remove repository', variant: 'destructive' })
-    }
-  }
-
-  const createWebhook = async () => {
-    try {
-      const response = await fetch("/api/admin/settings/webhooks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newWebhookForm),
-      })
-      const data = await response.json()
-
-      if (data.success) {
-        setWebhooks([...webhooks, data.webhook])
-        setNewWebhookForm({
-          name: "",
-          webhookUrl: "",
-          type: "SYSTEM",
-          description: "",
-        })
-        setShowNewWebhookForm(false)
-        toast({
-          title: "Webhook created",
-          description: `${newWebhookForm.name} has been created`,
-        })
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error: any) {
+    },
+    onError: (error: any) => {
       toast({
         title: t("error.title"),
-        description: error.message || "Failed to create webhook",
+        description: "Failed to reset key",
         variant: "destructive",
       })
-    }
-  }
+    },
+  })
 
-  const startEditWebhook = (webhook: DiscordWebhook) => {
-    setEditingWebhookId(webhook.id)
-    setEditingWebhookForm({
-      id: webhook.id,
-      name: webhook.name,
-      webhookUrl: webhook.webhookUrl,
-      type: webhook.type,
-      description: webhook.description || "",
-      scope: webhook.scope || "ADMIN",
-      enabled: webhook.enabled,
+  const testConnectionMutation = useApiMutation(
+    "POST",
+    (variables: any) => `/api/admin/settings/test?type=${encodeURIComponent(variables.type)}`,
+    {
+      onSuccess: (data: any, variables: any) => {
+        toast({
+          title: data.success ? t("settings.connection.success") : t("settings.connection.failed"),
+          description: data.success 
+            ? t("settings.connection.successDesc", { type: variables.type }) 
+            : data.error,
+          variant: data.success ? "default" : "destructive",
+        })
+      },
+      onError: (error: any) => {
+        toast({
+          title: t("settings.connection.failed"),
+          description: t("settings.connection.error"),
+          variant: "destructive",
+        })
+      },
+    }
+  )
+
+  const addRepoMutation = useApiMutation("POST", "/api/admin/settings/repos", {
+    onSuccess: (data: any) => {
+      if (data.repos) {
+        setGithubReposInput(data.repos.join("\n"))
+        setNewRepoInput("")
+      }
+      toast({ title: "Repository added" })
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: t("error.title"), 
+        description: error?.message || "Failed to add repository", 
+        variant: "destructive" 
+      })
+    },
+  })
+
+  const updateRepoMutation = useApiMutation("PUT", "/api/admin/settings/repos", {
+    onSuccess: (data: any) => {
+      if (data.repos) {
+        setGithubReposInput(data.repos.join("\n"))
+        setEditingRepoIndex(null)
+        setEditingRepoValue("")
+      }
+      toast({ title: "Repository updated" })
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: t("error.title"), 
+        description: error?.message || "Failed to update repository", 
+        variant: "destructive" 
+      })
+    },
+  })
+
+  const removeRepoMutation = useApiMutation("DELETE", "/api/admin/settings/repos", {
+    onSuccess: (data: any) => {
+      if (data.repos) {
+        setGithubReposInput(data.repos.join("\n"))
+      }
+      toast({ title: "Repository removed" })
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: t("error.title"), 
+        description: error?.message || "Failed to remove repository", 
+        variant: "destructive" 
+      })
+    },
+  })
+
+  const createWebhookMutation = useApiMutation("POST", "/api/admin/settings/webhooks", {
+    onSuccess: (data: any) => {
+      toast({
+        title: "Webhook created",
+        description: `${data.webhook?.name || newWebhookForm.name} has been created`,
+      })
+      setNewWebhookForm({
+        name: "",
+        webhookUrl: "",
+        type: "SYSTEM",
+        description: "",
+      })
+      setShowNewWebhookForm(false)
+    },
+    onError: (error: any) => {
+      toast({
+        title: t("error.title"),
+        description: error?.message || "Failed to create webhook",
+        variant: "destructive",
+      })
+    },
+  })
+
+  const updateWebhookMutation = useApiMutation("PUT", "/api/admin/settings/webhooks", {
+    onSuccess: () => {
+      toast({ title: "Webhook updated" })
+      setEditingWebhookId(null)
+      setEditingWebhookForm(null)
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Update failed", 
+        description: error?.message || "Failed to update webhook", 
+        variant: "destructive" 
+      })
+    },
+  })
+
+  const testWebhookMutation = useApiMutation("PATCH", "/api/admin/settings/webhooks", {
+    onSuccess: () => {
+      toast({
+        title: "Test successful",
+        description: "Webhook is working correctly",
+      })
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Test failed",
+        description: error?.message || "Failed to test webhook",
+        variant: "destructive",
+      })
+    },
+  })
+
+  const deleteWebhookMutation = useApiMutation("DELETE", "/api/admin/settings/webhooks", {
+    onSuccess: () => {
+      toast({
+        title: "Webhook deleted",
+        description: "The webhook has been removed",
+      })
+    },
+    onError: (error: any) => {
+      toast({
+        title: t("error.title"),
+        description: error?.message || "Failed to delete webhook",
+        variant: "destructive",
+      })
+    },
+  })
+
+  // Wrapper functions to call mutations with form data
+  const handleSaveSettings = () => {
+    const repos = githubReposInput
+      .split("\n")
+      .map(r => r.trim())
+      .filter(r => r.length > 0)
+
+    const MASKED_VALUE = "••••••••••••••••••••"
+    const dataToSend = { ...settings }
+    
+    for (const field of maskedFields) {
+      if (dataToSend[field as keyof typeof dataToSend] === MASKED_VALUE) {
+        dataToSend[field as keyof typeof dataToSend] = MASKED_VALUE as any
+      }
+    }
+
+    saveSettingsMutation.mutate({
+      ...dataToSend,
+      githubRepositories: repos,
+      githubRepositoriesMerge: true,
     })
   }
 
-  const cancelEditWebhook = () => {
-    setEditingWebhookId(null)
-    setEditingWebhookForm(null)
+  const handleTestConnection = (type: "pterodactyl" | "virtfusion" | "database") => {
+    const MASKED_VALUE = "••••••••••••••••••••"
+    
+    let payload: any = { type }
+    
+    if (type === "pterodactyl") {
+      payload = {
+        type,
+        pterodactylUrl: settings.pterodactylUrl,
+        pterodactylApiKey: settings.pterodactylApiKey === MASKED_VALUE ? "" : settings.pterodactylApiKey,
+      }
+    } else if (type === "virtfusion") {
+      payload = {
+        type,
+        virtfusionUrl: settings.virtfusionUrl,
+        virtfusionApiKey: settings.virtfusionApiKey === MASKED_VALUE ? "" : settings.virtfusionApiKey,
+      }
+    } else if (type === "database") {
+      payload = { type }
+    }
+    
+    testConnectionMutation.mutate(payload)
   }
 
-  const saveEditWebhook = async () => {
+  const handleAddRepo = (repo: string) => {
+    const val = repo.trim()
+    if (!val) return
+    addRepoMutation.mutate({ repo: val })
+  }
+
+  const handleUpdateRepo = (oldRepo: string, newRepo: string) => {
+    const val = newRepo.trim()
+    if (!val) return
+    updateRepoMutation.mutate({ oldRepo, repo: val })
+  }
+
+  const handleRemoveRepo = (repo: string) => {
+    removeRepoMutation.mutate({ repo })
+  }
+
+  const handleCreateWebhook = () => {
+    createWebhookMutation.mutate(newWebhookForm)
+  }
+
+  const handleUpdateWebhook = () => {
     if (!editingWebhookForm || !editingWebhookForm.id) return
-    try {
-      const response = await fetch("/api/admin/settings/webhooks", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingWebhookForm),
-      })
-      const data = await response.json()
-      if (data.success) {
-        setWebhooks(webhooks.map(w => w.id === data.webhook.id ? data.webhook : w))
-        toast({ title: "Webhook updated" })
-        cancelEditWebhook()
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error: any) {
-      toast({ title: "Update failed", description: error.message || "Failed to update webhook", variant: "destructive" })
-    }
+    updateWebhookMutation.mutate(editingWebhookForm)
   }
 
-  const testWebhook = async (id: string) => {
-    setTestingWebhook(id)
-    try {
-      const response = await fetch("/api/admin/settings/webhooks", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      })
-      const data = await response.json()
-
-      if (data.success) {
-        // Update webhook in list
-        setWebhooks(webhooks.map(w => 
-          w.id === id ? { ...w, testSuccessAt: new Date().toISOString() } : w
-        ))
-        toast({
-          title: "Test successful",
-          description: "Webhook is working correctly",
-        })
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error: any) {
-      toast({
-        title: "Test failed",
-        description: error.message || "Failed to test webhook",
-        variant: "destructive",
-      })
-    } finally {
-      setTestingWebhook(null)
-    }
+  const handleTestWebhook = (id: string) => {
+    testWebhookMutation.mutate({ id })
   }
 
-  const deleteWebhook = async (id: string) => {
-    setDeletingWebhook(id)
-    try {
-      const response = await fetch("/api/admin/settings/webhooks", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      })
-      const data = await response.json()
+  const handleDeleteWebhook = (id: string) => {
+    deleteWebhookMutation.mutate({ id })
+  }
 
-      if (data.success) {
-        setWebhooks(webhooks.filter(w => w.id !== id))
-        toast({
-          title: "Webhook deleted",
-          description: "The webhook has been removed",
-        })
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error: any) {
-      toast({
-        title: t("error.title"),
-        description: error.message || "Failed to delete webhook",
-        variant: "destructive",
-      })
-    } finally {
-      setDeletingWebhook(null)
-    }
+  const handleResetKey = (key: string) => {
+    resetKeyMutation.mutate({ keys: [key] })
   }
 
   const webhookTypeColors: Record<string, string> = {
@@ -580,44 +513,22 @@ export default function SettingsPage() {
     }
   }
 
-  const resetKey = async (key: string) => {
-    setResetting(key)
-    try {
-      const response = await fetch("/api/admin/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keys: [key] }),
-      })
-      const data = await response.json()
+  const startEditWebhook = (webhook: DiscordWebhook) => {
+    setEditingWebhookId(webhook.id)
+    setEditingWebhookForm({
+      id: webhook.id,
+      name: webhook.name,
+      webhookUrl: webhook.webhookUrl,
+      type: webhook.type,
+      description: webhook.description || "",
+      scope: webhook.scope || "ADMIN",
+      enabled: webhook.enabled,
+    })
+  }
 
-      if (data.success) {
-        // Update masked fields set
-        const newMasked = new Set(maskedFields)
-        newMasked.delete(key)
-        setMaskedFields(newMasked)
-
-        // Clear the field
-        setSettings({
-          ...settings,
-          [key]: "",
-        })
-
-        toast({
-          title: "Reset successful",
-          description: `${key} has been reset`,
-        })
-      } else {
-        throw new Error(data.error)
-      }
-    } catch (error) {
-      toast({
-        title: t("error.title"),
-        description: "Failed to reset key",
-        variant: "destructive",
-      })
-    } finally {
-      setResetting(null)
-    }
+  const cancelEditWebhook = () => {
+    setEditingWebhookId(null)
+    setEditingWebhookForm(null)
   }
 
   const ConnectionBadge = ({ status }: { status: ConnectionStatus }) => (
@@ -640,7 +551,7 @@ export default function SettingsPage() {
     </Badge>
   )
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -739,12 +650,11 @@ export default function SettingsPage() {
                         type={showApiKey ? "text" : "password"}
                         placeholder="ptla_xxxxxxxxxx"
                         className="pr-10"
-                        value={settings.pterodactylApiKey}
+                        value={maskedFields.has("pterodactylApiKey") && !showApiKey ? "••••••••••••••••••••" : settings.pterodactylApiKey}
                         onChange={(e) => setSettings({
                           ...settings,
                           pterodactylApiKey: e.target.value
                         })}
-                        disabled={maskedFields.has("pterodactylApiKey")}
                       />
                       <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                         <Button
@@ -765,10 +675,10 @@ export default function SettingsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => resetKey("pterodactylApiKey")}
-                        disabled={resetting === "pterodactylApiKey"}
+                        onClick={() => handleResetKey("pterodactylApiKey")}
+                        disabled={resetKeyMutation.isPending}
                       >
-                        {resetting === "pterodactylApiKey" ? (
+                        {resetKeyMutation.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <Trash2 className="h-4 w-4" />
@@ -806,12 +716,11 @@ export default function SettingsPage() {
                           type={showApiKeyclient ? "text" : "password"}
                           placeholder="ptlc_xxxxxxxxxx"
                           className="pr-10"
-                          value={settings.pterodactylClientApiKey ?? ''}
+                          value={maskedFields.has("pterodactylClientApiKey") && !showApiKeyclient ? "••••••••••••••••••••" : settings.pterodactylClientApiKey ?? ''}
                           onChange={(e) => setSettings({
                           ...settings,
                           pterodactylClientApiKey: e.target.value
                           })}
-                          disabled={maskedFields.has("pterodactylClientApiKey")}
                         />
                         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                           <Button
@@ -832,10 +741,10 @@ export default function SettingsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => resetKey("pterodactylClientApiKey")}
-                          disabled={resetting === "pterodactylClientApiKey"}
+                          onClick={() => handleResetKey("pterodactylClientApiKey")}
+                          disabled={resetKeyMutation.isPending}
                         >
-                          {resetting === "pterodactylClientApiKey" ? (
+                          {resetKeyMutation.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <Trash2 className="h-4 w-4" />
@@ -857,10 +766,10 @@ export default function SettingsPage() {
             <CardFooter>
               <Button
                 variant="outline"
-                onClick={() => testConnection("pterodactyl")}
-                disabled={testingConnection === "pterodactyl"}
+                onClick={() => handleTestConnection("pterodactyl")}
+                disabled={testConnectionMutation.isPending}
               >
-                {testingConnection === "pterodactyl" ? (
+                {testConnectionMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <RefreshCw className="h-4 w-4 mr-2" />
@@ -915,12 +824,11 @@ export default function SettingsPage() {
                         type={showVirtfusion ? "text" : "password"}
                         placeholder="virt_xxxxxxxxxx"
                         className="pr-10"
-                        value={settings.virtfusionApiKey}
+                        value={maskedFields.has("virtfusionApiKey") && !showVirtfusion ? "••••••••••••••••••••" : settings.virtfusionApiKey}
                         onChange={(e) => setSettings({
                           ...settings,
                           virtfusionApiKey: e.target.value
                         })}
-                        disabled={maskedFields.has("virtfusionApiKey")}
                       />
                       <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                         <Button
@@ -941,10 +849,10 @@ export default function SettingsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => resetKey("virtfusionApiKey")}
-                        disabled={resetting === "virtfusionApiKey"}
+                        onClick={() => handleResetKey("virtfusionApiKey")}
+                        disabled={resetKeyMutation.isPending}
                       >
-                        {resetting === "virtfusionApiKey" ? (
+                        {resetKeyMutation.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <Trash2 className="h-4 w-4" />
@@ -988,10 +896,10 @@ export default function SettingsPage() {
             <CardFooter>
               <Button
                 variant="outline"
-                onClick={() => testConnection("virtfusion")}
-                disabled={testingConnection === "virtfusion"}
+                onClick={() => handleTestConnection("virtfusion")}
+                disabled={testConnectionMutation.isPending}
               >
-                {testingConnection === "virtfusion" ? (
+                {testConnectionMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <RefreshCw className="h-4 w-4 mr-2" />
@@ -1033,12 +941,11 @@ export default function SettingsPage() {
                         type={showCrowdin ? "text" : "password"}
                         placeholder="crwd_xxxxxxxxxxxxx"
                         className="pr-10"
-                        value={settings.crowdinPersonalToken}
+                        value={maskedFields.has("crowdinPersonalToken") && !showCrowdin ? "••••••••••••••••••••" : settings.crowdinPersonalToken}
                         onChange={(e) => setSettings({
                           ...settings,
                           crowdinPersonalToken: e.target.value
                         })}
-                        disabled={maskedFields.has("crowdinPersonalToken")}
                       />
                       <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                         <Button
@@ -1059,10 +966,10 @@ export default function SettingsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => resetKey("crowdinPersonalToken")}
-                        disabled={resetting === "crowdinPersonalToken"}
+                        onClick={() => handleResetKey("crowdinPersonalToken")}
+                        disabled={resetKeyMutation.isPending}
                       >
-                        {resetting === "crowdinPersonalToken" ? (
+                        {resetKeyMutation.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <Trash2 className="h-4 w-4" />
@@ -1097,12 +1004,11 @@ export default function SettingsPage() {
                       type={showGithub ? "text" : "password"}
                       placeholder="ghp_xxxxxxxxxxxxx"
                       className="pr-10"
-                      value={settings.githubToken}
+                      value={maskedFields.has("githubToken") && !showGithub ? "••••••••••••••••••••" : settings.githubToken}
                       onChange={(e) => setSettings({
                         ...settings,
                         githubToken: e.target.value
                       })}
-                      disabled={maskedFields.has("githubToken")}
                     />
                     <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                       <Button
@@ -1123,10 +1029,10 @@ export default function SettingsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => resetKey("githubToken")}
-                      disabled={resetting === "githubToken"}
+                      onClick={() => handleResetKey("githubToken")}
+                      disabled={resetKeyMutation.isPending}
                     >
-                      {resetting === "githubToken" ? (
+                      {resetKeyMutation.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <Trash2 className="h-4 w-4" />
@@ -1166,16 +1072,16 @@ export default function SettingsPage() {
                           )}
                         </div>
 
-                        <div className="flex gap-1 flex-shrink-0">
+                        <div className="flex gap-1 shrink-0">
                           {editingRepoIndex === idx ? (
                             <>
-                              <Button size="sm" onClick={() => updateRepo(repo, editingRepoValue)}>Save</Button>
+                              <Button size="sm" onClick={() => handleUpdateRepo(repo, editingRepoValue)} disabled={updateRepoMutation.isPending}>Save</Button>
                               <Button size="sm" variant="outline" onClick={() => { setEditingRepoIndex(null); setEditingRepoValue("") }}>Cancel</Button>
                             </>
                           ) : (
                             <>
                               <Button size="sm" variant="outline" onClick={() => { setEditingRepoIndex(idx); setEditingRepoValue(repo) }}>Edit</Button>
-                              <Button size="sm" variant="destructive" onClick={() => removeRepo(repo, idx)}>Delete</Button>
+                              <Button size="sm" variant="destructive" onClick={() => handleRemoveRepo(repo, idx)} disabled={removeRepoMutation.isPending}>Delete</Button>
                             </>
                           )}
                         </div>
@@ -1192,7 +1098,7 @@ export default function SettingsPage() {
                     onChange={(e) => setNewRepoInput(e.target.value)}
                     className="text-sm"
                   />
-                  <Button size="sm" onClick={() => addRepo(newRepoInput)}>Add</Button>
+                  <Button size="sm" onClick={() => handleAddRepo(newRepoInput)} disabled={addRepoMutation.isPending}>Add</Button>
                 </div>
 
                 <p className="text-xs text-muted-foreground">
@@ -1243,10 +1149,10 @@ export default function SettingsPage() {
             <CardFooter>
               <Button
                 variant="outline"
-                onClick={() => testConnection("database")}
-                disabled={testingConnection === "database"}
+                onClick={() => handleTestConnection("database")}
+                disabled={testConnectionMutation.isPending}
               >
-                {testingConnection === "database" ? (
+                {testConnectionMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 ) : (
                   <RefreshCw className="h-4 w-4 mr-2" />
@@ -1358,12 +1264,11 @@ export default function SettingsPage() {
                             type={showResend ? "text" : "password"}
                             placeholder="re_xxxxxxxxxxxxx"
                             className="pr-10"
-                            value={settings.resendApiKey}
+                            value={maskedFields.has("resendApiKey") && !showResend ? "••••••••••••••••••••" : settings.resendApiKey}
                             onChange={(e) => setSettings({
                               ...settings,
                               resendApiKey: e.target.value
                             })}
-                            disabled={maskedFields.has("resendApiKey")}
                           />
                           <div className="absolute right-1 top-1/2 -translate-y-1/2 flex">
                             <Button
@@ -1384,10 +1289,10 @@ export default function SettingsPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => resetKey("resendApiKey")}
-                            disabled={resetting === "resendApiKey"}
+                            onClick={() => handleResetKey("resendApiKey")}
+                            disabled={resetKeyMutation.isPending}
                           >
-                            {resetting === "resendApiKey" ? (
+                            {resetKeyMutation.isPending ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
                               <Trash2 className="h-4 w-4" />
@@ -1471,11 +1376,11 @@ export default function SettingsPage() {
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => testWebhook(webhook.id)}
-                                      disabled={testingWebhook === webhook.id}
+                                      onClick={() => handleTestWebhook(webhook.id)}
+                                      disabled={testWebhookMutation.isPending}
                                       title="Test webhook"
                                     >
-                                      {testingWebhook === webhook.id ? (
+                                      {testWebhookMutation.isPending ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                       ) : (
                                         <RefreshCw className="h-4 w-4" />
@@ -1487,11 +1392,11 @@ export default function SettingsPage() {
                                     <Button
                                       variant="outline"
                                       size="sm"
-                                      onClick={() => deleteWebhook(webhook.id)}
-                                      disabled={deletingWebhook === webhook.id}
+                                      onClick={() => handleDeleteWebhook(webhook.id)}
+                                      disabled={deleteWebhookMutation.isPending}
                                       className="text-destructive hover:text-destructive"
                                     >
-                                      {deletingWebhook === webhook.id ? (
+                                      {deleteWebhookMutation.isPending ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                       ) : (
                                         <Trash2 className="h-4 w-4" />
@@ -1526,7 +1431,7 @@ export default function SettingsPage() {
                                     </div>
                                     <Input value={editingWebhookForm.description} onChange={(e) => setEditingWebhookForm({...editingWebhookForm, description: e.target.value})} />
                                     <div className="flex gap-2 justify-end">
-                                      <Button size="sm" onClick={() => saveEditWebhook()}>Save</Button>
+                                      <Button size="sm" onClick={() => handleUpdateWebhook()} disabled={updateWebhookMutation.isPending}>Save</Button>
                                       <Button size="sm" variant="outline" onClick={() => cancelEditWebhook()}>Cancel</Button>
                                     </div>
                                   </div>
@@ -1624,8 +1529,8 @@ export default function SettingsPage() {
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              onClick={createWebhook}
-                              disabled={!newWebhookForm.name || !newWebhookForm.webhookUrl}
+                              onClick={handleCreateWebhook}
+                              disabled={!newWebhookForm.name || !newWebhookForm.webhookUrl || createWebhookMutation.isPending}
                               className="flex-1"
                             >
                               Create Webhook
@@ -1727,11 +1632,11 @@ export default function SettingsPage() {
       {/* Save Settings Button */}
       <div className="flex justify-end gap-2">
         <Button
-          onClick={saveSettings}
-          disabled={saving}
+          onClick={handleSaveSettings}
+          disabled={saveSettingsMutation.isPending}
           size="lg"
         >
-          {saving ? (
+          {saveSettingsMutation.isPending ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
             <Save className="h-4 w-4 mr-2" />

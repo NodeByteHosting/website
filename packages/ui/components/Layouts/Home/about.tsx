@@ -8,6 +8,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { api } from "@/packages/core/lib/api"
 
 interface Stats {
   totalServers?: number
@@ -41,20 +42,18 @@ export function About() {
     
     const fetchStats = async () => {
       try {
-        const response = await fetch("/api/stats")
-        if (response.ok) {
-          const result = await response.json()
-          // Stats are nested under 'data' key in the API response
-          const apiData = result.data || {}
-          setStats({
-            totalServers: apiData.totalServers || 0,
-            totalUsers: apiData.totalUsers || 0,
-            activeUsers: apiData.activeUsers || 0,
-            uptime: "99.6%",
-          })
-        }
-      } catch (error) {
-        console.error("Failed to fetch stats:", error)
+        const result = await api.get<{data: any}>("/api/stats")
+        // Stats are nested under 'data' key in the API response
+        const apiData = result.data || {}
+        setStats({
+          totalServers: apiData.totalServers || 0,
+          totalUsers: apiData.totalUsers || 0,
+          activeUsers: apiData.activeUsers || 0,
+          uptime: "99.6%",
+        })
+      } catch (err) {
+        console.error("Failed to fetch stats:", err)
+        // Keep default stats on error
       }
     }
 

@@ -24,6 +24,21 @@ const allThemes = {
     { value: "light", label: "Light", icon: Sun, color: "#ffffff", description: "Light theme for daytime" },
     { value: "system", label: "System", icon: Palette, color: "linear-gradient(135deg, #ffffff 50%, #0a0a0a 50%)", description: "Follow system preference" },
   ],
+  catppuccin: [
+    { value: "catppuccin-mocha", label: "Mocha", color: "#1e1e2e" },
+    { value: "catppuccin-macchiato", label: "Macchiato", color: "#24273a" },
+    { value: "catppuccin-frappe", label: "Frappé", color: "#303446" },
+    { value: "catppuccin-latte", label: "Latte", color: "#eff1f5" },
+  ],
+  popular: [
+    { value: "dracula", label: "Dracula", color: "#282a36" },
+    { value: "nord", label: "Nord", color: "#2e3440" },
+    { value: "gruvbox", label: "Gruvbox", color: "#282828" },
+    { value: "solarized", label: "Solarized", color: "#002b36" },
+    { value: "tokyo-night", label: "Tokyo Night", color: "#1a1b26" },
+    { value: "one-dark", label: "One Dark", color: "#282c34" },
+    { value: "rose-pine", label: "Rosé Pine", color: "#191724" },
+  ],
   cool: [
     { value: "midnight", label: "Midnight", color: "#0f172a" },
     { value: "teal", label: "Teal", color: "#134e4a" },
@@ -100,7 +115,7 @@ function ThemeCard({
             )}
           </div>
         </div>
-        {isSelected && <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />}
+        {isSelected && <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />}
       </div>
       {!Icon && (
         <div
@@ -163,6 +178,8 @@ export function ThemeToggle() {
       const allThemeValues = [
         ...allThemes.featured.map(t => t.value),
         ...allThemes.base.map(t => t.value),
+        ...allThemes.catppuccin.map(t => t.value),
+        ...allThemes.popular.map(t => t.value),
         ...allThemes.cool.map(t => t.value),
         ...allThemes.warm.map(t => t.value),
         ...allThemes.nature.map(t => t.value),
@@ -191,7 +208,7 @@ export function ThemeToggle() {
 
       <DropdownMenuContent
         align="end"
-        className="w-80 p-4"
+        className="w-80 max-h-[70vh] overflow-y-auto p-4"
         sideOffset={8}
       >
         {/* Featured Themes (Top 3) */}
@@ -218,6 +235,40 @@ export function ThemeToggle() {
           </DropdownMenuLabel>
           <div className="grid grid-cols-2 gap-2">
             {allThemes.base.map((themeOption) => (
+              <ThemeGridItem
+                key={themeOption.value}
+                theme={themeOption}
+                isSelected={selected === themeOption.value}
+                onClick={() => handleThemeChange(themeOption.value)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Catppuccin */}
+        <div className="space-y-3 mb-4">
+          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Catppuccin
+          </DropdownMenuLabel>
+          <div className="grid grid-cols-4 gap-2">
+            {allThemes.catppuccin.map((themeOption) => (
+              <ThemeGridItem
+                key={themeOption.value}
+                theme={themeOption}
+                isSelected={selected === themeOption.value}
+                onClick={() => handleThemeChange(themeOption.value)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Popular Themes */}
+        <div className="space-y-3 mb-4">
+          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Popular
+          </DropdownMenuLabel>
+          <div className="grid grid-cols-4 gap-2">
+            {allThemes.popular.map((themeOption) => (
               <ThemeGridItem
                 key={themeOption.value}
                 theme={themeOption}

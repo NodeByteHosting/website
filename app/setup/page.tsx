@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useApiQuery, useApiMutation } from "@/packages/core"
 import {
   Server,
   Database,
@@ -46,8 +47,6 @@ type Step = "welcome" | "site" | "panels" | "pterodactyl" | "virtfusion" | "opti
 export default function SetupPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const [loading, setLoading] = useState(false)
-  const [setupStatus, setSetupStatus] = useState<SetupStatus | null>(null)
   const [testingConnections, setTestingConnections] = useState<Record<string, boolean>>({})
   const [testResults, setTestResults] = useState<Record<string, TestResult>>({})
   const [currentStep, setCurrentStep] = useState<Step>("welcome")
@@ -78,160 +77,152 @@ export default function SetupPage() {
     crowdinPersonalToken: "",
   })
 
-  // Load current setup status on mount
+  // Fetch setup status using React Query
+  const { data: setupStatus } = useApiQuery<SetupStatus>("/api/v1/setup")
+
+  // Test connection mutation
+  const testConnectionMutation = useApiMutation<
+    { testResults: Record<string, TestResult> },
+    Record<string, any>
+  >("POST", "/api/v1/setup/test", {
+    onSuccess: (data) => {
+      setTestResults((prev) => ({ ...prev, ...data.testResults }))
+    },
+  })
+
+  // Save configuration mutation
+  const saveConfigMutation = useApiMutation<
+    { success: boolean; configured?: Record<string, any> },
+    Record<string, any>
+  >("POST", "/api/v1/setup", {
+    onSuccess: (data) => {
+      if (data.success) {
+        toast({
+          title: "Configuration saved",
+          description: "Your settings have been saved successfully",
+        })
+      }
+    },
+  })
+
+  // Initialize from setup status
   useEffect(() => {
-    const loadStatus = async () => {
-      try {
-        const response = await fetch("/api/setup")
-        const data = await response.json()
-        setSetupStatus(data)
+    if (setupStatus) {
+      // Pre-fill form with existing values
+      if (setupStatus.configured) {
+        setFormData((prev) => ({
+          ...prev,
+          siteName: setupStatus.configured.siteName || prev.siteName,
+          siteUrl: setupStatus.configured.siteUrl || prev.siteUrl,
+          faviconUrl: setupStatus.configured.faviconUrl || prev.faviconUrl,
+          pterodactylUrl: setupStatus.configured.pterodactylUrl || prev.pterodactylUrl,
+          virtfusionUrl: setupStatus.configured.virtfusionUrl || prev.virtfusionUrl,
+        }))
 
-        // Pre-fill form with existing values
-        if (data.configured) {
-          setFormData((prev) => ({
-            ...prev,
-            siteName: data.configured.siteName || prev.siteName,
-            siteUrl: data.configured.siteUrl || prev.siteUrl,
-            faviconUrl: data.configured.faviconUrl || prev.faviconUrl,
-            pterodactylUrl: data.configured.pterodactylUrl || prev.pterodactylUrl,
-            virtfusionUrl: data.configured.virtfusionUrl || prev.virtfusionUrl,
-          }))
-
-          // Auto-select panels if already configured
-          if (data.configured.pterodactylUrl) {
-            setSelectedPanels((prev) => ({ ...prev, pterodactyl: true }))
-          }
-          if (data.configured.virtfusionUrl) {
-            setSelectedPanels((prev) => ({ ...prev, virtfusion: true }))
-          }
+        // Auto-select panels if already configured
+        if (setupStatus.configured.pterodactylUrl) {
+          setSelectedPanels((prev) => ({ ...prev, pterodactyl: true }))
         }
-
-        // Skip to appropriate step if already partially configured
-        if (data.components?.siteInfo && !data.isComplete) {
-          setCurrentStep("panels")
+        if (setupStatus.configured.virtfusionUrl) {
+          setSelectedPanels((prev) => ({ ...prev, virtfusion: true }))
         }
-      } catch (error) {
-        console.error("Failed to load setup status:", error)
+      }
+
+      // Skip to appropriate step if already partially configured
+      if (setupStatus.components?.siteInfo && !setupStatus.isComplete) {
+        setCurrentStep("panels")
       }
     }
-
-    loadStatus()
-  }, [])
+  }, [setupStatus])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleTestConnection = async (type: "pterodactyl" | "virtfusion") => {
+  const handleTestConnection = (type: "pterodactyl" | "virtfusion") => {
     setTestingConnections((prev) => ({ ...prev, [type]: true }))
 
-    try {
-      const body: Record<string, unknown> = { testConnections: true }
+    const body: Record<string, unknown> = { testConnections: true }
 
-      if (type === "pterodactyl") {
-        body.pterodactylUrl = formData.pterodactylUrl
-        body.pterodactylApiKey = formData.pterodactylApiKey
-      } else if (type === "virtfusion") {
-        body.virtfusionUrl = formData.virtfusionUrl
-        body.virtfusionApiKey = formData.virtfusionApiKey
-      }
-
-      const response = await fetch("/api/setup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-
-      const data = await response.json()
-
-      if (data.testResults?.[type]) {
-        setTestResults((prev) => ({ ...prev, [type]: data.testResults[type] }))
-        const result = data.testResults[type]
-
-        if (result.success) {
-          toast({
-            title: "Connection Successful",
-            description: result.database
-              ? `Connected to database: ${result.database}`
-              : `Connected to ${type} panel (${result.latency}ms)`,
-          })
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Connection Failed",
-            description: result.error || "Unable to establish connection",
-          })
-        }
-      }
-    } catch (error) {
-      console.error(`Failed to test ${type} connection:`, error)
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: `Failed to test ${type} connection`,
-      })
-    } finally {
-      setTestingConnections((prev) => ({ ...prev, [type]: false }))
+    if (type === "pterodactyl") {
+      body.pterodactylUrl = formData.pterodactylUrl
+      body.pterodactylApiKey = formData.pterodactylApiKey
+    } else if (type === "virtfusion") {
+      body.virtfusionUrl = formData.virtfusionUrl
+      body.virtfusionApiKey = formData.virtfusionApiKey
     }
+
+    testConnectionMutation.mutate(body, {
+      onSuccess: (data) => {
+        setTestingConnections((prev) => ({ ...prev, [type]: false }))
+        if (data.testResults?.[type]) {
+          const result = data.testResults[type]
+
+          if (result.success) {
+            toast({
+              title: "Connection Successful",
+              description: result.database
+                ? `Connected to database: ${result.database}`
+                : `Connected to ${type} panel (${result.latency}ms)`,
+            })
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Connection Failed",
+              description: result.error || "Unable to establish connection",
+            })
+          }
+        }
+      },
+      onError: () => {
+        setTestingConnections((prev) => ({ ...prev, [type]: false }))
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `Failed to test ${type} connection`,
+        })
+      },
+    })
   }
 
   const saveConfiguration = async (configType: "site" | "pterodactyl" | "virtfusion" | "optional") => {
-    setLoading(true)
+    const body: Record<string, unknown> = {}
 
-    try {
-      const body: Record<string, unknown> = {}
-
-      if (configType === "site") {
-        body.siteName = formData.siteName
-        body.siteUrl = formData.siteUrl
-        body.faviconUrl = formData.faviconUrl || null
-      } else if (configType === "pterodactyl") {
-        body.pterodactylUrl = formData.pterodactylUrl
-        body.pterodactylApiKey = formData.pterodactylApiKey
-        body.pterodactylApi = formData.pterodactylApi
-      } else if (configType === "virtfusion") {
-        body.virtfusionUrl = formData.virtfusionUrl
-        body.virtfusionApiKey = formData.virtfusionApiKey
-        body.virtfusionApi = formData.virtfusionApi
-      } else if (configType === "optional") {
-        // Only add optional fields if they have values
-        if (formData.githubToken) body.githubToken = formData.githubToken
-        if (formData.resendApiKey) body.resendApiKey = formData.resendApiKey
-        if (formData.crowdinProjectId) body.crowdinProjectId = formData.crowdinProjectId
-        if (formData.crowdinPersonalToken) body.crowdinPersonalToken = formData.crowdinPersonalToken
-      }
-
-      const response = await fetch("/api/setup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        toast({
-          variant: "destructive",
-          title: "Save Failed",
-          description: data.error || "Failed to save configuration",
-        })
-        return false
-      }
-
-      setSetupStatus(data)
-      return true
-    } catch (error) {
-      console.error("Save error:", error)
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "An unexpected error occurred",
-      })
-      return false
-    } finally {
-      setLoading(false)
+    if (configType === "site") {
+      body.siteName = formData.siteName
+      body.siteUrl = formData.siteUrl
+      body.faviconUrl = formData.faviconUrl || null
+    } else if (configType === "pterodactyl") {
+      body.pterodactylUrl = formData.pterodactylUrl
+      body.pterodactylApiKey = formData.pterodactylApiKey
+      body.pterodactylApi = formData.pterodactylApi
+    } else if (configType === "virtfusion") {
+      body.virtfusionUrl = formData.virtfusionUrl
+      body.virtfusionApiKey = formData.virtfusionApiKey
+      body.virtfusionApi = formData.virtfusionApi
+    } else if (configType === "optional") {
+      // Only add optional fields if they have values
+      if (formData.githubToken) body.githubToken = formData.githubToken
+      if (formData.resendApiKey) body.resendApiKey = formData.resendApiKey
+      if (formData.crowdinProjectId) body.crowdinProjectId = formData.crowdinProjectId
+      if (formData.crowdinPersonalToken) body.crowdinPersonalToken = formData.crowdinPersonalToken
     }
+
+    return new Promise<boolean>((resolve) => {
+      saveConfigMutation.mutate(body, {
+        onSuccess: (data) => {
+          if (data.success) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        },
+        onError: () => {
+          resolve(false)
+        },
+      })
+    })
   }
 
   const handleCompleteSetup = async () => {

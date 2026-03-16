@@ -6,6 +6,7 @@ import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
 import { Loader2, AlertCircle, CheckCircle2, Mail } from "lucide-react"
+import { api } from "@/packages/core/lib/api"
 
 interface ForgotPasswordFormProps {
   translations: {
@@ -50,23 +51,10 @@ export function ForgotPasswordForm({ translations: t }: ForgotPasswordFormProps)
     }
 
     try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        setError(data.error || t.errors.generic)
-        setIsLoading(false)
-        return
-      }
-
+      await api.post("/api/v1/auth/forgot-password", { email })
       setIsSuccess(true)
-    } catch (err) {
-      setError(t.errors.networkError)
+    } catch (err: any) {
+      setError(err?.message || t.errors.generic)
       console.error("Forgot password error:", err)
       setIsLoading(false)
     }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
+import { useApiQuery, useApiMutation } from "@/packages/core"
 import {
   RefreshCw,
   AlertCircle,
@@ -63,6 +64,57 @@ export default function SyncPage() {
   const [logs, setLogs] = useState<SyncLog[]>([])
   const logsEndRef = useRef<HTMLDivElement>(null)
 
+  // Fetch sync status using React Query
+  const { data: statusResponse, refetch: refetchStatus } = useApiQuery<{
+    success: boolean
+    status: { lastSync: string | null; isSyncing: boolean }
+    counts: Record<string, number>
+    availableTargets: string[]
+  }>("/api/admin/sync")
+
+  // Start sync mutation (for single target)
+  const singleSyncMutation = useApiMutation<
+    { success: boolean; result?: Record<string, any>; error?: string },
+    { target: string }
+  >("POST", "/api/admin/sync", {
+    onSuccess: (data) => {
+      if (data.success) {
+        refetchStatus()
+      }
+    },
+  })
+
+  // Start full sync mutation
+  const fullSyncMutation = useApiMutation<
+    { success: boolean; error?: string },
+    { type: string }
+  >("POST", "/api/admin/sync", {
+    onSuccess: (data) => {
+      if (data.success) {
+        refetchStatus()
+      }
+    },
+  })
+
+  // Cancel sync mutation
+  const cancelMutation = useApiMutation<
+    { success: boolean; error?: string },
+    void
+  >("POST", "/api/admin/sync/cancel", {
+    onSuccess: (data) => {
+      if (data.success) {
+        refetchStatus()
+      }
+    },
+  })
+
+  // Initialize sync status on mount
+  useEffect(() => {
+    if (statusResponse?.status?.lastSync) {
+      setLastSyncTime(new Date(statusResponse.status.lastSync))
+    }
+  }, [statusResponse])
+
   // Auto-scroll logs
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -79,24 +131,20 @@ export default function SyncPage() {
     setLogs((prev) => [...prev, log].slice(-100))
   }, [])
 
-  const fetchStatus = async () => {
-    try {
-      const response = await fetch("/api/admin/sync")
-      const data = await response.json()
-      if (data.success && data.status?.lastSync) {
-        setLastSyncTime(new Date(data.status.lastSync))
-      }
-    } catch (error) {
-      console.error("Failed to fetch sync status:", error)
-    }
-  }
-
-  // Poll server sync logs while a sync is running to show live progress/messages
+  // Poll server sync logs for single sync operations (not used during fullSync)
   const serverPollRef = useRef<number | null>(null)
   const lastServerLogId = useRef<string | null>(null)
 
+  // Fetch sync logs using React Query (disabled by default, enabled during polling)
+  const { data: logsResponse, refetch: refetchLogs } = useApiQuery<{
+    success: boolean
+    logs: any[]
+  }>("/api/admin/sync/logs", { limit: "5" }, { enabled: false })
+
+
   useEffect(() => {
-    if (!isRunning) {
+    // Skip polling if a full sync SSE stream is active (eventSourceRef handles it)
+    if (!isRunning || eventSourceRef.current !== null) {
       if (serverPollRef.current) {
         clearInterval(serverPollRef.current)
         serverPollRef.current = null
@@ -106,21 +154,38 @@ export default function SyncPage() {
 
     const poll = async () => {
       try {
-        const res = await fetch('/api/admin/sync/logs?limit=5')
-        const data = await res.json()
-        if (data.success && Array.isArray(data.logs) && data.logs.length > 0) {
-          const latest = data.logs[0]
-          // Update progress if available
-          const itemsTotal = latest.itemsTotal || 0
-          const itemsSynced = latest.itemsSynced || 0
-          if (itemsTotal > 0) {
-            setProgress(Math.round((itemsSynced / itemsTotal) * 100))
+        const data = await refetchLogs()
+        if (data.data?.success && Array.isArray(data.data.logs) && data.data.logs.length > 0) {
+          const latest = data.data.logs[0]
+          
+          // Parse metadata if it's a string
+          let metadata = latest.metadata
+          if (typeof metadata === 'string') {
+            try {
+              metadata = JSON.parse(metadata)
+            } catch {
+              metadata = {}
+            }
           }
 
-          // Add message if there's a new server-side message
-          const lastMessage = latest.metadata?.lastMessage
+          // Update progress from metadata with detailed info
+          const itemsTotal = metadata?.itemsTotal || latest.itemsTotal || 0
+          const itemsProcessed = metadata?.itemsProcessed || latest.itemsSynced || 0
+          
+          if (itemsTotal > 0) {
+            setProgress(Math.round((itemsProcessed / itemsTotal) * 100))
+          }
+
+          // Add message if there's a new server-side message with detailed progress
+          const lastMessage = metadata?.lastMessage
           if (latest.id !== lastServerLogId.current && lastMessage) {
-            addLog(lastMessage, 'progress')
+            // Enhanced message with progress details
+            let displayMessage = lastMessage
+            if (itemsProcessed > 0 && itemsTotal > 0) {
+              const percentage = Math.round((itemsProcessed / itemsTotal) * 100)
+              displayMessage = `${lastMessage} [${itemsProcessed}/${itemsTotal} - ${percentage}%]`
+            }
+            addLog(displayMessage, 'progress')
             lastServerLogId.current = latest.id
           }
         }
@@ -137,23 +202,24 @@ export default function SyncPage() {
       if (serverPollRef.current) clearInterval(serverPollRef.current)
       serverPollRef.current = null
     }
-  }, [isRunning])
+  }, [isRunning, refetchLogs, addLog])
 
-  const requestCancel = async () => {
-    try {
-      const res = await fetch('/api/admin/sync/cancel', { method: 'POST' })
-      const data = await res.json()
-      if (data.success) {
-        addLog('Cancellation requested', 'info')
-        toast({ title: 'Cancellation requested' })
-      } else {
-        addLog(`Cancel failed: ${data.error}`, 'error')
+  const requestCancel = () => {
+    cancelMutation.mutate(undefined, {
+      onSuccess: (data) => {
+        if (data.success) {
+          addLog('Cancellation requested', 'info')
+          toast({ title: 'Cancellation requested' })
+        } else {
+          addLog(`Cancel failed: ${data.error}`, 'error')
+          toast({ title: 'Cancel failed', variant: 'destructive' })
+        }
+      },
+      onError: (error) => {
+        addLog('Cancel failed: network error', 'error')
         toast({ title: 'Cancel failed', variant: 'destructive' })
-      }
-    } catch (e) {
-      addLog('Cancel failed: network error', 'error')
-      toast({ title: 'Cancel failed', variant: 'destructive' })
-    }
+      },
+    })
   }
 
   const scrollToLogsMobile = () => {
@@ -162,8 +228,8 @@ export default function SyncPage() {
   }
 
   useEffect(() => {
-    fetchStatus()
-  }, [])
+    refetchStatus()
+  }, [refetchStatus])
 
   const updateTargetStatus = (targetId: string, status: SyncTarget["status"]) => {
     setTargets((prev) => prev.map((t) => (t.id === targetId ? { ...t, status } : t)))
@@ -173,50 +239,96 @@ export default function SyncPage() {
     setTargets(initialTargets.map((t) => ({ ...t, status: "idle" })))
   }
 
-  const runSingleSync = async (targetId: string) => {
+  const runSingleSync = (targetId: string) => {
     if (isRunning) return
 
     setIsRunning(true)
     setCurrentTarget(targetId)
     updateTargetStatus(targetId, "running")
-    
+
     const target = targets.find((t) => t.id === targetId)
     addLog(`Starting sync: ${target?.name}...`, "info", targetId)
 
-    try {
-      const response = await fetch("/api/admin/sync", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ target: targetId }),
-      })
+    singleSyncMutation.mutate(
+      { type: targetId } as any,
+      {
+        onSuccess: (data) => {
+          if (!data.success) {
+            updateTargetStatus(targetId, "error")
+            addLog(`✗ ${target?.name} failed: ${data.error}`, "error", targetId)
+            toast({ title: `${target?.name} sync failed`, variant: "destructive" })
+            setIsRunning(false)
+            setCurrentTarget(null)
+            return
+          }
 
-      const data = await response.json()
+          const syncLogId = (data as any).sync_log_id
+          addLog(`✓ Enqueued — streaming progress...`, "progress", targetId)
 
-      if (data.success) {
-        updateTargetStatus(targetId, "success")
-        const result = data.result?.[targetId]
-        if (result) {
-          addLog(`✓ ${target?.name}: ${formatResult(result)}`, "success", targetId)
-        } else {
-          addLog(`✓ ${target?.name} synced successfully`, "success", targetId)
-        }
-        toast({ title: `${target?.name} synced` })
-      } else {
-        updateTargetStatus(targetId, "error")
-        addLog(`✗ ${target?.name} failed: ${data.error}`, "error", targetId)
-        toast({ title: `${target?.name} sync failed`, variant: "destructive" })
+          const apiBase = process.env.NEXT_PUBLIC_GO_API_URL || "http://localhost:8080"
+          const token = (typeof window !== "undefined" ? localStorage.getItem("auth_token") : "") || ""
+          const sseUrl = `${apiBase}/api/admin/sync/stream/${syncLogId}?token=${encodeURIComponent(token)}`
+
+          const es = new EventSource(sseUrl)
+          eventSourceRef.current = es
+
+          const stopSingleStream = () => {
+            es.close()
+            if (eventSourceRef.current === es) eventSourceRef.current = null
+            setIsRunning(false)
+            setCurrentTarget(null)
+            refetchStatus()
+          }
+
+          es.addEventListener("update", (e: MessageEvent) => {
+            try {
+              const payload = JSON.parse(e.data)
+              const meta = payload.metadata || {}
+              const lastMessage: string = meta.lastMessage || ""
+              if (lastMessage) addLog(lastMessage, "progress", targetId)
+            } catch {}
+          })
+
+          es.addEventListener("done", (e: MessageEvent) => {
+            try {
+              const payload = JSON.parse(e.data)
+              if (payload.status === "COMPLETED") {
+                updateTargetStatus(targetId, "success")
+                addLog(`✓ ${target?.name} synced successfully`, "success", targetId)
+                toast({ title: `${target?.name} synced` })
+              } else if (payload.status === "FAILED") {
+                updateTargetStatus(targetId, "error")
+                const errMsg = payload.metadata?.error || payload.metadata?.failed_step || "Unknown error"
+                addLog(`✗ ${target?.name} failed: ${errMsg}`, "error", targetId)
+                toast({ title: `${target?.name} sync failed`, variant: "destructive" })
+              }
+            } catch {}
+            stopSingleStream()
+          })
+
+          es.onerror = () => {
+            updateTargetStatus(targetId, "error")
+            addLog(`✗ ${target?.name}: stream connection lost`, "error", targetId)
+            toast({ title: `${target?.name} sync failed`, variant: "destructive" })
+            stopSingleStream()
+          }
+        },
+        onError: (error) => {
+          updateTargetStatus(targetId, "error")
+          addLog(`✗ ${target?.name} failed: Network error`, "error", targetId)
+          toast({ title: `${target?.name} sync failed`, variant: "destructive" })
+          setIsRunning(false)
+          setCurrentTarget(null)
+        },
       }
-    } catch (error) {
-      updateTargetStatus(targetId, "error")
-      addLog(`✗ ${target?.name} failed: Network error`, "error", targetId)
-      toast({ title: `${target?.name} sync failed`, variant: "destructive" })
-    } finally {
-      setIsRunning(false)
-      setCurrentTarget(null)
-    }
+    )
   }
 
-  const runFullSync = async () => {
+  // EventSource ref for SSE streaming — closed on unmount and on terminal sync state
+  const eventSourceRef = useRef<EventSource | null>(null)
+  useEffect(() => () => { eventSourceRef.current?.close() }, [])
+
+  const runFullSync = () => {
     if (isRunning) return
 
     setIsRunning(true)
@@ -227,56 +339,134 @@ export default function SyncPage() {
     addLog("═══ Starting Full Sync ═══", "info")
     addLog("Connecting to Pterodactyl panel...", "progress")
 
-    const syncOrder = ["locations", "nodes", "allocations", "nests", "servers", "databases", "users"]
-    let completedCount = 0
-
-    for (const targetId of syncOrder) {
-      setCurrentTarget(targetId)
-      updateTargetStatus(targetId, "running")
-      
-      const target = targets.find((t) => t.id === targetId)
-      addLog(`Syncing ${target?.name}...`, "progress", targetId)
-      setProgress(Math.round((completedCount / syncOrder.length) * 100))
-
-      try {
-        const response = await fetch("/api/admin/sync", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ target: targetId }),
-        })
-
-        const data = await response.json()
-
-        if (data.success) {
-          updateTargetStatus(targetId, "success")
-          const result = data.result?.[targetId]
-          if (result) {
-            addLog(`  ✓ ${formatResult(result)}`, "success", targetId)
-          } else {
-            addLog(`  ✓ Completed`, "success", targetId)
+    fullSyncMutation.mutate(
+      { type: "full" },
+      {
+        onSuccess: (data) => {
+          if (!data.success) {
+            addLog(`✗ Sync failed: ${data.error}`, "error")
+            toast({ title: "Sync failed", variant: "destructive" })
+            setIsRunning(false)
+            return
           }
-        } else {
-          updateTargetStatus(targetId, "error")
-          addLog(`  ✗ Failed: ${data.error}`, "error", targetId)
-        }
-      } catch (error) {
-        updateTargetStatus(targetId, "error")
-        addLog(`  ✗ Network error`, "error", targetId)
+
+          const syncLogId = (data as any).sync_log_id
+          addLog("✓ Sync enqueued — streaming live updates...", "progress")
+
+          // Connect directly to the backend SSE endpoint.
+          // EventSource cannot send Authorization headers, so the JWT is passed
+          // as a query param and validated server-side.
+          const apiBase = process.env.NEXT_PUBLIC_GO_API_URL || "http://localhost:8080"
+          const token = (typeof window !== "undefined" ? localStorage.getItem("auth_token") : "") || ""
+          const sseUrl = `${apiBase}/api/admin/sync/stream/${syncLogId}?token=${encodeURIComponent(token)}`
+
+          const es = new EventSource(sseUrl)
+          eventSourceRef.current = es
+
+          const syncOrder = ["locations", "nodes", "allocations", "nests", "servers", "databases", "users"]
+          let hasStarted = false
+          let lastStep = ""
+
+          let intentionallyClosed = false
+          const stopStream = (finalStatus?: string) => {
+            intentionallyClosed = true
+            es.close()
+            eventSourceRef.current = null
+            setIsRunning(false)
+            if (finalStatus !== "CANCELLED") refetchStatus()
+          }
+
+          es.addEventListener("connected", () => {
+            addLog("✓ Live sync stream connected", "progress")
+          })
+
+          es.addEventListener("update", (e: MessageEvent) => {
+            try {
+              const payload = JSON.parse(e.data)
+              const meta = payload.metadata || {}
+              const status: string = payload.status
+
+              if (!hasStarted && status === "RUNNING") {
+                hasStarted = true
+                addLog("✓ Backend sync started — processing data...", "progress")
+              }
+
+              if (status === "RUNNING") {
+                // Use the real step-based progress written by the worker
+                // (0 → starting, 15 → nodes, 30 → allocations, 45 → nests,
+                //  60 → servers, 75 → users, 85 → databases, 100 → done)
+                const metaProgress = typeof meta.progress === "number" ? meta.progress : 50
+                setProgress(metaProgress)
+
+                const step: string = meta.step || ""
+                if (step && step !== "starting" && step !== lastStep) {
+                  lastStep = step
+                  const stepIdx = syncOrder.indexOf(step)
+                  if (stepIdx >= 0) {
+                    syncOrder.forEach((s, i) => {
+                      if (i < stepIdx) updateTargetStatus(s, "success")
+                      else if (i === stepIdx) updateTargetStatus(s, "running")
+                    })
+                  }
+                }
+
+                const lastMessage: string = meta.lastMessage || ""
+                if (lastMessage) {
+                  const itemsTotal: number = meta.itemsTotal || 0
+                  const itemsProcessed: number = meta.itemsProcessed || 0
+                  let displayMessage = lastMessage
+                  if (step && itemsTotal > 0 && itemsProcessed > 0) {
+                    const pct = Math.round((itemsProcessed / itemsTotal) * 100)
+                    displayMessage = `${step}: ${lastMessage} [${itemsProcessed}/${itemsTotal} – ${pct}%]`
+                  } else if (step) {
+                    displayMessage = `${step}: ${lastMessage}`
+                  }
+                  addLog(displayMessage, "progress", step || undefined)
+                }
+              }
+            } catch (err) {
+              console.error("SSE parse error", err)
+            }
+          })
+
+          es.addEventListener("done", (e: MessageEvent) => {
+            try {
+              const payload = JSON.parse(e.data)
+              const status: string = payload.status
+              const meta = payload.metadata || {}
+
+              if (status === "COMPLETED") {
+                setProgress(100)
+                syncOrder.forEach((s) => updateTargetStatus(s, "success"))
+                addLog("═══ Full Sync Complete ═══", "success")
+                setLastSyncTime(new Date())
+                toast({ title: "Full sync completed" })
+              } else if (status === "FAILED") {
+                const failedStep: string = meta.failed_step || meta.step || ""
+                if (failedStep) updateTargetStatus(failedStep, "error")
+                addLog(`✗ Sync failed: ${meta.error || "Unknown error"}`, "error")
+                toast({ title: "Sync failed", variant: "destructive" })
+              } else if (status === "CANCELLED") {
+                addLog("⚠️ Sync cancelled", "info")
+              }
+              stopStream(status)
+            } catch {}
+          })
+
+          es.onerror = () => {
+            if (intentionallyClosed) return
+            addLog("✗ Streaming connection lost", "error")
+            stopStream()
+            toast({ title: "Connection lost", variant: "destructive" })
+          }
+        },
+        onError: (error) => {
+          addLog(`✗ Network error: ${error.message}`, "error")
+          toast({ title: "Sync failed", variant: "destructive" })
+          setIsRunning(false)
+        },
       }
-
-      completedCount++
-      
-      // Small delay between syncs for visual feedback
-      await new Promise((r) => setTimeout(r, 300))
-    }
-
-    setProgress(100)
-    setLastSyncTime(new Date())
-    addLog("═══ Full Sync Complete ═══", "success")
-    toast({ title: "Full sync completed" })
-
-    setIsRunning(false)
-    setCurrentTarget(null)
+    )
   }
 
   const formatResult = (result: Record<string, unknown>): string => {
@@ -419,7 +609,7 @@ export default function SyncPage() {
                   <p className="text-xs text-muted-foreground">{formatDate(lastSyncTime)}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={fetchStatus} disabled={isRunning}>
+              <Button variant="ghost" size="sm" onClick={refetchStatus} disabled={isRunning}>
                 <RefreshCw className="h-3.5 w-3.5" />
               </Button>
             </CardContent>

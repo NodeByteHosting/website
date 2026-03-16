@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo } from "react"
-import { useSession } from "next-auth/react"
+import { useAuth, canAccessAdmin, isStaffUser } from "@/packages/auth"
 import { Button } from "@/packages/ui/components/ui/button"
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import { useTranslations } from "next-intl"
 
 export function Navigation() {
   const t = useTranslations()
-  const { data: session, status } = useSession()
+  const { user, isLoading, logout } = useAuth()
   const mountedRef = useRef(false)
   
   // Memoize menu items to prevent recreation on every render
@@ -115,6 +115,7 @@ export function Navigation() {
 
   // Memoize translations to avoid recreating objects
   const userMenuTranslations = useMemo(() => ({
+    myAccount: t("auth.userMenu.myAccount"),
     dashboard: t("auth.userMenu.myAccount"),
     viewPanel: t("auth.userMenu.viewPanel"),
     admin: t("auth.userMenu.admin"),
@@ -409,8 +410,9 @@ export function Navigation() {
                 <CurrencySelector />
                 <ThemeToggle />
                 <UserMenuContent 
-                  session={session}
-                  status={status}
+                  user={user}
+                  isLoading={isLoading}
+                  onLogout={logout}
                   translations={userMenuTranslations}
                 />
                 <Button 
@@ -707,9 +709,9 @@ function MobileUserSection({
   }
   onClose: () => void
 }) {
-  const { data: session, status } = useSession()
+  const { user, isLoading, logout } = useAuth()
 
-  if (status === "loading") {
+  if (isLoading) {
     return (
       <div className="p-3 rounded-xl bg-muted/30 animate-pulse">
         <div className="h-12 bg-muted rounded-lg" />
@@ -717,7 +719,7 @@ function MobileUserSection({
     )
   }
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <div className="space-y-3">
         <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
@@ -741,8 +743,8 @@ function MobileUserSection({
     )
   }
 
-  const initials = `${session.user.firstName?.[0] || ""}${session.user.lastName?.[0] || ""}`.toUpperCase() || 
-    session.user.username?.[0]?.toUpperCase() || "U"
+  const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || 
+    user.username?.[0]?.toUpperCase() || "U"
 
   return (
     <div className="space-y-3">
@@ -755,7 +757,7 @@ function MobileUserSection({
             <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-lg">
               {initials}
             </div>
-            {session.user.isAdmin && (
+            {isStaffUser(user) && (
               <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500">
                 <User className="h-3 w-3 text-white" />
               </span>
@@ -763,10 +765,10 @@ function MobileUserSection({
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium truncate">
-              {session.user.firstName} {session.user.lastName}
+              {user.firstName} {user.lastName}
             </p>
             <p className="text-sm text-muted-foreground truncate">
-              {session.user.email}
+              {user.email}
             </p>
           </div>
         </div>
@@ -783,7 +785,7 @@ function MobileUserSection({
               {translations.viewPanel}
             </a>
           </Button>
-          {(session.user.isSystemAdmin || session.user.roles.includes('SUPER_ADMIN') || session.user.roles.includes('ADMINISTRATOR')) && (
+          {canAccessAdmin(user) && (
             <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
               <Link href="/admin">
                 <Shield className="mr-2 h-4 w-4" />
@@ -796,7 +798,7 @@ function MobileUserSection({
             className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={() => {
               onClose()
-              import("next-auth/react").then(({ signOut }) => signOut({ callbackUrl: "/" }))
+              logout()
             }}
           >
             <LogIn className="mr-2 h-4 w-4 rotate-180" />

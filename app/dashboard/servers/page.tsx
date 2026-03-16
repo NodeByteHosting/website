@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useAuth, canAccessAdmin } from "@/packages/auth"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
+import { useApiQuery } from "@/packages/core"
 import {
   Server,
   Search,
@@ -26,6 +27,8 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertTriangle,
+  Users,
+  Eye,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -54,10 +57,16 @@ interface ServerData {
   name: string
   description: string | null
   status: string
+  isSuspended: boolean
   game: string
   node: string
   ip: string
   port: number
+  owner?: {
+    id: string
+    username: string
+    email: string
+  } | null
   resources: {
     memory: { used: number; limit: number }
     cpu: { used: number; limit: number }
@@ -103,7 +112,7 @@ function ServerSkeleton() {
   )
 }
 
-function ServerCard({ server }: { server: ServerData }) {
+function ServerCard({ server, showOwner = false }: { server: ServerData; showOwner?: boolean }) {
   const t = useTranslations("dashboard.servers")
 
   const statusConfig = {
@@ -152,6 +161,15 @@ function ServerCard({ server }: { server: ServerData }) {
               <span>{server.game}</span>
               <span>•</span>
               <span>{server.node}</span>
+              {showOwner && server.owner && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    {server.owner.username}
+                  </span>
+                </>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -252,49 +270,48 @@ function ServerCard({ server }: { server: ServerData }) {
 }
 
 export default function ServersPage() {
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const t = useTranslations("dashboard.servers")
-  const [servers, setServers] = useState<ServerData[]>([])
-  const [meta, setMeta] = useState<ServerMeta | null>(null)
-  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [page, setPage] = useState(1)
+  const [viewAll, setViewAll] = useState(false)
 
-  const fetchServers = async () => {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        per_page: "12",
-        ...(search && { search }),
-        ...(statusFilter !== "all" && { status: statusFilter }),
-      })
-      const response = await fetch(`/api/dashboard/servers?${params}`)
-      const data = await response.json()
-      if (data.success) {
-        setServers(data.data)
-        setMeta(data.meta)
-      }
-    } catch (error) {
-      console.error("Failed to fetch servers:", error)
-    } finally {
-      setLoading(false)
-    }
+  const isAdmin = canAccessAdmin(user)
+
+  // Auto-enable viewAll for admin users once auth loads
+  useEffect(() => {
+    if (isAdmin) setViewAll(true)
+  }, [isAdmin])
+
+  // Build query parameters
+  const params: Record<string, string> = {
+    page: page.toString(),
+    per_page: "12",
+    ...(search && { search }),
+    ...(statusFilter !== "all" && { status: statusFilter }),
+    ...(viewAll && isAdmin && { view_all: "true" }),
   }
 
-  useEffect(() => {
-    fetchServers()
-  }, [page, statusFilter])
+  // Fetch servers using React Query
+  const { data: response, isLoading: loading, refetch } = useApiQuery<{
+    success: boolean
+    data: ServerData[]
+    meta: ServerMeta
+  }>("/api/v1/dashboard/servers", params, {
+    enabled: !!user,
+  })
 
-  // Debounced search
+  const servers = response?.data ?? []
+  const meta = response?.meta ?? null
+
+  // Reset to page 1 on filter/mode change
   useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1)
-      fetchServers()
     }, 300)
     return () => clearTimeout(timer)
-  }, [search])
+  }, [search, viewAll])
 
   return (
     <div className="space-y-6">
@@ -302,14 +319,28 @@ export default function ServersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1">{t("description")}</p>
+          <p className="text-muted-foreground mt-1">
+            {viewAll && isAdmin ? "Viewing all servers across all accounts" : t("description")}
+          </p>
         </div>
-        <Button asChild>
-          <Link href="/games">
-            <Plus className="mr-2 h-4 w-4" />
-            {t("actions.newServer")}
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          {isAdmin && (
+            <Button
+              variant={viewAll ? "default" : "outline"}
+              size="sm"
+              onClick={() => { setViewAll(!viewAll); setPage(1) }}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              {viewAll ? "My Servers" : "All Servers"}
+            </Button>
+          )}
+          <Button asChild>
+            <Link href="/games">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("actions.newServer")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -337,7 +368,7 @@ export default function ServersPage() {
                 <SelectItem value="suspended">{t("status.suspended")}</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={fetchServers} disabled={loading}>
+            <Button variant="outline" onClick={() => refetch()} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               {t("actions.refresh")}
             </Button>
@@ -356,7 +387,7 @@ export default function ServersPage() {
         <>
           <div className="grid gap-4 md:grid-cols-2">
             {servers.map((server) => (
-              <ServerCard key={server.id} server={server} />
+              <ServerCard key={server.id} server={server} showOwner={viewAll && isAdmin} />
             ))}
           </div>
 

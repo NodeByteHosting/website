@@ -1,10 +1,12 @@
 import { getTranslations } from "next-intl/server"
-import { auth } from "@/packages/auth"
+import { auth } from "@/packages/auth/lib/auth-server"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import Link from "next/link"
 import { ResetPasswordForm } from "@/packages/auth/components"
 import { ArrowLeft } from "lucide-react"
+
+export const dynamic = "force-dynamic"
 
 interface ResetPasswordPageProps {
   searchParams: Promise<{ token?: string }>
