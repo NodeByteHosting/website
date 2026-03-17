@@ -28,7 +28,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 2,
     storageGB: 25,
     bandwidth: { amount: 1, unit: "TB" },
-    url: "https://billing.nodebyte.host/store/vps-hosting/scorch",
+    url: "https://billing.nodebyte.host/store/vps-hosting/2gb-r71700x",
   },
   {
     id: "4GB-R71700X",
@@ -39,7 +39,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 4,
     storageGB: 50,
     bandwidth: { amount: 2, unit: "TB" },
-    url: "https://billing.nodebyte.host/store/vps-hosting/flare",
+    url: "https://billing.nodebyte.host/store/vps-hosting/4gb-r71700x",
   },
   {
     id: "8GB-R71700X",
@@ -51,7 +51,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     storageGB: 100,
     bandwidth: null,
     popular: true,
-    url: "https://billing.nodebyte.host/store/vps-hosting/torch",
+    url: "https://billing.nodebyte.host/store/vps-hosting/8gb-r71700x",
   },
   {
     id: "16GB-R71700X",
@@ -62,7 +62,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 16,
     storageGB: 200,
     bandwidth: null,
-    url: "https://billing.nodebyte.host/store/vps-hosting/pyro",
+    url: "https://billing.nodebyte.host/store/vps-hosting/16gb-r71700x",
   },
 ]
 
