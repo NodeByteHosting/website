@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
+import { SiDiscord } from "react-icons/si"
 
 export function Navigation() {
   const t = useTranslations()
@@ -40,6 +41,20 @@ export function Navigation() {
       description: t("company.contact.description"),
       icon: Mail,
     },
+    {
+      title: t("company.github.title"),
+      href: "https://github.com/nodebyte",
+      description: t("company.github.description"),
+      icon: ExternalLink,
+      external: true,
+    },
+    {
+      title: t("company.discord.title"),
+      href: LINKS.discord,
+      description: t("company.discord.description"),
+      icon: SiDiscord,
+      external: true,
+    }
   ], [t])
 
   const services = useMemo(() => [
