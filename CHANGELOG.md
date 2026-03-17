@@ -76,13 +76,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`packages/core/middleware/setup.ts`** — disabled setup middleware stub removed; setup is handled entirely by the Go backend
 - **`packages/ui/components/ui/use-mobile.tsx`** — unused `useIsMobile` hook removed
 - **`packages/ui/components/ui/use-toast.ts`** — unused `useToast` / `toast` implementation removed
+- **Nixpacks Config (nixpacks.toml** - This configuration file was used while we hosted our website on services like Dokploy but it is no longer needed
 
 ---
-
-## [3.4.2] - 2026-03-17
-
-## Removed
-- **Nixpacks Config (nixpacks.toml** - This configuration file was used while we hosted our website on services like Dokploy but it is no longer needed
 
 
 ## [3.4.1] - 2026-03-16
