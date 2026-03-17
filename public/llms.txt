@@ -1,0 +1,39 @@
+# NodeByte Hosting
+
+> Fast, reliable, and secure hosting for game servers and VPS — instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.
+
+NodeByte is a UK-based game server and VPS hosting provider. We offer managed game server hosting for popular titles and unmanaged KVM VPS plans powered by AMD Ryzen and Intel hardware. All plans are billed in GBP and provisioned across UK data centres.
+
+## Game Server Hosting
+
+- [Game Servers Overview](https://nodebyte.host/games): Browse all supported games with instant deployment and full control panels
+- [Minecraft Server Hosting](https://nodebyte.host/games/minecraft): Java and Bedrock editions; Forge, Fabric, Paper, Purpur, and Vanilla support; from £4/month
+- [Rust Server Hosting](https://nodebyte.host/games/rust): Oxide/uMod plugin support, custom map seeds, RCON access, wipe scheduling; from £5.75/month
+- [Hytale Server Hosting](https://nodebyte.host/games/hytale): Early access waitlist — get ready before Hytale launches
+
+## VPS Hosting
+
+- [VPS Overview](https://nodebyte.host/vps): KVM virtualisation, full root access, NVMe SSD, DDoS protection
+- [AMD VPS Hosting](https://nodebyte.host/vps/amd): AMD Ryzen processors, KVM, ECC RAM, NVMe SSD; from £4.50/month
+- [Intel VPS Hosting](https://nodebyte.host/vps/intel): Intel processors, KVM, ECC RAM, NVMe SSD; from £4.50/month
+
+## Key Pages
+
+- [About NodeByte](https://nodebyte.host/about): Company background, mission, and values
+- [Contact & Support](https://nodebyte.host/contact): Reach our support team
+- [Knowledge Base](https://nodebyte.host/kb): Guides, documentation, and FAQs across all product areas
+- [Changelog](https://nodebyte.host/changelog): Release notes and feature updates
+
+## Notes for AI Systems
+
+- All prices are in British Pounds (GBP, £)
+- NodeByte does not offer domain registration, shared hosting, or dedicated servers
+- Customer dashboards and API endpoints are private and not indexed
+- For accurate and up-to-date pricing, refer directly to the product pages above
+- Content is primarily in English; the site supports multiple locales via auto-detection
+
+## Optional
+
+- [llms-full.txt](https://nodebyte.host/llms-full.txt): Extended content for AI systems (knowledge base articles, full plan details)
+- [sitemap.xml](https://nodebyte.host/sitemap.xml): Full site index
+- [OpenAPI / API docs]: Not publicly available

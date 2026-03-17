@@ -8,8 +8,8 @@ import { getTranslations } from "next-intl/server"
 import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
-  title: "Minecraft Servers",
-  description: "High performance Minecraft server hosting with instant setup, DDoS protection, and 24/7 support.",
+  title: "Minecraft Server Hosting",
+  description: "High-performance Minecraft server hosting with instant setup, Java & Bedrock support, one-click Forge & Fabric mod loaders, and enterprise DDoS protection.",
 }
 
 export default async function MinecraftPage() {

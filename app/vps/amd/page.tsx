@@ -9,7 +9,7 @@ import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
   title: "AMD VPS Hosting",
-  description: "High performance AMD VPS hosting with full root access, DDoS protection, NVMe SSD storage, and 24/7 support.",
+  description: "Enterprise AMD Ryzen KVM VPS with full root access, NVMe SSD storage, DDR4 ECC RAM, enterprise DDoS protection, and instant deployment. Starting from £5/mo.",
 }
 
 export default async function AmdVpsPage() {

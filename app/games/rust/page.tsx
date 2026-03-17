@@ -9,7 +9,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Rust Server Hosting",
-  description: "High performance Rust server hosting with Oxide/uMod support, custom maps, and DDoS protection. Instant setup with 24/7 expert support.",
+  description: "High-performance Rust server hosting with Oxide/uMod support, custom maps, wipe scheduling, RCON access, and enterprise DDoS protection.",
 }
 
 export default async function RustPage() {
