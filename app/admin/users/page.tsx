@@ -57,7 +57,7 @@ import {
 import { Label } from "@/packages/ui/components/ui/label"
 import { Switch } from "@/packages/ui/components/ui/switch"
 import { Checkbox } from "@/packages/ui/components/ui/checkbox"
-import { useToast } from "@/packages/ui/components/ui/use-toast"
+import { useToast } from "@/packages/core/hooks/use-toast"
 import { cn } from "@/packages/core/lib/utils"
 import { useAdminUsers, useUpdateUserRoles } from "@/packages/core"
 import { isStaffUser } from "@/packages/auth"
@@ -347,6 +347,7 @@ export default function UsersPage() {
       {/* Users Table */}
       <Card className="overflow-hidden">
         <CardContent className="p-0">
+          <div className="overflow-x-auto">
           <Table className="text-xs sm:text-sm table-fixed w-full">
               <TableHeader>
                 <TableRow>
@@ -514,6 +515,7 @@ export default function UsersPage() {
                 )}
               </TableBody>
             </Table>
+          </div>
 
           {/* Pagination */}
           {meta && meta.totalPages > 1 && (

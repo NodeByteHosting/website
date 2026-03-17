@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
   Package,
   Plus,
@@ -56,6 +56,8 @@ import { Separator } from "@/packages/ui/components/ui/separator"
 import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
 import { cn } from "@/packages/core/lib/utils"
 import { LINKS } from "@/packages/core/constants/links"
+import { getAllProducts } from "@/packages/core/products"
+import type { ProductEntry } from "@/packages/core/products"
 import Link from "next/link"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -82,108 +84,44 @@ interface Product {
   game?: string
 }
 
-// ─── Seed data (replace with API fetch when backend endpoint is ready) ────────
+// ─── Catalog adapter ─────────────────────────────────────────────────────────
 
-const SEED_PRODUCTS: Product[] = [
-  // Game servers
-  {
-    id: "mc-budget",
-    name: "Minecraft Budget",
-    slug: "minecraft-budget",
-    type: "game",
-    game: "Minecraft",
-    description: "Great for small friend groups and testing.",
-    priceGBP: 4,
-    billingUrl: `${LINKS.billing.minecraft}/budget`,
-    enabled: true,
-    stock: "in_stock",
-  },
-  {
-    id: "mc-standard",
-    name: "Minecraft Standard",
-    slug: "minecraft-standard",
-    type: "game",
-    game: "Minecraft",
-    description: "Most popular — handles mid-size communities.",
-    priceGBP: 8,
-    billingUrl: `${LINKS.billing.minecraft}/standard`,
-    enabled: true,
-    stock: "in_stock",
-  },
-  {
-    id: "rust-standard",
-    name: "Rust Standard",
-    slug: "rust-standard",
-    type: "game",
-    game: "Rust",
-    description: "Optimised for Rust servers up to 100 players.",
-    priceGBP: 12,
-    billingUrl: `${LINKS.billing.rust}/standard`,
-    enabled: true,
-    stock: "in_stock",
-  },
-  // VPS
-  {
-    id: "amd-starter",
-    name: "AMD Starter",
-    slug: "amd-starter",
-    type: "vps",
-    description: "Entry-level AMD VPS for personal projects.",
-    priceGBP: 5,
-    billingUrl: `${LINKS.billing.amdVps}/starter`,
-    enabled: true,
-    stock: "in_stock",
-    cpuCores: 1,
-    ramGB: 2,
-    storageGB: 25,
-    bandwidthTB: 1,
-  },
-  {
-    id: "amd-standard",
-    name: "AMD Standard",
-    slug: "amd-standard",
-    type: "vps",
-    description: "Balanced AMD VPS for web apps and APIs.",
-    priceGBP: 10,
-    billingUrl: `${LINKS.billing.amdVps}/standard`,
-    enabled: true,
-    stock: "in_stock",
-    cpuCores: 2,
-    ramGB: 4,
-    storageGB: 50,
-    bandwidthTB: 2,
-  },
-  {
-    id: "amd-performance",
-    name: "AMD Performance",
-    slug: "amd-performance",
-    type: "vps",
-    description: "High-performance AMD VPS. Unmetered bandwidth.",
-    priceGBP: 20,
-    billingUrl: `${LINKS.billing.amdVps}/performance`,
-    enabled: true,
-    stock: "in_stock",
-    cpuCores: 4,
-    ramGB: 8,
-    storageGB: 100,
-    bandwidthTB: null,
-  },
-  {
-    id: "intel-core",
-    name: "Intel Core",
-    slug: "intel-core",
-    type: "vps",
-    description: "Entry-level Intel VPS.",
-    priceGBP: 4.5,
-    billingUrl: `${LINKS.billing.intelVps}/core`,
-    enabled: false,
-    stock: "out_of_stock",
-    cpuCores: 1,
-    ramGB: 2,
-    storageGB: 25,
-    bandwidthTB: 1,
-  },
-]
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+function catalogToAdminProducts(entries: ProductEntry[]): Product[] {
+  return entries.map((entry) => ({
+    id: entry.id,
+    name:
+      entry.type === "game"
+        ? `${capitalize(entry.category)} ${capitalize(entry.planId)}`
+        : entry.planId,
+    slug: entry.id,
+    type: entry.type,
+    description: entry.description ?? "",
+    priceGBP: entry.priceGBP,
+    billingUrl: entry.billingUrl ?? "",
+    enabled: entry.stock !== "out_of_stock",
+    stock: entry.stock,
+    game:
+      entry.type === "game"
+        ? capitalize(entry.category)
+        : `${capitalize(entry.category)} VPS`,
+    cpuCores: entry.cpu,
+    ramGB: entry.ramGB,
+    storageGB: entry.storageGB,
+    bandwidthTB:
+      entry.bandwidth === undefined
+        ? undefined
+        : entry.bandwidth === null
+          ? null
+          : entry.bandwidth.amount,
+  }))
+}
+
+/** Seed from the shared product catalog. Replace getAllProducts() with an API call when the backend is ready. */
+const INITIAL_PRODUCTS: Product[] = catalogToAdminProducts(getAllProducts())
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -542,11 +480,34 @@ function ProductDialog({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<Product[]>(SEED_PRODUCTS)
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS)
   const [search, setSearch] = useState("")
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Product | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null)
+
+  // Load persisted overrides from the API on mount and merge with the catalog
+  useEffect(() => {
+    fetch("/api/products/overrides")
+      .then((r) => r.json())
+      .then((overrides: Record<string, { stock: StockStatus; enabled: boolean }>) => {
+        setProducts((prev) =>
+          prev.map((p) => {
+            const ov = overrides[p.id]
+            return ov ? { ...p, stock: ov.stock, enabled: ov.enabled } : p
+          }),
+        )
+      })
+      .catch(() => { /* ignore — overrides store is empty on cold start */ })
+  }, [])
+
+  const pushOverride = useCallback((p: Product) => {
+    fetch("/api/products/overrides", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: p.id, stock: p.stock, enabled: p.enabled }),
+    }).catch(console.error)
+  }, [])
 
   const filtered = products.filter((p) => {
     const q = search.toLowerCase()
@@ -570,21 +531,27 @@ export default function AdminProductsPage() {
     setDialogOpen(true)
   }
 
-  const handleToggle = (p: Product) =>
-    setProducts((prev) => prev.map((x) => (x.id === p.id ? { ...x, enabled: !x.enabled } : x)))
+  const handleToggle = (p: Product) => {
+    const next = { ...p, enabled: !p.enabled }
+    setProducts((prev) => prev.map((x) => (x.id === p.id ? next : x)))
+    pushOverride(next)
+  }
 
   const handleDelete = (p: Product) =>
     setProducts((prev) => prev.filter((x) => x.id !== p.id))
 
   const handleSave = (form: Partial<Product>) => {
     if (editTarget) {
-      setProducts((prev) => prev.map((x) => (x.id === editTarget.id ? { ...x, ...form } : x)))
+      const merged = { ...editTarget, ...form } as Product
+      setProducts((prev) => prev.map((x) => (x.id === editTarget.id ? merged : x)))
+      pushOverride(merged)
     } else {
       const newProd: Product = {
         ...(form as Omit<Product, "id">),
         id: `${form.type}-${Date.now()}`,
       }
       setProducts((prev) => [...prev, newProd])
+      pushOverride(newProd)
     }
     setDialogOpen(false)
   }

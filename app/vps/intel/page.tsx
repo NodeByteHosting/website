@@ -1,10 +1,13 @@
 ﻿import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { getTranslations } from "next-intl/server"
 import { VpsHero } from "@/packages/ui/components/Layouts/VPS/vps-hero"
-import { VpsPricing } from "@/packages/ui/components/Layouts/VPS/vps-pricing"
+const VpsPricing = dynamic(() => import("@/packages/ui/components/Layouts/VPS/vps-pricing").then((m) => ({ default: m.VpsPricing })))
 import { GameFeatures } from "@/packages/ui/components/Layouts/Games/game-features"
 import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import { INTEL_PLANS, INTEL_FEATURE_KEYS, INTEL_FAQ_KEYS, INTEL_HERO_FEATURE_COUNT, INTEL_SPECS } from "@/packages/core/constants/vps"
+import { isCategoryOutOfStock } from "@/packages/core/products"
+import { applyVpsPlanOverrides } from "@/packages/core/products/server"
 import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
@@ -29,6 +32,8 @@ export default async function IntelVpsPage() {
 
   const heroFeatures = Array.from({ length: INTEL_HERO_FEATURE_COUNT }, (_, i) => t(`vps.intel.heroFeatures.${i}`))
 
+  const intelPlans = applyVpsPlanOverrides("intel", INTEL_PLANS)
+
   return (
     <>
       <VpsHero
@@ -38,9 +43,9 @@ export default async function IntelVpsPage() {
         heroFeatures={heroFeatures}
         billingUrl={LINKS.billing.intelVps}
         specs={INTEL_SPECS}
-        outOfStock={INTEL_PLANS.length === 0}
+        outOfStock={intelPlans.length === 0 || intelPlans.every((p) => p.stock === "out_of_stock")}
       />
-      <VpsPricing variant="intel" plans={INTEL_PLANS} billingUrl={LINKS.billing.intelVps} />
+      <VpsPricing variant="intel" plans={intelPlans} billingUrl={LINKS.billing.intelVps} />
       <GameFeatures gameName="Intel VPS" features={features} />
       <GameFAQ gameName="Intel VPS" faqs={faqs} />
     </>

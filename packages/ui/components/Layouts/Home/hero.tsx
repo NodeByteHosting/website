@@ -94,7 +94,7 @@ export function Hero() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-muted-foreground">
-                {t("hero.promo.prefix")} <strong className="text-primary font-semibold">WELCOME10</strong> {t("hero.promo.suffix")}
+                {t("hero.promo.prefix")} <strong className="text-primary font-semibold">{t("hero.promo.highlight")}</strong> {t("hero.promo.suffix")}
               </span>
             </div>
 

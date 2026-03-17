@@ -1,12 +1,16 @@
 import { Card } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { GamePrice } from "@/packages/ui/components/ui/game-price"
-import { Gamepad2, ArrowRight, Check, Blocks, Sparkles } from "lucide-react"
+import { Gamepad2, ArrowRight, Check, Blocks, Sparkles, Radio, Mountain, Leaf } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
+import { GAME_OPTIONS } from "@/packages/core/constants/game"
+
+const ICON_MAP: Record<string, LucideIcon> = { Blocks, Gamepad2, Sparkles, Radio, Mountain, Leaf }
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()
@@ -19,56 +23,19 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function GamesPage() {
   const t = await getTranslations()
 
-  const games = [
-    {
-      name: "Minecraft",
-      slug: "minecraft",
-      description: t("games.minecraft.description"),
-      banner: "/minecraft.png",
-      icon: Blocks,
-      tag: t("games.minecraft.tag"),
-      tagColor: "bg-primary text-primary-foreground",
-      features: [
-        t("games.minecraft.features.0"),
-        t("games.minecraft.features.1"),
-        t("games.minecraft.features.2"),
-        t("games.minecraft.features.3"),
-      ],
-      startingPriceGBP: 2,
-    },
-    {
-      name: "Rust",
-      slug: "rust",
-      description: t("games.rust.description"),
-      banner: "/rust.png",
-      icon: Gamepad2,
-      tag: t("games.rust.tag"),
-      tagColor: "bg-accent text-accent-foreground",
-      features: [
-        t("games.rust.features.0"),
-        t("games.rust.features.1"),
-        t("games.rust.features.2"),
-        t("games.rust.features.3"),
-      ],
-      startingPriceGBP: 8,
-    },
-    {
-      name: "Hytale",
-      slug: "hytale",
-      description: t("games.hytale.description"),
-      banner: "/hytale.png",
-      icon: Sparkles,
-      tag: t("games.hytale.tag"),
-      tagColor: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
-      features: [
-        t("games.hytale.features.0"),
-        t("games.hytale.features.1"),
-        t("games.hytale.features.2"),
-        t("games.hytale.features.3"),
-      ],
-      startingPriceGBP: 5,
-    },
-  ]
+  const games = GAME_OPTIONS.map((g) => ({
+    ...g,
+    comingSoon: g.comingSoon ?? false,
+    icon: ICON_MAP[g.iconName],
+    description: t(`games.${g.slug}.description`),
+    tag: t(`games.${g.slug}.tag`),
+    features: [
+      t(`games.${g.slug}.features.0`),
+      t(`games.${g.slug}.features.1`),
+      t(`games.${g.slug}.features.2`),
+      t(`games.${g.slug}.features.3`),
+    ],
+  }))
 
   return (
     <section className="relative overflow-hidden pt-32 sm:pt-36 pb-24 sm:pb-32">
@@ -140,12 +107,16 @@ export default async function GamesPage() {
                 {/* Title & Price */}
                 <div className="flex items-start justify-between mb-2">
                   <h2 className="text-2xl font-bold">{game.name}</h2>
-                  {game.startingPriceGBP && (
-                    <GamePrice 
-                      amountGBP={game.startingPriceGBP} 
-                      label={t("gamesPage.startingAt")} 
+                  {game.comingSoon ? (
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/50">
+                      Coming Soon
+                    </span>
+                  ) : game.startingPriceGBP ? (
+                    <GamePrice
+                      amountGBP={game.startingPriceGBP}
+                      label={t("gamesPage.startingAt")}
                     />
-                  )}
+                  ) : null}
                 </div>
 
                 <p className="text-muted-foreground mb-4">{game.description}</p>

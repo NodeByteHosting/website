@@ -90,17 +90,19 @@ export default function DashboardLayout({
     return pathname.startsWith(href)
   }
 
-  const NavContent = () => (
+  const NavContent = ({ forMobile = false }: { forMobile?: boolean }) => {
+    const isCollapsed = !forMobile && collapsed
+    return (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className={cn(
         "flex items-center gap-3 px-3 py-4 border-b",
-        collapsed && "justify-center"
+        isCollapsed && "justify-center"
       )}>
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center shrink-0">
           <Server className="w-4 h-4 text-white" />
         </div>
-        {!collapsed && (
+        {!isCollapsed && (
           <div className="flex flex-col">
             <span className="font-semibold text-sm">NodeByte</span>
             <span className="text-[10px] text-muted-foreground">Dashboard</span>
@@ -117,17 +119,18 @@ export default function DashboardLayout({
                 <TooltipTrigger asChild>
                   <Link
                     href={item.href}
+                    onClick={() => forMobile && setMobileOpen(false)}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                       "hover:bg-accent hover:text-accent-foreground",
                       isActive(item.href)
                         ? "bg-primary/10 text-primary border border-primary/20"
                         : "text-muted-foreground",
-                      collapsed && "justify-center px-2"
+                      isCollapsed && "justify-center px-2"
                     )}
                   >
                     <item.icon className="h-4 w-4 shrink-0" />
-                    {!collapsed && (
+                    {!isCollapsed && (
                       <>
                         <span className="flex-1">{item.title}</span>
                         {item.badge !== undefined && item.badge > 0 && (
@@ -139,7 +142,7 @@ export default function DashboardLayout({
                     )}
                   </Link>
                 </TooltipTrigger>
-                {collapsed && (
+                {isCollapsed && (
                   <TooltipContent side="right">
                     {item.title}
                     {item.badge !== undefined && item.badge > 0 && (
@@ -162,17 +165,18 @@ export default function DashboardLayout({
               <TooltipTrigger asChild>
                 <Link
                   href="/"
+                  onClick={() => forMobile && setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                     "hover:bg-accent hover:text-accent-foreground text-muted-foreground",
-                    collapsed && "justify-center px-2"
+                    isCollapsed && "justify-center px-2"
                   )}
                 >
                   <Home className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{t("nav.backToSite")}</span>}
+                  {!isCollapsed && <span>{t("nav.backToSite")}</span>}
                 </Link>
               </TooltipTrigger>
-              {collapsed && (
+              {isCollapsed && (
                 <TooltipContent side="right">
                   {t("nav.backToSite")}
                 </TooltipContent>
@@ -190,14 +194,14 @@ export default function DashboardLayout({
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                     "hover:bg-accent hover:text-accent-foreground text-muted-foreground",
-                    collapsed && "justify-center px-2"
+                    isCollapsed && "justify-center px-2"
                   )}
                 >
                   <Server className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{t("nav.gamePanel")}</span>}
+                  {!isCollapsed && <span>{t("nav.gamePanel")}</span>}
                 </a>
               </TooltipTrigger>
-              {collapsed && (
+              {isCollapsed && (
                 <TooltipContent side="right">
                   {t("nav.gamePanel")}
                 </TooltipContent>
@@ -210,17 +214,18 @@ export default function DashboardLayout({
               <TooltipTrigger asChild>
                 <Link
                   href="/kb"
+                  onClick={() => forMobile && setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                     "hover:bg-accent hover:text-accent-foreground text-muted-foreground",
-                    collapsed && "justify-center px-2"
+                    isCollapsed && "justify-center px-2"
                   )}
                 >
                   <HelpCircle className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{t("nav.helpCenter")}</span>}
+                  {!isCollapsed && <span>{t("nav.helpCenter")}</span>}
                 </Link>
               </TooltipTrigger>
-              {collapsed && (
+              {isCollapsed && (
                 <TooltipContent side="right">
                   {t("nav.helpCenter")}
                 </TooltipContent>
@@ -232,21 +237,23 @@ export default function DashboardLayout({
 
       {/* Footer */}
       <div className="border-t p-3">
-        {!collapsed ? (
+        {!isCollapsed ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <LanguageSelector />
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => setCollapsed(true)}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+              {!forMobile && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setCollapsed(true)}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <UserMenu
@@ -289,11 +296,12 @@ export default function DashboardLayout({
       </div>
     </div>
   )
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 flex items-center justify-between px-4">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
@@ -306,10 +314,10 @@ export default function DashboardLayout({
                 <SheetTitle>Navigation Menu</SheetTitle>
                 <SheetDescription>Dashboard navigation links</SheetDescription>
               </VisuallyHidden>
-              <NavContent />
+              <NavContent forMobile />
             </SheetContent>
           </Sheet>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center">
             <Server className="w-4 h-4 text-white" />
           </div>
           <span className="font-semibold text-sm">Dashboard</span>
@@ -340,7 +348,7 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 transition-all duration-300",
+          "flex-1 min-w-0 overflow-x-hidden transition-all duration-300",
           "pt-14 lg:pt-0", // Account for mobile header
         )}
       >

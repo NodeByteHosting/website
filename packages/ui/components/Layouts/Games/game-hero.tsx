@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/packages/ui/components/ui/button"
-import { ArrowRight, ExternalLink, Star, Blocks, Gamepad2, Sparkles } from "lucide-react"
+import { ArrowRight, ExternalLink, Star, Blocks, Gamepad2, Sparkles, Radio, Mountain, Leaf } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -12,6 +12,9 @@ const iconMap = {
   Blocks: Blocks,
   Gamepad2: Gamepad2,
   Sparkles: Sparkles,
+  Radio: Radio,
+  Mountain: Mountain,
+  Leaf: Leaf,
 }
 
 interface GameHeroProps {
