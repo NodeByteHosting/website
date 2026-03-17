@@ -5,6 +5,16 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.1] - 2026-03-17
+
+### Fixed
+- **Login Page Crash** — `ArrowLeft` (Lucide) was removed from `login-form-multistep.tsx` imports when magic links were disabled, but is still used by the "Back" button in the password step; import restored to fix `ReferenceError: ArrowLeft is not defined` at runtime
+
+### Removed
+- **v3.4.2 Changelog Reference**: changes were sufficient enough to do a major bump to v3.5.0 instead.
+
+---
+
 ## [3.5.0] - 2026-03-17
 
 ### Added
@@ -76,13 +86,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`packages/core/middleware/setup.ts`** — disabled setup middleware stub removed; setup is handled entirely by the Go backend
 - **`packages/ui/components/ui/use-mobile.tsx`** — unused `useIsMobile` hook removed
 - **`packages/ui/components/ui/use-toast.ts`** — unused `useToast` / `toast` implementation removed
+- **Nixpacks Config (nixpacks.toml** - This configuration file was used while we hosted our website on services like Dokploy but it is no longer needed
 
 ---
-
-## [3.4.2] - 2026-03-17
-
-## Removed
-- **Nixpacks Config (nixpacks.toml** - This configuration file was used while we hosted our website on services like Dokploy but it is no longer needed
 
 
 ## [3.4.1] - 2026-03-16

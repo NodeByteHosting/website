@@ -7,7 +7,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
 import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
-import { Loader2, Mail, Lock, AlertCircle, Shield, ArrowRight, Server, Zap, Clock, Gamepad2 } from "lucide-react"
+import { Loader2, Mail, Lock, AlertCircle, Shield, ArrowRight, ArrowLeft, Server, Zap, Clock, Gamepad2 } from "lucide-react"
 import Link from "next/link"
 
 interface LoginFormProps {
