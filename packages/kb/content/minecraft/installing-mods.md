@@ -13,7 +13,7 @@ When installing a new mod it will automatically add the .jar file into the '/mod
 
 When on the Mod Installer page, click or search for the mod you are looking for then click on "Install" to install the latest version or click on "Versions" to choose your own version. 
 
-![](./images/mods/popup.png)
+![](/kb/minecraft/mods/popup.png)
 
 **Important: you must install the same version on your local machine!**
 
@@ -29,4 +29,4 @@ To check if the mod has installed properly, head over to your 'File Manager' and
 
 You will see the .jar of the Mod in there.
 
-![](./images/mods/jar.png)
+![](/kb/minecraft/mods/jar.png)

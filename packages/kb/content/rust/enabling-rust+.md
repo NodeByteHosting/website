@@ -23,18 +23,18 @@ Android  Device: [Play Store](https://play.google.com/store/apps/details?id=com.
 
 3. You will come across a screen like this
 
-![](./images/rust+/RustHome.jpg)
+![](/kb/rust/rust+/RustHome.jpg)
 
 4. Load up rust and connect to your server
 
 5. Press on "Esc" to access the pause menu and go to "Rust+" then click on "Pair"
 
-![](./images/rust+/rust+_Server.png)
+![](/kb/rust/rust+/rust+_Server.png)
 
 6. Back on the App you will get a pop up asking you to pair. Click on "Pair"
 
-![](./images/rust+/PairingMobile.jpg)
+![](/kb/rust/rust+/PairingMobile.jpg)
 
 7. Once paired, you will now be able to view your server directly from your phone/tablet
 
-![](./images/rust+/RustHomeConnected.png)
+![](/kb/rust/rust+/RustHomeConnected.png)

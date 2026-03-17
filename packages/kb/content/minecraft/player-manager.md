@@ -17,7 +17,7 @@ When a player is currently online and active inside of your server you will see 
 
 Click on the user to manage them. You will see something like this.
 
-![](./images/playermanager/Player.png)
+![](/kb/minecraft/playermanager/Player.png)
 
 On this screen you can do the following:
 
