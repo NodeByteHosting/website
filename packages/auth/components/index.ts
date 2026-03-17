@@ -1,4 +1,3 @@
-export { LoginForm } from "./login-form"
 export { LoginFormMultiStep } from "./login-form-multistep"
 export { RegisterForm } from "./register-form"
 export { LogoutButton } from "./logout-button"

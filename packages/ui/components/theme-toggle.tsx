@@ -160,18 +160,10 @@ export function ThemeToggle() {
 
   useEffect(() => setMounted(true), [])
 
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" className="h-9 w-9 opacity-0">
-        <Palette className="h-4 w-4" />
-      </Button>
-    )
-  }
-
   const selected = theme ?? "system"
   const display = selected === "system" ? resolvedTheme : selected
 
-  const Icon = display === "light" ? Sun : display === "dark" ? Moon : Palette
+  const Icon = mounted ? (display === "light" ? Sun : display === "dark" ? Moon : Palette) : Palette
 
   const handleThemeChange = (v: string) => {
     try {
@@ -199,13 +191,14 @@ export function ThemeToggle() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 rounded-full hover:bg-accent/80 transition-colors"
+          className={cn("h-9 w-9 rounded-full hover:bg-accent/80 transition-colors", !mounted && "opacity-0")}
           aria-label={t("theme.toggle")}
         >
           <Icon className="h-[1.2rem] w-[1.2rem] transition-transform hover:rotate-12" />
         </Button>
       </DropdownMenuTrigger>
 
+      {mounted && (
       <DropdownMenuContent
         align="end"
         className="w-80 max-h-[70vh] overflow-y-auto p-4"
@@ -347,6 +340,7 @@ export function ThemeToggle() {
           </div>
         </div>
       </DropdownMenuContent>
+      )}
     </DropdownMenu>
   )
 }

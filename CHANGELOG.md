@@ -5,6 +5,86 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.0] - 2026-03-17
+
+### Added
+- **New Game Pages: FiveM, RedM, Palworld** — Three new hosting pages, all in "Coming Soon" state
+  - `/games/fivem` — FiveM GTA roleplay hosting; features txAdmin, OneSync Infinity, custom script/MLO support
+  - `/games/redm` — RedM RDR2 roleplay hosting; features VORP/RedEM:R framework support, custom map streaming
+  - `/games/palworld` — Palworld hosting; features world configuration, mod support, automated backups
+  - All three show a `comingSoon` hero and disabled pricing section until plans are added
+- **Centralised Game Constants** (`packages/core/constants/game/`) — single source of truth for all game hosting data
+  - `minecraft.ts`, `rust.ts`, `hytale.ts`, `fivem.ts`, `redm.ts`, `palworld.ts` — per-game plan specs, feature keys, FAQ keys, hero features, and display config (`*_CONFIG`)
+  - `index.ts` exports `GAME_OPTIONS` array used by the games index page; dynamically derives starting prices and `comingSoon` flag from plan arrays
+- **Shared Type System** (`packages/core/types/servers/`) — extracted shared spec interfaces
+  - `GamePlanSpec` — unified plan type for all game products (id, priceGBP, ramGB, storageGB, bandwidth, uplink, ddos, stock, location, url)
+  - `VpsPlanSpec` — unified plan type for VPS products; moved from `vps/amd.ts` to the shared types module
+- **Product Service** (`packages/core/products/`) — unified product catalogue with admin override support
+  - `service.ts` — `getAllProducts()`, `getProductsByType()`, `getProductsByCategory()`, `isCategoryOutOfStock()`, `getCategoryStartingPrice()`
+  - `server.ts` — `applyGamePlanOverrides()` and `applyVpsPlanOverrides()` apply in-memory stock/enabled overrides at render time
+  - `override-store.ts` — module-level Map store; supports per-plan stock and enabled overrides without a database (reset on server restart)
+  - `types.ts` — `ProductEntry`, `ProductType`, `StockStatus` shared types for the admin catalogue
+- **Nodes Page** (`/nodes`) — new public page showing live node status and all available data centre locations
+  - `NodesClient` component with static node data (NB-GNODE-NC1 in Newcastle, NB-VNODE-HEL1 in Helsinki)
+  - Per-node cards showing CPU model, RAM type, and colour-coded uptime %
+  - 22 data centre locations grouped by region (Europe, Americas, Asia-Pacific) and country
+  - Newcastle and Helsinki marked as `primary: true` (active, highlighted pill)
+  - Location FAQ and CTA section; Radix Accordion hydration error fixed with `hydrated` guard
+  - `usePublicNodes()` hook added to `use-public-api.ts`; `PublicNode` interface exported
+- **Navigation: Network Link** — "Network" entry added to the Company dropdown pointing to `/nodes`
+  - Uses `Network` (Lucide) icon and `company.network.*` translation keys
+- **VPS Pricing Improvements**
+  - Per-plan stock status badges: "Out of Stock" (destructive) and "Coming Soon" (muted) shown in plan card header
+  - Out-of-stock plans rendered with `opacity-70` and a disabled CTA button instead of a broken order link
+  - Enriched spec list: `uplink` (port speed) and `ddos` (layer list + always-on flag) rows shown when present on a plan
+  - Location badge row on plan cards for plans with a `location` field
+  - Promo banner above pricing grid: `VPSLAUNCH` code with click-to-copy; valid date shown inline
+  - AMD and Intel VPS plans now carry `uplink` and `ddos` fields
+  - `AMD_SPECS` processor label updated to `"Enterprise AMD™"`
+  - `AMD_FAQ_KEYS` / `INTEL_FAQ_KEYS` — added `"location"` FAQ key
+- **Game Pricing Improvements**
+  - Per-plan stock status badges mirroring VPS pricing
+  - Smart feature icons: RAM (`MemoryStick`), storage (`HardDrive`), CPU (`Cpu`), DDoS (`Shield`), database (`Database`), panel (`Monitor`), jars/plugins (`Package`), uptime (`Activity`); fallback `Check`
+  - Location badge displayed below plan description when a `location` field is present on a plan
+  - `"Starting at"` label removed from individual plan cards (price shown without prefix)
+  - `location` and `stock` fields added to `PricingPlan` interface
+- **Language Selector — Contribute Links** — Crowdin project link and GitHub translations repo link added to the dropdown footer so users can contribute translations directly
+- **Games Index — Coming Soon Badge** — plans with no active pricing show a "Coming Soon" pill instead of a price; driven by `comingSoon` field on `GAME_OPTIONS` entries
+- **VPS Knowledge Base Category** (`packages/kb/content/vps/_meta.json`) — new KB category for VPS guides
+
+### Changed
+- **Game Pages Refactored** — Minecraft, Rust, and Hytale pages rewritten to consume shared constants
+  - Inline plan/feature/FAQ arrays replaced with `MINECRAFT_PLANS` / `RUST_PLANS` / `HYTALE_PLANS` + `applyGamePlanOverrides()`
+  - Feature and FAQ data driven from `*_FEATURE_KEYS` / `*_FAQ_KEYS` arrays mapped against translations
+  - `GamePricing` now loaded via `next/dynamic` on game pages to reduce initial JS bundle
+  - Hero props (`name`, `description`, `banner`, `icon`, `tag`, `tagColor`) sourced from `*_CONFIG` constants
+- **Games Index** — plan data now sourced from `GAME_OPTIONS` instead of an inline array; `ICON_MAP` converts icon name strings to Lucide components at render
+- **Navigation — Discord Icon** — `MessageCircle` replaced with `SiDiscord` (Simple Icons) for the Discord CTA button in both desktop and mobile nav
+- **Hero Promo Code** — hardcoded `WELCOME10` replaced with `t("hero.promo.highlight")` translation key for easier updates without code changes
+- **Theme Toggle — SSR Hydration Fix** — removed early `if (!mounted) return` path; icon falls back to `Palette` before hydration; `DropdownMenuContent` suppressed until mounted to avoid SSR mismatch
+- **`LINKS.status`** — updated from `https://status.nodebyte.host` to `https://nodebytestat.us`
+- **`LINKS.contact`** — `/contact` added as a named constant
+- **`LINKS.billing`** — `fivemHosting`, `redmHosting`, `palworldHosting` URLs added
+- **Hytale KB description** — removed mention of bugs/performance issues since Hytale is no longer described as actively in-development
+- **About / About Page stats** — "9+ locations" value updated to "3+" with label `"Data Center Partners"`
+- **Hero Graphic** — `"Global Network · 9+ Locations"` updated to `"Global Network · 3+ Data Center Partners"`
+
+### Removed
+- **`packages/auth/components/login-form.tsx`** — legacy single-step login form removed; multi-step form (`LoginFormMultiStep`) is the only login form
+- **`packages/core/constants/minecraft/`** — old standalone Minecraft constants folder (`plans.ts`, `features.ts`, `faqs.ts`) removed; replaced by `packages/core/constants/game/minecraft.ts`
+- **`packages/core/constants/rust/`** — old standalone Rust constants folder removed; replaced by `packages/core/constants/game/rust.ts`
+- **`packages/core/middleware/setup.ts`** — disabled setup middleware stub removed; setup is handled entirely by the Go backend
+- **`packages/ui/components/ui/use-mobile.tsx`** — unused `useIsMobile` hook removed
+- **`packages/ui/components/ui/use-toast.ts`** — unused `useToast` / `toast` implementation removed
+
+---
+
+## [3.4.2] - 2026-03-17
+
+## Removed
+- **Nixpacks Config (nixpacks.toml** - This configuration file was used while we hosted our website on services like Dokploy but it is no longer needed
+
+
 ## [3.4.1] - 2026-03-16
 
 ### Added

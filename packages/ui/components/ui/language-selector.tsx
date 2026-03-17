@@ -176,12 +176,32 @@ export function LanguageSelector({
           )}
         </ScrollArea>
         
-        {/* Footer with current selection */}
-        <div className="border-t p-2 bg-muted/30">
+        {/* Footer with current selection + contribute links */}
+        <div className="border-t p-2 bg-muted/30 space-y-1.5">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Globe className="h-3.5 w-3.5" />
             <span>Current: <span className="font-medium text-foreground">{localeNames[locale]}</span></span>
           </div>
+          <p className="text-[10px] text-muted-foreground leading-relaxed">
+            Want to help translate?{" "}
+            <a
+              href="https://crowdin.com/project/nodebyte"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Crowdin
+            </a>
+            {" · "}
+            <a
+              href="https://github.com/NodeByteHosting/translations"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              GitHub
+            </a>
+          </p>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

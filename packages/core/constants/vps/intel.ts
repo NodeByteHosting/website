@@ -1,4 +1,4 @@
-import type { VpsPlanSpec } from "./amd"
+import { VpsPlanSpec } from "@/packages/core/types/servers/vps";
 
 export const INTEL_BILLING_URL = "https://billing.nodebyte.host/store/vps-hosting"
 
@@ -21,7 +21,7 @@ export const INTEL_FEATURE_KEYS = [
 
 /** FAQ keys — maps to `vps.intel.faqs.<key>` in translations */
 export const INTEL_FAQ_KEYS = [
-  "rootAccess", "os", "upgrade", "bandwidth", "ddos", "refunds", "windows",
+  "rootAccess", "os", "upgrade", "bandwidth", "ddos", "refunds", "windows", "location",
 ] as const
 
 /** Number of hero feature pills (maps to `vps.intel.heroFeatures.{0..n}`) */

@@ -10,7 +10,8 @@ export const LINKS = {
   githubDiscussions: "https://github.com/orgs/NodeByteHosting/discussions",
   twitter:           "https://twitter.com/NodeByteHosting",
   trustpilot:        "https://uk.trustpilot.com/review/nodebyte.host",
-  status:            "https://status.nodebyte.host",
+  status:            "https://nodebytestat.us",
+  contact:           "/contact",
   billing: {
     root:             "https://billing.nodebyte.host",
     store:            "https://billing.nodebyte.host/store",
@@ -24,5 +25,8 @@ export const LINKS = {
     rustHosting:      "https://billing.nodebyte.host/store/rust-hosting",
     minecraft:        "https://billing.nodebyte.host/store/minecraft",
     rust:             "https://billing.nodebyte.host/store/rust",
+    fivemHosting:     "https://billing.nodebyte.host/store/fivem-server-hosting",
+    redmHosting:      "https://billing.nodebyte.host/store/redm-server-hosting",
+    palworldHosting:  "https://billing.nodebyte.host/store/palworld-server-hosting",
   },
 } as const

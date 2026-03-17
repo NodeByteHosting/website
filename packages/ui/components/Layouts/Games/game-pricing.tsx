@@ -5,7 +5,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import { Card } from "@/packages/ui/components/ui/card"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/packages/ui/components/ui/select"
-import { Zap, ArrowRight, ExternalLink, PackageX, Search, X, Check } from "lucide-react"
+import { Zap, ArrowRight, ExternalLink, PackageX, Search, X, Check, Cpu, HardDrive, MemoryStick, Shield, Database, Monitor, Package, Activity, MapPin } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Price } from "@/packages/ui/components/ui/price"
@@ -20,8 +20,12 @@ interface PricingPlan {
   priceGBP: number
   period: string
   features: string[]
+  /** Data centre location e.g. "Newcastle, United Kingdom" */
+  location?: string
   popular?: boolean
   url?: string
+  /** Availability status — defaults to in_stock */
+  stock?: "in_stock" | "out_of_stock" | "coming_soon"
 }
 
 interface GamePricingProps {
@@ -51,6 +55,19 @@ export function GamePricing({
 }: GamePricingProps) {
   const isOutOfStock = outOfStock || plans.length === 0
   const t = useTranslations()
+
+  function getFeatureIcon(feature: string) {
+    const f = feature.toLowerCase()
+    if (f.includes("ram") || f.includes("ddr") || f.includes("memory")) return <MemoryStick className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("storage") || f.includes("ssd") || f.includes("nvme") || f.includes("disk")) return <HardDrive className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("ryzen") || f.includes("intel") || f.includes("cpu") || f.includes("processor")) return <Cpu className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("ddos") || f.includes("protection") || f.includes("firewall")) return <Shield className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("database") || f.includes("mysql") || f.includes("mariadb")) return <Database className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("panel") || f.includes("control") || f.includes("dashboard")) return <Monitor className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("jar") || f.includes("plugin") || f.includes("mod") || f.includes("oxide") || f.includes("umod")) return <Package className="w-4 h-4 text-primary shrink-0" />
+    if (f.includes("uptime") || f.includes("sla")) return <Activity className="w-4 h-4 text-primary shrink-0" />
+    return <Check className="w-4 h-4 text-primary shrink-0" />
+  }
 
   const [search, setSearch] = useState("")
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default")
@@ -190,6 +207,7 @@ export function GamePricing({
                       "hover:shadow-xl hover:shadow-primary/5",
                       "flex flex-col h-full",
                       plan.popular && "border-primary/50 ring-1 ring-primary/20",
+                      plan.stock === "out_of_stock" && "opacity-70",
                     )}
                   >
                     {/* Gradient header with icon */}
@@ -206,11 +224,19 @@ export function GamePricing({
                         </div>
                       </div>
 
-                      {plan.popular && (
+                      {plan.stock === "out_of_stock" ? (
+                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-destructive text-destructive-foreground">
+                          {t("pricing.outOfStock")}
+                        </div>
+                      ) : plan.stock === "coming_soon" ? (
+                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground">
+                          {t("pricing.comingSoon")}
+                        </div>
+                      ) : plan.popular ? (
                         <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
                           {t("gamePage.pricing.mostPopular")}
                         </div>
-                      )}
+                      ) : null}
 
                       <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-card/80 to-transparent" />
                     </div>
@@ -220,7 +246,6 @@ export function GamePricing({
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="text-xl font-bold">{plan.name}</h3>
                         <div className="text-right">
-                          <p className="text-[11px] text-muted-foreground leading-none mb-0.5">{t("gamesPage.startingAt")}</p>
                           <div className="flex items-baseline gap-0.5">
                             <Price amount={plan.priceGBP} className="text-lg font-bold leading-none" />
                             <span className="text-xs text-muted-foreground">/{plan.period}</span>
@@ -231,26 +256,44 @@ export function GamePricing({
                       {/* Description */}
                       <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
 
+                      {/* Location */}
+                      {plan.location && (
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 px-2.5 py-1.5 rounded-md bg-muted/40 border border-border/40 w-fit">
+                          <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <span>{plan.location}</span>
+                        </div>
+                      )}
+
                       {/* Features */}
                       <ul className="space-y-2 mb-5 flex-1">
                         {plan.features.map((feature, i) => (
                           <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Check className="w-4 h-4 text-primary shrink-0" />
+                            {getFeatureIcon(feature)}
                             <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
 
-                      <Button
-                        className="w-full gap-2 rounded-lg mt-auto"
-                        variant={plan.popular ? "default" : "outline"}
-                        asChild
-                      >
-                        <Link href={plan.url || billingUrl} target="_blank">
-                          {t("gamePage.pricing.getStarted")}
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-                      </Button>
+                      {plan.stock === "out_of_stock" ? (
+                        <Button className="w-full gap-2 rounded-lg mt-auto" variant="outline" disabled>
+                          {t("pricing.outOfStock")}
+                        </Button>
+                      ) : plan.stock === "coming_soon" ? (
+                        <Button className="w-full gap-2 rounded-lg mt-auto" variant="outline" disabled>
+                          {t("pricing.comingSoon")}
+                        </Button>
+                      ) : (
+                        <Button
+                          className="w-full gap-2 rounded-lg mt-auto"
+                          variant={plan.popular ? "default" : "outline"}
+                          asChild
+                        >
+                          <Link href={plan.url || billingUrl} target="_blank">
+                            {t("gamePage.pricing.getStarted")}
+                            <ArrowRight className="w-4 h-4" />
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 ))}

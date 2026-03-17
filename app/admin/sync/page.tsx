@@ -24,7 +24,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import { Badge } from "@/packages/ui/components/ui/badge"
 import { Progress } from "@/packages/ui/components/ui/progress"
 import { ScrollArea } from "@/packages/ui/components/ui/scroll-area"
-import { useToast } from "@/packages/ui/components/ui/use-toast"
+import { useToast } from "@/packages/core/hooks/use-toast"
 import { cn } from "@/packages/core/lib/utils"
 
 interface SyncLog {

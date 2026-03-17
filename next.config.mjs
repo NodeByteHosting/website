@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin('./packages/i18n/request.ts')
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
-  disable: process.env.NODE_ENV === "development",
+  disable: process.env.NODE_ENV !== "production",
 })
 
 /** @type {import('next').NextConfig} */

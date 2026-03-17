@@ -49,7 +49,7 @@ export function AboutPage() {
   ]
 
   const displayStats = [
-    { value: "9+", label: t("aboutPage.stats.locations"), icon: Globe },
+    { value: "3+", label: t("aboutPage.stats.locations"), icon: Globe },
     { value: "Always on", label: t("aboutPage.stats.ddos"), icon: Shield },
     { value: "~1 Gbps", label: t("aboutPage.stats.network"), icon: Zap },
     { value: "99.9%", label: t("aboutPage.stats.uptime"), icon: Server },

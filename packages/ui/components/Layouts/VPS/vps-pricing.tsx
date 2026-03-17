@@ -6,7 +6,7 @@ import { Card } from "@/packages/ui/components/ui/card"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/packages/ui/components/ui/select"
 import { Slider } from "@/packages/ui/components/ui/slider"
-import { Cpu, Zap, PackageX, ExternalLink, ArrowRight, Check, Search, X } from "lucide-react"
+import { Cpu, Zap, PackageX, ExternalLink, ArrowRight, HardDrive, MemoryStick, Network, MapPin, Shield, Wifi, Search, X, Tag, Copy, Check } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Price } from "@/packages/ui/components/ui/price"
@@ -33,7 +33,7 @@ const VARIANT_STYLES = {
 
 export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
   const t = useTranslations()
-  const isOutOfStock = plans.length === 0
+  const isOutOfStock = plans.length === 0 || plans.every((p) => p.stock === "out_of_stock")
   const variantName = variant === "amd" ? "AMD" : "Intel"
   const styles = VARIANT_STYLES[variant]
 
@@ -56,6 +56,14 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
   const [cpuRange, setCpuRange] = useState<[number, number]>(cpuBounds)
   const [ramRange, setRamRange] = useState<[number, number]>(ramBounds)
   const [storageRange, setStorageRange] = useState<[number, number]>(storageBounds)
+  const [copied, setCopied] = useState(false)
+
+  function copyPromoCode() {
+    navigator.clipboard.writeText("VPSLAUNCH").then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   const hasActiveFilters =
     search !== "" ||
@@ -133,6 +141,34 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
           </Card>
         ) : (
           <>
+            {/* Promo Banner */}
+            <div className="max-w-6xl mx-auto mb-6">
+              <div className="relative flex flex-wrap items-center justify-between gap-4 rounded-xl border border-primary/30 bg-primary/5 px-5 py-4 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15">
+                    <Tag className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      50% off your first month on all VPS plans
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Use this code at checkout valid until <span className="font-medium text-foreground">March 22, 2026</span>
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={copyPromoCode}
+                  className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-mono font-bold text-primary transition-colors hover:bg-primary/20"
+                >
+                  <span>VPSLAUNCH</span>
+                  {copied
+                    ? <Check className="h-3.5 w-3.5 text-green-500" />
+                    : <Copy className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+            </div>
+
             {/* Filter Panel */}
             <div className="max-w-6xl mx-auto mb-8 rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm p-4 space-y-4">
               {/* Row 1: search + sort + clear */}
@@ -258,6 +294,7 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
                     "hover:shadow-xl hover:shadow-primary/5",
                     "flex flex-col h-full",
                     plan.popular && "border-primary/50 ring-1 ring-primary/20",
+                    plan.stock === "out_of_stock" && "opacity-70",
                   )}
                 >
                   {/* Gradient header with icon */}
@@ -275,11 +312,19 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
                     </div>
 
                     {/* Most popular badge */}
-                    {plan.popular && (
+                    {plan.stock === "out_of_stock" ? (
+                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-destructive text-destructive-foreground">
+                        {t("pricing.outOfStock")}
+                      </div>
+                    ) : plan.stock === "coming_soon" ? (
+                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground">
+                        {t("pricing.comingSoon")}
+                      </div>
+                    ) : plan.popular ? (
                       <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
                         {t("vps.pricing.mostPopular")}
                       </div>
-                    )}
+                    ) : null}
 
                     {/* Gradient fade to card */}
                     <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-card/80 to-transparent" />
@@ -311,37 +356,68 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
                     {/* Spec list */}
                     <ul className="space-y-2 mb-5 flex-1">
                       <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary shrink-0" />
-                        <span>{plan.cpu} {plan.cpu === 1 ? "vCPU core" : "vCPU cores"}</span>
+                        <Cpu className="w-4 h-4 text-primary shrink-0" />
+                        <span>{plan.cpu} {plan.cpu === 1 ? t("vps.pricing.specs.vcpuSingle") : t("vps.pricing.specs.vcpuPlural")}</span>
                       </li>
                       <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary shrink-0" />
-                        <span>{plan.ramGB} GB DDR4 ECC RAM</span>
+                        <MemoryStick className="w-4 h-4 text-primary shrink-0" />
+                        <span>{t("vps.pricing.specs.ram", { amount: plan.ramGB })}</span>
                       </li>
                       <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary shrink-0" />
-                        <span>{plan.storageGB} GB NVMe SSD</span>
+                        <HardDrive className="w-4 h-4 text-primary shrink-0" />
+                        <span>{t("vps.pricing.specs.storage", { amount: plan.storageGB })}</span>
                       </li>
                       <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary shrink-0" />
+                        <Network className="w-4 h-4 text-primary shrink-0" />
                         <span>
                           {plan.bandwidth === null
-                            ? `${t("vps.pricing.unmetered")} bandwidth`
-                            : `${plan.bandwidth.amount} ${plan.bandwidth.unit} bandwidth`}
+                            ? t("vps.pricing.specs.bandwidthUnmetered")
+                            : t("vps.pricing.specs.bandwidth", { amount: plan.bandwidth.amount, unit: plan.bandwidth.unit })}
                         </span>
                       </li>
+                      {plan.uplink && (
+                        <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Wifi className="w-4 h-4 text-primary shrink-0" />
+                          <span>{t("vps.pricing.specs.uplink", { amount: plan.uplink.amount, unit: plan.uplink.unit })}</span>
+                        </li>
+                      )}
+                      {plan.ddos && (
+                        <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Shield className="w-4 h-4 text-primary shrink-0" />
+                          <span>
+                            {t("vps.pricing.specs.ddos", { layers: plan.ddos.layers.map(l => `L${l}`).join("/") })}
+                            {plan.ddos.autoOn && ` (${t("vps.pricing.specs.ddosAlwaysOn")})`}
+                          </span>
+                        </li>
+                      )}
+                      {plan.location && (
+                        <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="w-4 h-4 text-primary shrink-0" />
+                          <span>{plan.location}</span>
+                        </li>
+                      )}
                     </ul>
 
-                    <Button
-                      className="w-full gap-2 rounded-lg mt-auto"
-                      variant={plan.popular ? "default" : "outline"}
-                      asChild
-                    >
-                      <Link href={plan.url || billingUrl} target="_blank">
-                        {t("vps.pricing.getStarted")}
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </Button>
+                    {plan.stock === "out_of_stock" ? (
+                      <Button className="w-full gap-2 rounded-lg mt-auto" variant="outline" disabled>
+                        {t("pricing.outOfStock")}
+                      </Button>
+                    ) : plan.stock === "coming_soon" ? (
+                      <Button className="w-full gap-2 rounded-lg mt-auto" variant="outline" disabled>
+                        {t("pricing.comingSoon")}
+                      </Button>
+                    ) : (
+                      <Button
+                        className="w-full gap-2 rounded-lg mt-auto"
+                        variant={plan.popular ? "default" : "outline"}
+                        asChild
+                      >
+                        <Link href={plan.url || billingUrl} target="_blank">
+                          {t("vps.pricing.getStarted")}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               ))}

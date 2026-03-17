@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, Blocks, ExternalLink, MessageCircle, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield, Cpu } from "lucide-react"
+import { Server, Gamepad2, Blocks, ExternalLink, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield, Cpu, Network } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -34,6 +34,12 @@ export function Navigation() {
       href: "/about",
       description: t("company.about.description"),
       icon: Users,
+    },
+    {
+      title: t("company.network.title"),
+      href: "/nodes",
+      description: t("company.network.description"),
+      icon: Network,
     },
     {
       title: t("company.contact.title"),
@@ -441,7 +447,7 @@ export function Navigation() {
                   asChild
                 >
                   <Link href={LINKS.discord} target="_blank">
-                    <MessageCircle className="h-4 w-4" />
+                    <SiDiscord className="h-4 w-4" />
                     {navLabels.discord}
                   </Link>
                 </Button>
@@ -686,7 +692,7 @@ export function Navigation() {
                 asChild
               >
                 <Link href={LINKS.discord} target="_blank" onClick={() => setIsMobileMenuOpen(false)}>
-                  <MessageCircle className="h-5 w-5" />
+                  <SiDiscord className="h-5 w-5" />
                   {navLabels.joinDiscord}
                 </Link>
               </Button>
