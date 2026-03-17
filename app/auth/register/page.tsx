@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 
 export const metadata = {
   title: "Register",
-  description: "Create your NodeByte Hosting account to access your game servers and services.",
+  description: "Create your NodeByte Hosting account to manage your game servers, VPS, and services all in one place.",
 }
 
 export default async function RegisterPage() {

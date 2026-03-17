@@ -9,7 +9,7 @@ import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
   title: "Intel VPS Hosting",
-  description: "Reliable Intel VPS hosting with full root access, DDoS protection, NVMe SSD storage, and 24/7 support.",
+  description: "Enterprise Intel KVM VPS with full root access, NVMe SSD storage, DDR4 ECC RAM, enterprise DDoS protection, and instant deployment.",
 }
 
 export default async function IntelVpsPage() {

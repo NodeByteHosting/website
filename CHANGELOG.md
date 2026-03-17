@@ -5,6 +5,53 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.1] - 2026-03-16
+
+### Added
+- **Progressive Web App (PWA) Support** - Full PWA implementation via `@serwist/next` + `serwist`
+  - `app/sw.ts` service worker with precaching of all static pages/assets at build time
+  - Runtime caching via Serwist `defaultCache` (covers API responses, images, fonts with best-practice strategies)
+  - `skipWaiting` + `clientsClaim` for instant SW activation with no user-facing reload prompt
+  - Navigation preload enabled for faster page loads under SW interception
+  - `app/offline/page.tsx` — offline fallback page shown for uncached navigations; styled to match site with "Try Again" and "Go Home" actions
+  - SW build disabled in development to avoid stale-cache issues during local dev
+  - SW build artifacts (`public/sw.js`, `public/sw.js.map`, `public/worker-*.js`, `public/fallback-*.js`) added to `.gitignore`
+- **Web App Manifest** (`app/manifest.ts`) — file-based PWA manifest via Next.js metadata API
+  - `display_override: ["standalone", "window-controls-overlay", "minimal-ui"]` for progressive desktop enhancement
+  - `prefer_related_applications: false` so browsers prioritise the PWA install prompt
+  - App shortcuts to `/games`, `/vps`, and `/dashboard`
+- **AI Crawler Policy** (`app/robots.ts`) — three-tier bot rules
+  - AI training scrapers fully disallowed: `GPTBot`, `anthropic-ai`, `CCBot`, `Google-Extended`, `Meta-ExternalAgent`, `cohere-ai`, `Bytespider`, `Diffbot`, `PetalBot`, `omgilibot`, `AI2Bot`, `img2dataset`, `Scrapy`
+  - AI browsing/answer agents allowed on public content: `ChatGPT-User`, `Claude-Web`, `PerplexityBot`, `Applebot`, `YouBot`
+  - Default `*` rule unchanged — allow `/`, block private paths
+- **`llms.txt`** (`public/llms.txt`) — llmstxt.org standard for AI systems
+  - Structured Markdown describing site sections, services, pricing currency (GBP), and scope (no domains / shared hosting / dedicated)
+  - Direct links to all major product pages with concise descriptions for LLM context
+- **`sitemap.xml`** (`app/sitemap.ts`) — Next.js file-based sitemap with 12 static routes, correct priorities, and change frequencies
+- **`security.txt`** (`public/.well-known/security.txt`) — RFC 9116 security disclosure file
+- **JSON-LD Structured Data** — `Organization` and `WebSite` schemas injected in root layout `<head>`
+  - `Organization`: name, logo, description, contact point, `sameAs` (Twitter)
+  - `WebSite`: includes `SearchAction` pointing to `/kb?q=` for Google Sitelinks Searchbox eligibility
+- **Security Headers** — applied site-wide via `next.config.mjs`
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+  - `Permissions-Policy` blocking camera, microphone, geolocation, and FLoC (`interest-cohort`)
+  - `Strict-Transport-Security` with 2-year `max-age`, `includeSubDomains`, and `preload`
+  - `X-DNS-Prefetch-Control: on`
+- **Page Metadata** — `title`, `description`, `openGraph`, `twitter` added or improved across all public pages
+  - `app/about/page.tsx`, `app/contact/page.tsx` (previously had no metadata), `app/auth/register/page.tsx`
+  - `app/games/minecraft/page.tsx`, `app/games/rust/page.tsx`, `app/games/hytale/page.tsx`
+  - `app/vps/amd/page.tsx`, `app/vps/intel/page.tsx`
+- **Canonical URL** — `alternates: { canonical: "/" }` added to root layout metadata
+
+### Changed
+- **`next.config.mjs`** — Serwist plugin wraps the config chain (`withSerwist(withNextIntl(nextConfig))`)
+- **`next.config.mjs`** — Fixed silent bug: `images` key was defined twice; redundant `remotePatterns` block removed (superseded by `unoptimized: true`)
+- **Root Layout Keywords** — expanded to include VPS-specific terms: `amd vps`, `intel vps`, `kvm vps`, `nvme ssd`, `root access vps`, `nodebyte`
+
+---
+
 ## [3.4.0] - 2026-03-16
 
 ### Added

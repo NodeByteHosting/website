@@ -9,7 +9,7 @@ import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
   title: "Hytale Server Hosting",
-  description: "Set out on an adventure built for both creation and play. Hytale blends the freedom of a sandbox with the momentum of an RPG: explore a procedurally generated world full of dungeons, secrets, and a variety of creatures, then shape it block by block.",
+  description: "Be ready when Hytale launches. NodeByte Hosting will offer high-performance Hytale server hosting with mod support, custom maps, DDoS protection, and 24/7 support.",
 }
 
 export default async function HytalePage() {

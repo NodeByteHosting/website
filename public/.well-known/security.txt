@@ -1,0 +1,6 @@
+Contact: mailto:security@nodebyte.host
+Contact: https://nodebyte.host/contact
+Expires: 2027-03-16T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://nodebyte.host/.well-known/security.txt
+Policy: https://nodebyte.host/legal/security
