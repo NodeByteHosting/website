@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
+import { Blocks } from "lucide-react"
 import { GameHero } from "@/packages/ui/components/Layouts/Games/game-hero"
 import { GameFeatures } from "@/packages/ui/components/Layouts/Games/game-features"
 import { GamePricing } from "@/packages/ui/components/Layouts/Games/game-pricing"
 import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import { getTranslations } from "next-intl/server"
+import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
   title: "Minecraft Servers",
@@ -173,15 +175,18 @@ export default async function MinecraftPage() {
         icon="Blocks"
         tag={t("games.minecraft.tag")}
         tagColor="bg-primary/10 border border-primary/20 text-primary"
-        billingUrl="https://billing.nodebyte.host/store/minecraft-server-hosting"
+        billingUrl={LINKS.billing.minecraftHosting}
         features={["Forge & Fabric", "Unlimited Players", "DDoS Protection", "24/7 Support"]}
       />
-      <GameFeatures gameName="Minecraft" features={features} />
       <GamePricing
         gameName="Minecraft"
-        billingUrl="https://billing.nodebyte.host/store/minecraft-server-hosting"
+        billingUrl={LINKS.billing.minecraftHosting}
         plans={plans}
+        headerIcon={<Blocks className="w-8 h-8" />}
+        headerGradient="from-primary/20 via-primary/10 to-accent/5"
+        headerIconBg="bg-primary/10 text-primary"
       />
+      <GameFeatures gameName="Minecraft" features={features} />
       <GameFAQ gameName="Minecraft" faqs={faqs} />
     </>
   )

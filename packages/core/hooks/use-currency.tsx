@@ -5,9 +5,7 @@ import {
   type CurrencyCode,
   currencies,
   currencyList,
-  convertFromGBP,
   formatPrice,
-  convertAndFormat,
   getDefaultCurrency,
   CURRENCY_STORAGE_KEY,
 } from "@/lib/currency"
@@ -24,11 +22,19 @@ interface CurrencyContextValue {
 
 const CurrencyContext = createContext<CurrencyContextValue | null>(null)
 
+// Build a rates lookup from the static currency definitions as initial fallback
+function buildFallbackRates(): Record<CurrencyCode, number> {
+  return Object.fromEntries(
+    Object.entries(currencies).map(([code, c]) => [code, c.rate])
+  ) as Record<CurrencyCode, number>
+}
+
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrencyState] = useState<CurrencyCode>("GBP")
   const [mounted, setMounted] = useState(false)
+  const [liveRates, setLiveRates] = useState<Record<CurrencyCode, number>>(buildFallbackRates)
 
-  // Initialize currency from localStorage or browser locale
+  // Initialize currency from localStorage or browser locale, and fetch live rates
   useEffect(() => {
     setMounted(true)
     const stored = localStorage.getItem(CURRENCY_STORAGE_KEY) as CurrencyCode | null
@@ -37,6 +43,24 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     } else {
       setCurrencyState(getDefaultCurrency())
     }
+
+    // Fetch live exchange rates — falls back to static if unavailable
+    fetch("/api/currency/rates")
+      .then((r) => r.json())
+      .then((data: { rates?: Record<string, number> }) => {
+        if (data.rates) {
+          setLiveRates((prev) => {
+            const updated = { ...prev }
+            for (const [code, rate] of Object.entries(data.rates!)) {
+              if (code in updated) updated[code as CurrencyCode] = rate
+            }
+            return updated
+          })
+        }
+      })
+      .catch(() => {
+        // Silently fall back to static rates already in state
+      })
   }, [])
 
   const setCurrency = useCallback((newCurrency: CurrencyCode) => {
@@ -45,8 +69,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const convert = useCallback(
-    (amountGBP: number) => convertFromGBP(amountGBP, currency),
-    [currency]
+    (amountGBP: number) => Math.round(amountGBP * liveRates[currency] * 100) / 100,
+    [currency, liveRates]
   )
 
   const format = useCallback(
@@ -55,8 +79,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   )
 
   const convertAndFormatFn = useCallback(
-    (amountGBP: number) => convertAndFormat(amountGBP, currency),
-    [currency]
+    (amountGBP: number) => formatPrice(Math.round(amountGBP * liveRates[currency] * 100) / 100, currency),
+    [currency, liveRates]
   )
 
   // Prevent hydration mismatch by returning GBP during SSR
@@ -65,7 +89,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     setCurrency,
     convert,
     format: mounted ? format : (amount) => formatPrice(amount, "GBP"),
-    convertAndFormat: mounted ? convertAndFormatFn : (amount) => convertAndFormat(amount, "GBP"),
+    convertAndFormat: mounted ? convertAndFormatFn : (amount) => formatPrice(amount, "GBP"),
     currencies,
     currencyList,
   }

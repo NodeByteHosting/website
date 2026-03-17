@@ -5,6 +5,52 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.0] - 2026-03-16
+
+### Added
+- **VPS Pricing Component** - New `VpsPricing` component at `packages/ui/components/Layouts/VPS/vps-pricing.tsx`
+  - Gradient header cards with AMD (red) and Intel (blue) variant colour schemes matching the VPS index page style
+  - Plan cards show: gradient icon header, plan name + starting price, description, CPU model chip, Check-icon spec list, and CTA button
+  - Out-of-stock state with Discord link CTA
+  - Footer CTA with contact and "View All Plans" links
+- **VPS Plan Filter Panel** - Dynamic range slider filters on the AMD/Intel VPS pricing sections
+  - Price, CPU cores, RAM, and Storage sliders — all ranges computed dynamically from plan data at runtime
+  - Search by plan name and sort (Default / Low–High / High–Low)
+  - "Clear Filters" button shown only when filters are active
+  - "No plans match" empty state with clear button
+- **Gradient Header Pricing Cards for Game Servers** - `GamePricing` cards redesigned to match VPS card style
+  - Per-game customisable `headerIcon`, `headerGradient`, and `headerIconBg` props with sensible defaults
+  - Minecraft: `Blocks` icon, primary gradient; Rust: `Gamepad2` icon, accent gradient; Hytale: `Sparkles` icon, amber gradient
+  - Most popular badge moved to header top-right (rounded pill); name + "Starting at £X/mo" row; `Check` icon feature list
+- **Game Pricing Filters** - Search and sort filter bar added to `GamePricing` component
+  - Search by plan name, sort by price (ascending / descending / default)
+  - "Clear Filters" and "No results" empty state
+- **Bandwidth Unit Support** - `VpsPlanSpec.bandwidth` now supports `MB`, `GB`, and `TB` units
+  - Replaces the previous `bandwidthTB: number | null` field
+  - Format: `{ amount: number; unit: "MB" | "GB" | "TB" } | null` (null = unmetered)
+- **VPS Plan `description` Field** - Short description per plan shown under the plan name on pricing cards
+- **VPS Translation Keys** - Added `vps.pricing.*` namespace:
+  - `badge`, `title`, `description`, `mostPopular`, `getStarted`, `viewAllPlans`, `contactUs`, `customSolution`, `unmetered`, `poweredBy`
+  - `vps.pricing.filters.*`: `search`, `price`, `cpu`, `ram`, `storage`, `sortDefault`, `sortAsc`, `sortDesc`, `clearFilters`, `noResults`, `noResultsDesc`
+  - `gamePage.pricing.filters.*`: same filter keys for game pricing
+
+### Changed
+- **VPS AMD & Intel Pages Restructured** - Both pages rewritten as thin ~48-line server components
+  - Now use `VpsHero` + `VpsPricing` + `GameFeatures` + `GameFAQ` layout pattern (consistent with game pages)
+  - All plan data, feature keys, FAQ keys, and spec data driven from `packages/core/constants/vps/`
+- **Pricing Section Order** - Pricing/Plans section moved above Features on all server pages
+  - Affected: AMD VPS, Intel VPS, Minecraft, Rust, Hytale
+  - Rationale: visitors want pricing up-front; features serve as supporting detail below
+- **VPS Pricing Grid** - Widened from `max-w-5xl` to `max-w-6xl`, capped at 3 columns (`lg:grid-cols-3`) for readability
+- **`AMD_FEATURE_KEYS`** - Changed from plain string array to `{ key, icon }` object array for direct use in `GameFeatures`
+- **`AMD_FAQ_KEYS` / `INTEL_FAQ_KEYS`** - Added `"windows"` FAQ key
+- **`VpsHero` OOS CTA** - Replaced disabled button with an active Discord link (`ExternalLink` icon)
+- **Navigation `extras` Section Removed** - All "Extra links" state, toggles, desktop `DropdownMenu`, and mobile dropdown fully excised from `navigation.tsx`
+- **`LINKS.billing.amdVps`** - Corrected to `https://billing.nodebyte.host/store/vps-hosting`
+
+### Fixed
+- **Pre-existing Tailwind v4 class warnings** in `game-pricing.tsx` — replaced `bg-gradient-to-b/r` with `bg-linear-to-b/r` and `via-primary/[0.02]` with `via-primary/2`
+
 ## [3.3.0] - 2026-03-01
 
 ### Added

@@ -34,11 +34,11 @@ export const RUST_FEATURES = [
   },
   {
     title: "DDoS Protection",
-    description: "FyfeWeb's enterprise-grade DDoS mitigation through UK London POPs protects your server from attacks 24/7.",
+    description: "Enterprise-grade DDoS mitigation protects your server from attacks 24/7.",
     icon: "Shield" as const,
     highlights: [
-      "FyfeWeb network filtering",
-      "UK London POPs",
+      "Automated network filtering",
+      "Always-on protection",
       "Layer 3/4/7 protection",
       "Zero downtime",
     ],

@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "start": "next start",
     "prepare": "husky",
-    "postinstall": "git submodule update --init --recursive --remote"
+    "postinstall": "git submodule update --init --recursive --remote",
+    "translate": "bun run scripts/translate.ts",
+    "translate:force": "bun run scripts/translate.ts --force",
+    "translate:dry": "bun run scripts/translate.ts --dry-run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

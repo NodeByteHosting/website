@@ -1,9 +1,11 @@
 import { GameHero } from "@/packages/ui/components/Layouts/Games/game-hero"
+import { Sparkles } from "lucide-react"
 import { GameFeatures } from "@/packages/ui/components/Layouts/Games/game-features"
 import { GamePricing } from "@/packages/ui/components/Layouts/Games/game-pricing"
 import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
+import { LINKS } from "@/packages/core/constants/links"
 
 export const metadata: Metadata = {
   title: "Hytale Server Hosting",
@@ -48,24 +50,24 @@ export default async function HytalePage() {
     },
     {
       title: "DDoS Protection",
-      description: "Your server will be protected by FyfeWeb's enterprise-grade DDoS mitigation from day one.",
+      description: "Your server will be protected by enterprise-grade DDoS mitigation from day one.",
       icon: "Shield" as const,
       highlights: [
         "Always-on protection",
-        "FyfeWeb network filtering",
+        "Automated network filtering",
         "Zero downtime",
-        "UK London POPs",
+        "Global POPs",
       ],
     },
     {
-      title: "UK Data Centers",
-      description: "Servers hosted in UK data centers with London POPs for excellent latency across the UK and Europe.",
+      title: "Data Centers",
+      description: "Servers hosted in strategically located data centers for excellent latency wherever your players are.",
       icon: "Globe" as const,
       highlights: [
-        "London POPs",
+        "Multiple locations",
         "Low latency routing",
-        "FyfeWeb network",
-        "UK coverage",
+        "Premium network",
+        "Global coverage",
       ],
     },
     {
@@ -92,7 +94,7 @@ export default async function HytalePage() {
     },
     {
       question: "What regions will be available?",
-      answer: "We offer Hytale hosting from our UK data centers with London POPs powered by FyfeWeb, providing excellent coverage across the UK and Europe.",
+      answer: "We'll offer Hytale hosting across multiple data center locations for low latency and great coverage wherever your players are.",
     },
   ]
 
@@ -156,16 +158,19 @@ export default async function HytalePage() {
         banner="/hytale.png"
         icon="Sparkles"
         tag="Early Access Game"
-        tagColor="bg-muted border border-border text-muted-foreground"
-        billingUrl="https://billing.nodebyte.host/store/hytale-hosting"
+        tagColor="bg-amber-500/15 text-amber-400 border border-amber-500/20"
+        billingUrl={LINKS.billing.hytaleHosting}
         features={["Mod Support", "Custom Maps", "DDoS Protection", "24/7 Support"]}
       />
-      <GameFeatures gameName="Hytale" features={features} />
       <GamePricing
         gameName="Hytale"
-        billingUrl="https://billing.nodebyte.host/store/hytale-hosting"
+        billingUrl={LINKS.billing.hytaleHosting}
         plans={plans}
+        headerIcon={<Sparkles className="w-8 h-8" />}
+        headerGradient="from-amber-500/20 via-amber-500/10 to-primary/5"
+        headerIconBg="bg-amber-500/10 text-amber-400"
       />
+      <GameFeatures gameName="Hytale" features={features} />
       <GameFAQ gameName="Hytale" faqs={faqs} />
     </>
   )

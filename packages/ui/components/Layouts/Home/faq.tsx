@@ -6,6 +6,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function FAQ() {
   const t = useTranslations()
@@ -37,7 +38,7 @@ export function FAQ() {
       question: t("faq.items.trial.question"),
       answer: t("faq.items.trial.answer"),
       link: {
-        href: "https://billing.nodebyte.host/store/free-trial",
+        href: LINKS.billing.freeTrial,
         label: t("faq.items.trial.trialLink"),
       },
     },
@@ -167,7 +168,7 @@ export function FAQ() {
                 <Link href="/contact">{t("faq.contactSupport")}</Link>
               </Button>
               <Button variant="outline" className="rounded-full" asChild>
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                <Link href={LINKS.discord} target="_blank">
                   {t("faq.joinDiscord")}
                 </Link>
               </Button>

@@ -36,23 +36,6 @@ function getTokenFromRequest(req: NextRequest): string | null {
   return cookie?.value || null
 }
 
-// Check if setup is complete by calling Go backend
-async function isSetupComplete(): Promise<boolean> {
-  try {
-    const response = await fetch(`${API_BASE}/health`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-    
-    // If backend is healthy, assume setup is complete
-    // The backend should be running if setup is done
-    return response.ok
-  } catch (error) {
-    // If we can't reach the backend, allow access to setup
-    return false
-  }
-}
-
 // Get system state from Go backend
 async function getSystemState() {
   try {
@@ -76,25 +59,6 @@ async function getSystemState() {
 
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
-
-  // Setup Check - redirect to setup if not complete (bypass for setup routes and static assets)
-  const setupBypassRoutes = ["/setup", "/_next"]
-  const shouldBypassSetupCheck = setupBypassRoutes.some((route) => pathname.startsWith(route))
-
-  if (!shouldBypassSetupCheck) {
-    const setupComplete = await isSetupComplete()
-    if (!setupComplete) {
-      if (pathname.startsWith("/api/")) {
-        // For API routes, return 503
-        return NextResponse.json(
-          { error: "System is not configured. Please complete setup at /setup" },
-          { status: 503 }
-        )
-      }
-      // For regular routes, redirect to setup
-      return NextResponse.redirect(new URL("/setup", req.url))
-    }
-  }
 
   // Create response with pathname header for layout to use
   const response = NextResponse.next({

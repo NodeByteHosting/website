@@ -1,6 +1,6 @@
 ---
-title: Changing your hytale server name
-description: Learn how to Change your hytale server name
+title: Setting your server password
+description: Learn how to set or change your Hytale server password.
 tags: [game, hytale]
 author: Rizon
 lastUpdated: 2025-01-17

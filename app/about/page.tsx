@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about NodeByte Hosting - Built by gamers, for gamers. Our mission is to provide fast, reliable, and affordable game server hosting.",
+  description: "Learn about NodeByte Hosting - Fast, reliable, and affordable game server and VPS hosting built for communities and businesses.",
 }
 
 export default function About() {

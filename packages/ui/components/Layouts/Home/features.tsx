@@ -8,6 +8,7 @@ import { Price } from "@/packages/ui/components/ui/price"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function Features() {
   const t = useTranslations()
@@ -78,8 +79,8 @@ export function Features() {
   return (
     <section id="features" className="py-24 sm:py-32 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/[0.02] to-background" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      <div className="absolute inset-0 bg-linear-to-b from-background via-primary/2 to-background" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-size-[64px_64px]" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -90,7 +91,7 @@ export function Features() {
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
             {t("features.title")}{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
               {t("features.titleHighlight")}
             </span>
           </h2>
@@ -111,7 +112,7 @@ export function Features() {
               )}
             >
               {/* Icon */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <feature.icon className="w-6 h-6 text-primary" />
               </div>
 
@@ -145,7 +146,7 @@ export function Features() {
         <div className="text-center mt-16">
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <Button size="lg" className="rounded-full px-8 gap-2" asChild>
-              <Link href="https://billing.nodebyte.host/store">
+              <Link href={LINKS.billing.store}>
                 {t("features.viewPlans")}
                 <ArrowRight className="w-4 h-4" />
               </Link>

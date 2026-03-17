@@ -6,6 +6,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import { Card } from "@/packages/ui/components/ui/card"
 import { Logo } from "@/packages/ui/components/logo"
 import Link from "next/link"
+import { LINKS } from "@/packages/core/constants/links"
 
 export default function MaintenancePage() {
   const t = useTranslations("admin")
@@ -63,7 +64,7 @@ export default function MaintenancePage() {
             </Link>
           </Button>
           <Button size="lg" variant="outline" className="rounded-full gap-2" asChild>
-            <Link href="https://discord.gg/nodebyte" target="_blank" rel="noopener noreferrer">
+            <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="w-5 h-5" />
               Join Discord
             </Link>

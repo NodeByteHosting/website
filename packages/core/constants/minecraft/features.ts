@@ -23,13 +23,13 @@ export const MINECRAFT_FEATURES = [
   },
   {
     title: "DDoS Protection",
-    description: "Enterprise grade DDoS mitigation powered by FyfeWeb keeps your server online even during attacks.",
+    description: "Enterprise grade DDoS mitigation keeps your server online even during attacks.",
     icon: "Shield" as const,
     highlights: [
       "Layer 3/4/7 protection",
-      "FyfeWeb network filtering",
+      "Automated network filtering",
       "Zero downtime mitigation",
-      "UK London POPs",
+      "Always-on protection",
     ],
   },
   {

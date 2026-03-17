@@ -1,8 +1,10 @@
 import { GameHero } from "@/packages/ui/components/Layouts/Games/game-hero"
+import { Gamepad2 } from "lucide-react"
 import { GameFeatures } from "@/packages/ui/components/Layouts/Games/game-features"
 import { GamePricing } from "@/packages/ui/components/Layouts/Games/game-pricing"
 import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import { getTranslations } from "next-intl/server"
+import { LINKS } from "@/packages/core/constants/links"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -176,15 +178,18 @@ export default async function RustPage() {
         icon="Gamepad2"
         tag={t("games.rust.tag")}
         tagColor="bg-accent/10 border border-accent/20 text-accent"
-        billingUrl="https://billing.nodebyte.host/store/rust-hosting"
+        billingUrl={LINKS.billing.rustHosting}
         features={["Oxide/uMod", "Custom Maps", "Wipe Scheduler", "RCON Access"]}
       />
-      <GameFeatures gameName="Rust" features={features} />
       <GamePricing
         gameName="Rust"
-        billingUrl="https://billing.nodebyte.host/store/rust-hosting"
+        billingUrl={LINKS.billing.rustHosting}
         plans={plans}
+        headerIcon={<Gamepad2 className="w-8 h-8" />}
+        headerGradient="from-accent/20 via-accent/10 to-primary/5"
+        headerIconBg="bg-accent/10 text-accent"
       />
+      <GameFeatures gameName="Rust" features={features} />
       <GameFAQ gameName="Rust" faqs={faqs} />
     </>
   )

@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/packages/ui/components/ui/card";
+import { LINKS } from "@/packages/core/constants/links";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
@@ -123,7 +124,7 @@ export default async function KnowledgeBasePage() {
               <CardContent>
                 <Button asChild>
                   <a
-                    href="https://discord.gg/wN58bTzzpW"
+                    href={LINKS.discord}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -146,7 +147,7 @@ export default async function KnowledgeBasePage() {
               <CardContent>
                 <Button asChild variant="outline">
                   <a
-                    href="https://billing.nodebyte.host/submitticket.php"
+                    href={LINKS.billing.submitTicket}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -12,6 +12,7 @@ import { HelpCircle, MessageCircle, Mail } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 interface FAQItem {
   question: string
@@ -83,7 +84,7 @@ export function GameFAQ({ gameName, faqs }: GameFAQProps) {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="gap-2 rounded-full" asChild>
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                <Link href={LINKS.discord} target="_blank">
                   <MessageCircle className="w-4 h-4" />
                   {t("gamePage.faq.askOnDiscord")}
                 </Link>
