@@ -8,6 +8,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/packages/ui/components/logo"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function Footer() {
   const t = useTranslations()
@@ -55,10 +56,10 @@ export function Footer() {
             {/* Social Links */}
             <div className="flex items-center gap-2">
               {[
-                { href: "https://twitter.com/NodeByteHosting", icon: Twitter, label: "Twitter" },
-                { href: "https://github.com/NodeByteHosting", icon: Github, label: "GitHub" },
-                { href: "https://discord.gg/wN58bTzzpW", icon: SiDiscord, label: "Discord" },
-                { href: "https://uk.trustpilot.com/review/nodebyte.host", icon: SiTrustpilot, label: "Trustpilot" },
+                { href: LINKS.twitter, icon: Twitter, label: "Twitter" },
+                { href: LINKS.github, icon: Github, label: "GitHub" },
+                { href: LINKS.discord, icon: SiDiscord, label: "Discord" },
+                { href: LINKS.trustpilot, icon: SiTrustpilot, label: "Trustpilot" },
               ].map((social) => (
                 <a
                   key={social.label}
@@ -120,10 +121,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "https://billing.nodebyte.host/store/minecraft-server-hosting", label: t("footer.services.minecraftHosting") },
-                { href: "https://billing.nodebyte.host/store/rust-hosting", label: t("footer.services.rustHosting") },
-                { href: "https://panel.nodebyte.host/", label: t("footer.services.gamePanel") },
-                { href: "https://billing.nodebyte.host/login", label: t("footer.services.clientArea") },
+                { href: "https://nodebyte.host/games", label: t("footer.services.gameServers") },
+                { href: "https://nodebyte.host/vps", label: t("footer.services.vpsServers") },
+                { href: "https://panel.nodebyte.host", label: t("footer.services.gamePanel") },
+                { href: "https://vps.nodebyte.host", label: t("footer.services.vpsPanel") },
               ].map((link) => (
                 <li key={link.label}>
                   <a 
@@ -148,10 +149,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "https://discord.gg/wN58bTzzpW", label: t("footer.resources.discordServer") },
+                { href: LINKS.discord, label: t("footer.resources.discordServer") },
                 { href: "https://nodebytestat.us/", label: t("footer.resources.serviceStatus") },
                 { href: "/kb", label: t("footer.resources.knowledgeBase") },
-                { href: "https://uk.trustpilot.com/review/nodebyte.host", label: t("footer.resources.trustPilot") },
+                { href: LINKS.billing.root, label: t("footer.resources.billingPanel") },
               ].map((link) => (
                 <li key={link.label}>
                   <a 

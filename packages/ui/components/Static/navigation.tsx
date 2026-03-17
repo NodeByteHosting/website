@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, Blocks, ExternalLink, MessageCircle, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield } from "lucide-react"
+import { Server, Gamepad2, Blocks, ExternalLink, MessageCircle, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield, Cpu } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -19,6 +19,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function Navigation() {
   const t = useTranslations()
@@ -28,16 +29,16 @@ export function Navigation() {
   // Memoize menu items to prevent recreation on every render
   const company = useMemo(() => [
     {
-      title: t("company.contact.title"),
-      href: "/contact",
-      description: t("company.contact.description"),
-      icon: Mail,
-    },
-    {
       title: t("company.about.title"),
       href: "/about",
       description: t("company.about.description"),
       icon: Users,
+    },
+    {
+      title: t("company.contact.title"),
+      href: "/contact",
+      description: t("company.contact.description"),
+      icon: Mail,
     },
   ], [t])
 
@@ -47,31 +48,56 @@ export function Navigation() {
       href: "/games/minecraft",
       description: t("services.minecraft.description"),
       icon: Blocks,
+      section: "game",
     },
     {
       title: t("services.rust.title"),
       href: "/games/rust",
       description: t("services.rust.description"),
       icon: Gamepad2,
+      section: "game",
     },
     {
       title: t("services.hytale.title"),
       href: "/games/hytale",
       description: t("services.hytale.description"),
       icon: Gamepad2,
+      section: "game",
     },
     {
-      title: t("services.all.title"),
+      title: t("services.gameServers.title"),
       href: "/games",
-      description: t("services.all.description"),
+      description: t("services.gameServers.description"),
       icon: Server,
+      section: "game",
+    },
+    {
+      title: t("services.vpsAmd.title"),
+      href: "/vps/amd",
+      description: t("services.vpsAmd.description"),
+      icon: Cpu,
+      section: "vps",
+    },
+    {
+      title: t("services.vpsIntel.title"),
+      href: "/vps/intel",
+      description: t("services.vpsIntel.description"),
+      icon: Cpu,
+      section: "vps",
+    },
+    {
+      title: t("services.allVps.title"),
+      href: "/vps",
+      description: t("services.allVps.description"),
+      icon: Server,
+      section: "vps",
     },
   ], [t])
 
   const resources = useMemo(() => [
     {
       title: t("resources.clientArea.title"),
-      href: "https://billing.nodebyte.host/login",
+      href: LINKS.billing.login,
       description: t("resources.clientArea.description"),
       icon: Server,
       external: true,
@@ -83,19 +109,23 @@ export function Navigation() {
       icon: Gamepad2,
       external: true,
     },
-  ], [t])
-
-  const extras = useMemo(() => [
     {
-      title: t("extras.kb.title"),
+      title: t("resources.vpsPanel.title"),
+      href: "https://panel.nodebyte.host/",
+      description: t("resources.vpsPanel.description"),
+      icon: Cpu,
+      external: true,
+    },
+    {
+      title: t("resources.kb.title"),
       href: "/kb",
-      description: t("extras.kb.description"),
+      description: t("resources.kb.description"),
       icon: Book,
     },
     {
-      title: t("extras.changelog.title"),
+      title: t("resources.changelog.title"),
       href: "/changelog",
-      description: t("extras.changelog.description"),
+      description: t("resources.changelog.description"),
       icon: Sparkles,
     },
   ], [t])
@@ -105,11 +135,9 @@ export function Navigation() {
   const [companyOpen, setCompanyOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [resourcesOpen, setResourcesOpen] = useState(false)
-  const [extrasOpen, setExtrasOpen] = useState(false)
   const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false)
-  const [mobileExtrasOpen, setMobileExtrasOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
 
@@ -127,7 +155,6 @@ export function Navigation() {
     company: t("nav.company"),
     services: t("nav.services"),
     resources: t("nav.resources"),
-    extras: t("nav.extras"),
     discord: t("nav.discord"),
     settings: t("nav.settings"),
     language: t("nav.language"),
@@ -155,7 +182,6 @@ export function Navigation() {
     setMobileCompanyOpen(false)
     setMobileServicesOpen(false)
     setMobileResourcesOpen(false)
-    setMobileExtrasOpen(false)
   }, [pathname])
 
   // Prevent body scroll when mobile menu is open
@@ -175,7 +201,6 @@ export function Navigation() {
     setMobileCompanyOpen(false)
     setMobileServicesOpen(false)
     setMobileResourcesOpen(false)
-    setMobileExtrasOpen(false)
   }
 
   const toggleMobileCompany = () => {
@@ -194,12 +219,6 @@ export function Navigation() {
     const newState = !mobileResourcesOpen
     closeMobileDropdowns()
     setMobileResourcesOpen(newState)
-  }
-
-  const toggleMobileExtras = () => {
-    const newState = !mobileExtrasOpen
-    closeMobileDropdowns()
-    setMobileExtrasOpen(newState)
   }
 
   return (
@@ -295,7 +314,11 @@ export function Navigation() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="w-[320px] p-2" sideOffset={8}>
-                    {services.map((service) => (
+                    {/* Game Servers section */}
+                    <div className="px-2 pt-1 pb-0.5">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Game Servers</p>
+                    </div>
+                    {services.filter(s => s.section === "game").map((service) => (
                       <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={service.href}
@@ -305,9 +328,30 @@ export function Navigation() {
                             <service.icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{service.title}</span>
-                            </div>
+                            <span className="font-medium text-sm">{service.title}</span>
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                              {service.description}
+                            </p>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    {/* VPS section divider */}
+                    <div className="border-t border-border/50 mx-2 my-1" />
+                    <div className="px-2 pb-0.5">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">VPS Servers</p>
+                    </div>
+                    {services.filter(s => s.section === "vps").map((service) => (
+                      <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
+                        <Link
+                          href={service.href}
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            <service.icon className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-sm">{service.title}</span>
                             <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                               {service.description}
                             </p>
@@ -362,45 +406,6 @@ export function Navigation() {
                 </div>
               </DropdownMenu>
 
-              {/* Extras Dropdown */}
-              <DropdownMenu open={extrasOpen} onOpenChange={setExtrasOpen}>
-                <div 
-                  onMouseEnter={() => setExtrasOpen(true)}
-                  onMouseLeave={() => setExtrasOpen(false)}
-                >
-                  <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
-                      {t("nav.extras")}
-                      <ChevronDown className={cn(
-                        "h-4 w-4 opacity-50 transition-transform duration-200",
-                        extrasOpen && "rotate-180"
-                      )} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[280px] p-2" sideOffset={8}>
-                    {extras.map((item) => (
-                      <DropdownMenuItem key={item.title} asChild className="p-0 focus:bg-transparent">
-                        <Link
-                          href={item.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                            <item.icon className="h-4 w-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{item.title}</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                              {item.description}
-                            </p>
-                          </div>
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </div>
-              </DropdownMenu>
             </div>
 
             {/* Right Side Actions */}
@@ -420,7 +425,7 @@ export function Navigation() {
                   className="bg-primary hover:bg-primary/90 gap-2 rounded-full px-4"
                   asChild
                 >
-                  <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                  <Link href={LINKS.discord} target="_blank">
                     <MessageCircle className="h-4 w-4" />
                     {navLabels.discord}
                   </Link>
@@ -533,10 +538,34 @@ export function Navigation() {
               </button>
               <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-out",
-                mobileServicesOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                mobileServicesOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
               )}>
                 <div className="pl-2 pr-1 py-2 space-y-1">
-                  {services.map((service) => (
+                  {/* Game Servers */}
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pt-1 pb-0.5">Game Servers</p>
+                  {services.filter(s => s.section === "game").map((service) => (
+                    <Link
+                      key={service.title}
+                      href={service.href}
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <service.icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm">{service.title}</div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {service.description}
+                        </p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </Link>
+                  ))}
+                  {/* VPS Servers */}
+                  <div className="border-t border-border/40 mx-2 my-1" />
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pb-0.5">VPS Servers</p>
+                  {services.filter(s => s.section === "vps").map((service) => (
                     <Link
                       key={service.title}
                       href={service.href}
@@ -603,46 +632,6 @@ export function Navigation() {
               </div>
             </div>
 
-            {/* Extras Dropdown */}
-            <div className="mb-6">
-              <button
-                onClick={toggleMobileExtras}
-                className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
-              >
-                <span className="font-medium">{navLabels.extras}</span>
-                <ChevronDown className={cn(
-                  "h-5 w-5 text-muted-foreground transition-transform duration-200",
-                  mobileExtrasOpen && "rotate-180"
-                )} />
-              </button>
-              <div className={cn(
-                "overflow-hidden transition-all duration-300 ease-out",
-                mobileExtrasOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
-              )}>
-                <div className="pl-2 pr-1 py-2 space-y-1">
-                  {extras.map((item) => (
-                    <Link
-                      key={item.title}
-                      href={item.href}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <item.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm">{item.title}</div>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {item.description}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-
             {/* Divider */}
             <div className="border-t border-border my-4" />
 
@@ -681,7 +670,7 @@ export function Navigation() {
                 className="w-full bg-primary hover:bg-primary/90 gap-2 rounded-xl"
                 asChild
               >
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href={LINKS.discord} target="_blank" onClick={() => setIsMobileMenuOpen(false)}>
                   <MessageCircle className="h-5 w-5" />
                   {navLabels.joinDiscord}
                 </Link>

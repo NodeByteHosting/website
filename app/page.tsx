@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { Hero } from "@/packages/ui/components/Layouts/Home/hero"
 import { Features } from "@/packages/ui/components/Layouts/Home/features"
 import { About } from "@/packages/ui/components/Layouts/Home/about"
-import { Download } from "@/packages/ui/components/Layouts/Home/games"
+import { Services } from "@/packages/ui/components/Layouts/Home/services"
 import { FAQ } from "@/packages/ui/components/Layouts/Home/faq"
 
 export default function Home() {
@@ -29,10 +29,10 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Features />
-      <FAQ />
       <About />
-      <Download />
+      <Features />
+      <Services />
+      <FAQ />
     </>
   )
 }

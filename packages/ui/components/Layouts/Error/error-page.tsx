@@ -6,6 +6,7 @@ import { RefreshCw, Home, AlertTriangle, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { Logo } from "@/packages/ui/components/logo"
+import { LINKS } from "@/packages/core/constants/links"
 
 interface ErrorPageProps {
   error?: Error & { digest?: string }
@@ -74,7 +75,7 @@ export function ErrorPage({ error, reset }: ErrorPageProps) {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="outline" className="gap-2 rounded-full" asChild>
-              <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+              <Link href={LINKS.discord} target="_blank">
                 <MessageCircle className="w-4 h-4" />
                 {t("errorPage.joinDiscord")}
               </Link>

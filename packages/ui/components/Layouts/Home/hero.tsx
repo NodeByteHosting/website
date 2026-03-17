@@ -7,6 +7,7 @@ import Link from "next/link"
 import HeroGraphic from "./hero-graphic"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function Hero() {
   const t = useTranslations()
@@ -116,7 +117,7 @@ export function Hero() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <Button size="lg" className="w-full sm:w-auto gap-2 rounded-full px-8 h-12 text-base" asChild>
-                <Link href="https://billing.nodebyte.host/store">
+                <Link href={LINKS.billing.store}>
                   {t("hero.getStarted")}
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -127,7 +128,7 @@ export function Hero() {
                 className="w-full sm:w-auto gap-2 rounded-full px-8 h-12 text-base border-border/50 hover:bg-accent/10"
                 asChild
               >
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                <Link href={LINKS.discord} target="_blank">
                   <Play className="w-4 h-4" />
                   {t("hero.joinDiscord")}
                 </Link>

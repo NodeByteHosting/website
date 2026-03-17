@@ -22,6 +22,7 @@ import {
   Layers,
   Network,
   MapPin,
+  Package,
 } from "lucide-react"
 import { cn } from "@/packages/core/lib/utils"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -119,6 +120,7 @@ export default function AdminLayout({
     { title: t("nav.dashboard"), href: "/admin", icon: LayoutDashboard },
     { title: t("nav.users"), href: "/admin/users", icon: Users },
     { title: t("nav.servers"), href: "/admin/servers", icon: Server },
+    { title: "Products", href: "/admin/products", icon: Package },
     { title: t("nav.nodes"), href: "/admin/nodes", icon: HardDrive },
     { title: t("nav.locations"), href: "/admin/locations", icon: MapPin },
     { title: t("nav.allocations"), href: "/admin/allocations", icon: Network },

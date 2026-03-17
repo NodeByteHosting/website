@@ -13,7 +13,7 @@ export function NotFoundPage() {
   const quickLinks = [
     { href: "/", label: t("notFound.links.home"), icon: Home },
     { href: "/games", label: t("notFound.links.games"), icon: Search },
-    { href: "/kb", label: t("notFound.links.kb"), icon: Search },
+    { href: "/vps", label: t("notFound.links.vps"), icon: Search },
     { href: "/contact", label: t("notFound.links.contact"), icon: MessageCircle },
   ]
 

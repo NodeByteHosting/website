@@ -25,14 +25,14 @@ export function LayoutChrome({ children }: LayoutChromeProps) {
   // Hide navigation and footer on admin and dashboard routes
   const hideChrome = pathname.startsWith("/admin") || pathname.startsWith("/dashboard")
 
-  // Only render Navigation/Footer after hydration to prevent mismatch
   return (
     <>
-      {!hideChrome && <Navigation />}
+      {/* Defer Navigation/Footer until after hydration to prevent Radix ID mismatch */}
+      {mounted && !hideChrome && <Navigation />}
       <main className="relative min-h-screen overflow-hidden">
         {children}
       </main>
-      {!hideChrome && <Footer />}
+      {mounted && !hideChrome && <Footer />}
     </>
   )
 }

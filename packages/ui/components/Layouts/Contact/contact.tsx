@@ -19,6 +19,7 @@ import { SiDiscord, SiTrustpilot, SiX } from "react-icons/si"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function Contact() {
   const { toast } = useToast()
@@ -29,7 +30,7 @@ export function Contact() {
       title: t("contact.discord.title"),
       description: t("contact.discord.description"),
       icon: SiDiscord,
-      href: "https://discord.gg/wN58bTzzpW",
+      href: LINKS.discord,
       cta: t("contact.discord.button"),
       color: "bg-[#5865F2]/10 text-[#5865F2]",
       hoverColor: "hover:bg-[#5865F2] hover:text-white",
@@ -43,7 +44,7 @@ export function Contact() {
       title: t("contact.github.title"),
       description: t("contact.github.description"),
       icon: Github,
-      href: "https://github.com/orgs/NodeByteHosting/discussions",
+      href: LINKS.githubDiscussions,
       cta: t("contact.github.button"),
       color: "bg-muted text-foreground",
       hoverColor: "hover:bg-foreground hover:text-background",
@@ -63,10 +64,10 @@ export function Contact() {
   ]
 
   const socialLinks = [
-    { name: "X (Twitter)", icon: SiX, href: "https://twitter.com/NodeByteHosting", color: "hover:text-foreground" },
-    { name: "GitHub", icon: Github, href: "https://github.com/NodeByteHosting", color: "hover:text-foreground" },
-    { name: "Discord", icon: SiDiscord, href: "https://discord.gg/wN58bTzzpW", color: "hover:text-[#5865F2]" },
-    { name: "Trustpilot", icon: SiTrustpilot, href: "https://uk.trustpilot.com/review/nodebyte.host", color: "hover:text-[#00b67a]" },
+    { name: "X (Twitter)", icon: SiX, href: LINKS.twitter, color: "hover:text-foreground" },
+    { name: "GitHub", icon: Github, href: LINKS.github, color: "hover:text-foreground" },
+    { name: "Discord", icon: SiDiscord, href: LINKS.discord, color: "hover:text-[#5865F2]" },
+    { name: "Trustpilot", icon: SiTrustpilot, href: LINKS.trustpilot, color: "hover:text-[#00b67a]" },
   ]
 
   const copyToClipboard = (text: string) => {

@@ -22,6 +22,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { Logo } from "@/packages/ui/components/logo"
+import { LINKS } from "@/packages/core/constants/links"
 
 export function AboutPage() {
   const t = useTranslations()
@@ -48,10 +49,10 @@ export function AboutPage() {
   ]
 
   const displayStats = [
-    { value: "99.6%", label: t("aboutPage.stats.uptime"), icon: Server },
-    { value: "50ms", label: t("aboutPage.stats.latency"), icon: Zap },
-    { value: "24/7", label: t("aboutPage.stats.support"), icon: Clock },
-    { value: "100+", label: t("aboutPage.stats.servers"), icon: Globe },
+    { value: "9+", label: t("aboutPage.stats.locations"), icon: Globe },
+    { value: "Always on", label: t("aboutPage.stats.ddos"), icon: Shield },
+    { value: "~1 Gbps", label: t("aboutPage.stats.network"), icon: Zap },
+    { value: "99.9%", label: t("aboutPage.stats.uptime"), icon: Server },
   ]
 
   const timeline = [
@@ -69,6 +70,11 @@ export function AboutPage() {
       year: "Q3/4 - 2025",
       title: t("aboutPage.timeline.expansion.title"),
       description: t("aboutPage.timeline.expansion.description"),
+    },
+    {
+      year: "Q1/2 - 2026",
+      title: t("aboutPage.timeline.vpsLaunch.title"),
+      description: t("aboutPage.timeline.vpsLaunch.description"),
     },
   ]
 
@@ -109,7 +115,7 @@ export function AboutPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button size="lg" className="rounded-full gap-2" asChild>
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                <Link href={LINKS.discord} target="_blank">
                   <MessageCircle className="w-5 h-5" />
                   {t("aboutPage.hero.joinCommunity")}
                 </Link>
@@ -291,13 +297,13 @@ export function AboutPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="rounded-full gap-2" asChild>
-                  <Link href="/games">
+                  <Link href="/#services">
                     {t("aboutPage.cta.getStarted")}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="rounded-full gap-2" asChild>
-                  <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                  <Link href={LINKS.discord} target="_blank">
                     <MessageCircle className="w-5 h-5" />
                     {t("aboutPage.cta.joinDiscord")}
                   </Link>

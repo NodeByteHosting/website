@@ -1,7 +1,7 @@
 import { Card } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { GamePrice } from "@/packages/ui/components/ui/game-price"
-import { Gamepad2, ArrowRight, Check, Clock, Blocks, Sparkles } from "lucide-react"
+import { Gamepad2, ArrowRight, Check, Blocks, Sparkles } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
@@ -59,22 +59,22 @@ export default async function GamesPage() {
       banner: "/hytale.png",
       icon: Sparkles,
       tag: t("games.hytale.tag"),
-      tagColor: "bg-muted text-muted-foreground",
+      tagColor: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
       features: [
         t("games.hytale.features.0"),
         t("games.hytale.features.1"),
         t("games.hytale.features.2"),
         t("games.hytale.features.3"),
       ],
-      comingSoon: true,
+      startingPriceGBP: 5,
     },
   ]
 
   return (
     <section className="relative overflow-hidden pt-32 sm:pt-36 pb-24 sm:pb-32">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
       
       {/* Animated orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -91,7 +91,7 @@ export default async function GamesPage() {
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
             {t("games.title")}{" "}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
               {t("games.titleHighlight")}
             </span>
           </h1>
@@ -120,7 +120,7 @@ export default async function GamesPage() {
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-card to-transparent" />
                 
                 {/* Tag */}
                 <div className={cn(
@@ -154,11 +154,7 @@ export default async function GamesPage() {
                 <ul className="space-y-2 mb-6 flex-1">
                   {game.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      {game.comingSoon ? (
-                        <Clock className="w-4 h-4 text-muted-foreground/50 shrink-0" />
-                      ) : (
-                        <Check className="w-4 h-4 text-primary shrink-0" />
-                      )}
+                      <Check className="w-4 h-4 text-primary shrink-0" />
                       {feature}
                     </li>
                   ))}

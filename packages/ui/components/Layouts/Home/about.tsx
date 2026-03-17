@@ -1,90 +1,22 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
 import { Card } from "@/packages/ui/components/ui/card"
-import { Users, Heart, Code, Gamepad2, Server, Sparkles, ArrowRight } from "lucide-react"
+import { Heart, Code, Gamepad2, Server, Sparkles, ArrowRight, Globe, Shield, Zap } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
-import { api } from "@/packages/core/lib/api"
-
-interface Stats {
-  totalServers?: number
-  totalUsers?: number
-  activeUsers?: number
-  uptime?: string
-}
-
-interface RotatingStatItem {
-  value: string | number
-  label: string
-}
+import { LINKS } from "@/packages/core/constants/links"
 
 export function About() {
   const t = useTranslations()
-  const [stats, setStats] = useState<Stats>({
-    totalServers: 0,
-    totalUsers: 0,
-    activeUsers: 0,
-    uptime: "99.6%",
-  })
-  const [mounted, setMounted] = useState(false)
-  const [rotatingStatIndex, setRotatingStatIndex] = useState(0)
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-    
-    const fetchStats = async () => {
-      try {
-        const result = await api.get<{data: any}>("/api/stats")
-        // Stats are nested under 'data' key in the API response
-        const apiData = result.data || {}
-        setStats({
-          totalServers: apiData.totalServers || 0,
-          totalUsers: apiData.totalUsers || 0,
-          activeUsers: apiData.activeUsers || 0,
-          uptime: "99.6%",
-        })
-      } catch (err) {
-        console.error("Failed to fetch stats:", err)
-        // Keep default stats on error
-      }
-    }
-
-    fetchStats()
-  }, [mounted])
-
-  // Rotating stats effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingStatIndex((prev) => (prev + 1) % 4)
-    }, 3000) // Change every 3 seconds
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const rotatingStats: RotatingStatItem[] = [
-    { value: stats.totalServers?.toLocaleString() || "0", label: t("about.stats.servers") },
-    { value: stats.totalUsers?.toLocaleString() || "0", label: t("about.stats.users") },
-    { value: stats.activeUsers?.toLocaleString() || "0", label: t("about.stats.activeUsers") },
-    { value: (stats.totalServers || 0) * 4, label: t("about.stats.allocations") },
-  ]
-
-  const staticStats = [
-    { value: stats.uptime || "99.6%", label: t("about.stats.uptime") },
-    { value: "50ms", label: t("about.stats.latency") },
-    { value: "24/7", label: t("about.stats.support") },
-    { 
-      value: rotatingStats[rotatingStatIndex].value, 
-      label: rotatingStats[rotatingStatIndex].label,
-      isRotating: true 
-    },
+  const stats = [
+    { value: "9+", label: t("about.stats.locations"), icon: Globe },
+    { value: "Always on", label: t("about.stats.ddos"), icon: Shield },
+    { value: "~1 Gbps", label: t("about.stats.network"), icon: Zap },
+    { value: "99.9%", label: t("about.stats.uptime"), icon: Server },
   ]
 
   const values = [
@@ -136,7 +68,7 @@ export function About() {
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button size="lg" className="rounded-full gap-2" asChild>
-                <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                <Link href={LINKS.discord} target="_blank">
                   {t("about.joinCommunity")}
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -146,27 +78,16 @@ export function About() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {staticStats.map((stat, index) => (
+            {stats.map((stat) => (
               <div
                 key={stat.label}
-                className={cn(
-                  "p-6 rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm text-center",
-                  "hover:border-primary/30 hover:bg-card/50 transition-all duration-300",
-                  stat.isRotating && "relative overflow-hidden"
-                )}
+                className="p-6 rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm text-center hover:border-primary/30 hover:bg-card/50 transition-all duration-300"
               >
-                <div className={cn(
-                  "text-3xl sm:text-4xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent transition-all duration-500",
-                  stat.isRotating && "animate-fade-in-out"
-                )}>
+                <stat.icon className="w-7 h-7 mx-auto mb-2 text-primary" />
+                <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
                   {stat.value}
                 </div>
-                <div className={cn(
-                  "text-sm text-muted-foreground mt-1 transition-all duration-500",
-                  stat.isRotating && "animate-fade-in-out"
-                )}>
-                  {stat.label}
-                </div>
+                <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -207,18 +128,6 @@ export function About() {
           ))}
         </div>
       </div>
-
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 1; }
-          45%, 55% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .animate-fade-in-out {
-          animation: fadeInOut 3s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   )
 }

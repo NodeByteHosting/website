@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { LINKS } from "@/packages/core/constants/links"
 
 const iconMap = {
   Blocks: Blocks,
@@ -101,7 +102,7 @@ export function GameHero({
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
               {comingSoon ? (
                 <Button size="lg" className="gap-2 rounded-full px-8" asChild>
-                  <Link href="https://discord.gg/wN58bTzzpW" target="_blank">
+                  <Link href={LINKS.discord} target="_blank">
                     {t("gamePage.hero.joinWaitlist")}
                     <ExternalLink className="w-4 h-4" />
                   </Link>
