@@ -23,7 +23,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     id: "2GB-R71700X",
     description: "Perfect for small projects, dev environments, and personal sites.",
     cpuModel: "AMD Ryzen™ 7 1700X",
-    priceGBP: 5,
+    priceGBP: 4.50,
     cpu: 1,
     ramGB: 2,
     storageGB: 25,
