@@ -33,3 +33,11 @@ next-env.d.ts
 /app/generated/prisma
 
 .vscode/
+
+# PWA service worker build outputs
+/public/sw.js
+/public/sw.js.map
+/public/worker-*.js
+/public/worker-*.js.map
+/public/fallback-*.js
+/public/fallback-*.js.map

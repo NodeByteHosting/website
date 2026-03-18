@@ -23,7 +23,7 @@ import { Button } from "@/packages/ui/components/ui/button"
 import { Badge } from "@/packages/ui/components/ui/badge"
 import { Skeleton } from "@/packages/ui/components/ui/skeleton"
 import { Progress } from "@/packages/ui/components/ui/progress"
-import { useToast } from "@/packages/ui/components/ui/use-toast"
+import { useToast } from "@/packages/core/hooks/use-toast"
 
 interface SyncStats {
   success: boolean
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => fetchStats()}
+            onClick={() => refetch()}
             variant="outline"
             size="sm"
             disabled={loading || isSyncing}

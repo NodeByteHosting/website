@@ -6,10 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
 import { Label } from "@/packages/ui/components/ui/label"
-import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
-import { Loader2, Mail, Lock, AlertCircle, Shield, ArrowRight, Server, Zap, Clock, Gamepad2, Wand2, ArrowLeft } from "lucide-react"
+import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
+import { Loader2, Mail, Lock, AlertCircle, Shield, ArrowRight, ArrowLeft, Server, Zap, Clock, Gamepad2 } from "lucide-react"
 import Link from "next/link"
-import { api } from "@/packages/core/lib/api"
 
 interface LoginFormProps {
   translations: {
@@ -67,8 +66,6 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
-  const [magicLinkSent, setMagicLinkSent] = useState(false)
-
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
@@ -80,7 +77,7 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
       return
     }
 
-    setStep(2)
+    setStep(3)
   }
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -95,21 +92,6 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
     } catch (err: any) {
       setFormError(err.message || t.errors.invalid)
     } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleMagicLink = async () => {
-    setFormError(null)
-    setIsLoading(true)
-
-    try {
-      await api.post("/api/v1/auth/magic-link", { email })
-      // Show success state - email is being sent
-      setMagicLinkSent(true)
-      setIsLoading(false)
-    } catch {
-      setFormError(t.errors.networkError)
       setIsLoading(false)
     }
   }
@@ -243,102 +225,7 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
             </form>
           )}
 
-          {/* Step 2: Password or Magic Link */}
-          {step === 2 && !magicLinkSent && (
-            <div className="space-y-6">
-              {(error || formError) && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{formError || t.errors.generic}</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="space-y-3">
-                {/* Password Option */}
-                <button
-                  onClick={() => setStep(3)}
-                  className="w-full p-4 border-2 border-border rounded-lg hover:border-primary/50 bg-card/50 hover:bg-accent/30 transition-all text-left group"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                      <Lock className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">{t.step2.passwordOption}</p>
-                      <p className="text-sm text-muted-foreground">{t.step2.passwordDescription}</p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Magic Link Option */}
-                <button
-                  onClick={handleMagicLink}
-                  disabled={isLoading}
-                  className="w-full p-4 border-2 border-border rounded-lg hover:border-accent/50 bg-card/50 hover:bg-accent/30 transition-all text-left group disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors group-disabled:bg-accent/10">
-                      {isLoading ? (
-                        <Loader2 className="w-5 h-5 text-accent animate-spin" />
-                      ) : (
-                        <Wand2 className="w-5 h-5 text-accent" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">{t.step2.magicLinkOption}</p>
-                      <p className="text-sm text-muted-foreground">{t.step2.magicLinkDescription}</p>
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              <Button
-                variant="ghost"
-                onClick={() => setStep(1)}
-                className="w-full"
-                disabled={isLoading}
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            </div>
-          )}
-
-          {/* Step 2: Magic Link Success */}
-          {step === 2 && magicLinkSent && (
-            <div className="space-y-6">
-              <Alert className="border-green-500/50 bg-green-50 dark:bg-green-950/20">
-                <Mail className="h-4 w-4 text-green-600 dark:text-green-400" />
-                <AlertTitle className="text-green-800 dark:text-green-300">Magic link sent!</AlertTitle>
-                <AlertDescription className="text-green-700 dark:text-green-400">
-                  Check your email ({email}) for a sign-in link. The link will expire in 30 minutes.
-                </AlertDescription>
-              </Alert>
-
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p>Didn't receive an email?</p>
-                <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Check your spam folder</li>
-                  <li>Make sure you entered the correct email address</li>
-                </ul>
-              </div>
-
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setMagicLinkSent(false)
-                  setStep(1)
-                  setEmail("")
-                }}
-                className="w-full"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Try a different email
-              </Button>
-            </div>
-          )}
-
-          {/* Step 3: Password Entry */}
+          {/* Step 2: Password Entry */}
           {step === 3 && (
             <form onSubmit={handlePasswordSubmit} className="space-y-6">
               {(error || formError) && (
@@ -397,7 +284,7 @@ export function LoginFormMultiStep({ translations: t }: LoginFormProps) {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => setStep(2)}
+                onClick={() => setStep(1)}
                 className="w-full"
                 disabled={isLoading}
               >

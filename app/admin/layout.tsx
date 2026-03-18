@@ -13,7 +13,6 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Shield,
   Loader2,
   Menu,
   Home,
@@ -44,6 +43,7 @@ import {
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
 import { UserMenu } from "@/packages/auth/components/user-menu"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
+import { Logo } from "@/packages/ui/components/logo"
 import { canAccessAdmin } from "@/packages/auth"
 
 interface NavItem {
@@ -120,7 +120,7 @@ export default function AdminLayout({
     { title: t("nav.dashboard"), href: "/admin", icon: LayoutDashboard },
     { title: t("nav.users"), href: "/admin/users", icon: Users },
     { title: t("nav.servers"), href: "/admin/servers", icon: Server },
-    { title: "Products", href: "/admin/products", icon: Package },
+    { title: t("nav.products"), href: "/admin/products", icon: Package },
     { title: t("nav.nodes"), href: "/admin/nodes", icon: HardDrive },
     { title: t("nav.locations"), href: "/admin/locations", icon: MapPin },
     { title: t("nav.allocations"), href: "/admin/allocations", icon: Network },
@@ -191,7 +191,7 @@ export default function AdminLayout({
             <SheetContent side="left" className="w-72 p-0 flex flex-col">
               <SheetHeader className="border-b p-4">
                 <SheetTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
+                  <Logo size={22} />
                   {t("title")}
                 </SheetTitle>
               </SheetHeader>
@@ -221,7 +221,7 @@ export default function AdminLayout({
               </div>
             </SheetContent>
           </Sheet>
-          <Shield className="h-5 w-5 text-primary" />
+          <Logo size={22} />
           <span className="font-semibold text-sm">{t("title")}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -249,7 +249,7 @@ export default function AdminLayout({
           <div className="flex h-14 items-center justify-between border-b px-4">
             {!collapsed && (
               <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-primary" />
+                <Logo size={22} />
                 <span className="font-semibold text-sm">{t("title")}</span>
               </div>
             )}
@@ -349,7 +349,7 @@ export default function AdminLayout({
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 transition-all duration-300",
+          "flex-1 min-w-0 overflow-x-hidden transition-all duration-300",
           "pt-14 lg:pt-0", // Account for mobile header
           collapsed ? "lg:ml-16" : "lg:ml-64"
         )}

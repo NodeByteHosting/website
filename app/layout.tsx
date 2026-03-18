@@ -29,13 +29,16 @@ export const metadata: Metadata = {
     default: "NodeByte Hosting",
     template: "%s | NodeByte Hosting",
   },
-  description: "Fast, reliable, scalable and secure hosting services for your gaming experience. Launch dedicated and managed game servers with instant setup, DDoS protection and low latency networking.",
+  description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
   metadataBase: new URL("https://nodebyte.host"),
-  keywords: ["game server hosting", "minecraft hosting", "rust server hosting", "hytale hosting", "ark server hosting", "dedicated servers", "vps hosting", "ddos protection", "low latency gaming", "cloud servers"],
+  keywords: ["game server hosting", "vps hosting", "minecraft hosting", "rust server hosting", "hytale hosting", "amd vps", "intel vps", "kvm vps", "dedicated servers", "ddos protection", "nvme ssd", "low latency gaming", "root access vps", "cloud servers", "nodebyte"],
   applicationName: "NodeByte Hosting",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     siteName: "NodeByte Hosting",
-    description: "Fast, reliable, scalable and secure hosting services for your gaming experience. Launch dedicated and managed game servers with instant setup, DDoS protection and low latency networking.",
+    description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
     images: ["/og.png"],
     creators: ["@CodeMeAPixel"],
     locale: "en-US",
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: "NodeByte Hosting",
-    description: "Fast, reliable, scalable and secure hosting services for your gaming experience. Launch dedicated and managed game servers with instant setup, DDoS protection and low latency networking.",
+    description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
     images: ["/og.png"],
     creator: "@CodeMeAPixel",
     card: "summary_large_image",
@@ -104,6 +107,42 @@ export default async function RootLayout({
       <head>
         {/* Prevent browser translation extensions from modifying the page */}
         <meta name="google" content="notranslate" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "NodeByte Hosting",
+                url: "https://nodebyte.host",
+                logo: "https://nodebyte.host/logo.png",
+                description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
+                sameAs: ["https://twitter.com/CodeMeAPixel"],
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  contactType: "customer support",
+                  url: "https://nodebyte.host/contact",
+                  availableLanguage: "English",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "NodeByte Hosting",
+                url: "https://nodebyte.host",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: "https://nodebyte.host/kb?q={search_term_string}",
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ]),
+          }}
+        />
       </head>
       <body className={`font-sans antialiased notranslate`}>
         <QueryClientProvider>

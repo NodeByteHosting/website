@@ -1,19 +1,4 @@
-/** Raw spec for a single VPS plan — prices and resources, no translations */
-export interface VpsPlanSpec {
-  id: string
-  /** Short description shown under the plan name on pricing cards */
-  description?: string
-  /** CPU model string displayed on the plan card e.g. "AMD Ryzen™ 9 7950X" */
-  cpuModel?: string
-  priceGBP: number
-  cpu: number
-  ramGB: number
-  storageGB: number
-  /** Bandwidth allowance. null = unmetered. Use MB for small values, GB/TB for larger ones. */
-  bandwidth: { amount: number; unit: "MB" | "GB" | "TB" } | null
-  popular?: boolean
-  url: string
-}
+import { VpsPlanSpec } from "@/packages/core/types/servers/vps";
 
 export const AMD_BILLING_URL = "https://billing.nodebyte.host/store/vps-hosting"
 
@@ -23,12 +8,14 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     id: "2GB-R71700X",
     description: "Perfect for small projects, dev environments, and personal sites.",
     cpuModel: "AMD Ryzen™ 7 1700X",
-    priceGBP: 5,
+    priceGBP: 4.50,
     cpu: 1,
     ramGB: 2,
     storageGB: 25,
     bandwidth: { amount: 1, unit: "TB" },
-    url: "https://billing.nodebyte.host/store/vps-hosting/scorch",
+    uplink: { amount: 1, unit: "Gbps" },
+    ddos: { layers: [3, 4, 7], autoOn: true },
+    url: "https://billing.nodebyte.host/store/vps-hosting/2gb-r71700x",
   },
   {
     id: "4GB-R71700X",
@@ -39,7 +26,9 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 4,
     storageGB: 50,
     bandwidth: { amount: 2, unit: "TB" },
-    url: "https://billing.nodebyte.host/store/vps-hosting/flare",
+    uplink: { amount: 1, unit: "Gbps" },
+    ddos: { layers: [3, 4, 7], autoOn: true },
+    url: "https://billing.nodebyte.host/store/vps-hosting/4gb-r71700x",
   },
   {
     id: "8GB-R71700X",
@@ -50,8 +39,10 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 8,
     storageGB: 100,
     bandwidth: null,
+    uplink: { amount: 1, unit: "Gbps" },
+    ddos: { layers: [3, 4, 7], autoOn: true },
     popular: true,
-    url: "https://billing.nodebyte.host/store/vps-hosting/torch",
+    url: "https://billing.nodebyte.host/store/vps-hosting/8gb-r71700x",
   },
   {
     id: "16GB-R71700X",
@@ -62,7 +53,9 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     ramGB: 16,
     storageGB: 200,
     bandwidth: null,
-    url: "https://billing.nodebyte.host/store/vps-hosting/pyro",
+    uplink: { amount: 1, unit: "Gbps" },
+    ddos: { layers: [3, 4, 7], autoOn: true },
+    url: "https://billing.nodebyte.host/store/vps-hosting/16gb-r71700x",
   },
 ]
 
@@ -78,7 +71,7 @@ export const AMD_FEATURE_KEYS = [
 
 /** FAQ keys — maps to `vps.amd.faqs.<key>` in translations */
 export const AMD_FAQ_KEYS = [
-  "rootAccess", "os", "upgrade", "bandwidth", "ddos", "refunds", "windows",
+  "rootAccess", "os", "upgrade", "bandwidth", "ddos", "refunds", "windows", "location",
 ] as const
 
 /** Number of hero feature pills (maps to `vps.amd.heroFeatures.{0..n}`) */
@@ -86,7 +79,7 @@ export const AMD_HERO_FEATURE_COUNT = 4
 
 /** Spec panel rows shown in the hero */
 export const AMD_SPECS = [
-  { icon: "Cpu"       as const, label: "Processor",   value: "Enterprise AMD Ryzen™" },
+  { icon: "Cpu"       as const, label: "Processor",   value: "Enterprise AMD™" },
   { icon: "Zap"       as const, label: "Storage",     value: "NVMe SSD"              },
   { icon: "HardDrive" as const, label: "Memory",      value: "DDR4 ECC RAM"          },
   { icon: "Network"   as const, label: "Network",     value: "1 Gbps Uplink"         },

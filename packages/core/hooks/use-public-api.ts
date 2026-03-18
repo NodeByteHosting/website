@@ -34,3 +34,23 @@ export function usePanelCounts() {
     gcTime: 1000 * 60 * 10, // 10 minutes
   })
 }
+
+export interface PublicNode {
+  id: number
+  name: string
+  locationCode: string
+  isMaintenanceMode: boolean
+  /** Allocated memory in MiB */
+  memory: number
+  /** Allocated disk in MiB */
+  disk: number
+  /** Number of server instances currently provisioned on this node */
+  serverCount?: number
+}
+
+export function usePublicNodes() {
+  return useApiQuery<PublicNode[]>("/api/panel/nodes", {
+    staleTime: 1000 * 60 * 2, // 2 minutes
+    gcTime: 1000 * 60 * 5,
+  })
+}

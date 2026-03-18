@@ -31,7 +31,7 @@ import { Skeleton } from "@/packages/ui/components/ui/skeleton"
 import { Switch } from "@/packages/ui/components/ui/switch"
 import { Alert, AlertDescription, AlertTitle } from "@/packages/ui/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/packages/ui/components/ui/tabs"
-import { useToast } from "@/packages/ui/components/ui/use-toast"
+import { useToast } from "@/packages/core/hooks/use-toast"
 
 interface UserProfile {
   id: string
