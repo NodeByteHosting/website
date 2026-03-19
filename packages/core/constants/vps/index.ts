@@ -1,6 +1,16 @@
 export * from "./amd"
 export * from "./intel"
 
+import { AMD_PLANS } from "./amd"
+import { INTEL_PLANS } from "./intel"
+import type { VpsPlanSpec } from "@/packages/core/types/servers/vps"
+
+/** All plans across every hardware line — used by the /vps hub page */
+export const ALL_VPS_PLANS: VpsPlanSpec[] = [
+  ...AMD_PLANS,
+  ...INTEL_PLANS,
+]
+
 /** Static option data for each VPS type — used by the /vps index page */
 export const VPS_OPTIONS = [
   {

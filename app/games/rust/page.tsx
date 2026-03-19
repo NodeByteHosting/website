@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
-import dynamic from "next/dynamic"
 import { GameHero } from "@/packages/ui/components/Layouts/Games/game-hero"
 import { Gamepad2 } from "lucide-react"
 import { GameFeatures } from "@/packages/ui/components/Layouts/Games/game-features"
-const GamePricing = dynamic(() => import("@/packages/ui/components/Layouts/Games/game-pricing").then((m) => ({ default: m.GamePricing })))
+import { GamePricing } from "@/packages/ui/components/Layouts/Games/game-pricing"
 import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import { getTranslations } from "next-intl/server"
 import { LINKS } from "@/packages/core/constants/links"
