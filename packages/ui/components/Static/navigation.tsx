@@ -54,13 +54,6 @@ export function Navigation() {
       icon: ExternalLink,
       external: true,
     },
-    {
-      title: t("company.discord.title"),
-      href: LINKS.discord,
-      description: t("company.discord.description"),
-      icon: SiDiscord,
-      external: true,
-    }
   ], [t])
 
   const services = useMemo(() => [
@@ -91,20 +84,6 @@ export function Navigation() {
       description: t("services.gameServers.description"),
       icon: Server,
       section: "game",
-    },
-    {
-      title: t("services.vpsAmd.title"),
-      href: "/vps/amd",
-      description: t("services.vpsAmd.description"),
-      icon: Cpu,
-      section: "vps",
-    },
-    {
-      title: t("services.vpsIntel.title"),
-      href: "/vps/intel",
-      description: t("services.vpsIntel.description"),
-      icon: Cpu,
-      section: "vps",
     },
     {
       title: t("services.allVps.title"),

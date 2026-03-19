@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
 import { load } from 'cheerio'
 
+export const revalidate = 3600 // Cache response for 1 hour
+
 export async function GET() {
   const url = 'https://uk.trustpilot.com/review/nodebyte.host'
 
   try {
     const res = await fetch(url, {
+      next: { revalidate: 3600 },
       headers: {
         'User-Agent': 'NodeByte-scraper/1.0 (+https://nodebyte.co.uk)'
       }

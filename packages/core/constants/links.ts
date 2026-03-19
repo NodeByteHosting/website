@@ -25,8 +25,8 @@ export const LINKS = {
     rustHosting:      "https://billing.nodebyte.host/store/rust-hosting",
     minecraft:        "https://billing.nodebyte.host/store/minecraft",
     rust:             "https://billing.nodebyte.host/store/rust",
-    fivemHosting:     "https://billing.nodebyte.host/store/fivem-server-hosting",
-    redmHosting:      "https://billing.nodebyte.host/store/redm-server-hosting",
+    terrariaHosting:  "https://billing.nodebyte.host/store/terraria-server-hosting",
+    gmodHosting:      "https://billing.nodebyte.host/store/garrys-mod-server-hosting",
     palworldHosting:  "https://billing.nodebyte.host/store/palworld-server-hosting",
   },
 } as const

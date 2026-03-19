@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 
-const DEFAULT_REPOSITORIES = ['NodeByteHosting/website'];
+const DEFAULT_REPOSITORIES = [
+  'NodeByteHosting/website',
+  'NodeByteHosting/backend',
+  'NodeByteHosting/Game-Panel'
+];
 
 export interface GitHubRelease {
   id: number

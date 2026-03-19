@@ -30,4 +30,15 @@ export interface VpsPlanSpec {
   url: string
   /** Availability status. Defaults to "in_stock" when omitted. */
   stock?: "in_stock" | "out_of_stock" | "coming_soon"
+  /**
+   * New IaaS SKU following the LINEUP-SERIES-RAM naming convention.
+   * e.g. "BASE-RG1-2GB", "COMP-RG1-8GB", "ELITE-RG4-32GB"
+   */
+  sku?: string
+  /** QoS / resource-priority tier */
+  lineup?: "BASE" | "COMP" | "GAME" | "ELITE"
+  /** Hardware generation identifier */
+  series?: "RG1" | "RG3" | "RG4" | "IG3" | "IX1"
+  /** CPU brand family */
+  hardware?: "amd" | "intel"
 }

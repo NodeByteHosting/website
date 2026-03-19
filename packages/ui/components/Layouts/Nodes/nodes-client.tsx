@@ -247,24 +247,24 @@ function LocationCountryRow({
 
 const FAQS = [
   {
-    question: "Where can I host my game server?",
+    question: "Where can I deploy my server?",
     answer:
-      `We offer game server hosting across ${LOCATIONS.length} data centre locations in Europe (UK, France, Germany, Finland, Italy, Poland), the Americas (Canada, United States), and Asia-Pacific (Singapore, Australia, India). Select your preferred location at checkout.`,
+      `We offer hosting across ${LOCATIONS.length} data centre locations in Europe (UK, France, Germany, Finland, Italy, Poland), the Americas (Canada, United States), and Asia-Pacific (Singapore, Australia, India). All game server and VPS plans let you select your preferred location at checkout.`,
   },
   {
-    question: "Which location is best for me and my players?",
+    question: "Which location is best for me?",
     answer:
-      "Choose the location closest to the majority of your players. For UK and European players, Newcastle, London, or Paris work well. For North America, Montréal (Canada East) or Washington DC (US East) are great options. Singapore or Mumbai cover South and Southeast Asia, and Sydney covers Australia and Oceania.",
+      "Choose the location closest to you or the majority of your users. For UK and European customers, Newcastle, London, or Paris work well. For North America, Montréal (Canada East) or Washington DC (US East) are great options. Singapore or Mumbai cover South and Southeast Asia, and Sydney covers Australia and Oceania.",
   },
   {
     question: "Can I change my server location after ordering?",
     answer:
-      "Location changes after ordering require a fresh deployment. Open a support ticket and our team will help migrate your server files to a new node in your preferred location.",
+      "Location changes after ordering require a fresh deployment. Open a support ticket and our team will help migrate your server to a new node in your preferred location.",
   },
   {
     question: "What does \u2018Maintenance\u2019 mean for a node?",
     answer:
-      "When a node is in maintenance mode it is temporarily unavailable for new deployments while we perform scheduled upgrades or hardware work. Existing game servers may be paused or migrated during this time. Affected customers are always notified in advance.",
+      "When a node is in maintenance mode it is temporarily unavailable for new deployments while we perform scheduled upgrades or hardware work. Existing servers may be paused or migrated during this time. Affected customers are always notified in advance.",
   },
   {
     question: "How do you choose which node my server runs on?",
@@ -274,7 +274,7 @@ const FAQS = [
   {
     question: "Is DDoS protection included?",
     answer:
-      "Yes. All game servers include DDoS protection as standard. Our mitigation automatically detects and absorbs attacks to keep your server online and your players connected.",
+      "Yes. All services include DDoS protection as standard. Our mitigation automatically detects and absorbs attacks to keep your server online and running smoothly.",
   },
 ]
 
@@ -301,7 +301,7 @@ export function NodesClient() {
         <div className="text-center space-y-5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary">
             <Network className="w-4 h-4" />
-            <span>Game Server Nodes</span>
+            <span>Hosting Infrastructure</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
             Nodes &{" "}
@@ -360,7 +360,7 @@ export function NodesClient() {
               </span>
             </h2>
             <p className="text-muted-foreground">
-              {LOCATIONS.length} data centre locations across 3 regions. Select the one closest to your players at checkout.
+              {LOCATIONS.length} data centre locations across 3 regions. Select your preferred location at checkout.
             </p>
           </div>
 
@@ -405,7 +405,7 @@ export function NodesClient() {
               </span>
             </h2>
             <p className="text-muted-foreground">
-              Everything about game server nodes and choosing the right location for your players.
+              Everything about our nodes and choosing the right location for your service.
             </p>
           </div>
 
@@ -442,11 +442,14 @@ export function NodesClient() {
             <span>Get Started</span>
           </div>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Ready to deploy? Browse our game plans and pick your location at checkout.
+            Ready to deploy? Browse our plans and pick your preferred location at checkout.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button asChild variant="default" size="lg" className="gap-2 rounded-full">
-              <Link href="/games">View Game Plans</Link>
+              <Link href="/games">Game Hosting</Link>
+            </Button>
+            <Button asChild variant="default" size="lg" className="gap-2 rounded-full">
+              <Link href="/vps">VPS Hosting</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="gap-2 rounded-full">
               <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer">

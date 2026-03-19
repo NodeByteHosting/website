@@ -1,15 +1,15 @@
 export * from "./minecraft"
 export * from "./rust"
 export * from "./hytale"
-export * from "./fivem"
-export * from "./redm"
+export * from "./terraria"
+export * from "./gmod"
 export * from "./palworld"
 
 import { MINECRAFT_PLANS } from "./minecraft"
 import { RUST_PLANS } from "./rust"
 import { HYTALE_PLANS } from "./hytale"
-import { FIVEM_PLANS } from "./fivem"
-import { REDM_PLANS } from "./redm"
+import { TERRARIA_PLANS } from "./terraria"
+import { GMOD_PLANS } from "./gmod"
 import { PALWORLD_PLANS } from "./palworld"
 
 /**
@@ -49,26 +49,26 @@ export const GAME_OPTIONS = [
     headerIconBg:     "bg-amber-500/10 text-amber-400",
   },
   {
-    slug:             "fivem"     as const,
-    name:             "FiveM",
-    startingPriceGBP: FIVEM_PLANS.length ? Math.min(...FIVEM_PLANS.map((p) => p.priceGBP)) : 0,
-    comingSoon:       !FIVEM_PLANS.length,
-    banner:           "/games/fivem.png",
-    iconName:         "Radio"     as const,
-    tagColor:         "bg-blue-500/15 text-blue-400 border border-blue-500/20",
-    headerGradient:   "from-blue-500/20 via-blue-500/10 to-primary/5",
-    headerIconBg:     "bg-blue-500/10 text-blue-400",
+    slug:             "terraria"  as const,
+    name:             "Terraria",
+    startingPriceGBP: TERRARIA_PLANS.length ? Math.min(...TERRARIA_PLANS.map((p) => p.priceGBP)) : 0,
+    comingSoon:       !TERRARIA_PLANS.length,
+    banner:           "/games/terraria.png",
+    iconName:         "Pickaxe"   as const,
+    tagColor:         "bg-lime-500/15 text-lime-400 border border-lime-500/20",
+    headerGradient:   "from-lime-500/20 via-lime-500/10 to-primary/5",
+    headerIconBg:     "bg-lime-500/10 text-lime-400",
   },
   {
-    slug:             "redm"      as const,
-    name:             "RedM",
-    startingPriceGBP: REDM_PLANS.length ? Math.min(...REDM_PLANS.map((p) => p.priceGBP)) : 0,
-    comingSoon:       !REDM_PLANS.length,
-    banner:           "/games/redm.png",
-    iconName:         "Mountain"  as const,
-    tagColor:         "bg-red-500/15 text-red-400 border border-red-500/20",
-    headerGradient:   "from-red-500/20 via-red-500/10 to-primary/5",
-    headerIconBg:     "bg-red-500/10 text-red-400",
+    slug:             "gmod"      as const,
+    name:             "Garry's Mod",
+    startingPriceGBP: GMOD_PLANS.length ? Math.min(...GMOD_PLANS.map((p) => p.priceGBP)) : 0,
+    comingSoon:       !GMOD_PLANS.length,
+    banner:           "/games/gmod.png",
+    iconName:         "Wrench"    as const,
+    tagColor:         "bg-orange-500/15 text-orange-400 border border-orange-500/20",
+    headerGradient:   "from-orange-500/20 via-orange-500/10 to-primary/5",
+    headerIconBg:     "bg-orange-500/10 text-orange-400",
   },
   {
     slug:             "palworld"  as const,

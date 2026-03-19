@@ -1,8 +1,8 @@
 import { MINECRAFT_PLANS } from "@/packages/core/constants/game/minecraft"
 import { RUST_PLANS } from "@/packages/core/constants/game/rust"
 import { HYTALE_PLANS } from "@/packages/core/constants/game/hytale"
-import { FIVEM_PLANS } from "@/packages/core/constants/game/fivem"
-import { REDM_PLANS } from "@/packages/core/constants/game/redm"
+import { TERRARIA_PLANS } from "@/packages/core/constants/game/terraria"
+import { GMOD_PLANS } from "@/packages/core/constants/game/gmod"
 import { PALWORLD_PLANS } from "@/packages/core/constants/game/palworld"
 import { AMD_PLANS } from "@/packages/core/constants/vps/amd"
 import { INTEL_PLANS } from "@/packages/core/constants/vps/intel"
@@ -66,8 +66,8 @@ export function getAllProducts(): ProductEntry[] {
     ...MINECRAFT_PLANS.map((p) => fromGamePlan(p, "minecraft")),
     ...RUST_PLANS.map((p) => fromGamePlan(p, "rust")),
     ...HYTALE_PLANS.map((p) => fromGamePlan(p, "hytale")),
-    ...FIVEM_PLANS.map((p) => fromGamePlan(p, "fivem")),
-    ...REDM_PLANS.map((p) => fromGamePlan(p, "redm")),
+    ...TERRARIA_PLANS.map((p) => fromGamePlan(p, "fivem")),
+    ...GMOD_PLANS.map((p) => fromGamePlan(p, "redm")),
     ...PALWORLD_PLANS.map((p) => fromGamePlan(p, "palworld")),
     ...AMD_PLANS.map((p) => fromVpsPlan(p, "amd")),
     ...INTEL_PLANS.map((p) => fromVpsPlan(p, "intel")),

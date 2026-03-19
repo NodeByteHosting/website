@@ -1,7 +1,7 @@
 import { Card } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { GamePrice } from "@/packages/ui/components/ui/game-price"
-import { Gamepad2, ArrowRight, Check, Blocks, Sparkles, Radio, Mountain, Leaf } from "lucide-react"
+import { Gamepad2, ArrowRight, Check, Blocks, Sparkles, Leaf, Pickaxe, Wrench } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
 import { GAME_OPTIONS } from "@/packages/core/constants/game"
 
-const ICON_MAP: Record<string, LucideIcon> = { Blocks, Gamepad2, Sparkles, Radio, Mountain, Leaf }
+const ICON_MAP: Record<string, LucideIcon> = { Blocks, Gamepad2, Sparkles, Leaf, Pickaxe, Wrench }
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations()

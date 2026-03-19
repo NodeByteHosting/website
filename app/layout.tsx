@@ -39,7 +39,6 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "NodeByte Hosting",
     description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
-    images: ["/og.png"],
     creators: ["@CodeMeAPixel"],
     locale: "en-US",
     url: "https://nodebyte.host",
@@ -47,7 +46,6 @@ export const metadata: Metadata = {
   twitter: {
     title: "NodeByte Hosting",
     description: "Fast, reliable, and secure hosting for game servers and VPS. Instant deployment, enterprise DDoS protection, NVMe SSD storage, and 24/7 expert support.",
-    images: ["/og.png"],
     creator: "@CodeMeAPixel",
     card: "summary_large_image",
     site: "https://nodebyte.host",
