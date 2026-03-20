@@ -5,6 +5,57 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.2] - 2026-03-19
+
+### Added
+- **17 New Themes** — CSS variable definitions added to `app/globals.css` for all new theme entries
+  - **Popular**: `kanagawa` (Kanagawa dark, blue/red), `everforest` (green earth tones), `monokai` (classic editor dark)
+  - **Palette**: `cobalt` (deep navy/blue), `sakura` (dark pink/rose), `copper` (warm amber/brown), `abyss` (near-black deep ocean)
+  - **Seasonal**: `winter` (icy blue), `stpatricks` (emerald green), `easter` (pastel purple/mint), `spring` (fresh light green), `summer` (navy/yellow), `fourthjuly` (dark navy/red/blue), `halloween` (black/orange), `autumn` (dark orange/amber), `thanksgiving` (warm amber), `valentines` (deep rose/pink)
+- **Theme Toggle Redesign** — `packages/ui/components/theme-toggle.tsx` fully rewritten
+  - New `THEMES` registry with `{value, label, bg, accent}` per entry
+  - `ThemeSwatch` component: two-tone swatch (background fill + accent strip) with checkmark overlay when selected
+  - Quick mode row: Light / Dark / System as bordered chip buttons above the theme grid
+  - Organised sections: Catppuccin · Popular · Palette · Seasonal (`grid-cols-5` layout)
+  - Header displays the currently active theme name
+- **`ScrollToHash` Utility Component** — replaces the `useEffect`-based hash scroll in `app/page.tsx`; allows the home page to be a Server Component while still supporting `#section` anchor navigation
+- **GitHub Releases API** — `NodeByteHosting/backend` and `NodeByteHosting/Game-Panel` added to `DEFAULT_REPOSITORIES` in `app/api/github/releases/route.ts`
+- **Nodes Page — VPS CTA** — "VPS Hosting" button added alongside the existing "Game Hosting" button in the nodes page footer CTA
+- **Dynamic Open Graph & Twitter Images** — replaced static `public/og.png` with Next.js file-based `opengraph-image.tsx` / `twitter-image.tsx` generated at the edge via `ImageResponse`
+  - Root (`/`) — "Game Servers & VPS Hosting." card; default for all pages without their own image
+  - `/vps` subtree — "AMD & Intel VPS Hosting." card with KVM/root-access copy
+  - `/games` subtree — "Game Server Hosting." card with per-game feature row
+  - Shared generator in `app/_og/image-generator.tsx`: actual 3-layer SVG logo mark, ghost watermark, motto "Built for Humans. Powered by Bytes.", dot-separated feature row (no emojis), thin gradient top bar, navy `#040d1a` background with blue/purple radial glows
+  - Static `images: ["/og.png"]` entries removed from root layout `openGraph` and `twitter` metadata
+
+### Changed
+- **Dynamic Imports Removed** — `next/dynamic` replaced with static `import` across all page-level components; eliminates unnecessary client-side code splitting for SSR-compatible components
+  - `app/games/minecraft/page.tsx`, `app/games/rust/page.tsx`, `app/games/hytale/page.tsx` — `GamePricing` now statically imported
+  - `app/vps/amd/page.tsx`, `app/vps/intel/page.tsx` — `VpsPricing` now statically imported
+- **Home Page converted to Server Component** — `app/page.tsx` was `"use client"` solely for hash-scroll `useEffect`; now a pure Server Component using `<ScrollToHash />`
+- **`LayoutChrome` hydration guard removed** — `mounted`/`useEffect` that deferred `<Navigation />` and `<Footer />` rendering to avoid Radix ID mismatch is no longer needed; components now render on first pass, eliminating the layout shift
+- **Navigation Simplified**
+  - Removed Discord link from the Company dropdown (redundant with the Discord CTA button)
+  - Removed individual AMD VPS and Intel VPS links from Services dropdown; replaced by a single "All VPS" → `/vps` entry
+- **VPS Hub Filter Row** — lineup legend cards (BASE/COMP/GAME/ELITE) moved inline into the filter chips row as coloured chip buttons with dot indicators; removed the separate legend grid
+- **VPS Hub Bottom CTA** — AMD/Intel page links replaced with a "Need a custom configuration?" → `/contact` CTA
+- **VPS Hub Sort Dropdown** — native `<select>` replaced with shadcn `Select` / `SelectTrigger` / `SelectContent` for theme consistency
+- **Logo Component** — `packages/ui/components/logo.tsx` rewritten to match updated 3-layer SVG logo
+  - Layer 1 (diamonds): `fill-primary`
+  - Layer 2 (N body, clipped): `fill-foreground`
+  - Layer 3 (diagonal arm strokes): `fill-primary/65`
+- **Trustpilot API** — added `export const revalidate = 3600` and `next: { revalidate: 3600 }` fetch option so the response is ISR-cached for 1 hour instead of fetched on every request
+- **Nodes Page — Language generalised** — "Game Server Nodes" badge renamed "Hosting Infrastructure"; FAQ questions and CTA copy updated to cover both game servers and VPS (removed game-server-only framing)
+- **Game Hero / Games Index icon map** — `Radio` and `Mountain` icons replaced with `Pickaxe` and `Wrench` to match updated FiveM/RedM config icons
+
+### Removed
+- **FiveM & RedM standalone pages** (`app/games/fivem/page.tsx`, `app/games/redm/page.tsx`) — removed; these games are surfaced via the index `comingSoon` state without individual pages until plans are live and can not be offered via pre-made solutions. Will offer game tier vps plans instead!
+
+### Fixed
+- **Theme CSS Class Name** — `4thofjuly` renamed to `fourthjuly` throughout toggle registry and CSS; CSS class names cannot begin with a digit
+
+---
+
 ## [3.5.1] - 2026-03-17
 
 ### Fixed

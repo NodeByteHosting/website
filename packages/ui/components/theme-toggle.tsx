@@ -7,132 +7,89 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/packages/ui/components/ui/dropdown-menu"
 import { Button } from "@/packages/ui/components/ui/button"
-import { Sun, Moon, Palette, Check } from "lucide-react"
+import { Sun, Moon, Monitor, Palette, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const allThemes = {
-  featured: [
-    { value: "dark", label: "Dark", icon: Moon, color: "#0a0a0a", description: "Dark theme for low-light environments" },
-    { value: "slate", label: "Slate", icon: Palette, color: "#1e293b", description: "Cool slate color palette" },
-    { value: "ocean", label: "Ocean", icon: Palette, color: "#0c4a6e", description: "Calming ocean blue tones" },
-  ],
-  base: [
-    { value: "light", label: "Light", icon: Sun, color: "#ffffff", description: "Light theme for daytime" },
-    { value: "system", label: "System", icon: Palette, color: "linear-gradient(135deg, #ffffff 50%, #0a0a0a 50%)", description: "Follow system preference" },
-  ],
+// ─── Theme registry ──────────────────────────────────────────────────────────
+// Each entry: value (next-themes key), label, bg swatch, accent swatch
+
+const THEMES = {
   catppuccin: [
-    { value: "catppuccin-mocha", label: "Mocha", color: "#1e1e2e" },
-    { value: "catppuccin-macchiato", label: "Macchiato", color: "#24273a" },
-    { value: "catppuccin-frappe", label: "Frappé", color: "#303446" },
-    { value: "catppuccin-latte", label: "Latte", color: "#eff1f5" },
+    { value: "catppuccin-mocha",     label: "Mocha",     bg: "#1e1e2e", accent: "#cba6f7" },
+    { value: "catppuccin-macchiato", label: "Macchiato", bg: "#24273a", accent: "#c6a0f6" },
+    { value: "catppuccin-frappe",    label: "Frappé",    bg: "#303446", accent: "#ca9ee6" },
+    { value: "catppuccin-latte",     label: "Latte",     bg: "#eff1f5", accent: "#8839ef" },
   ],
   popular: [
-    { value: "dracula", label: "Dracula", color: "#282a36" },
-    { value: "nord", label: "Nord", color: "#2e3440" },
-    { value: "gruvbox", label: "Gruvbox", color: "#282828" },
-    { value: "solarized", label: "Solarized", color: "#002b36" },
-    { value: "tokyo-night", label: "Tokyo Night", color: "#1a1b26" },
-    { value: "one-dark", label: "One Dark", color: "#282c34" },
-    { value: "rose-pine", label: "Rosé Pine", color: "#191724" },
+    { value: "dracula",     label: "Dracula",     bg: "#282a36", accent: "#bd93f9" },
+    { value: "nord",        label: "Nord",        bg: "#2e3440", accent: "#88c0d0" },
+    { value: "gruvbox",     label: "Gruvbox",     bg: "#282828", accent: "#d79921" },
+    { value: "solarized",   label: "Solarized",   bg: "#002b36", accent: "#268bd2" },
+    { value: "tokyo-night", label: "Tokyo Night", bg: "#1a1b26", accent: "#7aa2f7" },
+    { value: "one-dark",    label: "One Dark",    bg: "#282c34", accent: "#61afef" },
+    { value: "rose-pine",   label: "Rosé Pine",   bg: "#191724", accent: "#c4a7e7" },
+    { value: "kanagawa",    label: "Kanagawa",    bg: "#1f1f28", accent: "#e46876" },
+    { value: "everforest",  label: "Everforest",  bg: "#2d353b", accent: "#a7c080" },
+    { value: "monokai",     label: "Monokai",     bg: "#272822", accent: "#a6e22e" },
   ],
-  cool: [
-    { value: "midnight", label: "Midnight", color: "#0f172a" },
-    { value: "teal", label: "Teal", color: "#134e4a" },
+  palette: [
+    { value: "slate",    label: "Slate",    bg: "#1e293b", accent: "#38bdf8" },
+    { value: "ocean",    label: "Ocean",    bg: "#0c4a6e", accent: "#22d3ee" },
+    { value: "midnight", label: "Midnight", bg: "#0f172a", accent: "#6366f1" },
+    { value: "teal",     label: "Teal",     bg: "#134e4a", accent: "#14b8a6" },
+    { value: "lavender", label: "Lavender", bg: "#2e1065", accent: "#a855f7" },
+    { value: "violet",   label: "Violet",   bg: "#4c1d95", accent: "#8b5cf6" },
+    { value: "rose",     label: "Rose",     bg: "#4c0519", accent: "#fb7185" },
+    { value: "amber",    label: "Amber",    bg: "#78350f", accent: "#f59e0b" },
+    { value: "desert",   label: "Desert",   bg: "#451a03", accent: "#c2410c" },
+    { value: "forest",   label: "Forest",   bg: "#14532d", accent: "#22c55e" },
+    { value: "emerald",  label: "Emerald",  bg: "#064e3b", accent: "#10b981" },
+    { value: "crimson",  label: "Crimson",  bg: "#1a0a0f", accent: "#dc2626" },
+    { value: "cobalt",   label: "Cobalt",   bg: "#0a1628", accent: "#3b82f6" },
+    { value: "sakura",   label: "Sakura",   bg: "#1a0f14", accent: "#f472b6" },
+    { value: "copper",   label: "Copper",   bg: "#1c1208", accent: "#b45309" },
+    { value: "abyss",    label: "Abyss",    bg: "#000c1a", accent: "#0ea5e9" },
   ],
-  warm: [
-    { value: "rose", label: "Rose", color: "#4c0519" },
-    { value: "amber", label: "Amber", color: "#78350f" },
-    { value: "desert", label: "Desert", color: "#451a03" },
+  seasonal: [
+    // ── Winter / Holidays ──
+    { value: "christmas",   label: "Christmas",   bg: "#0d1f0f", accent: "#c4122e" },
+    { value: "newyear",     label: "New Year",    bg: "#0a0808", accent: "#ffd166" },
+    { value: "winter",      label: "Winter",      bg: "#0d1b2a", accent: "#93c5fd" },
+    // ── Spring ──
+    { value: "stpatricks",  label: "St. Pat's",   bg: "#052e16", accent: "#4ade80" },
+    { value: "easter",      label: "Easter",      bg: "#fdf4ff", accent: "#c084fc" },
+    { value: "spring",      label: "Spring",      bg: "#fafff7", accent: "#86efac" },
+    // ── Summer ──
+    { value: "summer",      label: "Summer",      bg: "#0c1f3a", accent: "#facc15" },
+    { value: "fourthjuly",  label: "4th July",    bg: "#030712", accent: "#f87171" },
+    // ── Autumn ──
+    { value: "halloween",   label: "Halloween",   bg: "#0d0208", accent: "#f97316" },
+    { value: "autumn",      label: "Autumn",      bg: "#1c0f00", accent: "#ea580c" },
+    { value: "thanksgiving",label: "Thanks.",     bg: "#1a0f00", accent: "#d97706" },
+    // ── Other ──
+    { value: "valentines",  label: "Valentine's", bg: "#1a0007", accent: "#f43f5e" },
+    { value: "stranger",    label: "Stranger",    bg: "#0a0a0a", accent: "#ff2d55" },
   ],
-  nature: [
-    { value: "forest", label: "Forest", color: "#14532d" },
-    { value: "emerald", label: "Emerald", color: "#064e3b" },
-    { value: "lavender", label: "Lavender", color: "#2e1065" },
-    { value: "violet", label: "Violet", color: "#4c1d95" },
-  ],
-  special: [
-    { value: "stranger", label: "Stranger", color: "#ff2d55" },
-    { value: "christmas", label: "Christmas", color: "#c4122e" },
-    { value: "newyear", label: "NewYear", color: "#ffd166" },
-  ],
-}
+} as const
 
-interface ThemeOption {
-  value: string
-  label: string
-  color: string
-  icon?: React.ComponentType<{ className?: string }>
-  description?: string
-}
+type ThemeEntry = { value: string; label: string; bg: string; accent: string }
 
-function ThemeColorSwatch({ color, isSelected }: { color: string; isSelected: boolean }) {
-  return (
-    <span
-      className={cn(
-        "inline-block w-5 h-5 rounded-lg ring-2 ring-offset-2 ring-offset-background transition-all",
-        isSelected ? "ring-primary scale-110 shadow-lg" : "ring-transparent hover:ring-primary/50"
-      )}
-      style={{ background: color }}
-    />
-  )
-}
+const SECTIONS: { key: keyof typeof THEMES; label: string }[] = [
+  { key: "catppuccin", label: "Catppuccin" },
+  { key: "popular",    label: "Popular"    },
+  { key: "palette",    label: "Palette"    },
+  { key: "seasonal",   label: "Seasonal"   },
+]
 
-function ThemeCard({
-  theme,
-  isSelected,
-  onClick,
-}: {
-  theme: ThemeOption
-  isSelected: boolean
-  onClick: () => void
-}) {
-  const Icon = theme.icon
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "w-full p-4 rounded-xl border-2 transition-all text-left group",
-        isSelected
-          ? "border-primary bg-primary/5"
-          : "border-border hover:border-primary/50 hover:bg-accent/20"
-      )}
-    >
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          {Icon ? (
-            <Icon className="w-5 h-5 text-primary" />
-          ) : (
-            <ThemeColorSwatch color={theme.color} isSelected={isSelected} />
-          )}
-          <div>
-            <p className="font-semibold text-sm">{theme.label}</p>
-            {theme.description && (
-              <p className="text-xs text-muted-foreground">{theme.description}</p>
-            )}
-          </div>
-        </div>
-        {isSelected && <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />}
-      </div>
-      {!Icon && (
-        <div
-          className="w-full h-2 rounded-full"
-          style={{ background: theme.color }}
-        />
-      )}
-    </button>
-  )
-}
+const ALL_ENTRIES: ThemeEntry[] = Object.values(THEMES).flat()
 
-function ThemeGridItem({
-  theme,
-  isSelected,
-  onClick,
-}: {
-  theme: ThemeOption
+// ─── Swatch ──────────────────────────────────────────────────────────────────
+
+function ThemeSwatch({ theme, isSelected, onClick }: {
+  theme: ThemeEntry
   isSelected: boolean
   onClick: () => void
 }) {
@@ -141,47 +98,54 @@ function ThemeGridItem({
       onClick={onClick}
       title={theme.label}
       className={cn(
-        "flex flex-col items-center gap-2 p-3 rounded-lg transition-all group",
+        "relative flex flex-col items-center gap-1.5 p-1.5 rounded-xl transition-all duration-150",
         isSelected
-          ? "bg-primary/10 ring-2 ring-primary"
-          : "hover:bg-accent/20"
+          ? "bg-primary/10 ring-2 ring-primary ring-offset-1 ring-offset-background"
+          : "hover:bg-accent/30",
       )}
     >
-      <ThemeColorSwatch color={theme.color} isSelected={isSelected} />
-      <span className="text-xs font-medium text-center">{theme.label}</span>
+      {/* Two-tone swatch: main bg top, accent strip bottom */}
+      <span className="relative w-9 h-9 rounded-lg overflow-hidden shadow-sm ring-1 ring-black/10 shrink-0">
+        <span className="absolute inset-0" style={{ background: theme.bg }} />
+        <span className="absolute bottom-0 left-0 right-0 h-[36%]" style={{ background: theme.accent }} />
+        {isSelected && (
+          <span className="absolute inset-0 flex items-center justify-center bg-black/25 backdrop-blur-[1px]">
+            <Check className="w-3.5 h-3.5 text-white drop-shadow" />
+          </span>
+        )}
+      </span>
+      <span className="text-[10px] font-medium leading-tight text-center w-full truncate px-0.5">
+        {theme.label}
+      </span>
     </button>
   )
 }
+
+// ─── Toggle ──────────────────────────────────────────────────────────────────
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const t = useTranslations()
   const [mounted, setMounted] = useState(false)
-
   useEffect(() => setMounted(true), [])
 
   const selected = theme ?? "system"
   const display = selected === "system" ? resolvedTheme : selected
+  const TriggerIcon = mounted
+    ? display === "light" ? Sun : display === "dark" ? Moon : Palette
+    : Palette
 
-  const Icon = mounted ? (display === "light" ? Sun : display === "dark" ? Moon : Palette) : Palette
+  const currentEntry = ALL_ENTRIES.find((e) => e.value === selected)
+  const currentLabel = selected === "light" ? "Light" : selected === "dark" ? "Dark" : selected === "system" ? "System" : currentEntry?.label ?? "System"
 
   const handleThemeChange = (v: string) => {
     try {
-      const allThemeValues = [
-        ...allThemes.featured.map(t => t.value),
-        ...allThemes.base.map(t => t.value),
-        ...allThemes.catppuccin.map(t => t.value),
-        ...allThemes.popular.map(t => t.value),
-        ...allThemes.cool.map(t => t.value),
-        ...allThemes.warm.map(t => t.value),
-        ...allThemes.nature.map(t => t.value),
-        ...allThemes.special.map(t => t.value),
-      ]
-      const html = typeof document !== "undefined" ? document.documentElement : null
-      if (html) allThemeValues.forEach(c => html.classList.remove(c))
+      const allValues = [...ALL_ENTRIES.map((e) => e.value), "light", "dark", "system"]
+      const html = document.documentElement
+      allValues.forEach((c) => html.classList.remove(c))
       document.cookie = `theme=${encodeURIComponent(v)};path=/;max-age=${60 * 60 * 24 * 365}`
       localStorage.setItem("theme", v)
-    } catch (e) {}
+    } catch {}
     setTheme(v)
   }
 
@@ -191,156 +155,79 @@ export function ThemeToggle() {
         <Button
           variant="ghost"
           size="icon"
-          className={cn("h-9 w-9 rounded-full hover:bg-accent/80 transition-colors", !mounted && "opacity-0")}
+          className={cn(
+            "h-9 w-9 rounded-full hover:bg-accent/80 transition-colors",
+            !mounted && "opacity-0 pointer-events-none",
+          )}
           aria-label={t("theme.toggle")}
         >
-          <Icon className="h-[1.2rem] w-[1.2rem] transition-transform hover:rotate-12" />
+          <TriggerIcon className="h-[1.2rem] w-[1.2rem] transition-transform hover:rotate-12" />
         </Button>
       </DropdownMenuTrigger>
 
       {mounted && (
-      <DropdownMenuContent
-        align="end"
-        className="w-80 max-h-[70vh] overflow-y-auto p-4"
-        sideOffset={8}
-      >
-        {/* Featured Themes (Top 3) */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("theme.appearance")}
-          </DropdownMenuLabel>
-          {allThemes.featured.map((themeOption) => (
-            <ThemeCard
-              key={themeOption.value}
-              theme={themeOption}
-              isSelected={selected === themeOption.value}
-              onClick={() => handleThemeChange(themeOption.value)}
-            />
-          ))}
-        </div>
+        <DropdownMenuContent align="end" sideOffset={8} className="w-88 p-0 overflow-hidden">
 
-        <DropdownMenuSeparator className="my-4" />
+          {/* ── Header ── */}
+          <div className="px-4 pt-3.5 pb-3 border-b border-border/60 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <p className="text-sm font-semibold leading-none">Appearance</p>
+              <p className="text-xs text-muted-foreground">{currentLabel}</p>
+            </div>
+            <Palette className="w-4 h-4 text-muted-foreground" />
+          </div>
 
-        {/* Base Themes */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Basic
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-2 gap-2">
-            {allThemes.base.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
+          {/* ── Quick mode row ── */}
+          <div className="px-3 py-3 flex gap-2">
+            {(
+              [
+                { value: "light",  label: "Light",  Icon: Sun     },
+                { value: "dark",   label: "Dark",   Icon: Moon    },
+                { value: "system", label: "System", Icon: Monitor },
+              ] as const
+            ).map(({ value, label, Icon }) => (
+              <button
+                key={value}
+                onClick={() => handleThemeChange(value)}
+                className={cn(
+                  "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium border transition-all duration-150",
+                  selected === value
+                    ? "border-primary/50 bg-primary/10 text-primary"
+                    : "border-border/50 text-muted-foreground hover:border-border hover:bg-accent/30 hover:text-foreground",
+                )}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </button>
             ))}
           </div>
-        </div>
 
-        {/* Catppuccin */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Catppuccin
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-4 gap-2">
-            {allThemes.catppuccin.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
+          <DropdownMenuSeparator />
+
+          {/* ── Theme sections ── */}
+          <div className="px-3 py-3 space-y-4 max-h-[58vh] overflow-y-auto">
+            {SECTIONS.map(({ key, label }) => (
+              <div key={key}>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-1">
+                  {label}
+                </p>
+                <div className="grid grid-cols-5 gap-0.5">
+                  {(THEMES[key] as ThemeEntry[]).map((entry) => (
+                    <ThemeSwatch
+                      key={entry.value}
+                      theme={entry}
+                      isSelected={selected === entry.value}
+                      onClick={() => handleThemeChange(entry.value)}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
-        </div>
 
-        {/* Popular Themes */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Popular
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-4 gap-2">
-            {allThemes.popular.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Cool Tones */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("theme.coolTones")}
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-4 gap-2">
-            {allThemes.cool.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Warm Tones */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("theme.warmTones")}
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-4 gap-2">
-            {allThemes.warm.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Nature Themes */}
-        <div className="space-y-3 mb-4">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("theme.nature")}
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-4 gap-2">
-            {allThemes.nature.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Special Themes */}
-        <div className="space-y-3">
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Special
-          </DropdownMenuLabel>
-          <div className="grid grid-cols-3 gap-2">
-            {allThemes.special.map((themeOption) => (
-              <ThemeGridItem
-                key={themeOption.value}
-                theme={themeOption}
-                isSelected={selected === themeOption.value}
-                onClick={() => handleThemeChange(themeOption.value)}
-              />
-            ))}
-          </div>
-        </div>
-      </DropdownMenuContent>
+        </DropdownMenuContent>
       )}
     </DropdownMenu>
   )
 }
+
