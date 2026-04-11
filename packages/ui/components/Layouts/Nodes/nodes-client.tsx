@@ -22,7 +22,7 @@ import {
   AccordionTrigger,
 } from "@/packages/ui/components/ui/accordion"
 import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
-import type { PublicNode } from "@/packages/core/hooks/use-public-api"
+import type { PublicNode } from "@/packages/core/constants/node-types"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { LINKS } from "@/packages/core/constants/links"

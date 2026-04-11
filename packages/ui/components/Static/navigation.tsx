@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo } from "react"
-import { useAuth, canAccessAdmin, isStaffUser } from "@/packages/auth"
 import { Button } from "@/packages/ui/components/ui/button"
 import {
   DropdownMenu,
@@ -9,12 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, Blocks, ExternalLink, ChevronRight, ChevronDown, Book, Building2, Mail, Users, Sparkles, User, LogIn, Shield, Cpu, Network } from "lucide-react"
+import { Server, Gamepad2, Blocks, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
 import { Logo } from "@/packages/ui/components/logo"
-import { UserMenuContent } from "@/packages/auth/components/user-menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -24,7 +22,6 @@ import { SiDiscord } from "react-icons/si"
 
 export function Navigation() {
   const t = useTranslations()
-  const { user, isLoading, logout } = useAuth()
   const mountedRef = useRef(false)
   
   // Memoize menu items to prevent recreation on every render
@@ -138,18 +135,8 @@ export function Navigation() {
   const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pathname = usePathname()
-
-  // Memoize translations to avoid recreating objects
-  const userMenuTranslations = useMemo(() => ({
-    myAccount: t("auth.userMenu.myAccount"),
-    dashboard: t("auth.userMenu.myAccount"),
-    viewPanel: t("auth.userMenu.viewPanel"),
-    admin: t("auth.userMenu.admin"),
-    logout: t("auth.userMenu.logout"),
-    signIn: t("auth.userMenu.signIn"),
-  }), [t])
 
   const navLabels = useMemo(() => ({
     company: t("nav.company"),
@@ -164,9 +151,32 @@ export function Navigation() {
   }), [t])
 
   useEffect(() => {
-    setMounted(true)
     mountedRef.current = true
   }, [])
+
+  // Debounced hover helpers for desktop nav dropdowns.
+  // The dropdown content renders in a Radix portal (outside the wrapper div in the DOM),
+  // so onMouseLeave fires when the mouse moves toward the content. A short delay before
+  // closing lets the mouse travel to the portal content and cancel the close.
+  const openDropdown = (setter: React.Dispatch<React.SetStateAction<boolean>>, closeOthers?: () => void) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+    }
+    closeOthers?.()
+    setter(true)
+  }
+
+  const closeDropdown = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+    closeTimerRef.current = setTimeout(() => setter(false), 150)
+  }
+
+  const cancelClose = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+    }
+  }
 
   useEffect(() => {
     if (!mountedRef.current) return
@@ -174,7 +184,11 @@ export function Navigation() {
       setIsScrolled(window.scrollY > 20)
     }
     window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      // Clean up any pending close timer on unmount
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    }
   }, [])
 
   useEffect(() => {
@@ -184,15 +198,18 @@ export function Navigation() {
     setMobileResourcesOpen(false)
   }, [pathname])
 
-  // Prevent body scroll when mobile menu is open
+  // Prevent body scroll when mobile menu is open.
+  // We toggle a class rather than directly mutating body.style.overflow so we
+  // don't conflict with Radix UI's own scroll-lock (react-remove-scroll).
   useEffect(() => {
+    const cls = "overflow-hidden"
     if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden"
+      document.documentElement.classList.add(cls)
     } else {
-      document.body.style.overflow = ""
+      document.documentElement.classList.remove(cls)
     }
     return () => {
-      document.body.style.overflow = ""
+      document.documentElement.classList.remove(cls)
     }
   }, [isMobileMenuOpen])
 
@@ -261,8 +278,8 @@ export function Navigation() {
               {/* Company Dropdown */}
               <DropdownMenu open={companyOpen} onOpenChange={setCompanyOpen}>
                 <div 
-                  onMouseEnter={() => setCompanyOpen(true)}
-                  onMouseLeave={() => setCompanyOpen(false)}
+                  onMouseEnter={() => openDropdown(setCompanyOpen, () => { setServicesOpen(false); setResourcesOpen(false) })}
+                  onMouseLeave={() => closeDropdown(setCompanyOpen)}
                 >
                   <DropdownMenuTrigger asChild>
                     <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
@@ -273,7 +290,13 @@ export function Navigation() {
                       )} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[280px] p-2" sideOffset={8}>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[280px] p-2"
+                    sideOffset={8}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={() => closeDropdown(setCompanyOpen)}
+                  >
                     {company.map((item) => (
                       <DropdownMenuItem key={item.title} asChild className="p-0 focus:bg-transparent">
                         <Link
@@ -301,8 +324,8 @@ export function Navigation() {
               {/* Services Dropdown */}
               <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen}>
                 <div 
-                  onMouseEnter={() => setServicesOpen(true)}
-                  onMouseLeave={() => setServicesOpen(false)}
+                  onMouseEnter={() => openDropdown(setServicesOpen, () => { setCompanyOpen(false); setResourcesOpen(false) })}
+                  onMouseLeave={() => closeDropdown(setServicesOpen)}
                 >
                   <DropdownMenuTrigger asChild>
                     <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
@@ -313,7 +336,13 @@ export function Navigation() {
                       )} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[320px] p-2" sideOffset={8}>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[320px] p-2"
+                    sideOffset={8}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={() => closeDropdown(setServicesOpen)}
+                  >
                     {/* Game Servers section */}
                     <div className="px-2 pt-1 pb-0.5">
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Game Servers</p>
@@ -366,8 +395,8 @@ export function Navigation() {
               {/* Resources Dropdown */}
               <DropdownMenu open={resourcesOpen} onOpenChange={setResourcesOpen}>
                 <div 
-                  onMouseEnter={() => setResourcesOpen(true)}
-                  onMouseLeave={() => setResourcesOpen(false)}
+                  onMouseEnter={() => openDropdown(setResourcesOpen, () => { setCompanyOpen(false); setServicesOpen(false) })}
+                  onMouseLeave={() => closeDropdown(setResourcesOpen)}
                 >
                   <DropdownMenuTrigger asChild>
                     <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
@@ -378,7 +407,13 @@ export function Navigation() {
                       )} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[320px] p-2" sideOffset={8}>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[320px] p-2"
+                    sideOffset={8}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={() => closeDropdown(setResourcesOpen)}
+                  >
                     {resources.map((resource) => (
                       <DropdownMenuItem key={resource.title} asChild className="p-0 focus:bg-transparent">
                         <a
@@ -414,12 +449,6 @@ export function Navigation() {
                 <LanguageSelector />
                 <CurrencySelector />
                 <ThemeToggle />
-                <UserMenuContent 
-                  user={user}
-                  isLoading={isLoading}
-                  onLogout={logout}
-                  translations={userMenuTranslations}
-                />
                 <Button 
                   size="sm" 
                   className="bg-primary hover:bg-primary/90 gap-2 rounded-full px-4"
@@ -635,15 +664,6 @@ export function Navigation() {
             {/* Divider */}
             <div className="border-t border-border my-4" />
 
-            {/* User Account Section */}
-            <MobileUserSection translations={{
-              ...userMenuTranslations,
-              register: t("auth.login.createAccount"),
-            }} onClose={() => setIsMobileMenuOpen(false)} />
-
-            {/* Divider */}
-            <div className="border-t border-border my-4" />
-
             {/* Settings Section */}
             <div className="space-y-3">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
@@ -680,121 +700,5 @@ export function Navigation() {
         </div>
       </div>
     </>
-  )
-}
-
-// Mobile user section component
-function MobileUserSection({ 
-  translations, 
-  onClose 
-}: { 
-  translations: { 
-    myAccount: string
-    viewPanel: string
-    admin: string
-    logout: string
-    signIn: string
-    register: string
-  }
-  onClose: () => void
-}) {
-  const { user, isLoading, logout } = useAuth()
-
-  if (isLoading) {
-    return (
-      <div className="p-3 rounded-xl bg-muted/30 animate-pulse">
-        <div className="h-12 bg-muted rounded-lg" />
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <div className="space-y-3">
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
-          Account
-        </h4>
-        <div className="flex flex-col gap-2">
-          <Button asChild className="w-full h-12 rounded-xl" onClick={onClose}>
-            <Link href="/auth/login">
-              <LogIn className="mr-2 h-5 w-5" />
-              {translations.signIn}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="w-full h-12 rounded-xl" onClick={onClose}>
-            <Link href="/auth/register">
-              <User className="mr-2 h-5 w-5" />
-              {translations.register}
-            </Link>
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || 
-    user.username?.[0]?.toUpperCase() || "U"
-
-  return (
-    <div className="space-y-3">
-      <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
-        Account
-      </h4>
-      <div className="p-4 rounded-xl bg-muted/30">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative">
-            <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-lg">
-              {initials}
-            </div>
-            {isStaffUser(user) && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500">
-                <User className="h-3 w-3 text-white" />
-              </span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">
-              {user.firstName} {user.lastName}
-            </p>
-            <p className="text-sm text-muted-foreground truncate">
-              {user.email}
-            </p>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
-            <Link href="/dashboard">
-              <User className="mr-2 h-4 w-4" />
-              {translations.myAccount}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
-            <a href="https://panel.nodebyte.host" target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="mr-2 h-4 w-4" />
-              {translations.viewPanel}
-            </a>
-          </Button>
-          {canAccessAdmin(user) && (
-            <Button asChild variant="outline" className="w-full justify-start h-10" onClick={onClose}>
-              <Link href="/admin">
-                <Shield className="mr-2 h-4 w-4" />
-                {translations.admin}
-              </Link>
-            </Button>
-          )}
-          <Button 
-            variant="ghost" 
-            className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => {
-              onClose()
-              logout()
-            }}
-          >
-            <LogIn className="mr-2 h-4 w-4 rotate-180" />
-            {translations.logout}
-          </Button>
-        </div>
-      </div>
-    </div>
   )
 }
