@@ -11,8 +11,6 @@ import { ThemeProvider } from "@/packages/ui/components/theme-provider"
 import { CurrencyProvider } from "@/packages/core/hooks/use-currency"
 import { LocaleProvider } from "@/packages/core/hooks/use-locale"
 import { LayoutChrome } from "@/packages/ui/components/layout-chrome"
-import { AuthProvider } from "@/packages/auth/components"
-import { QueryClientProvider } from "@/packages/core/lib/query-client"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -143,21 +141,17 @@ export default async function RootLayout({
         />
       </head>
       <body className={`font-sans antialiased notranslate`}>
-        <QueryClientProvider>
-          <AuthProvider>
-            <NextIntlClientProvider messages={messages}>
-              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                <CurrencyProvider>
-                  <LocaleProvider initialLocale={locale as any}>
-                    <LayoutChrome>
-                      {children}
-                    </LayoutChrome>
-                  </LocaleProvider>
-                </CurrencyProvider>
-              </ThemeProvider>
-            </NextIntlClientProvider>
-          </AuthProvider>
-        </QueryClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <CurrencyProvider>
+              <LocaleProvider initialLocale={locale as any}>
+                <LayoutChrome>
+                  {children}
+                </LayoutChrome>
+              </LocaleProvider>
+            </CurrencyProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
         <Toaster />
         <Analytics />
       </body>

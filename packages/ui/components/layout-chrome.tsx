@@ -1,6 +1,5 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import { Navigation } from "@/packages/ui/components/Static/navigation"
 import { Footer } from "@/packages/ui/components/Static/footer"
 
@@ -9,23 +8,16 @@ interface LayoutChromeProps {
 }
 
 /**
- * Client component that handles showing/hiding the navigation and footer
- * based on the current route. This needs to be a client component to properly
- * react to client-side navigation changes.
+ * Client component that wraps pages with navigation and footer.
  */
 export function LayoutChrome({ children }: LayoutChromeProps) {
-  const pathname = usePathname()
-  
-  // Hide navigation and footer on admin and dashboard routes
-  const hideChrome = pathname.startsWith("/admin") || pathname.startsWith("/dashboard")
-
   return (
     <>
-      {!hideChrome && <Navigation />}
+      <Navigation />
       <main className="relative min-h-screen overflow-hidden">
         {children}
       </main>
-      {!hideChrome && <Footer />}
+      <Footer />
     </>
   )
 }
