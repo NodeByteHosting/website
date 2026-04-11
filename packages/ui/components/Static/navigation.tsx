@@ -418,7 +418,6 @@ export function Navigation() {
                       <DropdownMenuItem key={resource.title} asChild className="p-0 focus:bg-transparent">
                         <a
                           href={resource.href}
-                          target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
                         >
@@ -638,7 +637,6 @@ export function Navigation() {
                     <a
                       key={resource.title}
                       href={resource.href}
-                      target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
                       onClick={() => setIsMobileMenuOpen(false)}
