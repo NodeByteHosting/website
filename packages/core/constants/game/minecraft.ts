@@ -10,14 +10,14 @@ export const MINECRAFT_PLANS: GamePlanSpec[] = [
     priceGBP: 4,
     ramGB: 4,
     storageGB: 40,
-    url: "https://billing.nodebyte.host/store/minecraft-server-hosting/ember",
+    url: "https://billing.nodebyte.host/products/minecraft-server-hosting/ember",
   },
   {
     id: "blaze",
     priceGBP: 6,
     ramGB: 6,
     storageGB: 60,
-    url: "https://billing.nodebyte.host/store/minecraft-server-hosting/blaze",
+    url: "https://billing.nodebyte.host/products/minecraft-server-hosting/blaze",
   },
   {
     id: "inferno",
@@ -25,7 +25,7 @@ export const MINECRAFT_PLANS: GamePlanSpec[] = [
     ramGB: 8,
     storageGB: 80,
     popular: true,
-    url: "https://billing.nodebyte.host/store/minecraft-server-hosting/inferno",
+    url: "https://billing.nodebyte.host/products/minecraft-server-hosting/inferno",
   },
 ]
 
