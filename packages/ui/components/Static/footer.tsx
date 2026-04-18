@@ -121,21 +121,30 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "https://nodebyte.host/games", label: t("footer.services.gameServers") },
-                { href: "https://nodebyte.host/vps", label: t("footer.services.vpsServers") },
+                { href: "/games", label: t("footer.services.gameServers") },
+                { href: "/vps", label: t("footer.services.vpsServers") },
                 { href: "https://panel.nodebyte.host", label: t("footer.services.gamePanel") },
                 { href: "https://vps.nodebyte.host", label: t("footer.services.vpsPanel") },
               ].map((link) => (
                 <li key={link.label}>
-                  <a 
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    <ExternalLink className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-50 group-hover:translate-x-0 transition-all" />
-                  </a>
+                  {link.href.startsWith("http") ? (
+                    <a 
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
+                    >
+                      {link.label}
+                      <ExternalLink className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-50 group-hover:translate-x-0 transition-all" />
+                    </a>
+                  ) : (
+                    <Link 
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -155,17 +164,24 @@ export function Footer() {
                 { href: LINKS.billing.root, label: t("footer.resources.billingPanel") },
               ].map((link) => (
                 <li key={link.label}>
-                  <a 
-                    href={link.href}
-                    target={link.href.startsWith("http") ? "_blank" : undefined}
-                    rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {link.label}
-                    {link.href.startsWith("http") && (
+                  {link.href.startsWith("http") ? (
+                    <a 
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
+                    >
+                      {link.label}
                       <ExternalLink className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-50 group-hover:translate-x-0 transition-all" />
-                    )}
-                  </a>
+                    </a>
+                  ) : (
+                    <Link 
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

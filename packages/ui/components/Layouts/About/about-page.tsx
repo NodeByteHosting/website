@@ -32,19 +32,19 @@ export function AboutPage() {
       icon: Gamepad2,
       title: t("aboutPage.values.players.title"),
       description: t("aboutPage.values.players.description"),
-      gradient: "from-blue-500 to-cyan-500",
+      gradient: "from-primary to-accent",
     },
     {
       icon: Code,
       title: t("aboutPage.values.community.title"),
       description: t("aboutPage.values.community.description"),
-      gradient: "from-orange-500 to-rose-500",
+      gradient: "from-accent to-primary",
     },
     {
       icon: Sparkles,
       title: t("aboutPage.values.open.title"),
       description: t("aboutPage.values.open.description"),
-      gradient: "from-violet-500 to-blue-500",
+      gradient: "from-primary/80 to-accent/80",
     },
   ]
 
@@ -93,7 +93,7 @@ export function AboutPage() {
         </div>
 
         {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
+        <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -210,7 +210,7 @@ export function AboutPage() {
                 
                 <div className="p-6 sm:p-8">
                   <div className={cn(
-                    "w-12 h-12 rounded-xl bg-linear-to-br flex items-center justify-center mb-4 text-white",
+                    "w-12 h-12 rounded-xl bg-linear-to-br flex items-center justify-center mb-4 text-primary-foreground",
                     value.gradient
                   )}>
                     <value.icon className="w-6 h-6" />
