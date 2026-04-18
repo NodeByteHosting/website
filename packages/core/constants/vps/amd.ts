@@ -20,7 +20,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: { amount: 1, unit: "GB" },
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/store/vps-hosting/2gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/base-rg1-2gb",
   },
   {
     id: "4GB-R71700X",
@@ -37,7 +37,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: { amount: 1, unit: "GB" },
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/store/vps-hosting/4gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/comp-rg1-4gb",
   },
   {
     id: "8GB-R71700X",
@@ -55,7 +55,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
     popular: true,
-    url: "https://billing.nodebyte.host/store/vps-hosting/8gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/comp-rg1-8gb",
   },
   {
     id: "16GB-R71700X",
@@ -72,7 +72,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: null,
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/store/vps-hosting/16gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/comp-rg1-16gb",
   },
   {
     id: "32GB-R71700X",
@@ -90,7 +90,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: null,
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/store/vps-hosting/16gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/comp-rg1-32gb",
   },
   {
     id: "64GB-R71700X",
@@ -108,7 +108,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: null,
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/store/vps-hosting/16gb-r71700x",
+    url: "https://billing.nodebyte.host/products/amdvps/comp-rg1-64gb",
   },
 ]
 

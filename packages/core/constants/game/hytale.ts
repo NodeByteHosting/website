@@ -7,14 +7,14 @@ export const HYTALE_PLANS: GamePlanSpec[] = [
     priceGBP: 5,
     ramGB: 4,
     storageGB: 40,
-    url: "https://billing.nodebyte.host/store/hytale-hosting/starter",
+    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-starter",
   },
   {
     id: "standard",
     priceGBP: 7.5,
     ramGB: 6,
     storageGB: 60,
-    url: "https://billing.nodebyte.host/store/hytale-hosting/standard",
+    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-standard",
   },
   {
     id: "performance",
@@ -22,7 +22,7 @@ export const HYTALE_PLANS: GamePlanSpec[] = [
     ramGB: 8,
     storageGB: 80,
     popular: true,
-    url: "https://billing.nodebyte.host/store/hytale-hosting/performance",
+    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-performance",
   },
 ]
 
