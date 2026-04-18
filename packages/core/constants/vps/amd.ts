@@ -20,7 +20,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     bandwidth: { amount: 1, unit: "GB" },
     uplink: { amount: 1, unit: "Gbps" },
     ddos: { layers: [3, 4, 7], autoOn: true },
-    url: "https://billing.nodebyte.host/products/amdvps/base-rg1-2gb",
+    url: "https://billing.nodebyte.host/products/amdvps/2gb-r71700x",
   },
   {
     id: "4GB-R71700X",
