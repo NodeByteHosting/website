@@ -15,10 +15,10 @@ import { cn } from "@/lib/utils"
 
 // Import flag components
 import { GB, US, EU, CA, AU } from "country-flag-icons/react/3x2"
-import type { ComponentType, SVGProps } from "react"
+import type { ElementType } from "react"
 
 // Currency to flag component mapping
-const currencyFlags: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+const currencyFlags: Record<string, ElementType> = {
   GBP: GB,
   USD: US,
   EUR: EU,
@@ -94,15 +94,15 @@ export function CurrencySelector({
                 setOpen(false)
               }}
               className={cn(
-                "flex items-center justify-between cursor-pointer rounded-md mx-1 mb-0.5",
-                currency === curr.code && "bg-accent"
+                "group flex items-center justify-between cursor-pointer rounded-md mx-1 mb-0.5",
+                currency === curr.code && "bg-accent text-accent-foreground"
               )}
             >
               <span className="flex items-center gap-2.5">
                 <FlagIcon className="h-4 w-5 rounded-sm object-cover" />
                 <div className="flex flex-col">
-                  <span className="font-medium">{curr.name}</span>
-                  <span className="text-xs text-muted-foreground">{curr.symbol} {curr.code}</span>
+                  <span className={cn("font-medium", currency === curr.code && "text-accent-foreground")}>{curr.name}</span>
+                  <span className={cn("text-xs transition-colors", currency === curr.code ? "text-accent-foreground/70" : "text-muted-foreground group-hover:text-accent-foreground/70 group-focus:text-accent-foreground/70")}>{curr.symbol} {curr.code}</span>
                 </div>
               </span>
               {currency === curr.code && <Check className="h-4 w-4 text-primary" />}

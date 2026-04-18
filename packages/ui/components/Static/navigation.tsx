@@ -416,13 +416,9 @@ export function Navigation() {
                     onMouseEnter={cancelClose}
                     onMouseLeave={() => closeDropdown(setResourcesOpen)}
                   >
-                    {resources.map((resource) => (
-                      <DropdownMenuItem key={resource.title} asChild className="p-0 focus:bg-transparent">
-                        <a
-                          href={resource.href}
-                          {...resource.external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
-                        >
+                    {resources.map((resource) => {
+                      const innerContent = (
+                        <>
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                             <resource.icon className="h-4 w-4" />
                           </div>
@@ -435,9 +431,31 @@ export function Navigation() {
                               {resource.description}
                             </p>
                           </div>
-                        </a>
-                      </DropdownMenuItem>
-                    ))}
+                        </>
+                      )
+                      
+                      return (
+                        <DropdownMenuItem key={resource.title} asChild className="p-0 focus:bg-transparent">
+                          {resource.external ? (
+                            <a
+                              href={resource.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
+                            >
+                              {innerContent}
+                            </a>
+                          ) : (
+                            <Link
+                              href={resource.href}
+                              className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
+                            >
+                              {innerContent}
+                            </Link>
+                          )}
+                        </DropdownMenuItem>
+                      )
+                    })}
                   </DropdownMenuContent>
                 </div>
               </DropdownMenu>
