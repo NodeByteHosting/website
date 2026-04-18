@@ -108,7 +108,7 @@ export function Navigation() {
     },
     {
       title: t("resources.vpsPanel.title"),
-      href: "https://panel.nodebyte.host/",
+      href: "https://vps.nodebyte.host/",
       description: t("resources.vpsPanel.description"),
       icon: Cpu,
       external: true,
@@ -118,12 +118,14 @@ export function Navigation() {
       href: "/kb",
       description: t("resources.kb.description"),
       icon: Book,
+      external: false
     },
     {
       title: t("resources.changelog.title"),
       href: "/changelog",
       description: t("resources.changelog.description"),
       icon: Sparkles,
+      external: false
     },
   ], [t])
 
@@ -276,7 +278,7 @@ export function Navigation() {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               {/* Company Dropdown */}
-              <DropdownMenu open={companyOpen} onOpenChange={setCompanyOpen}>
+              <DropdownMenu open={companyOpen} onOpenChange={setCompanyOpen} modal={false}>
                 <div 
                   onMouseEnter={() => openDropdown(setCompanyOpen, () => { setServicesOpen(false); setResourcesOpen(false) })}
                   onMouseLeave={() => closeDropdown(setCompanyOpen)}
@@ -301,14 +303,14 @@ export function Navigation() {
                       <DropdownMenuItem key={item.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={item.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
                         >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                             <item.icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{item.title}</span>
+                              <span className="font-medium text-sm text-foreground">{item.title}</span>
                             </div>
                             <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                               {item.description}
@@ -322,7 +324,7 @@ export function Navigation() {
               </DropdownMenu>
 
               {/* Services Dropdown */}
-              <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen}>
+              <DropdownMenu open={servicesOpen} onOpenChange={setServicesOpen} modal={false}>
                 <div 
                   onMouseEnter={() => openDropdown(setServicesOpen, () => { setCompanyOpen(false); setResourcesOpen(false) })}
                   onMouseLeave={() => closeDropdown(setServicesOpen)}
@@ -351,13 +353,13 @@ export function Navigation() {
                       <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={service.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
                         >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                             <service.icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <span className="font-medium text-sm">{service.title}</span>
+                            <span className="font-medium text-sm text-foreground">{service.title}</span>
                             <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                               {service.description}
                             </p>
@@ -374,13 +376,13 @@ export function Navigation() {
                       <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={service.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
                         >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                             <service.icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <span className="font-medium text-sm">{service.title}</span>
+                            <span className="font-medium text-sm text-foreground">{service.title}</span>
                             <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                               {service.description}
                             </p>
@@ -393,7 +395,7 @@ export function Navigation() {
               </DropdownMenu>
 
               {/* Resources Dropdown */}
-              <DropdownMenu open={resourcesOpen} onOpenChange={setResourcesOpen}>
+              <DropdownMenu open={resourcesOpen} onOpenChange={setResourcesOpen} modal={false}>
                 <div 
                   onMouseEnter={() => openDropdown(setResourcesOpen, () => { setCompanyOpen(false); setServicesOpen(false) })}
                   onMouseLeave={() => closeDropdown(setResourcesOpen)}
@@ -418,16 +420,16 @@ export function Navigation() {
                       <DropdownMenuItem key={resource.title} asChild className="p-0 focus:bg-transparent">
                         <a
                           href={resource.href}
-                          rel="noopener noreferrer"
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-accent/50 transition-colors group cursor-pointer w-full"
+                          {...resource.external ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
                         >
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                             <resource.icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium text-sm">{resource.title}</span>
-                              <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                              <span className="font-medium text-sm text-foreground">{resource.title}</span>
+                              {resource.external && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
                             </div>
                             <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                               {resource.description}
@@ -633,28 +635,46 @@ export function Navigation() {
                 mobileResourcesOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
               )}>
                 <div className="pl-2 pr-1 py-2 space-y-1">
-                  {resources.map((resource) => (
-                    <a
-                      key={resource.title}
-                      href={resource.href}
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                        <resource.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-sm">{resource.title}</span>
-                          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                  {resources.map((resource) => {
+                    const inner = (
+                      <>
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                          <resource.icon className="h-5 w-5" />
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {resource.description}
-                        </p>
-                      </div>
-                    </a>
-                  ))}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{resource.title}</span>
+                            {resource.external && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {resource.description}
+                          </p>
+                        </div>
+                      </>
+                    )
+                    const sharedClass = "flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
+                    return resource.external ? (
+                      <a
+                        key={resource.title}
+                        href={resource.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={sharedClass}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link
+                        key={resource.title}
+                        href={resource.href}
+                        className={sharedClass}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {inner}
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
             </div>

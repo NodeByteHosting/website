@@ -27,6 +27,22 @@ export const MINECRAFT_PLANS: GamePlanSpec[] = [
     popular: true,
     url: "https://billing.nodebyte.host/products/minecraft-server-hosting/inferno",
   },
+  {
+    id: "firestorm",
+    priceGBP: 15,
+    ramGB: 16,
+    storageGB: 160,
+    popular: true,
+    url: "https://billing.nodebyte.host/products/minecraft-server-hosting/firestorm",
+  },
+  {
+    id: "supernova",
+    priceGBP: 30,
+    ramGB: 32,
+    storageGB: 320,
+    popular: true,
+    url: "https://billing.nodebyte.host/products/minecraft-server-hosting/supernova",
+  },
 ]
 
 /**

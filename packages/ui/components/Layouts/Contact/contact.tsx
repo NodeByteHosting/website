@@ -46,12 +46,26 @@ export function Contact() {
       icon: Github,
       href: LINKS.githubDiscussions,
       cta: t("contact.github.button"),
-      color: "bg-muted text-foreground",
+      color: "bg-foreground/10 text-foreground",
       hoverColor: "hover:bg-foreground hover:text-background",
       features: [
         t("contact.github.features.0"),
         t("contact.github.features.1"),
         t("contact.github.features.2"),
+      ],
+    },
+    {
+      title: t("contact.ticket.title"),
+      description: t("contact.ticket.description"),
+      icon: Headphones,
+      href: "https://billing.nodebyte.host/tickets/create",
+      cta: t("contact.ticket.button"),
+      color: "bg-accent/10 text-accent",
+      hoverColor: "hover:bg-accent hover:text-white",
+      features: [
+        t("contact.ticket.features.0"),
+        t("contact.ticket.features.1"),
+        t("contact.ticket.features.2"),
       ],
     },
   ]
@@ -116,7 +130,7 @@ export function Contact() {
         </div>
 
         {/* Social Links & Warning - Now at top */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className="max-w-5xl mx-auto mb-16">
           <Card className="border-border/50 bg-card/30 backdrop-blur-sm p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
               <div>
@@ -159,13 +173,13 @@ export function Contact() {
         </div>
 
         {/* Support Channels */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
           {supportChannels.map((channel) => (
             <Card
               key={channel.title}
               className="group relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm hover:border-primary/30 transition-all duration-300"
             >
-              <div className="p-6 sm:p-8">
+              <div className="p-6 sm:p-8 flex flex-col h-full">
                 <div className={cn(
                   "inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-colors",
                   channel.color,
@@ -177,7 +191,7 @@ export function Contact() {
                 <h3 className="text-xl font-bold mb-2">{channel.title}</h3>
                 <p className="text-muted-foreground mb-4">{channel.description}</p>
                 
-                <ul className="space-y-2 mb-6">
+                <ul className="space-y-2 mb-6 flex-1">
                   {channel.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
@@ -198,7 +212,7 @@ export function Contact() {
         </div>
 
         {/* Email Contacts */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className="max-w-5xl mx-auto mb-16">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-sm text-accent mb-4">
               <Mail className="w-4 h-4" />

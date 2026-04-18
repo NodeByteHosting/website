@@ -6,6 +6,7 @@ export const RUST_PLANS: GamePlanSpec[] = [
     priceGBP: 5.75,
     ramGB: 8,
     storageGB: 150,
+    url: "https://billing.nodebyte.host/products/rust-hosting/starter"
   },
   {
     id: "standard",
@@ -13,12 +14,21 @@ export const RUST_PLANS: GamePlanSpec[] = [
     ramGB: 12,
     storageGB: 200,
     popular: true,
+    url: "https://billing.nodebyte.host/products/rust-hosting/standard"
   },
   {
     id: "performance",
     priceGBP: 12.75,
     ramGB: 16,
     storageGB: 250,
+    url: "https://billing.nodebyte.host/products/rust-hosting/performance"
+  },
+  {
+    id: "premium",
+    priceGBP: 18.99,
+    ramGB: 32,
+    storageGB: 350,
+    url: "https://billing.nodebyte.host/products/rust-hosting/premium"
   },
 ]
 
