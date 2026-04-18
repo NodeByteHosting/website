@@ -291,7 +291,7 @@ export function NodesClient() {
     <div className="relative overflow-hidden">
       {/* ── Background ─────────────────────────────────────────────────────── */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
+      <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
       <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] animate-pulse pointer-events-none" />
       <div className="absolute bottom-1/3 left-1/4 w-[350px] h-[350px] bg-accent/8 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDelay: "1.5s" }} />
 

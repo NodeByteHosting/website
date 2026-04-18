@@ -61,7 +61,7 @@ export function Contact() {
       href: "https://billing.nodebyte.host/tickets/create",
       cta: t("contact.ticket.button"),
       color: "bg-accent/10 text-accent",
-      hoverColor: "hover:bg-accent hover:text-white",
+      hoverColor: "hover:bg-accent hover:text-accent-foreground",
       features: [
         t("contact.ticket.features.0"),
         t("contact.ticket.features.1"),
@@ -103,7 +103,7 @@ export function Contact() {
     <section className="relative overflow-hidden pt-32 sm:pt-36 pb-24 sm:pb-32">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
+      <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
       
       {/* Animated orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

@@ -35,37 +35,37 @@ export function KBArticleCard({
     <Link href={`/kb/${article.categorySlug}/${article.slug}`}>
       <article
         className={cn(
-          "group flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 hover:border-primary/50 transition-all duration-200",
+          "group relative flex items-start gap-4 p-5 rounded-xl border bg-card hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300",
           className
         )}
       >
-        <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
+        <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-sm group-hover:scale-105 transition-all duration-300 shrink-0">
           <FileText className="h-5 w-5" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <h3 className="font-semibold group-hover:text-primary transition-colors line-clamp-1">
+          <div className="flex items-center gap-2 flex-wrap mb-1.5">
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
               {article.title}
             </h3>
             {showCategory && (
-              <Badge variant="secondary" className="text-xs capitalize">
+              <Badge variant="secondary" className="text-xs capitalize px-2 py-0.5">
                 {article.category.replace(/-/g, " ")}
               </Badge>
             )}
           </div>
 
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-3.5 leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
             {article.description}
           </p>
 
-          <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
+          <div className="flex items-center gap-x-4 gap-y-2 text-xs text-muted-foreground flex-wrap">
+            <span className="flex items-center gap-1.5 font-medium">
+              <Clock className="h-3.5 w-3.5 text-primary/70" />
               {article.readingTime} {translations?.minRead || "min read"}
             </span>
-            <span className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
+            <span className="flex items-center gap-1.5 font-medium">
+              <Calendar className="h-3.5 w-3.5 text-primary/70" />
               {new Date(article.lastUpdated).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
@@ -73,22 +73,22 @@ export function KBArticleCard({
               })}
             </span>
             {article.author && (
-              <span className="flex items-center gap-1">
-                <User className="h-3 w-3" />
+              <span className="flex items-center gap-1.5 font-medium">
+                <User className="h-3.5 w-3.5 text-primary/70" />
                 {article.author}
               </span>
             )}
           </div>
 
           {article.tags && article.tags.length > 0 && (
-            <div className="flex items-center gap-1 mt-2 flex-wrap">
+            <div className="flex items-center gap-1.5 mt-3.5 flex-wrap">
               {article.tags.slice(0, 4).map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
+                <Badge key={tag} variant="outline" className="text-[10px] font-medium px-2 py-0.5 group-hover:border-primary/30 group-hover:bg-primary/5 transition-colors duration-300">
                   {tag}
                 </Badge>
               ))}
               {article.tags.length > 4 && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[10px] font-medium text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
                   +{article.tags.length - 4} more
                 </span>
               )}
@@ -96,7 +96,9 @@ export function KBArticleCard({
           )}
         </div>
 
-        <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+        <div className="flex items-center justify-center p-1 rounded-full group-hover:bg-primary/10 transition-colors duration-300 shrink-0">
+          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-300" />
+        </div>
       </article>
     </Link>
   );
