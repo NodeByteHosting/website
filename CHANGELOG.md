@@ -5,6 +5,31 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.3] - 2026-04-17
+
+### Added
+- **Contact Page — Support Ticket Channel** — third support channel card added to `contact.tsx` pointing to `https://billing.nodebyte.host/tickets/create`
+  - Uses `Headphones` icon with `bg-accent/10 text-accent` colour scheme
+  - Grid widened from `md:grid-cols-2 max-w-4xl` to `md:grid-cols-3 max-w-5xl`
+  - `contact.ticket.features` translation keys added to `translations/messages/en-US.json` and `translations/templates/en.json`
+
+### Changed
+- **Contact Page — Card Button Alignment** — support channel card inner div converted to `flex flex-col h-full`; feature list gains `flex-1` so the CTA button is always pinned to the bottom of every card regardless of content height
+- **Contact Page — GitHub Card Icon Colour** — icon box class corrected from `bg-muted text-foreground` to `bg-foreground/10 text-foreground` to match the `bg-color/10 text-color` pattern used by all other channel cards
+- **Navigation — Dropdown Hover Colours** — row hover background changed from `hover:bg-accent/10` to `hover:bg-muted/60` across all three desktop dropdowns (Company, Services, Resources); icon box hover changed from solid `group-hover:bg-primary group-hover:text-primary-foreground` to a subtle `group-hover:bg-primary/20`; title text given explicit `text-foreground` to prevent blending on saturated themes
+- **Navigation — `modal={false}`** — all three desktop `DropdownMenu` components now render with `modal={false}` so the Radix invisible overlay no longer blocks `mouseEnter` events on sibling nav items, fixing the hover-jump bug between dropdowns
+- **Navigation — ExternalLink Icon** — `ExternalLink` indicator in the Resources dropdown is now conditionally rendered based on `resource.external` instead of always showing
+- **Navigation — Mobile Resources Links** — mobile Resources items now render as `<Link>` for internal routes and `<a target="_blank">` for external ones instead of always using `<a target="_blank">`
+
+### Fixed
+- **Theme Colour Contrast — Emerald / Amber / Teal** — `--primary` and `--accent` lightness values were too high (0.58–0.68) while `--primary-foreground` / `--accent-foreground` remained near-black (0.10–0.12), producing illegible black-on-dark text on buttons and icon boxes
+  - Emerald: `--primary` `0.58 → 0.42`, `--accent` `0.62 → 0.48`, foregrounds `0.10 → 0.98`
+  - Amber: `--primary` `0.62 → 0.46`, `--accent` `0.68 → 0.52`, foregrounds `0.12 → 0.98`
+  - Teal: `--primary` `0.60 → 0.44`, `--accent` `0.64 → 0.50`, foregrounds `0.10 → 0.98`
+- **Translations — Rust `premium` Plan Keys** — `games.rust.plans.premium.name` and `games.rust.plans.premium.description` were missing from `en-US.json` and `en.json`, causing `MISSING_MESSAGE` errors at runtime; both files updated
+
+---
+
 ## [3.5.2] - 2026-03-19
 
 ### Added

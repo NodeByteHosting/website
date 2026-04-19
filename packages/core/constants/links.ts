@@ -16,7 +16,7 @@ export const LINKS = {
     root:             "https://billing.nodebyte.host",
     store:            "https://billing.nodebyte.host/store",
     login:            "https://billing.nodebyte.host/login",
-    submitTicket:     "https://billing.nodebyte.host/submitticket.php",
+    submitTicket:     "https://billing.nodebyte.host/tickets/create",
     freeTrial:        "https://billing.nodebyte.host/store/free-trial",
     amdVps:           "https://billing.nodebyte.host/store/vps-hosting",
     intelVps:         "https://billing.nodebyte.host/store/vps-hosting",
