@@ -104,10 +104,6 @@ export function Footer() {
                 </div>
               </Link>
             </div>
-            
-            <div className="pt-4">
-              <TrustpilotWidget />
-            </div>
           </div>
         </div>
 
@@ -289,92 +285,6 @@ export function Footer() {
   )
 }
 
-function TrustpilotWidget() {
-  const [rating, setRating] = useState<number | null>(null)
-  const [count, setCount] = useState<number | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      try {
-        const res = await fetch('/api/trustpilot')
-        if (!res.ok) throw new Error(`Status ${res.status}`)
-        const data = await res.json()
-        if (!mounted) return
-        setRating(typeof data.rating === 'number' ? data.rating : null)
-        setCount(typeof data.reviewCount === 'number' ? data.reviewCount : null)
-      } catch (err) {
-        if (!mounted) return
-        setError(String(err))
-      } finally {
-        if (!mounted) return
-        setLoading(false)
-      }
-    })()
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  const displayRating = rating ?? 4.1
-  const displayCount = count ?? 5
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-1.5">
-        <SiTrustpilot className="w-5 h-5 text-[#00b67a]" />
-        <span className="text-sm font-semibold">Trustpilot</span>
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-0.5">
-          {[1, 2, 3, 4, 5].map((i) => {
-            const filled = Math.round(displayRating) >= i
-            return (
-              <div
-                key={i}
-                className={cn(
-                  "w-5 h-5 flex items-center justify-center",
-                  filled ? "bg-[#00b67a]" : "bg-muted"
-                )}
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="text-white"
-                >
-                  <path d="M12 .587l3.668 7.431L24 9.753l-6 5.848L19.335 24 12 19.897 4.665 24 6 15.601 0 9.753l8.332-1.735z" />
-                </svg>
-              </div>
-            )
-          })}
-        </div>
-        <span className="text-sm font-medium">
-          {loading ? '—' : displayRating.toFixed(1)}
-        </span>
-        <span className="text-sm text-muted-foreground">
-          ({loading ? '...' : `${displayCount} reviews`})
-        </span>
-      </div>
-
-      <a
-        href="https://uk.trustpilot.com/review/nodebyte.host"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-      >
-        Read our reviews
-        <ExternalLink className="w-3 h-3" />
-      </a>
-
-      {error && <div className="text-xs text-destructive">Failed to load reviews</div>}
-    </div>
-  )
-}
 
 type StatusType = "UP" | "HASISSUES" | "UNDERMAINTENANCE"
 
