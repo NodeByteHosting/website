@@ -1,6 +1,6 @@
 import { VpsPlanSpec } from "@/packages/core/types/servers/vps";
 
-export const AMD_BILLING_URL = "https://billing.nodebyte.host/store/vps-hosting"
+export const AMD_BILLING_URL = "https://billing.nodebyte.host/products/amdvps"
 
 /** AMD plans: add / remove entries here to control what's listed on the site */
 export const AMD_PLANS: VpsPlanSpec[] = [
