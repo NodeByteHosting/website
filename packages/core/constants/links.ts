@@ -14,7 +14,7 @@ export const LINKS = {
   contact:           "/contact",
   billing: {
     root:             "https://billing.nodebyte.host",
-    store:            "https://billing.nodebyte.host/store",
+    store:            "https://billing.nodebyte.host",
     login:            "https://billing.nodebyte.host/login",
     submitTicket:     "https://billing.nodebyte.host/tickets/create",
     freeTrial:        "https://billing.nodebyte.host/products/free-trial",
