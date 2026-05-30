@@ -2,8 +2,11 @@ import type React from "react"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Geist, Geist_Mono } from "next/font/google"
+import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider } from "next-intl"
+import { GoogleAdsPageView } from "@/packages/ui/components/google-ads-pageview"
+import { GOOGLE_ADS_ID } from "@/packages/core/lib/gtag"
 import { getMessages, getLocale } from "next-intl/server"
 import "./globals.css"
 import { Toaster } from "@/packages/ui/components/ui/toaster"
@@ -154,6 +157,20 @@ export default async function RootLayout({
         </NextIntlClientProvider>
         <Toaster />
         <Analytics />
+        <GoogleAdsPageView />
+        {/* Google Ads tag */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
+          `}
+        </Script>
       </body>
     </html>
   )

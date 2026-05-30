@@ -44,11 +44,38 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       setCurrencyState(getDefaultCurrency())
     }
 
-    // Fetch live exchange rates — falls back to static if unavailable
+    // Fetch live exchange rates — falls back to cached or static if unavailable
+    const RATES_CACHE_KEY = "nb_currency_rates"
+    const RATES_CACHE_TTL = 3600_000 // 1 hour in ms
+
+    try {
+      const cached = localStorage.getItem(RATES_CACHE_KEY)
+      if (cached) {
+        const { rates, ts } = JSON.parse(cached) as { rates: Record<string, number>; ts: number }
+        if (Date.now() - ts < RATES_CACHE_TTL) {
+          setLiveRates((prev) => {
+            const updated = { ...prev }
+            for (const [code, rate] of Object.entries(rates)) {
+              if (code in updated) updated[code as CurrencyCode] = rate
+            }
+            return updated
+          })
+          return // skip network fetch — cache is fresh
+        }
+      }
+    } catch {
+      // corrupted cache entry — ignore and fall through to fetch
+    }
+
     fetch("/api/currency/rates")
       .then((r) => r.json())
       .then((data: { rates?: Record<string, number> }) => {
         if (data.rates) {
+          try {
+            localStorage.setItem(RATES_CACHE_KEY, JSON.stringify({ rates: data.rates, ts: Date.now() }))
+          } catch {
+            // localStorage quota exceeded — ignore
+          }
           setLiveRates((prev) => {
             const updated = { ...prev }
             for (const [code, rate] of Object.entries(data.rates!)) {

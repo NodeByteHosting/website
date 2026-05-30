@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { Card } from "@/packages/ui/components/ui/card"
 import { Heart, Code, Gamepad2, Server, Sparkles, ArrowRight, Globe, Shield, Zap } from "lucide-react"

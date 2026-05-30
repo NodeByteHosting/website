@@ -16,6 +16,14 @@ const CY = SIZE / 2
 const cT = Math.cos(TILT)
 const sT = Math.sin(TILT)
 
+// Precomputed alpha lookup — avoids template-string allocation on every dot per frame.
+// alpha = 0.025 + 0.135 * (z / R), z ∈ (0, R] → 32 discrete levels.
+const DOT_ALPHA_LEVELS = 32
+const DOT_ALPHA_TABLE: string[] = Array.from({ length: DOT_ALPHA_LEVELS }, (_, i) => {
+  const a = 0.025 + 0.135 * ((i + 1) / DOT_ALPHA_LEVELS)
+  return `rgba(150,175,215,${a.toFixed(3)})`
+})
+
 // ─── Locations ────────────────────────────────────────────────────────────────
 
 type Region = "eu" | "am" | "ap"
@@ -159,8 +167,8 @@ export default function HeroGraphic() {
         for (let lon = 0; lon < 360; lon += step) {
           const p = proj(lat, lon, rot)
           if (p.z <= 0) continue
-          const a = 0.025 + 0.135 * (p.z / R)
-          ctx.fillStyle = `rgba(150,175,215,${a})`
+          const idx = Math.min(DOT_ALPHA_LEVELS - 1, Math.floor((p.z / R) * DOT_ALPHA_LEVELS))
+          ctx.fillStyle = DOT_ALPHA_TABLE[idx]
           ctx.fillRect(p.x - DOT_PX, p.y - DOT_PX, DOT_PX * 2, DOT_PX * 2)
         }
       }

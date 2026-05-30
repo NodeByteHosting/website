@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/packages/ui/components/ui/button"
 import { Card } from "@/packages/ui/components/ui/card"
 import { Layers, ArrowRight, Check } from "lucide-react"
