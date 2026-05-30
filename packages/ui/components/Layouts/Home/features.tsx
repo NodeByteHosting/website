@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import { Shield, Zap, Globe, Lock, Eye, Server, ArrowRight, CheckCircle2 } from "lucide-react"
 import { Card } from "@/packages/ui/components/ui/card"

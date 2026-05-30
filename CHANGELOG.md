@@ -5,6 +5,22 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.4] - 2026-05-30
+
+### Added
+- **Google Ads Integration** — Google tag (`AW-16740819749`) installed via `next/script` with `strategy="afterInteractive"` in the root layout; fires after hydration without blocking render
+  - `packages/core/lib/gtag.ts` — central utility exporting `GOOGLE_ADS_ID`, `CONVERSION_IDS` map, and ready-to-call `conversions.*()` helpers for all 10 goals (begin checkout, subscribe, purchase, submit lead form, page view, sign-up, get directions, request quote, outbound click, contact)
+  - `packages/ui/components/google-ads-pageview.tsx` — client component that re-fires the page-view conversion on every App Router route change via `usePathname`
+
+### Changed
+- **`About`, `Features`, `Services` converted to Server Components** — `"use client"` directive removed from all three home page sections; none use client-only APIs, state, or effects, so they now render as HTML on the server, reducing the client JS bundle and improving TTI
+- **Currency rates — localStorage TTL cache** — `CurrencyProvider` now checks `localStorage` for a cached rates response before fetching `/api/currency/rates`; cache TTL is 1 hour (matching the API's `s-maxage`), so repeat page loads within the hour skip the network request entirely
+
+### Fixed
+- **Canvas globe — per-frame string allocation** — the dot-grid draw loop in `hero-graphic.tsx` was creating a new `` `rgba(150,175,215,${a})` `` string for every dot on every 60 fps frame (~500+ allocations/frame); replaced with a precomputed 32-entry `DOT_ALPHA_TABLE` lookup built once at module load time
+
+---
+
 ## [3.5.3] - 2026-04-17
 
 ### Added
