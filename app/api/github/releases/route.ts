@@ -4,7 +4,9 @@ const DEFAULT_REPOSITORIES = [
   'NodeByteHosting/website',
   'NodeByteHosting/backend',
   'NodeByteHosting/Game-Panel',
-  'NodeByteHosting/ByteSend-SMTP'
+  'NodeByteLTD/ByteSend',
+  'NodeByteLTD/ByteProxy',
+  'NodeByteLTD/bytesend-go'
 ];
 
 export interface GitHubRelease {
