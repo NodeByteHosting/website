@@ -52,6 +52,11 @@ const localeFlagComponents: Record<Locale, React.ComponentType<{ className?: str
   'zh-TW': Flags.TW,
 }
 
+function FlagIcon({ loc, className: flagClassName }: { loc: Locale; className?: string }) {
+  const FlagComponent = localeFlagComponents[loc]
+  return FlagComponent ? <FlagComponent className={flagClassName} /> : null
+}
+
 // Group locales by region for better organization
 const localeRegions: Record<string, Locale[]> = {
   'Popular': ['en', 'de-DE', 'fr-FR', 'es-ES', 'pt-BR'],
@@ -76,11 +81,6 @@ export function LanguageSelector({
   const { locale, setLocale, locales, localeNames } = useLocale()
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
-
-  const FlagIcon = ({ loc, className: flagClassName }: { loc: Locale; className?: string }) => {
-    const FlagComponent = localeFlagComponents[loc]
-    return FlagComponent ? <FlagComponent className={flagClassName} /> : null
-  }
 
   // Filter locales based on search
   const filteredLocales = search

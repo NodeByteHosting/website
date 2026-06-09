@@ -101,7 +101,8 @@ export function KBArticle({
           prose-h3:text-xl prose-h3:font-semibold prose-h3:tracking-tight prose-h3:mt-8 prose-h3:mb-3
           prose-h4:text-lg prose-h4:font-semibold prose-h4:mt-6 prose-h4:mb-2
           prose-p:leading-7 prose-p:text-foreground/90
-          prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+          prose-a:text-primary prose-a:no-underline prose-a:font-medium prose-a:decoration-primary/40 prose-a:underline-offset-4 prose-a:transition-colors
+          prose-a:hover:text-primary/85 prose-a:hover:underline
           prose-strong:text-foreground prose-strong:font-semibold
           prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
           prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg
@@ -143,14 +144,14 @@ export function KBArticle({
             {previousArticle ? (
               <Link
                 href={`/kb/${previousArticle.category}/${previousArticle.slug}`}
-                className="flex-1 group"
+                className="flex-1 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <div className="flex flex-col p-4 border rounded-lg hover:bg-accent transition-colors h-full">
-                  <span className="flex items-center gap-1 text-sm text-muted-foreground mb-1">
+                <div className="flex h-full flex-col rounded-lg border bg-card/60 p-4 transition-colors group-hover:border-primary/35 group-hover:bg-primary/5">
+                  <span className="mb-1 flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
                     <ChevronLeft className="h-4 w-4" />
                     {translations.previous}
                   </span>
-                  <span className="font-medium group-hover:text-primary transition-colors">
+                  <span className="font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
                     {previousArticle.title}
                   </span>
                 </div>
@@ -162,14 +163,14 @@ export function KBArticle({
             {nextArticle ? (
               <Link
                 href={`/kb/${nextArticle.category}/${nextArticle.slug}`}
-                className="flex-1 group"
+                className="flex-1 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <div className="flex flex-col items-end p-4 border rounded-lg hover:bg-accent transition-colors h-full text-right">
-                  <span className="flex items-center gap-1 text-sm text-muted-foreground mb-1">
+                <div className="flex h-full flex-col items-end rounded-lg border bg-card/60 p-4 text-right transition-colors group-hover:border-primary/35 group-hover:bg-primary/5">
+                  <span className="mb-1 flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
                     {translations.next}
                     <ChevronRight className="h-4 w-4" />
                   </span>
-                  <span className="font-medium group-hover:text-primary transition-colors">
+                  <span className="font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
                     {nextArticle.title}
                   </span>
                 </div>
