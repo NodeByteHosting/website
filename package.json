@@ -12,7 +12,8 @@
     "postinstall": "git submodule update --init --recursive --remote",
     "translate": "bun run scripts/translate.ts",
     "translate:force": "bun run scripts/translate.ts --force",
-    "translate:dry": "bun run scripts/translate.ts --dry-run"
+    "translate:dry": "bun run scripts/translate.ts --dry-run",
+    "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

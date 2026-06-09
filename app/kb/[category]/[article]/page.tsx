@@ -48,17 +48,19 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const t = await getTranslations();
   const { category, article } = await params;
-  const articleData = await getArticle(category, article);
+  const [t, articleData, categories, articlesInCategory] = await Promise.all([
+    getTranslations(),
+    getArticle(category, article),
+    getCategories(),
+    getArticlesByCategory(category),
+  ]);
 
   if (!articleData) {
     notFound();
   }
 
-  const categories = await getCategories();
   const categoryData = categories.find((c) => c.slug === category);
-  const articlesInCategory = await getArticlesByCategory(category);
 
   // Prepare sidebar data
   const sidebarCategories: SidebarCategory[] = await Promise.all(
@@ -82,7 +84,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const headings = extractHeadings(articleData.content);
 
   // Find adjacent articles for navigation
-  const sortedArticles = [...articlesInCategory].sort((a, b) => a.order - b.order);
+  const sortedArticles = articlesInCategory.toSorted((a, b) => a.order - b.order);
   const currentIndex = sortedArticles.findIndex((a) => a.slug === article);
   const previousArticle =
     currentIndex > 0

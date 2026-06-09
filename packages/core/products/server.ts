@@ -7,36 +7,29 @@ import { getOverride } from "./override-store"
  * Plans with enabled=false are filtered out entirely (category shows OOS when all removed).
  * Plans with stock overridden show their OOS badge on the pricing card.
  */
+function applyOverrides<T extends { id: string }>(
+  category: string,
+  plans: T[],
+): T[] {
+  const result: T[] = []
+  for (const plan of plans) {
+    const ov = getOverride(`${category}-${plan.id}`)
+    if (ov && !ov.enabled) continue
+    result.push(ov ? { ...plan, stock: ov.stock } as T : plan)
+  }
+  return result
+}
+
 export function applyGamePlanOverrides(
   category: string,
   plans: GamePlanSpec[],
 ): GamePlanSpec[] {
-  return plans
-    .filter((plan) => {
-      const ov = getOverride(`${category}-${plan.id}`)
-      return ov ? ov.enabled : true
-    })
-    .map((plan) => {
-      const ov = getOverride(`${category}-${plan.id}`)
-      return ov ? { ...plan, stock: ov.stock } : plan
-    })
+  return applyOverrides(category, plans)
 }
 
-/**
- * Returns VPS plans with admin overrides applied.
- * Plans with enabled=false are filtered out entirely.
- */
 export function applyVpsPlanOverrides(
   category: string,
   plans: VpsPlanSpec[],
 ): VpsPlanSpec[] {
-  return plans
-    .filter((plan) => {
-      const ov = getOverride(`${category}-${plan.id}`)
-      return ov ? ov.enabled : true
-    })
-    .map((plan) => {
-      const ov = getOverride(`${category}-${plan.id}`)
-      return ov ? { ...plan, stock: ov.stock } : plan
-    })
+  return applyOverrides(category, plans)
 }

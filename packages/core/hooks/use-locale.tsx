@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, createContext, useContext, type ReactNode } from "react"
+import { useState, createContext, useContext, type ReactNode } from "react"
 import { locales, localeNames, localeFlags, defaultLocale, LOCALE_COOKIE, type Locale } from "@/packages/i18n/config"
 
 interface LocaleContextValue {
@@ -13,28 +13,26 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
 
-export function LocaleProvider({ children, initialLocale }: { children: ReactNode; initialLocale?: Locale }) {
-  const [locale, setLocaleState] = useState<Locale>(initialLocale || defaultLocale)
-
-  useEffect(() => {
-    // Read from cookie on mount
+function getInitialLocale(initialLocale?: Locale): Locale {
+  if (typeof window === 'undefined') return initialLocale || defaultLocale
+  try {
     const cookieLocale = document.cookie
       .split('; ')
       .find(row => row.startsWith(`${LOCALE_COOKIE}=`))
       ?.split('=')[1] as Locale | undefined
+    if (cookieLocale && locales.includes(cookieLocale)) return cookieLocale
+  } catch {}
+  return initialLocale || defaultLocale
+}
 
-    if (cookieLocale && locales.includes(cookieLocale)) {
-      setLocaleState(cookieLocale)
-    }
-  }, [])
+export function LocaleProvider({ children, initialLocale }: { children: ReactNode; initialLocale?: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale(initialLocale))
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    // Set cookie with 1 year expiry
+  const setLocale = (newLocale: Locale) => {
     document.cookie = `${LOCALE_COOKIE}=${newLocale}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
     setLocaleState(newLocale)
-    // Hard reload to clear server-side translation cache and load new translations
     window.location.reload()
-  }, [])
+  }
 
   const value: LocaleContextValue = {
     locale,
@@ -59,5 +57,3 @@ export function useLocale() {
   return context
 }
 
-// Re-export types and constants for convenience
-export { locales, localeNames, localeFlags, defaultLocale, type Locale }

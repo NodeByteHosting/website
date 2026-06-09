@@ -1,6 +1,5 @@
-"use client"
-
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
+import { Metadata } from "next"
 import { AlertCircle, Wrench, Mail, MessageCircle } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Card } from "@/packages/ui/components/ui/card"
@@ -8,8 +7,13 @@ import { Logo } from "@/packages/ui/components/logo"
 import Link from "next/link"
 import { LINKS } from "@/packages/core/constants/links"
 
-export default function MaintenancePage() {
-  const t = useTranslations("admin")
+export const metadata: Metadata = {
+  title: "Maintenance",
+  description: "We are currently performing scheduled maintenance.",
+}
+
+export default async function MaintenancePage() {
+  const t = await getTranslations("admin")
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-32 relative overflow-hidden">
@@ -32,7 +36,7 @@ export default function MaintenancePage() {
           <div className="flex justify-center mb-6">
             <div className="relative">
               <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full"></div>
-              <Wrench className="h-24 w-24 text-primary relative z-10 animate-bounce" />
+              <Wrench className="h-24 w-24 text-primary relative z-10 motion-safe:animate-pulse" />
             </div>
           </div>
         </div>

@@ -1,16 +1,18 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
-import { Rocket, Package, GitBranch, Calendar, RefreshCw, SearchX, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect } from "react"
+import { RefreshCw, SearchX } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Card, CardContent } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Skeleton } from "@/packages/ui/components/ui/skeleton"
 import { ChangelogCard } from "./changelog-card"
+import { ChangelogStats } from "./changelog-stats"
+import { ChangelogPagination } from "./changelog-pagination"
 import { ChangelogSearch } from "./changelog-search"
 import { ChangelogFilters } from "./changelog-filters"
 import { useChangelogReleases } from "../hooks/use-changelog"
-import { filterReleases, formatRelativeTime, type ChangelogFilters as Filters } from "../lib/changelog"
+import { filterReleases, type ChangelogFilters as Filters } from "../lib/changelog"
 import { cn } from "@/packages/core/lib/utils"
 
 interface ChangelogListProps {
@@ -22,7 +24,7 @@ const ITEMS_PER_PAGE = 4
 export function ChangelogList({ className }: ChangelogListProps) {
   const t = useTranslations()
   const { releases, repositories, isLoading, error, lastUpdated, refetch } = useChangelogReleases()
-  
+
   const [filters, setFilters] = useState<Filters>({
     search: "",
     repository: null,
@@ -31,45 +33,40 @@ export function ChangelogList({ className }: ChangelogListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [linkedReleaseId, setLinkedReleaseId] = useState<string | null>(null)
 
-  // Filter releases
-  const filteredReleases = useMemo(() => {
-    return filterReleases(releases, filters)
-  }, [releases, filters])
+  const filteredReleases = filterReleases(releases, filters)
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredReleases.length / ITEMS_PER_PAGE)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const safePage = Math.min(currentPage, Math.max(1, totalPages))
+  const startIndex = (safePage - 1) * ITEMS_PER_PAGE
   const paginatedReleases = filteredReleases.slice(startIndex, startIndex + ITEMS_PER_PAGE)
-
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [filters])
 
   // Handle URL hash for direct release linking
   useEffect(() => {
-    if (typeof window !== 'undefined' && releases.length > 0) {
-      const hash = window.location.hash.slice(1) // Remove #
-      if (hash) {
-        // Find the release and calculate which page it's on
-        const releaseIndex = filteredReleases.findIndex(
-          r => `${r.repository.name}-${r.tag_name}` === hash || r.tag_name === hash
-        )
-        if (releaseIndex !== -1) {
-          const page = Math.floor(releaseIndex / ITEMS_PER_PAGE) + 1
-          setCurrentPage(page)
-          setLinkedReleaseId(hash) // Track which release is linked
-          // Scroll to element after a small delay
-          setTimeout(() => {
-            const element = document.getElementById(hash)
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-            }
-          }, 100)
-        }
-      }
-    }
+    if (releases.length === 0) return
+    const hash = window.location.hash.slice(1)
+    if (!hash) return
+    const releaseIndex = filteredReleases.findIndex(
+      r => `${r.repository.name}-${r.tag_name}` === hash || r.tag_name === hash
+    )
+    if (releaseIndex === -1) return
+    const page = Math.floor(releaseIndex / ITEMS_PER_PAGE) + 1
+    queueMicrotask(() => {
+      setLinkedReleaseId(hash)
+      setCurrentPage(page)
+    })
   }, [releases, filteredReleases])
+
+  // Scroll to linked release when linkedReleaseId changes
+  useEffect(() => {
+    if (!linkedReleaseId) return
+    const timer = setTimeout(() => {
+      const element = document.getElementById(linkedReleaseId)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [linkedReleaseId])
 
   const handleClearFilters = () => {
     setFilters({ search: "", repository: null, type: null })
@@ -152,44 +149,7 @@ export function ChangelogList({ className }: ChangelogListProps) {
 
   return (
     <div className={cn("space-y-6", className)}>
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Rocket className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("changelog.stats.totalReleases")}</p>
-              <p className="text-2xl font-bold">{releases.length}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <GitBranch className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("changelog.stats.repositories")}</p>
-              <p className="text-2xl font-bold">{repositories.length}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Calendar className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("changelog.stats.latestUpdate")}</p>
-              <p className="text-2xl font-bold">
-                {lastUpdated ? formatRelativeTime(lastUpdated) : '-'}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ChangelogStats totalReleases={releases.length} repositories={repositories} lastUpdated={lastUpdated} />
 
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
@@ -261,84 +221,15 @@ export function ChangelogList({ className }: ChangelogListProps) {
             })}
           </div>
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-6">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                {t("changelog.pagination.previous")}
-              </Button>
-              
-              <div className="flex items-center gap-1">
-                {/* First page */}
-                {currentPage > 2 && (
-                  <>
-                    <Button
-                      variant={currentPage === 1 ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => handlePageChange(1)}
-                      className="w-9 h-9 p-0"
-                    >
-                      1
-                    </Button>
-                    {currentPage > 3 && (
-                      <span className="px-2 text-muted-foreground">...</span>
-                    )}
-                  </>
-                )}
-
-                {/* Pages around current */}
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(page => {
-                    if (totalPages <= 5) return true
-                    return Math.abs(page - currentPage) <= 1
-                  })
-                  .map(page => (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => handlePageChange(page)}
-                      className="w-9 h-9 p-0"
-                    >
-                      {page}
-                    </Button>
-                  ))}
-
-                {/* Last page */}
-                {currentPage < totalPages - 1 && (
-                  <>
-                    {currentPage < totalPages - 2 && (
-                      <span className="px-2 text-muted-foreground">...</span>
-                    )}
-                    <Button
-                      variant={currentPage === totalPages ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => handlePageChange(totalPages)}
-                      className="w-9 h-9 p-0"
-                    >
-                      {totalPages}
-                    </Button>
-                  </>
-                )}
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                {t("changelog.pagination.next")}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </div>
-          )}
+          <ChangelogPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            translations={{
+              previous: t("changelog.pagination.previous"),
+              next: t("changelog.pagination.next"),
+            }}
+          />
         </>
       )}
     </div>

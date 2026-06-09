@@ -36,8 +36,11 @@ interface CategoryPageProps {
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  const { category } = await params;
-  const categories = await getCategories();
+  const [{ category }, categories] = await Promise.all([
+    params,
+    getCategories(),
+  ]);
+
   const categoryData = categories.find((c) => c.slug === category);
 
   if (!categoryData) {
@@ -60,16 +63,17 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const t = await getTranslations();
   const { category } = await params;
-  const categories = await getCategories();
+  const [t, categories, articles] = await Promise.all([
+    getTranslations(),
+    getCategories(),
+    getArticlesByCategory(category),
+  ]);
   const categoryData = categories.find((c) => c.slug === category);
 
   if (!categoryData) {
     notFound();
   }
-
-  const articles = await getArticlesByCategory(category);
   const Icon = iconMap[categoryData.icon] || HelpCircle;
 
   return (

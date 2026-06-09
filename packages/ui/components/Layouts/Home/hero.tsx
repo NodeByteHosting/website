@@ -1,75 +1,37 @@
-"use client"
-
-import React, { useEffect, useState } from "react"
 import { Button } from "@/packages/ui/components/ui/button"
-import { ArrowRight, Shield, Zap, Globe, PartyPopper, Sparkles, Play } from "lucide-react"
+import { ArrowRight, Sparkles, Play } from "lucide-react"
 import Link from "next/link"
 import HeroGraphic from "./hero-graphic"
-import { cn } from "@/lib/utils"
+import { HeroStats } from "./hero-stats"
 import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
 
 export function Hero() {
   const t = useTranslations()
-  const [uptime, setUptime] = useState(0)
-  const [ping, setPing] = useState(120)
-
-  useEffect(() => {
-    // Animate uptime to 99.6
-    let start: number | null = null
-    const duration = 1200
-    const from = 95
-    const to = 99.6
-    function step(ts: number) {
-      if (!start) start = ts
-      const t = Math.min(1, (ts - start) / duration)
-      // Ease out cubic for smooth deceleration
-      const eased = 1 - Math.pow(1 - t, 3)
-      const v = from + (to - from) * eased
-      setUptime(Number(v.toFixed(1)))
-      if (t < 1) requestAnimationFrame(step)
-    }
-    requestAnimationFrame(step)
-
-    // Animate ping down to ~50ms
-    let pstart: number | null = null
-    const pduration = 1000
-    const pfrom = 120
-    const pto = 50
-    function pstep(ts: number) {
-      if (!pstart) pstart = ts
-      const t = Math.min(1, (ts - pstart) / pduration)
-      const eased = 1 - Math.pow(1 - t, 3)
-      const v = Math.round(pfrom + (pto - pfrom) * eased)
-      setPing(v)
-      if (t < 1) requestAnimationFrame(pstep)
-    }
-    requestAnimationFrame(pstep)
-  }, [])
 
   const stats = [
     {
-      icon: Shield,
-      value: `${uptime}%`,
+      icon: "shield",
+      value: "99.6%",
       label: t("hero.stats.uptime"),
       description: t("hero.stats.uptimeDesc"),
       color: "primary",
     },
     {
-      icon: Zap,
-      value: `≈${ping}ms`,
+      icon: "zap",
+      value: "≈50ms",
       label: t("hero.stats.ping"),
       description: t("hero.stats.pingDesc"),
       color: "accent",
     },
     {
-      icon: Globe,
+      icon: "globe",
       value: "24/7",
       label: t("hero.stats.support"),
       description: t("hero.stats.supportDesc"),
       color: "primary",
     },
-  ]
+  ] as const
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-10">
@@ -136,41 +98,7 @@ export function Hero() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8">
-              {stats.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className={cn(
-                    "group relative p-5 rounded-2xl border border-border/50 bg-card/30 backdrop-blur-sm",
-                    "hover:border-primary/30 hover:bg-card/50 transition-all duration-300",
-                    "hover:shadow-lg hover:shadow-primary/5"
-                  )}
-                >
-                  {/* Icon */}
-                  <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center mb-3",
-                    stat.color === "primary" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-                  )}>
-                    <stat.icon className="w-5 h-5" />
-                  </div>
-                  
-                  {/* Value */}
-                  <div className="text-2xl sm:text-3xl font-bold tracking-tight">
-                    {stat.value}
-                  </div>
-                  
-                  {/* Label */}
-                  <div className="text-sm font-medium text-muted-foreground mt-1">
-                    {stat.label}
-                  </div>
-                  
-                  {/* Description */}
-                  <p className="text-xs text-muted-foreground/70 mt-2 leading-relaxed">
-                    {stat.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <HeroStats stats={stats} />
           </div>
 
           {/* Right Content - Hero Graphic */}

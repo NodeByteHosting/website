@@ -13,6 +13,21 @@ import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
 import type { ReactNode } from "react"
 
+const DEFAULT_HEADER_ICON = <Zap className="w-8 h-8" />
+
+function getFeatureIcon(feature: string) {
+  const f = feature.toLowerCase()
+  if (f.includes("ram") || f.includes("ddr") || f.includes("memory")) return <MemoryStick className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("storage") || f.includes("ssd") || f.includes("nvme") || f.includes("disk")) return <HardDrive className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("ryzen") || f.includes("intel") || f.includes("cpu") || f.includes("processor")) return <Cpu className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("ddos") || f.includes("protection") || f.includes("firewall")) return <Shield className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("database") || f.includes("mysql") || f.includes("mariadb")) return <Database className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("panel") || f.includes("control") || f.includes("dashboard")) return <Monitor className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("jar") || f.includes("plugin") || f.includes("mod") || f.includes("oxide") || f.includes("umod")) return <Package className="w-4 h-4 text-primary shrink-0" />
+  if (f.includes("uptime") || f.includes("sla")) return <Activity className="w-4 h-4 text-primary shrink-0" />
+  return <Check className="w-4 h-4 text-primary shrink-0" />
+}
+
 interface PricingPlan {
   name: string
   description: string
@@ -49,25 +64,12 @@ export function GamePricing({
   plans,
   comingSoon,
   outOfStock,
-  headerIcon = <Zap className="w-8 h-8" />,
+  headerIcon = DEFAULT_HEADER_ICON,
   headerGradient = "from-primary/20 via-primary/10 to-accent/5",
   headerIconBg = "bg-primary/10 text-primary",
 }: GamePricingProps) {
   const isOutOfStock = outOfStock || plans.length === 0
   const t = useTranslations()
-
-  function getFeatureIcon(feature: string) {
-    const f = feature.toLowerCase()
-    if (f.includes("ram") || f.includes("ddr") || f.includes("memory")) return <MemoryStick className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("storage") || f.includes("ssd") || f.includes("nvme") || f.includes("disk")) return <HardDrive className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("ryzen") || f.includes("intel") || f.includes("cpu") || f.includes("processor")) return <Cpu className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("ddos") || f.includes("protection") || f.includes("firewall")) return <Shield className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("database") || f.includes("mysql") || f.includes("mariadb")) return <Database className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("panel") || f.includes("control") || f.includes("dashboard")) return <Monitor className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("jar") || f.includes("plugin") || f.includes("mod") || f.includes("oxide") || f.includes("umod")) return <Package className="w-4 h-4 text-primary shrink-0" />
-    if (f.includes("uptime") || f.includes("sla")) return <Activity className="w-4 h-4 text-primary shrink-0" />
-    return <Check className="w-4 h-4 text-primary shrink-0" />
-  }
 
   const [search, setSearch] = useState("")
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default")
@@ -267,7 +269,7 @@ export function GamePricing({
                       {/* Features */}
                       <ul className="space-y-2 mb-5 flex-1">
                         {plan.features.map((feature, i) => (
-                          <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                             {getFeatureIcon(feature)}
                             <span>{feature}</span>
                           </li>
