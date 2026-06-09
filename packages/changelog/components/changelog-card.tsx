@@ -56,23 +56,17 @@ const TYPE_LABELS: Record<string, string> = {
 
 export function ChangelogCard({ release, translations, isLatest, isLinked, className }: ChangelogCardProps) {
   const [showAssets, setShowAssets] = useState(false)
-  const [expanded, setExpanded] = useState(isLinked ?? false)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [userExpanded, setUserExpanded] = useState(false)
   
   const summary = extractSummary(release.body)
   const hasLongBody = (release.body?.length || 0) > 300
   const typeColor = TYPE_COLORS[release.type || 'improvement']
   const publishedDate = new Date(release.published_at || release.created_at)
   
-  // Create a unique anchor ID for this release
   const anchorId = `${release.repository.name}-${release.tag_name}`
 
-  // Expand when linked to directly
-  useEffect(() => {
-    if (isLinked) {
-      setExpanded(true)
-    }
-  }, [isLinked])
+  const expanded = userExpanded || (isLinked ?? false)
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}#${anchorId}`
@@ -111,6 +105,7 @@ export function ChangelogCard({ release, translations, isLatest, isLinked, class
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
+                      type="button"
                       onClick={handleCopyLink}
                       className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
@@ -217,7 +212,7 @@ export function ChangelogCard({ release, translations, isLatest, isLinked, class
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setExpanded(!expanded)}
+                onClick={() => setUserExpanded((v) => !v)}
                 className="mt-2 h-7 px-2 text-xs"
               >
                 {expanded ? (

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { ChevronDown, Search, HelpCircle, MessageCircle } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
 import Link from "next/link"
@@ -44,11 +44,11 @@ export function FAQ() {
     },
   ]
 
-  const filtered = useMemo(() => {
+  const filtered = (() => {
     if (!query.trim()) return faqs
     const q = query.toLowerCase()
     return faqs.filter((f) => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q))
-  }, [query, faqs])
+  })()
 
   return (
     <section id="faq" className="py-24 sm:py-32 relative overflow-hidden">
@@ -80,6 +80,7 @@ export function FAQ() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
+                aria-label={t("faq.searchPlaceholder")}
                 placeholder={t("faq.searchPlaceholder")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -105,7 +106,7 @@ export function FAQ() {
               const isOpen = openIndex === index
               return (
                 <div
-                  key={index}
+                  key={faq.question}
                   className={cn(
                     "rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm overflow-hidden",
                     "transition-all duration-300",
@@ -113,6 +114,7 @@ export function FAQ() {
                   )}
                 >
                   <button
+                    type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     className="w-full px-6 py-5 flex items-center justify-between text-left gap-4 group"
                     aria-expanded={isOpen}

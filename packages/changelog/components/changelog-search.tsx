@@ -29,6 +29,7 @@ export function ChangelogSearch({
       />
       {value && (
         <button
+          type="button"
           onClick={() => onChange("")}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Clear search"

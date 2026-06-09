@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import {
   Server,
   Search,
@@ -216,16 +216,10 @@ export function VpsHub({ plans }: VpsHubProps) {
   const [sort, setSort] = useState<SortKey>("default")
 
   // Derive which lineups/series actually exist in the plan list
-  const availableLineups = useMemo(
-    () => Array.from(new Set(plans.map((p) => p.lineup).filter(Boolean))) as Lineup[],
-    [plans],
-  )
-  const availableSeries = useMemo(
-    () => Array.from(new Set(plans.map((p) => p.series).filter(Boolean))) as Series[],
-    [plans],
-  )
+  const availableLineups = Array.from(new Set(plans.flatMap((p) => p.lineup ? [p.lineup] : []))) as Lineup[]
+  const availableSeries = Array.from(new Set(plans.flatMap((p) => p.series ? [p.series] : []))) as Series[]
 
-  const filtered = useMemo(() => {
+  const filtered = (() => {
     let result = [...plans]
     const q = search.trim().toLowerCase()
     if (q) {
@@ -242,7 +236,7 @@ export function VpsHub({ plans }: VpsHubProps) {
     if (sort === "asc") result.sort((a, b) => a.priceGBP - b.priceGBP)
     if (sort === "desc") result.sort((a, b) => b.priceGBP - a.priceGBP)
     return result
-  }, [plans, search, lineup, series, hardware, sort])
+  })()
 
   const hasActiveFilters = lineup !== "ALL" || series !== "ALL" || hardware !== "ALL" || search !== ""
 
@@ -320,6 +314,7 @@ export function VpsHub({ plans }: VpsHubProps) {
             {(["ALL", "amd", "intel"] as const).map((h) => (
               <button
                 key={h}
+                type="button"
                 onClick={() => setHardware(h)}
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-medium border transition-all",
@@ -339,6 +334,7 @@ export function VpsHub({ plans }: VpsHubProps) {
               availableLineups.includes(key) ? (
                 <button
                   key={key}
+                  type="button"
                   onClick={() => setLineup(lineup === key ? "ALL" : key)}
                   className={cn(
                     "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border transition-all",
@@ -359,6 +355,7 @@ export function VpsHub({ plans }: VpsHubProps) {
             {availableSeries.map((s) => (
               <button
                 key={s}
+                type="button"
                 onClick={() => setSeries(series === s ? "ALL" : s)}
                 className={cn(
                   "px-3 py-1 rounded-full text-xs font-mono font-medium border transition-all",

@@ -85,7 +85,7 @@ export function Services() {
                 {/* Highlights */}
                 <ul className="space-y-2 mb-6 flex-1">
                   {service.highlights.map((highlight, i) => (
-                    <li key={i} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                    <li key={highlight} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                       <Check className={cn("w-4 h-4 shrink-0", service.iconColor)} />
                       {highlight}
                     </li>

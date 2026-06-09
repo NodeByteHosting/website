@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useMemo } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/packages/ui/components/ui/button"
 import {
   DropdownMenu,
@@ -24,8 +24,7 @@ export function Navigation() {
   const t = useTranslations()
   const mountedRef = useRef(false)
   
-  // Memoize menu items to prevent recreation on every render
-  const company = useMemo(() => [
+  const company = [
     {
       title: t("company.about.title"),
       href: "/about",
@@ -51,9 +50,9 @@ export function Navigation() {
       icon: ExternalLink,
       external: true,
     },
-  ], [t])
+  ]
 
-  const services = useMemo(() => [
+  const services = [
     {
       title: t("services.minecraft.title"),
       href: "/games/minecraft",
@@ -89,9 +88,9 @@ export function Navigation() {
       icon: Server,
       section: "vps",
     },
-  ], [t])
+  ]
 
-  const resources = useMemo(() => [
+  const resources = [
     {
       title: t("resources.clientArea.title"),
       href: LINKS.billing.login,
@@ -127,7 +126,7 @@ export function Navigation() {
       icon: Sparkles,
       external: false
     },
-  ], [t])
+  ]
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -140,7 +139,7 @@ export function Navigation() {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pathname = usePathname()
 
-  const navLabels = useMemo(() => ({
+  const navLabels = {
     company: t("nav.company"),
     services: t("nav.services"),
     resources: t("nav.resources"),
@@ -150,7 +149,7 @@ export function Navigation() {
     currency: t("nav.currency"),
     theme: t("nav.theme"),
     joinDiscord: t("nav.joinDiscord"),
-  }), [t])
+  }
 
   useEffect(() => {
     mountedRef.current = true
@@ -181,23 +180,18 @@ export function Navigation() {
   }
 
   useEffect(() => {
-    if (!mountedRef.current) return
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => {
       window.removeEventListener("scroll", handleScroll)
-      // Clean up any pending close timer on unmount
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
     }
   }, [])
 
   useEffect(() => {
-    setIsMobileMenuOpen(false)
-    setMobileCompanyOpen(false)
-    setMobileServicesOpen(false)
-    setMobileResourcesOpen(false)
+    queueMicrotask(() => setIsMobileMenuOpen(false))
   }, [pathname])
 
   // Prevent body scroll when mobile menu is open.
@@ -284,7 +278,7 @@ export function Navigation() {
                   onMouseLeave={() => closeDropdown(setCompanyOpen)}
                 >
                   <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
+                    <button type="button" className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
                       {t("nav.company")}
                       <ChevronDown className={cn(
                         "h-4 w-4 opacity-50 transition-transform duration-200",
@@ -330,7 +324,7 @@ export function Navigation() {
                   onMouseLeave={() => closeDropdown(setServicesOpen)}
                 >
                   <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
+                    <button type="button" className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
                       {t("nav.services")}
                       <ChevronDown className={cn(
                         "h-4 w-4 opacity-50 transition-transform duration-200",
@@ -401,7 +395,7 @@ export function Navigation() {
                   onMouseLeave={() => closeDropdown(setResourcesOpen)}
                 >
                   <DropdownMenuTrigger asChild>
-                    <button className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
+                    <button type="button" className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50">
                       {t("nav.resources")}
                       <ChevronDown className={cn(
                         "h-4 w-4 opacity-50 transition-transform duration-200",
@@ -516,11 +510,15 @@ export function Navigation() {
 
       {/* Mobile Menu Overlay */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Close menu"
         className={cn(
           "fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity duration-300",
           isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={() => setIsMobileMenuOpen(false)}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsMobileMenuOpen(false) }}
       />
 
       {/* Mobile Menu Panel */}
@@ -535,6 +533,7 @@ export function Navigation() {
             {/* Company Dropdown */}
             <div className="mb-2">
               <button
+                type="button"
                 onClick={toggleMobileCompany}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
@@ -575,6 +574,7 @@ export function Navigation() {
             {/* Services Dropdown */}
             <div className="mb-2">
               <button
+                type="button"
                 onClick={toggleMobileServices}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >
@@ -639,6 +639,7 @@ export function Navigation() {
             {/* Resources Dropdown */}
             <div className="mb-2">
               <button
+                type="button"
                 onClick={toggleMobileResources}
                 className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-accent/50 transition-colors"
               >

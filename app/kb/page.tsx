@@ -25,13 +25,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KnowledgeBasePage() {
-  const t = await getTranslations();
-  const categories = await getCategories();
-  const allArticles = await getAllArticles();
+  const [t, categories, allArticles] = await Promise.all([
+    getTranslations(),
+    getCategories(),
+    getAllArticles(),
+  ]);
 
   // Get recent articles (last 5 by date)
-  const recentArticles = [...allArticles]
-    .sort((a, b) => {
+  const recentArticles = allArticles
+    .toSorted((a, b) => {
       const dateA = new Date(a.lastUpdated || 0).getTime();
       const dateB = new Date(b.lastUpdated || 0).getTime();
       return dateB - dateA;

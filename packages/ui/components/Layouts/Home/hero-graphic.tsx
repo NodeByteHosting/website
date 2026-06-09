@@ -91,6 +91,14 @@ const ARC_PATHS = CONNECTIONS.map(c => {
   return gcPath(a.lat, a.lon, b.lat, b.lon, 50)
 })
 
+const GLOBE_DOTS: Array<{ lat: number; lon: number }> = []
+for (let lat = -85; lat <= 85; lat += DOT_DEG) {
+  const step = DOT_DEG / Math.max(Math.cos(lat * 0.017453), 0.28)
+  for (let lon = 0; lon < 360; lon += step) {
+    GLOBE_DOTS.push({ lat, lon })
+  }
+}
+
 // ─── Theme colours ────────────────────────────────────────────────────────────
 
 function cssHex(v: string, el: HTMLElement): string {
@@ -135,17 +143,30 @@ export default function HeroGraphic() {
   useEffect(() => {
     const cv = ref.current
     if (!cv) return
-    const dpr = Math.min(devicePixelRatio || 1, 2)
+    const ua = navigator.userAgent
+    const isWebKit = /AppleWebKit/i.test(ua) && !/(Chrome|Chromium|CriOS|Edg|OPR|Android)/i.test(ua)
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const dpr = Math.min(devicePixelRatio || 1, isWebKit ? 1.5 : 2)
     cv.width = SIZE * dpr; cv.height = SIZE * dpr
     const ctx = cv.getContext("2d")!
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     let raf = 0
     let t0: number | null = null
+    let lastFrame = 0
+    let visible = true
+    const frameInterval = isWebKit ? 1000 / 30 : 1000 / 60
 
     const draw = (ts: number) => {
+      raf = 0
+      if (!visible) return
+      if (ts - lastFrame < frameInterval) {
+        raf = requestAnimationFrame(draw)
+        return
+      }
+      lastFrame = ts
       if (!t0) t0 = ts
-      const sec = (ts - t0) / 1000
+      const sec = reduceMotion ? 0 : (ts - t0) / 1000
       const rot = sec * ROT_SPEED
       ctx.clearRect(0, 0, SIZE, SIZE)
 
@@ -162,15 +183,12 @@ export default function HeroGraphic() {
       ctx.strokeStyle = rgba(accent, 0.1); ctx.lineWidth = 0.8; ctx.stroke()
 
       /* ── dot grid ── */
-      for (let lat = -85; lat <= 85; lat += DOT_DEG) {
-        const step = DOT_DEG / Math.max(Math.cos(lat * 0.017453), 0.28)
-        for (let lon = 0; lon < 360; lon += step) {
-          const p = proj(lat, lon, rot)
-          if (p.z <= 0) continue
-          const idx = Math.min(DOT_ALPHA_LEVELS - 1, Math.floor((p.z / R) * DOT_ALPHA_LEVELS))
-          ctx.fillStyle = DOT_ALPHA_TABLE[idx]
-          ctx.fillRect(p.x - DOT_PX, p.y - DOT_PX, DOT_PX * 2, DOT_PX * 2)
-        }
+      for (const dot of GLOBE_DOTS) {
+        const p = proj(dot.lat, dot.lon, rot)
+        if (p.z <= 0) continue
+        const idx = Math.min(DOT_ALPHA_LEVELS - 1, Math.floor((p.z / R) * DOT_ALPHA_LEVELS))
+        ctx.fillStyle = DOT_ALPHA_TABLE[idx]
+        ctx.fillRect(p.x - DOT_PX, p.y - DOT_PX, DOT_PX * 2, DOT_PX * 2)
       }
 
       /* ── arcs + packets ── */
@@ -235,11 +253,20 @@ export default function HeroGraphic() {
         ctx.fillStyle = `rgba(255,255,255,${0.55 * d})`; ctx.fill()
       }
 
-      raf = requestAnimationFrame(draw)
+      if (!reduceMotion) raf = requestAnimationFrame(draw)
     }
 
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible && !raf && !reduceMotion) raf = requestAnimationFrame(draw)
+    }, { rootMargin: "120px" })
+
+    observer.observe(cv)
     raf = requestAnimationFrame(draw)
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(raf)
+    }
   }, [accent])
 
   return (

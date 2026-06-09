@@ -95,7 +95,7 @@ export function GameFeatures({ gameName, features }: GameFeaturesProps) {
                 {/* Highlights */}
                 <ul className="space-y-2">
                   {feature.highlights.map((highlight, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <li key={highlight} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                       {highlight}
                     </li>

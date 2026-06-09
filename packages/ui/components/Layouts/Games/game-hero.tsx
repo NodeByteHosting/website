@@ -54,6 +54,7 @@ export function GameHero({
           src={banner}
           alt={name}
           fill
+          sizes="100vw"
           className="object-cover opacity-10 blur-sm"
           priority
         />
@@ -135,6 +136,7 @@ export function GameHero({
                 src={banner}
                 alt={name}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 priority
               />
