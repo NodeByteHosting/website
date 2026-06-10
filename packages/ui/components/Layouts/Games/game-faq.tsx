@@ -55,7 +55,7 @@ export function GameFAQ({ gameName, faqs }: GameFAQProps) {
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
               <AccordionItem
-                key={index}
+                key={faq.question}
                 value={`item-${index}`}
                 className={cn(
                   "border border-border/50 rounded-xl overflow-hidden",

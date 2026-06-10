@@ -71,16 +71,16 @@ export function KBSidebar({ categories, className }: KBSidebarProps) {
     );
   };
 
-  const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
+  const sortedCategories = categories.toSorted((a, b) => a.order - b.order);
 
   return (
     <ScrollArea className={cn("h-[calc(100vh-8rem)]", className)}>
-      <nav className="space-y-1 pr-4">
+      <nav className="space-y-2 pr-3">
         {sortedCategories.map((category) => {
           const Icon = iconMap[category.icon] || HelpCircle;
           const isOpen = openCategories.includes(category.slug);
           const isCategoryActive = pathname.includes(`/kb/${category.slug}`);
-          const sortedArticles = [...category.articles].sort(
+          const sortedArticles = category.articles.toSorted(
             (a, b) => a.order - b.order
           );
 
@@ -92,23 +92,23 @@ export function KBSidebar({ categories, className }: KBSidebarProps) {
             >
               <CollapsibleTrigger
                 className={cn(
-                  "flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-lg hover:bg-accent transition-colors",
-                  isCategoryActive && "bg-accent text-accent-foreground"
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted hover:text-foreground",
+                  isCategoryActive && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
                 )}
               >
-                <span className="flex items-center gap-2">
-                  <Icon className="h-4 w-4" />
+                <span className="flex min-w-0 items-center gap-2">
+                  <Icon className="h-4 w-4 shrink-0" />
                   {category.title}
                 </span>
                 <ChevronDown
                   className={cn(
-                    "h-4 w-4 text-muted-foreground transition-transform",
+                    "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
                     isOpen && "rotate-180"
                   )}
                 />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-1">
-                <ul className="space-y-1 ml-4 border-l pl-2">
+              <CollapsibleContent className="pt-1.5">
+                <ul className="ml-4 space-y-1 border-l border-border/70 pl-2">
                   {sortedArticles.map((article) => {
                     const articlePath = `/kb/${category.slug}/${article.slug}`;
                     const isActive = pathname === articlePath;
@@ -118,14 +118,14 @@ export function KBSidebar({ categories, className }: KBSidebarProps) {
                         <Link
                           href={articlePath}
                           className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg hover:bg-accent transition-colors",
+                            "flex min-h-9 items-center gap-2 rounded-md px-3 py-2 text-sm leading-snug transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                             isActive
-                              ? "bg-primary/10 text-primary font-medium"
+                              ? "bg-primary/10 font-semibold text-primary hover:bg-primary/15 hover:text-primary"
                               : "text-muted-foreground"
                           )}
                         >
-                          <FileText className="h-3.5 w-3.5" />
-                          <span className="truncate">{article.title}</span>
+                          <FileText className="h-3.5 w-3.5 shrink-0" />
+                          <span className="line-clamp-2">{article.title}</span>
                         </Link>
                       </li>
                     );

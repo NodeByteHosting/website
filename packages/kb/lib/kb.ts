@@ -239,14 +239,10 @@ export async function getArticle(categorySlug: string, articleSlug: string): Pro
  */
 export async function getAllArticles(): Promise<KBArticleMeta[]> {
   const categories = await getCategories()
-  const allArticles: KBArticleMeta[] = []
-  
-  for (const cat of categories) {
-    const articles = await getArticlesByCategory(cat.slug)
-    allArticles.push(...articles)
-  }
-  
-  return allArticles
+  const articleArrays = await Promise.all(
+    categories.map((cat) => getArticlesByCategory(cat.slug))
+  )
+  return articleArrays.flat()
 }
 
 /**

@@ -120,8 +120,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const repo = searchParams.get('repo') // Optional: filter by specific repo
   
-  const token = await getGithubToken()
-  const repositories = await getConfiguredRepositories()
+  const [token, repositories] = await Promise.all([
+    getGithubToken(),
+    getConfiguredRepositories(),
+  ])
 
   try {
     const reposToFetch = repo 

@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useSyncExternalStore } from "react"
 import { SiDiscord, SiTrustpilot } from "react-icons/si"
 import { Github, Twitter, Mail, ExternalLink, Server, FileText, Scale, Headphones, AlertTriangle, Wrench, CheckCircle2 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/packages/ui/components/logo"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
 
@@ -257,7 +258,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border/50">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground text-center sm:text-left">
+            <p className="text-sm text-muted-foreground text-center sm:text-left" suppressHydrationWarning>
               © {new Date().getFullYear()} NodeByte LTD. {t("footer.copyright")}
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -267,10 +268,12 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="opacity-70 hover:opacity-100 transition-opacity"
               >
-                <img 
+                <Image 
                   src="https://badges.crowdin.net/nodebyte/localized.svg" 
                   alt="Crowdin Localization" 
-                  className="h-5"
+                  width={88}
+                  height={20}
+                  className="h-5 w-auto"
                 />
               </a>
               <span className="hidden sm:inline">•</span>
@@ -317,16 +320,12 @@ function StatusIndicator() {
   useEffect(() => {
     let mounted = true
     ;(async () => {
-      try {
-        const res = await fetch("/api/instatus")
-        if (!res.ok) throw new Error(`Status ${res.status}`)
+      const res = await fetch("/api/instatus")
+      if (res.ok) {
         const data = await res.json()
-        if (!mounted) return
-        setStatus(data)
-      } catch (err) {
-        if (!mounted) return
-        // Fallback to UP status on error
-        setStatus({
+        if (mounted) setStatus(data)
+      } else {
+        if (mounted) setStatus({
           status: "UP",
           url: "https://nodebytestat.us",
           hasIncidents: false,
@@ -334,10 +333,8 @@ function StatusIndicator() {
           incidents: [],
           maintenances: [],
         })
-      } finally {
-        if (!mounted) return
-        setLoading(false)
       }
+      if (mounted) setLoading(false)
     })()
     return () => {
       mounted = false

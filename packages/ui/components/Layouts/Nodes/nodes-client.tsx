@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useSyncExternalStore } from "react"
 import {
   Server,
   MapPin,
@@ -284,8 +284,7 @@ export function NodesClient() {
   const nodes = STATIC_NODES
   const onlineCount = nodes.filter((n) => !n.isMaintenanceMode).length
   const maintenanceCount = nodes.filter((n) => n.isMaintenanceMode).length
-  const [hydrated, setHydrated] = useState(false)
-  useEffect(() => { setHydrated(true) }, [])
+  const hydrated = useSyncExternalStore(() => () => {}, () => true, () => false)
 
   return (
     <div className="relative overflow-hidden">
@@ -413,7 +412,7 @@ export function NodesClient() {
             <Accordion type="single" collapsible className="space-y-2">
               {FAQS.map((faq, i) => (
                 <AccordionItem
-                  key={i}
+                  key={faq.question}
                   value={`faq-${i}`}
                   className="border border-border/50 rounded-xl px-5 bg-card/30 backdrop-blur-sm data-[state=open]:border-primary/30 data-[state=open]:bg-card/50"
                 >
@@ -428,8 +427,8 @@ export function NodesClient() {
             </Accordion>
           ) : (
             <div className="space-y-2">
-              {FAQS.map((_, i) => (
-                <div key={i} className="border border-border/50 rounded-xl px-5 h-[52px] bg-card/30 animate-pulse" />
+              {FAQS.map((faq, i) => (
+                <div key={faq.question} className="border border-border/50 rounded-xl px-5 h-[52px] bg-card/30 animate-pulse" />
               ))}
             </div>
           )}

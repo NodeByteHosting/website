@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
-import type { GitHubRelease, ReleasesResponse } from '@/app/api/github/releases/route'
+import { useState, useEffect } from 'react'
+import type { ReleasesResponse } from '@/app/api/github/releases/route'
 import { detectReleaseType, type ChangelogRelease } from '../lib/changelog'
 
 interface UseChangelogReleasesOptions {
@@ -15,40 +15,42 @@ export function useChangelogReleases(options: UseChangelogReleasesOptions = {}) 
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
 
-  const fetchReleases = useCallback(async () => {
+  async function doFetch() {
+    const response = await fetch('/api/github/releases')
+    if (!response.ok) throw new Error('Failed to fetch releases')
+    const data: ReleasesResponse = await response.json()
+    const releasesWithType: ChangelogRelease[] = data.releases.map(release => ({
+      ...release,
+      type: detectReleaseType(release)
+    }))
+    setReleases(releasesWithType)
+    setRepositories(data.repositories)
+    setLastUpdated(data.lastUpdated)
+  }
+
+  const refetch = () => {
     setIsLoading(true)
     setError(null)
-
-    try {
-      const response = await fetch('/api/github/releases')
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch releases')
-      }
-
-      const data: ReleasesResponse = await response.json()
-      
-      // Add type detection to each release
-      const releasesWithType: ChangelogRelease[] = data.releases.map(release => ({
-        ...release,
-        type: detectReleaseType(release)
-      }))
-
-      setReleases(releasesWithType)
-      setRepositories(data.repositories)
-      setLastUpdated(data.lastUpdated)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    return doFetch().then(() => setIsLoading(false))
+  }
 
   useEffect(() => {
-    if (!options.initialReleases) {
-      fetchReleases()
+    if (options.initialReleases) return
+    let cancelled = false
+
+    async function run() {
+      try {
+        await doFetch()
+      } catch {
+        if (!cancelled) setError('Failed to fetch releases')
+      }
+      if (!cancelled) setIsLoading(false)
     }
-  }, [fetchReleases, options.initialReleases])
+
+    run()
+
+    return () => { cancelled = true }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     releases,
@@ -56,6 +58,6 @@ export function useChangelogReleases(options: UseChangelogReleasesOptions = {}) 
     isLoading,
     error,
     lastUpdated,
-    refetch: fetchReleases
+    refetch
   }
 }
