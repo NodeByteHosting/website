@@ -14,7 +14,7 @@ export function About() {
     { value: "3+", label: t("about.stats.locations"), icon: Globe },
     { value: "Always on", label: t("about.stats.ddos"), icon: Shield },
     { value: "~1 Gbps", label: t("about.stats.network"), icon: Zap },
-    { value: "99.9%", label: t("about.stats.uptime"), icon: Server },
+    { value: "99.6%", label: t("about.stats.uptime"), icon: Server },
   ]
 
   const values = [
