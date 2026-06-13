@@ -1,4 +1,4 @@
-export const GOOGLE_ADS_ID = "AW-16740819749"
+export const GOOGLE_ADS_ID = "G-8Z90P6HG3T"
 
 /** Send-to labels for each conversion goal */
 export const CONVERSION_IDS = {
