@@ -102,7 +102,7 @@ export function Features() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <Card
-              key={index}
+              key={feature.title}
               className={cn(
                 "group relative p-6 bg-card/30 backdrop-blur-sm border-border/50",
                 "hover:border-primary/30 hover:bg-card/50 transition-all duration-300",
@@ -125,7 +125,7 @@ export function Features() {
               {/* Highlights */}
               <ul className="space-y-2">
                 {feature.highlights.map((highlight, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <li key={highlight} className="flex items-center gap-2 text-xs text-muted-foreground">
                     <CheckCircle2 className="w-3.5 h-3.5 text-primary/60" />
                     {highlight}
                   </li>

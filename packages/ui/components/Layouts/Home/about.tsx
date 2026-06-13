@@ -95,7 +95,7 @@ export function About() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {values.map((value, index) => (
             <Card
-              key={index}
+              key={value.title}
               className={cn(
                 "group relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm",
                 "hover:border-primary/30 transition-all duration-300"

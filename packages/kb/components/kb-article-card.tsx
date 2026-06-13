@@ -115,7 +115,7 @@ export function KBArticleList({
   showCategory = false,
   className,
 }: KBArticleListProps) {
-  const sortedArticles = [...articles].sort((a, b) => a.order - b.order);
+  const sortedArticles = articles.toSorted((a, b) => a.order - b.order);
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>

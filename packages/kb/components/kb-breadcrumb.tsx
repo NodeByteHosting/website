@@ -24,7 +24,7 @@ export function KBBreadcrumb({ items, className }: KBBreadcrumbProps) {
       </Link>
 
       {items.map((item, index) => (
-        <div key={index} className="flex items-center gap-1">
+        <div key={item.label} className="flex items-center gap-1">
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
           {item.href ? (
             <Link

@@ -89,7 +89,7 @@ interface KBCategoryGridProps {
 }
 
 export function KBCategoryGrid({ categories, className }: KBCategoryGridProps) {
-  const sortedCategories = [...categories].sort((a, b) => a.order - b.order);
+  const sortedCategories = categories.toSorted((a, b) => a.order - b.order);
 
   return (
     <div

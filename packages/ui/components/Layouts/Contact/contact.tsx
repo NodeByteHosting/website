@@ -193,7 +193,7 @@ export function Contact() {
                 
                 <ul className="space-y-2 mb-6 flex-1">
                   {channel.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                       {feature}
                     </li>

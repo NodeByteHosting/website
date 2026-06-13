@@ -158,6 +158,7 @@ export function VpsPricing({ variant, plans, billingUrl }: VpsPricingProps) {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={copyPromoCode}
                   className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2 text-sm font-mono font-bold text-primary transition-colors hover:bg-primary/20"
                 >
