@@ -15,7 +15,7 @@ Below are the baseline requirements for each partnership track. If you don't mee
 
 ## Minimum Eligibility Benchmarks
 
-### 🎮 Community & Creator Track
+### Community & Creator Track
 Your community or channel should hit at least **two** of the following baselines:
 * **Discord Communities:** 500+ active members with consistent daily text and voice activity.
 * **Twitch / Kick Streamers:** 20+ average concurrent viewers with a consistent weekly broadcast schedule.
