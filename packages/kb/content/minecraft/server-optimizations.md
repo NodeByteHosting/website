@@ -1,3 +1,11 @@
+title: Server Optimizations
+description: Learn how to optimize your Minecraft server for peak performance. 
+tags: [minecraft, perfromance, optimization, tps-lag]
+author: Tyler. H
+lastUpdated: 2026-06-16
+order: 3
+---
+
 # Optimizing Your Minecraft Server: A Complete Performance Guide
 
 It is a common misconception that rubber-banding, delayed block breaking, and "ghost pings" are always caused by network routing. More often than not, these issues stem from **Server Tick Lag** meaning the server's CPU is struggling to keep up with the game's internal simulation loop rather than a breakdown in the network pipeline.
