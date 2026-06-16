@@ -4,7 +4,7 @@ description: Learn how to optimize your Minecraft server for peak performance.
 tags: [minecraft, perfromance, optimization, tps-lag]
 author: Tyler. H
 lastUpdated: 2026-06-16
-order: 3
+order: 10
 ---
 
 # Optimizing Your Minecraft Server: A Complete Performance Guide
