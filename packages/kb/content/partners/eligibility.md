@@ -1,10 +1,10 @@
 ---
 title: Partnership Requirements & Eligibility Criteria
 description: Minimal metrics and eligibility guidelines for communities and developers applying for the NodeByte Partnership Program.
-tags: [partners, introduction, overview]
+tags: [partners, requirements, eligibility]
 author: NodeByte Team
 lastUpdated: 2026-06-16
-order: 1
+order: 2
 ---
 
 We review every partnership application individually. While metrics provide an initial benchmark, we place a high value on **engagement quality, content consistency, and community culture**. 
