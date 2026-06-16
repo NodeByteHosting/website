@@ -1,5 +1,5 @@
 ---
-title: Partnership Requirements & Eligibility Criteria
+title: Requirements & Eligibility
 description: Minimal metrics and eligibility guidelines for communities and developers applying for the NodeByte Partnership Program.
 tags: [partners, requirements, eligibility]
 author: NodeByte Team
