@@ -4,7 +4,7 @@ description: Step-by-step instructions on applying for the NodeByte partner prog
 tags: [partners, application]
 author: NodeByte Team
 lastUpdated: 2026-06-16
-order: 1
+order: 3
 ---
 
 Ready to partner up? We handle our application pipeline with strict privacy and care. Follow the steps below to prepare your application and submit it to our management team.
