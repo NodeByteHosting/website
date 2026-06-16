@@ -1,3 +1,4 @@
+---
 title: Server Optimizations
 description: Learn how to optimize your Minecraft server for peak performance. 
 tags: [minecraft, perfromance, optimization, tps-lag]
