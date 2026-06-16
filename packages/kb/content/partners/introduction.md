@@ -1,5 +1,5 @@
 ---
-title: NodeByte Partnership Program
+title: Introduction
 description: Learn about the NodeByte Partnership Program, our structural tiers, and the mutual benefits we offer to communities, content creators, and developers.
 tags: [partners, introduction, overview]
 author: NodeByte Team
@@ -7,6 +7,7 @@ lastUpdated: 2026-06-16
 order: 1
 ---
 
+## NodeByte Partnership Program
 At NodeByte, we believe in fueling the builders, creators, and community leaders who push online spaces forward. Our Partnership Program is designed to build sustainable, mutually beneficial relationships. We don't just provide infrastructure support; we actively invest in your growth while you help expand the NodeByte ecosystem.
 
 Whether you run a fast-growing gaming community, a content channel, or an open-source development project, we offer reliable performance infrastructure to keep your projects running smoothly.
