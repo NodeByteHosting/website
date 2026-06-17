@@ -1,7 +1,7 @@
 ---
-title: Diagnosing Server Lag
-description: A comprehensive guide to diagnose server lag and performance issues.
-tags: [minecraft, server, lag]
+title: Diagnosing Modded Servers
+description: A comprehensive guide to diagnose modded server lag and performance issues.
+tags: [minecraft, mods, server, lag]
 author: NodeByte Team
 lastUpdated: 2026-06-16
 order: 9
