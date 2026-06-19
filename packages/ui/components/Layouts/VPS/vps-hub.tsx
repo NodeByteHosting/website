@@ -155,11 +155,11 @@ function PlanCard({ plan }: { plan: VpsPlanSpec }) {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Server className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.ramGB} GB RAM</span>
+            <span className="font-medium">{plan.ramGB} GB</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <HardDrive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.storageGB} GB NVMe</span>
+            <span className="font-medium">{plan.storageGB} GB</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Network className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
