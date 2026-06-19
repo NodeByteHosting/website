@@ -65,7 +65,7 @@ export const AMD_PLANS: VpsPlanSpec[] = [
     hardware: "amd",
     description: "Maximum power for demanding applications and resource-heavy services.",
     cpuModel: "AMD Ryzen™ 7 1700X",
-    priceGBP: 35,
+    priceGBP: 40,
     cpu: 4,
     ramGB: 16,
     storageGB: 200,
