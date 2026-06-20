@@ -155,11 +155,11 @@ function PlanCard({ plan }: { plan: VpsPlanSpec }) {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Server className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.ramGB} GB RAM</span>
+            <span className="font-medium">{plan.ramGB} GB</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <HardDrive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.storageGB} GB NVMe</span>
+            <span className="font-medium">{plan.storageGB} GB</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Network className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
@@ -270,7 +270,7 @@ export function VpsHub({ plans }: VpsHubProps) {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Enterprise KVM virtual servers across multiple hardware lineups. Full root access, NVMe SSD, and DDoS protection on every plan.
+            Enterprise KVM virtual servers across multiple hardware lineups. Full root access and DDoS protection on every plan.
           </p>
         </div>
 
