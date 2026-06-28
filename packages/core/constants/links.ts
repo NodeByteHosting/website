@@ -10,7 +10,7 @@ export const LINKS = {
   githubDiscussions: "https://github.com/orgs/NodeByteHosting/discussions",
   twitter:           "https://twitter.com/NodeByteHosting",
   trustpilot:        "https://uk.trustpilot.com/review/nodebyte.host",
-  status:            "https://nodebytestat.us",
+  status:            "https://status.nodebyte.host",
   contact:           "/contact",
   billing: {
     root:             "https://billing.nodebyte.host",

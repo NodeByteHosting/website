@@ -270,7 +270,7 @@ export function VpsHub({ plans }: VpsHubProps) {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Enterprise KVM virtual servers across multiple hardware lineups. Full root access, NVMe SSD, and DDoS protection on every plan.
+            Enterprise KVM virtual servers across multiple hardware lineups. Full root access and DDoS protection on every plan.
           </p>
         </div>
 
