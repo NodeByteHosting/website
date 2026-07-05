@@ -19,6 +19,8 @@ import { cn } from "@/packages/core/lib/utils";
 interface SearchResult {
   slug: string;
   category: string;
+  /** Full relative path for URL construction, e.g. "games/minecraft" */
+  categoryPath: string;
   title: string;
   description: string;
   excerpt: string;
@@ -78,8 +80,8 @@ function SearchContent({
         <div className="absolute top-full left-0 right-0 mt-2 bg-popover border rounded-lg shadow-lg z-50 max-h-[400px] overflow-auto">
           {results.map((result) => (
             <Link
-              key={`${result.category}/${result.slug}`}
-              href={`/kb/${result.category}/${result.slug}`}
+              key={`${result.categoryPath}/${result.slug}`}
+              href={`/kb/${result.categoryPath}/${result.slug}`}
               onClick={onSelect}
               className="block p-3 hover:bg-accent transition-colors border-b last:border-b-0"
             >

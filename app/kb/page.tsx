@@ -43,7 +43,8 @@ export default async function KnowledgeBasePage() {
   // Prepare search data
   const searchArticles = allArticles.map((article) => ({
     slug: article.slug,
-    category: article.categorySlug,
+    category: article.category,
+    categoryPath: article.categoryPath,
     title: article.title,
     description: article.description,
     excerpt: article.excerpt || "",

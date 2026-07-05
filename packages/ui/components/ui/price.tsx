@@ -27,21 +27,29 @@ const currencyFlags: Record<string, ElementType> = {
 }
 
 interface PriceProps {
-  /** Price in GBP (base currency) */
+  /** Price in GBP (base currency) — used as fallback when the selected currency has no native billing price */
   amount: number
+  /** Native billing prices per currency code from the billing panel, e.g. { GBP: 4, EUR: 4.59, USD: 5.37 } */
+  prices?: Record<string, number>
   className?: string
   showOriginal?: boolean
 }
 
 /**
- * Display a price that automatically converts to the user's selected currency
+ * Display a price that automatically converts to the user's selected currency.
+ * When `prices` is provided, uses the billing panel's exact price for the selected
+ * currency instead of applying an exchange rate to the GBP amount.
  */
-export function Price({ amount, className, showOriginal = false }: PriceProps) {
-  const { convertAndFormat, currency } = useCurrency()
+export function Price({ amount, prices, className, showOriginal = false }: PriceProps) {
+  const { convertAndFormat, format, currency } = useCurrency()
+
+  const displayed = prices?.[currency] !== undefined
+    ? format(prices[currency])
+    : convertAndFormat(amount)
 
   return (
     <span className={className}>
-      {convertAndFormat(amount)}
+      {displayed}
       {showOriginal && currency !== "GBP" && (
         <span className="text-muted-foreground text-sm ml-1">(£{amount})</span>
       )}

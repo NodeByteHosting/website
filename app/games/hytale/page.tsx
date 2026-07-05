@@ -7,7 +7,6 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { LINKS } from "@/packages/core/constants/links"
 import {
-  HYTALE_PLANS,
   HYTALE_PLAN_DISPLAY,
   HYTALE_PLAN_STATIC_FEATURES,
   HYTALE_FEATURES,
@@ -15,7 +14,7 @@ import {
   HYTALE_HERO_FEATURES,
   HYTALE_CONFIG,
 } from "@/packages/core/constants/game"
-import { applyGamePlanOverrides } from "@/packages/core/products/server"
+import { getGamePlans } from "@/packages/core/products/billing-service"
 
 export const metadata: Metadata = {
   title: "Hytale Server Hosting",
@@ -25,12 +24,13 @@ export const metadata: Metadata = {
 export default async function HytalePage() {
   const t = await getTranslations()
 
-  const plans = applyGamePlanOverrides("hytale", HYTALE_PLANS).map((plan) => {
+  const plans = (await getGamePlans("hytale")).map((plan) => {
     const display = HYTALE_PLAN_DISPLAY[plan.id as keyof typeof HYTALE_PLAN_DISPLAY]
     return {
       name: display.name,
       description: display.description,
       priceGBP: plan.priceGBP,
+      prices: plan.prices,
       period: t("pricing.perMonth"),
       popular: plan.popular,
       url: plan.url,

@@ -29,4 +29,6 @@ export interface GamePlanSpec {
   url?: string
   /** Availability status. Defaults to "in_stock" when omitted. */
   stock?: "in_stock" | "out_of_stock" | "coming_soon"
+  /** Native billing prices per currency code, e.g. { GBP: 4, EUR: 4.59, USD: 5.37 } */
+  prices?: Record<string, number>
 }
