@@ -166,7 +166,7 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
 
       {mounted && (
-        <DropdownMenuContent align="end" sideOffset={8} className="w-88 p-0 overflow-hidden">
+        <DropdownMenuContent align="end" sideOffset={8} className="w-88 p-0 overflow-hidden max-h-[85svh] flex flex-col">
 
           {/* ── Header ── */}
           <div className="px-4 pt-3.5 pb-3 border-b border-border/60 flex items-center justify-between">
@@ -205,7 +205,7 @@ export function ThemeToggle() {
           <DropdownMenuSeparator />
 
           {/* ── Theme sections ── */}
-          <div className="px-3 py-3 space-y-4 max-h-[58vh] overflow-y-auto">
+          <div className="px-3 py-3 space-y-4 flex-1 min-h-0 overflow-y-auto">
             {SECTIONS.map(({ key, label }) => (
               <div key={key}>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-1">

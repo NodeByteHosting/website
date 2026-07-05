@@ -16,7 +16,8 @@ interface ArticleMeta {
 
 interface AdjacentArticle {
   slug: string;
-  category: string;
+  /** Full relative path of the article's category, e.g. "games/minecraft" */
+  categoryPath: string;
   title: string;
 }
 
@@ -143,7 +144,7 @@ export function KBArticle({
           <nav className="flex flex-col sm:flex-row gap-4">
             {previousArticle ? (
               <Link
-                href={`/kb/${previousArticle.category}/${previousArticle.slug}`}
+                href={`/kb/${previousArticle.categoryPath}/${previousArticle.slug}`}
                 className="flex-1 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="flex h-full flex-col rounded-lg border bg-card/60 p-4 transition-colors group-hover:border-primary/35 group-hover:bg-primary/5">
@@ -162,7 +163,7 @@ export function KBArticle({
 
             {nextArticle ? (
               <Link
-                href={`/kb/${nextArticle.category}/${nextArticle.slug}`}
+                href={`/kb/${nextArticle.categoryPath}/${nextArticle.slug}`}
                 className="flex-1 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="flex h-full flex-col items-end rounded-lg border bg-card/60 p-4 text-right transition-colors group-hover:border-primary/35 group-hover:bg-primary/5">

@@ -291,8 +291,10 @@ export function NodesClient() {
       {/* ── Background ─────────────────────────────────────────────────────── */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background pointer-events-none" />
       <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] animate-pulse pointer-events-none" />
-      <div className="absolute bottom-1/3 left-1/4 w-[350px] h-[350px] bg-accent/8 rounded-full blur-[100px] animate-pulse pointer-events-none" style={{ animationDelay: "1.5s" }} />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 55% 45% at 70% 25%, hsl(var(--primary) / 0.08) 0%, transparent 100%), radial-gradient(ellipse 42% 35% at 25% 60%, hsl(var(--accent) / 0.08) 0%, transparent 100%)" }}
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 sm:pt-36 pb-24 sm:pb-32 space-y-20">
 

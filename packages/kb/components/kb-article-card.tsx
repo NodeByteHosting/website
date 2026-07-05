@@ -7,6 +7,8 @@ export interface Article {
   slug: string;
   category: string;
   categorySlug: string;
+  /** Full relative path used for URL construction, e.g. "games/minecraft" */
+  categoryPath: string;
   title: string;
   description: string;
   tags?: string[];
@@ -32,7 +34,7 @@ export function KBArticleCard({
   translations,
 }: KBArticleCardProps) {
   return (
-    <Link href={`/kb/${article.categorySlug}/${article.slug}`}>
+    <Link href={`/kb/${article.categoryPath}/${article.slug}`}>
       <article
         className={cn(
           "group relative flex items-start gap-4 p-5 rounded-xl border bg-card hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300",
