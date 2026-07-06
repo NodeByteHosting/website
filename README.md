@@ -122,7 +122,7 @@ The frontend uses a centralized API client (`packages/core/lib/api.ts`) that rou
 
 A small set of lightweight API routes remain in the Next.js app for public-facing proxy endpoints:
 - `/api/github/releases` -- GitHub release data
-- `/api/instatus` -- Status page integration
+- `/api/status` -- status.nodebyte.host integration (node/service monitor status, uptime, latency)
 - `/api/panel/*` -- Public panel data (counts, nodes, servers, stats, users)
 - `/api/trustpilot` -- Trustpilot review data
 
@@ -142,7 +142,7 @@ A small set of lightweight API routes remain in the Next.js app for public-facin
 │   │   └── users/               # User management
 │   ├── api/                     # Lightweight proxy routes
 │   │   ├── github/releases/     # GitHub releases proxy
-│   │   ├── instatus/            # Status page proxy
+│   │   ├── status/              # status.nodebyte.host proxy
 │   │   ├── panel/               # Public panel data
 │   │   └── trustpilot/          # Trustpilot proxy
 │   ├── auth/                    # Authentication pages

@@ -12,12 +12,29 @@ import {
 } from "@/packages/core/lib/bytepay"
 import { parseDescriptionSpecs, parseProductName } from "@/packages/core/lib/spec-parser"
 import { POPULAR_SLUGS, DEFAULT_DDOS } from "@/packages/core/constants/product-overrides"
+import type { BillingProduct } from "@/packages/core/lib/bytepay"
 
 const getCachedProducts = unstable_cache(
   fetchAllBillingProducts,
   ["billing-products"],
   { revalidate: 300 },
 )
+
+/**
+ * A live, non-hidden product is visible in Paymenter but got filtered out
+ * because its description didn't parse into the specs the site needs.
+ * Logged so a wording change (e.g. a new storage phrasing) surfaces
+ * immediately instead of being discovered by a customer.
+ */
+function warnDroppedProduct(
+  product: BillingProduct,
+  categorySlug: string,
+  missingFields: string[],
+): void {
+  console.warn(
+    `[billing-service] Product "${product.name}" (id ${product.id}, slug ${product.slug}) in category "${categorySlug}" is live but missing parsed spec(s): ${missingFields.join(", ")}. Check its description formatting.`,
+  )
+}
 
 /**
  * Returns live-priced game plans for the given billing category slug.
@@ -29,7 +46,13 @@ export async function getGamePlans(categorySlug: string): Promise<GamePlanSpec[]
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
     const parsed = parseDescriptionSpecs(product.description)
 
-    if (!parsed.ramGB || !parsed.storageGB) return []
+    if (!parsed.ramGB || !parsed.storageGB) {
+      const missing = [!parsed.ramGB && "ramGB", !parsed.storageGB && "storageGB"].filter(
+        (v): v is string => Boolean(v),
+      )
+      warnDroppedProduct(product, categorySlug, missing)
+      return []
+    }
 
     return [
       {
@@ -57,7 +80,10 @@ export async function getDedicatedPlans(categorySlug: string): Promise<Dedicated
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
     const parsed = parseDescriptionSpecs(product.description)
 
-    if (!parsed.ramGB) return []
+    if (!parsed.ramGB) {
+      warnDroppedProduct(product, categorySlug, ["ramGB"])
+      return []
+    }
 
     return [
       {
@@ -93,7 +119,15 @@ export async function getVpsPlans(categorySlug: string): Promise<VpsPlanSpec[]> 
     const parsed = parseDescriptionSpecs(product.description)
     const { sku, lineup, series } = parseProductName(product.name)
 
-    if (!parsed.cpu || !parsed.ramGB || !parsed.storageGB) return []
+    if (!parsed.cpu || !parsed.ramGB || !parsed.storageGB) {
+      const missing = [
+        !parsed.cpu && "cpu",
+        !parsed.ramGB && "ramGB",
+        !parsed.storageGB && "storageGB",
+      ].filter((v): v is string => Boolean(v))
+      warnDroppedProduct(product, categorySlug, missing)
+      return []
+    }
 
     return [
       {

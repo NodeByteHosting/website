@@ -74,8 +74,9 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
 
   // ── Storage ────────────────────────────────────────────────────────────────
   // "25 GB SSD", "40 GB NVMe SSD", "100 GB SSD Storage", "40GB Disk Storage"
+  // "80 GB Local NVMe Storage" (no SSD/HDD/Disk keyword)
   // Also handles TB drives: "2 x 1 TB NVMe SSD", "4 x 16 TB SATA HDD"
-  const storageMatchGB = text.match(/(\d+)\s*GB\s+(?:NVMe\s+)?(?:SSD|Disk|HDD)(?:\s+Storage)?/i)
+  const storageMatchGB = text.match(/(\d+)\s*GB\s+(?:Local\s+)?(?:NVMe\s+)?(?:SSD|Disk|HDD|Storage)\b/i)
   const storageMatchTB = !storageMatchGB
     ? text.match(/(\d+)\s*TB\s+(?:NVMe\s+|Enterprise\s+|SATA\s+)?(?:SSD|HDD|Disk)/i)
     : null

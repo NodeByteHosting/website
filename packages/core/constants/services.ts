@@ -65,7 +65,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     highlights: [
       "Enterprise-grade processors",
       "Full root / SSH access",
-      "NVMe SSD storage",
+      "Lightning fast networks",
       "Enterprise DDoS protection",
     ],
     enabled: true,
