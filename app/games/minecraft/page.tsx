@@ -7,14 +7,13 @@ import { GameFAQ } from "@/packages/ui/components/Layouts/Games/game-faq"
 import { getTranslations } from "next-intl/server"
 import { LINKS } from "@/packages/core/constants/links"
 import {
-  MINECRAFT_PLANS,
   MINECRAFT_PLAN_FEATURE_KEYS,
   MINECRAFT_FEATURE_KEYS,
   MINECRAFT_FAQ_KEYS,
   MINECRAFT_HERO_FEATURES,
   MINECRAFT_CONFIG,
 } from "@/packages/core/constants/game"
-import { applyGamePlanOverrides } from "@/packages/core/products/server"
+import { getGamePlans } from "@/packages/core/products/billing-service"
 
 export const metadata: Metadata = {
   title: "Minecraft Server Hosting",
@@ -24,10 +23,11 @@ export const metadata: Metadata = {
 export default async function MinecraftPage() {
   const t = await getTranslations()
 
-  const plans = applyGamePlanOverrides("minecraft", MINECRAFT_PLANS).map((plan) => ({
+  const plans = (await getGamePlans("minecraft")).map((plan) => ({
     name: t(`games.minecraft.plans.${plan.id}.name`),
     description: t(`games.minecraft.plans.${plan.id}.description`),
     priceGBP: plan.priceGBP,
+    prices: plan.prices,
     period: t("pricing.perMonth"),
     popular: plan.popular,
     location: plan.location,

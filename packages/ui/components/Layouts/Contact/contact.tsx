@@ -105,11 +105,11 @@ export function Contact() {
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
       <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
       
-      {/* Animated orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/3 left-1/4 w-[300px] h-[300px] bg-accent/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: "1s" }} />
-      </div>
+      {/* Background glow */}
+      <div
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 50% 45% at 70% 25%, hsl(var(--primary) / 0.1) 0%, transparent 100%), radial-gradient(ellipse 40% 35% at 25% 65%, hsl(var(--accent) / 0.1) 0%, transparent 100%)" }}
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}

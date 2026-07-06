@@ -5,6 +5,67 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.0] - 2026-07-04
+
+### Added
+
+- **Dedicated Server Hosting** — new `/dedicated` product category backed by live Paymenter billing data
+  - `packages/core/types/servers/dedicated.ts` — `DedicatedPlanSpec` interface; `cores` is optional (physical cores, not vCPU), `storageDescription` holds the raw drive label (e.g. `"2 × 1 TB NVMe SSD (RAID 1)"`) for multi-drive configurations
+  - `packages/core/products/billing-service.ts` — `getDedicatedPlans(categorySlug)` function following the same billing-service pattern as VPS and game plans
+  - `packages/ui/components/Layouts/Dedicated/dedicated-hub.tsx` — listing page with AMD/Intel hardware filter, price sort, "Bare Metal" and hardware badges, IPMI/dedicated feature callouts, and a custom/enterprise CTA
+  - `app/dedicated/page.tsx` — server component fetching from the `dedicated-servers` billing category
+  - Navigation — Dedicated Servers section added to both desktop and mobile Services dropdowns, below VPS Servers
+  - Footer — Dedicated Servers link added to the Services column
+  - `packages/core/constants/services.ts` — Dedicated Servers entry added to `SERVICE_CATEGORIES` for the homepage service cards (amber palette, Cpu icon)
+  - `translations/templates/en.json` — `services.dedicated.*` and `footer.services.dedicatedServers` translation keys added
+
+- **Knowledge Base Subcategory Support** — the KB now supports arbitrary nesting (e.g. `games → minecraft → troubleshooting`) driven entirely by the filesystem
+  - `app/kb/[...path]/page.tsx` — unified catch-all route replacing the old fixed `[category]` and `[category]/[article]` routes; calls `resolvePath()` to decide whether to render a category page or an article page
+  - `packages/kb/lib/kb.ts` — full rewrite: `getCategories(parentPath?)` recurses into subdirectories, `getCategoryAtPath()` traverses the tree, `getSidebarTree()` / `buildSidebarItem()` build the full nested sidebar, `getAllPaths()` returns every valid path array for `generateStaticParams`
+  - `packages/kb/components/kb-sidebar.tsx` — recursive `SidebarNode` component with depth-aware indentation; auto-expands the branch matching the current pathname
+  - `packages/kb/components/kb-category-card.tsx` — `href` now uses the full category path; badge shows recursive `totalCount`
+  - `packages/kb/components/kb-article-card.tsx` — `href` uses `categoryPath` (full relative path)
+  - `packages/kb/components/kb-article.tsx` — prev/next links use full `categoryPath`
+  - `packages/kb/components/kb-search.tsx` — search result links use full `categoryPath`
+  - KB content restructured under `packages/kb/content/games/minecraft/` and `packages/kb/content/games/hytale/` subdirectories
+
+- **Billing-Native Currency Prices** — the website now uses exact prices from the Paymenter billing panel per currency instead of converting from a GBP exchange rate
+  - `packages/core/lib/bytepay.ts` — `getPricesMap(product)` returns `Record<string, number>` mapping every currency code to its monthly price from the product's recurring plan
+  - `packages/ui/components/ui/price.tsx` — `Price` component accepts an optional `prices` prop; uses `format(prices[currency])` (exact billing price) when available, falls back to `convertAndFormat(amountGBP)` (exchange rate)
+  - `packages/core/types/servers/game.ts`, `vps.ts`, `dedicated.ts` — `prices?: Record<string, number>` field added to all plan spec interfaces
+  - `billing-service.ts` — all three plan fetchers (`getGamePlans`, `getVpsPlans`, `getDedicatedPlans`) populate `prices` from `getPricesMap()`
+  - VPS Hub, all game pages — `prices` prop threaded through to `<Price>` components
+
+### Changed
+
+- **Spec Parser Improvements** (`packages/core/lib/spec-parser.ts`) — backward-compatible improvements that benefit VPS, game, and dedicated server parsing
+  - **CPU core count** — now falls back to inline patterns: `"8 cores and 16 threads"` (any position in text) and named multipliers (`"Octa-Core"` → 8, `"Quad-Core"` → 4, `"Dual-Core"` → 2, etc.)
+  - **Storage** — handles TB drives: `"2 x 1 TB NVMe SSD"` → `storageGB = 1024`; extracts `storageDescription` (the raw drive label before the colon, e.g. `"2 × 512 GB NVMe SSD (Gen 4)"`) for use in place of a bare number on dedicated server cards
+  - **Bandwidth detection** — no longer false-matches storage descriptions; TB references are only counted as bandwidth when paired with `outbound`, `traffic`, or `bandwidth` keywords; `"Unlimited Outbound Bandwidth"` correctly resolves to `null` (unmetered)
+  - **Intel CPU model** — regex expanded from Xeon-only to also match `"Intel® Core™ Ultra 7 265"` and `"Intel® Core™ i9"` families
+  - **AMD Ryzen model** — regex extended to capture PRO variants (`"Ryzen 7 PRO 8700GE"`)
+
+### Performance
+
+- **Decorative blur orbs replaced with CSS radial-gradients** — all `blur-[120px]`/`blur-[100px]` divs with `animate-pulse` replaced by a single `<div style={{ background: "radial-gradient(...)" }}>` across every affected component; eliminates GPU compositing layers and per-frame repaints that were causing slow load times on Apple WebKit/Safari
+  - `packages/ui/components/Layouts/Home/hero.tsx`
+  - `packages/ui/components/Layouts/About/about-page.tsx`
+  - `packages/ui/components/Layouts/Contact/contact.tsx`
+  - `packages/ui/components/Layouts/Error/error-page.tsx`
+  - `packages/ui/components/Layouts/Error/not-found-page.tsx`
+  - `packages/ui/components/Layouts/Nodes/nodes-client.tsx`
+  - `packages/ui/components/Layouts/VPS/vps-hub.tsx`
+  - `packages/ui/components/Layouts/VPS/vps-hero.tsx` (conditional AMD/Intel colour palette preserved via inline style)
+- **Navbar `backdrop-blur-xl` → `backdrop-blur-md`** — reduces the full-width blur filter cost on the scrolled navbar state without a visible quality difference
+- **Theme toggle mobile cutoff fixed** — `DropdownMenuContent` now has `max-h-[85svh] flex flex-col`; inner theme scroll container changed to `flex-1 min-h-0 overflow-y-auto` so all themes are reachable on small screens
+
+### Fixed
+
+- **`packages/kb/content/billing/_meta.json` SyntaxError** — file ended with a stray `0` instead of `}`; fixed to valid JSON
+- **Stale `.next/types` build cache** — after deleting the old `[category]` and `[category]/[article]` KB routes the build cache still referenced them; resolved by deleting `.next/types` before the next build
+
+---
+
 ## [3.5.4] - 2026-05-30
 
 ### Added
@@ -644,5 +705,6 @@ Initial Next.js 15 website with App Router, shadcn/ui components, and multi-them
 
 ---
 
+[3.6.0]: https://github.com/NodeByteHosting/website/compare/v3.5.4...v3.6.0
 [3.1.0]: https://github.com/NodeByteHosting/website/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/NodeByteHosting/website/releases/tag/v3.0.0

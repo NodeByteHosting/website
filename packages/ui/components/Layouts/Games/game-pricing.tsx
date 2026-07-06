@@ -41,6 +41,8 @@ interface PricingPlan {
   url?: string
   /** Availability status — defaults to in_stock */
   stock?: "in_stock" | "out_of_stock" | "coming_soon"
+  /** Native billing prices per currency code; when present, used instead of converting priceGBP */
+  prices?: Record<string, number>
 }
 
 interface GamePricingProps {
@@ -249,7 +251,7 @@ export function GamePricing({
                         <h3 className="text-xl font-bold">{plan.name}</h3>
                         <div className="text-right">
                           <div className="flex items-baseline gap-0.5">
-                            <Price amount={plan.priceGBP} className="text-lg font-bold leading-none" />
+                            <Price amount={plan.priceGBP} prices={plan.prices} className="text-lg font-bold leading-none" />
                             <span className="text-xs text-muted-foreground">/{plan.period}</span>
                           </div>
                         </div>

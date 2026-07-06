@@ -118,10 +118,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "/games", label: t("footer.services.gameServers") },
                 { href: "/vps", label: t("footer.services.vpsServers") },
-                { href: "https://panel.nodebyte.host", label: t("footer.services.gamePanel") },
-                { href: "https://vps.nodebyte.host", label: t("footer.services.vpsPanel") },
+                { href: "/games", label: t("footer.services.gameServers") },
+                { href: "/dedicated", label: t("footer.services.dedicatedServers") },
+                { href: "https://lg.nodebyte.host", label: t("footer.services.systemStatus") },
               ].map((link) => (
                 <li key={link.label}>
                   {link.href.startsWith("http") ? (
@@ -155,10 +155,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: LINKS.discord, label: t("footer.resources.discordServer") },
-                { href: "https://nodebytestat.us/", label: t("footer.resources.serviceStatus") },
                 { href: "/kb", label: t("footer.resources.knowledgeBase") },
                 { href: LINKS.billing.root, label: t("footer.resources.billingPanel") },
+                { href: "https://panel.nodebyte.host", label: t("footer.resources.gamePanel") },
+                { href: "https://vps.nodebyte.host", label: t("footer.resources.vpsPanel") },
               ].map((link) => (
                 <li key={link.label}>
                   {link.href.startsWith("http") ? (
@@ -218,18 +218,18 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link 
-                  href="/contact"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {t("footer.company.contact")}
-                </Link>
-              </li>
-              <li>
-                <Link 
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("footer.company.aboutNodeByte")}
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/contact"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("footer.company.contact")}
                 </Link>
               </li>
               <li>
@@ -262,145 +262,11 @@ export function Footer() {
               © {new Date().getFullYear()} NodeByte LTD. {t("footer.copyright")}
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <a 
-                href="https://crowdin.com/project/nodebyte" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="opacity-70 hover:opacity-100 transition-opacity"
-              >
-                <Image 
-                  src="https://badges.crowdin.net/nodebyte/localized.svg" 
-                  alt="Crowdin Localization" 
-                  width={88}
-                  height={20}
-                  className="h-5 w-auto"
-                />
-              </a>
-              <span className="hidden sm:inline">•</span>
-              <StatusIndicator />
-              <span className="hidden sm:inline">•</span>
               <span className="hidden sm:inline">Company No. 15432941</span>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  )
-}
-
-
-type StatusType = "UP" | "HASISSUES" | "UNDERMAINTENANCE"
-
-interface StatusData {
-  status: StatusType
-  url: string
-  hasIncidents: boolean
-  hasMaintenance: boolean
-  incidents: Array<{
-    id: string
-    name: string
-    status: string
-    impact: string
-    url: string
-  }>
-  maintenances: Array<{
-    id: string
-    name: string
-    status: string
-    url: string
-  }>
-  error?: string
-}
-
-function StatusIndicator() {
-  const t = useTranslations()
-  const [status, setStatus] = useState<StatusData | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let mounted = true
-    ;(async () => {
-      const res = await fetch("/api/instatus")
-      if (res.ok) {
-        const data = await res.json()
-        if (mounted) setStatus(data)
-      } else {
-        if (mounted) setStatus({
-          status: "UP",
-          url: "https://nodebytestat.us",
-          hasIncidents: false,
-          hasMaintenance: false,
-          incidents: [],
-          maintenances: [],
-        })
-      }
-      if (mounted) setLoading(false)
-    })()
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  const getStatusConfig = (statusType: StatusType) => {
-    switch (statusType) {
-      case "UP":
-        return {
-          color: "bg-green-500",
-          textColor: "text-green-500",
-          label: t("footer.statusLabels.operational"),
-          icon: CheckCircle2,
-        }
-      case "HASISSUES":
-        return {
-          color: "bg-yellow-500",
-          textColor: "text-yellow-500",
-          label: t("footer.statusLabels.degraded"),
-          icon: AlertTriangle,
-        }
-      case "UNDERMAINTENANCE":
-        return {
-          color: "bg-blue-500",
-          textColor: "text-blue-500",
-          label: t("footer.statusLabels.maintenance"),
-          icon: Wrench,
-        }
-      default:
-        return {
-          color: "bg-green-500",
-          textColor: "text-green-500",
-          label: t("footer.statusLabels.operational"),
-          icon: CheckCircle2,
-        }
-    }
-  }
-
-  if (loading) {
-    return (
-      <span className="inline-flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-pulse" />
-        <span className="text-muted-foreground">{t("common.loading")}</span>
-      </span>
-    )
-  }
-
-  const currentStatus = status?.status || "UP"
-  const config = getStatusConfig(currentStatus)
-  const StatusIcon = config.icon
-
-  return (
-    <a
-      href={status?.url || "https://nodebytestat.us"}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        "inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity group"
-      )}
-    >
-      <span className={cn("w-2 h-2 rounded-full animate-pulse", config.color)} />
-      <span className={cn("transition-colors", config.textColor)}>
-        {config.label}
-      </span>
-      <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity" />
-    </a>
   )
 }

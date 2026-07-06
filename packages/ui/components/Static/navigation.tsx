@@ -88,6 +88,13 @@ export function Navigation() {
       icon: Server,
       section: "vps",
     },
+    {
+      title: t("services.dedicated.title"),
+      href: "/dedicated",
+      description: t("services.dedicated.description"),
+      icon: Cpu,
+      section: "dedicated",
+    },
   ]
 
   const resources = [
@@ -241,7 +248,7 @@ export function Navigation() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm"
+            ? "bg-background/80 backdrop-blur-md border-b border-border/50 shadow-sm"
             : "bg-linear-to-b from-background/80 to-transparent"
         )}
       >
@@ -367,6 +374,29 @@ export function Navigation() {
                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">VPS Servers</p>
                     </div>
                     {services.filter(s => s.section === "vps").map((service) => (
+                      <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
+                        <Link
+                          href={service.href}
+                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                            <service.icon className="h-4 w-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-sm text-foreground">{service.title}</span>
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                              {service.description}
+                            </p>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    {/* Dedicated section divider */}
+                    <div className="border-t border-border/50 mx-2 my-1" />
+                    <div className="px-2 pb-0.5">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Dedicated Servers</p>
+                    </div>
+                    {services.filter(s => s.section === "dedicated").map((service) => (
                       <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={service.href}
@@ -614,6 +644,28 @@ export function Navigation() {
                   <div className="border-t border-border/40 mx-2 my-1" />
                   <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pb-0.5">VPS Servers</p>
                   {services.filter(s => s.section === "vps").map((service) => (
+                    <Link
+                      key={service.title}
+                      href={service.href}
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <service.icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm">{service.title}</div>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {service.description}
+                        </p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    </Link>
+                  ))}
+                  {/* Dedicated Servers */}
+                  <div className="border-t border-border/40 mx-2 my-1" />
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pb-0.5">Dedicated Servers</p>
+                  {services.filter(s => s.section === "dedicated").map((service) => (
                     <Link
                       key={service.title}
                       href={service.href}

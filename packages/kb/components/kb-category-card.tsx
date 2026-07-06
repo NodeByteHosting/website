@@ -1,60 +1,39 @@
-import Link from "next/link";
+import Link from "next/link"
 import {
-  Rocket,
-  Gamepad2,
-  CreditCard,
-  Users,
-  Shield,
-  Settings,
-  HelpCircle,
-  Server,
+  Rocket, Gamepad2, CreditCard, Users, Shield, Settings,
+  HelpCircle, Server, FileText, Blocks, Wrench, BookOpen, Network,
   type LucideIcon,
-} from "lucide-react";
-import { cn } from "@/packages/core/lib/utils";
+} from "lucide-react"
+import { cn } from "@/packages/core/lib/utils"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/packages/ui/components/ui/card";
-import { Badge } from "@/packages/ui/components/ui/badge";
+  Card, CardContent, CardDescription, CardHeader, CardTitle,
+} from "@/packages/ui/components/ui/card"
+import { Badge } from "@/packages/ui/components/ui/badge"
+import type { KBCategory } from "@/packages/kb/lib/kb"
 
-// Icon mapping for dynamic icons from _meta.json
 const iconMap: Record<string, LucideIcon> = {
-  Rocket,
-  Gamepad2,
-  CreditCard,
-  Users,
-  Shield,
-  Settings,
-  HelpCircle,
-  Server,
-};
-
-export interface Category {
-  slug: string;
-  title: string;
-  description: string;
-  icon: string;
-  order: number;
-  articleCount: number;
+  Rocket, Gamepad2, CreditCard, Users, Shield, Settings,
+  HelpCircle, Server, FileText, Blocks, Wrench, BookOpen, Network,
 }
 
+// Re-export for callers that imported the old local Category type
+export type { KBCategory as Category }
+
 interface KBCategoryCardProps {
-  category: Category;
-  className?: string;
+  category: KBCategory
+  className?: string
 }
 
 export function KBCategoryCard({ category, className }: KBCategoryCardProps) {
-  const Icon = iconMap[category.icon] || HelpCircle;
+  const Icon = iconMap[category.icon] ?? HelpCircle
+  const count = category.totalCount
 
   return (
-    <Link href={`/kb/${category.slug}`}>
+    <Link href={`/kb/${category.path}`}>
       <Card
         className={cn(
           "group h-full transition-all duration-200 hover:shadow-lg hover:border-primary/50 hover:-translate-y-1",
-          className
+          className,
         )}
       >
         <CardHeader>
@@ -63,7 +42,7 @@ export function KBCategoryCard({ category, className }: KBCategoryCardProps) {
               <Icon className="h-6 w-6" />
             </div>
             <Badge variant="secondary" className="text-xs">
-              {category.articleCount} {category.articleCount === 1 ? "article" : "articles"}
+              {count} {count === 1 ? "article" : "articles"}
             </Badge>
           </div>
           <CardTitle className="group-hover:text-primary transition-colors">
@@ -80,29 +59,24 @@ export function KBCategoryCard({ category, className }: KBCategoryCardProps) {
         </CardContent>
       </Card>
     </Link>
-  );
+  )
 }
 
 interface KBCategoryGridProps {
-  categories: Category[];
-  className?: string;
+  categories: KBCategory[]
+  className?: string
 }
 
 export function KBCategoryGrid({ categories, className }: KBCategoryGridProps) {
-  const sortedCategories = categories.toSorted((a, b) => a.order - b.order);
+  const sorted = categories.toSorted((a, b) => a.order - b.order)
 
   return (
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
-        className
-      )}
-    >
-      {sortedCategories.map((category) => (
-        <KBCategoryCard key={category.slug} category={category} />
+    <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", className)}>
+      {sorted.map((category) => (
+        <KBCategoryCard key={category.path} category={category} />
       ))}
     </div>
-  );
+  )
 }
 
-export default KBCategoryCard;
+export default KBCategoryCard

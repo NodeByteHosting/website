@@ -45,20 +45,14 @@ export function VpsHero({
     <section className="relative overflow-hidden pt-32 sm:pt-36 pb-16 sm:pb-24">
       {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background" />
-      <div className="absolute inset-0 overflow-hidden">
-        <div
-          className={cn(
-            "absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[120px]",
-            isAmd ? "bg-red-500/5" : "bg-blue-500/5",
-          )}
-        />
-        <div
-          className={cn(
-            "absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-[100px]",
-            isAmd ? "bg-primary/5" : "bg-accent/5",
-          )}
-        />
-      </div>
+      <div
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        style={{
+          background: isAmd
+            ? "radial-gradient(ellipse 60% 50% at 30% 30%, hsl(0 70% 50% / 0.07) 0%, transparent 100%), radial-gradient(ellipse 50% 40% at 70% 70%, hsl(var(--primary) / 0.06) 0%, transparent 100%)"
+            : "radial-gradient(ellipse 60% 50% at 30% 30%, hsl(210 70% 50% / 0.07) 0%, transparent 100%), radial-gradient(ellipse 50% 40% at 70% 70%, hsl(var(--accent) / 0.06) 0%, transparent 100%)",
+        }}
+      />
       <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

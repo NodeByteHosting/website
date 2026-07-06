@@ -11,6 +11,7 @@ export const LINKS = {
   twitter:           "https://twitter.com/NodeByteHosting",
   trustpilot:        "https://uk.trustpilot.com/review/nodebyte.host",
   status:            "https://status.nodebyte.host",
+  network:           "https://lg.nodebyte.host",
   contact:           "/contact",
   billing: {
     root:             "https://billing.nodebyte.host",

@@ -31,15 +31,15 @@ export const HYTALE_PLANS: GamePlanSpec[] = [
  * here directly instead of being keyed through i18n.
  */
 export const HYTALE_PLAN_DISPLAY = {
-  starter: {
+  "hytale-starter": {
     name: "Starter",
     description: "Perfect for small communities and testing.",
   },
-  standard: {
+  "hytale-standard": {
     name: "Standard",
     description: "Perfect for growing communities and performance.",
   },
-  performance: {
+  "hytale-performance": {
     name: "Performance",
     description: "Perfect for large communities and high performance.",
   },

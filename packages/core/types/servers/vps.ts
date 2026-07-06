@@ -38,7 +38,9 @@ export interface VpsPlanSpec {
   /** QoS / resource-priority tier */
   lineup?: "BASE" | "COMP" | "GAME" | "ELITE"
   /** Hardware generation identifier */
-  series?: "RG1" | "RG3" | "RG4" | "IG3" | "IX1"
+  series?: "RG1" | "RG3" | "RG4" | "IG3" | "IX1" | "LND" | "ARM1" | "HZ3"
   /** CPU brand family */
-  hardware?: "amd" | "intel"
+  hardware?: "amd" | "intel" | "arm"
+  /** Native billing prices per currency code, e.g. { GBP: 10, EUR: 11.50, USD: 12.75 } */
+  prices?: Record<string, number>
 }

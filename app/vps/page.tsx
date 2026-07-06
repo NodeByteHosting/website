@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { VpsHub } from "@/packages/ui/components/Layouts/VPS/vps-hub"
-import { ALL_VPS_PLANS } from "@/packages/core/constants/vps"
+import { getVpsPlans } from "@/packages/core/products/billing-service"
 
 export const metadata: Metadata = {
   title: "VPS Hosting",
@@ -8,7 +8,11 @@ export const metadata: Metadata = {
     "Enterprise KVM virtual servers across AMD and Intel hardware lineups. Full root access, NVMe SSD, DDoS protection, and instant deployment.",
 }
 
-export default function VpsPage() {
-  return <VpsHub plans={ALL_VPS_PLANS} />
+export default async function VpsPage() {
+  const [sharedPlans, dedicatedPlans] = await Promise.all([
+    getVpsPlans("shared-cpu"),
+    getVpsPlans("dedicated-cpu"),
+  ])
+  return <VpsHub plans={[...sharedPlans, ...dedicatedPlans]} />
 }
 
