@@ -89,4 +89,23 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ],
     enabled: true,
   },
+  {
+    id: "dedicated",
+    name: "Dedicated Servers",
+    description:
+      "Physical bare-metal servers with fully dedicated CPU cores, enterprise storage, and IPMI out-of-band access. Zero resource contention and maximum raw performance.",
+    href: "/dedicated",
+    icon: Cpu,
+    gradient: "from-amber-600/25 via-amber-500/8 to-transparent",
+    iconColor: "text-amber-400",
+    accentBorder: "hover:border-amber-400/40",
+    startingPriceGBP: 50,
+    highlights: [
+      "100% dedicated CPU cores",
+      "IPMI out-of-band access",
+      "Enterprise storage",
+      "Enterprise DDoS protection",
+    ],
+    enabled: true,
+  },
 ]
