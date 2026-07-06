@@ -10,6 +10,7 @@ import { Logo } from "@/packages/ui/components/logo"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
+import { StatusBadge } from "@/packages/ui/components/Static/status-badge"
 
 export function Footer() {
   const t = useTranslations()
@@ -262,6 +263,7 @@ export function Footer() {
               © {new Date().getFullYear()} NodeByte LTD. {t("footer.copyright")}
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <StatusBadge />
               <span className="hidden sm:inline">Company No. 15432941</span>
             </div>
           </div>

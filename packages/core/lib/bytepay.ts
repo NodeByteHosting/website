@@ -5,8 +5,54 @@
  * JSON:API response into a flat, typed structure the website can consume.
  */
 
-const BYTEPAY_HOST = process.env.BYTEPAY_HOST!
-const BYTEPAY_TOKEN = process.env.BYTEPAY_TOKEN!
+import { unstable_cache } from "next/cache"
+
+function getConfig(): { host: string; token: string } {
+  const host = process.env.BYTEPAY_HOST
+  const token = process.env.BYTEPAY_TOKEN
+  if (!host || !token) {
+    throw new Error(
+      "Billing API misconfigured: BYTEPAY_HOST and BYTEPAY_TOKEN must both be set.",
+    )
+  }
+  return { host, token }
+}
+
+const REQUEST_TIMEOUT_MS = 10_000
+const MAX_ATTEMPTS = 3
+const PAGE_SIZE = 100
+
+/** Fetch with a timeout and retries for transient failures (429/5xx/network errors). */
+async function fetchWithRetry(url: string, token: string): Promise<Response> {
+  let lastError: unknown
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        next: { revalidate: 300 },
+      })
+
+      if (res.ok) return res
+
+      const isRetryable = res.status === 429 || res.status >= 500
+      if (!isRetryable || attempt === MAX_ATTEMPTS) return res
+
+      const retryAfter = Number(res.headers.get("Retry-After"))
+      const delayMs = Number.isFinite(retryAfter) && retryAfter > 0
+        ? retryAfter * 1000
+        : 250 * 2 ** (attempt - 1)
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+    } catch (err) {
+      lastError = err
+      if (attempt === MAX_ATTEMPTS) throw err
+      await new Promise((resolve) => setTimeout(resolve, 250 * 2 ** (attempt - 1)))
+    }
+  }
+
+  throw lastError
+}
 
 // ─── JSON:API wire types ───────────────────────────────────────────────────
 
@@ -80,28 +126,90 @@ function nameToSlug(name: string): string {
     .replace(/^-|-$/g, "")
 }
 
+interface CategoryInfo {
+  id: string
+  name: string
+  parentId: string | null
+}
+
 /**
- * Derive the category slug from the included map.
- * Paymenter's API exposes `name` on categories but not a `slug` attribute.
- * Uses `full_slug` if the version of Paymenter provides it, otherwise falls
- * back to slugifying the category name.
+ * Fetch every category from the admin Categories endpoint (authoritative —
+ * independent of whatever a given products page happens to `include`).
+ * Paymenter doesn't expose a `slug` attribute on categories, only `name`
+ * and `parent_id`, so slugs are still derived by slugifying the name.
  */
-function resolveCategorySlug(catId: string, map: Map<string, JsonApiResource>): string {
-  const cat = map.get(`categories:${catId}`)
-  if (!cat) return ""
-  if (typeof cat.attributes.full_slug === "string") return cat.attributes.full_slug
-  return nameToSlug((cat.attributes.name as string) ?? "")
+async function fetchAllCategories(): Promise<CategoryInfo[]> {
+  const { host, token } = getConfig()
+  const all: CategoryInfo[] = []
+  let page = 1
+
+  while (true) {
+    const url = new URL(`${host}/api/v1/admin/categories`)
+    url.searchParams.set("per_page", String(PAGE_SIZE))
+    url.searchParams.set("page", String(page))
+
+    const res = await fetchWithRetry(url.toString(), token)
+    if (!res.ok) {
+      throw new Error(`Billing API error ${res.status}: ${res.statusText}`)
+    }
+
+    const json: JsonApiResponse = await res.json()
+    for (const cat of json.data) {
+      all.push({
+        id: cat.id,
+        name: (cat.attributes.name as string) ?? "",
+        parentId: cat.attributes.parent_id != null ? String(cat.attributes.parent_id) : null,
+      })
+    }
+
+    if (!json.links?.next) break
+    page++
+  }
+
+  return all
+}
+
+const getCachedCategories = unstable_cache(fetchAllCategories, ["billing-categories"], {
+  revalidate: 600,
+})
+
+/**
+ * Build category id → slug from the authoritative category list, warning on
+ * any two categories whose names slugify to the same value (since site pages
+ * key off the flat leaf slug, a collision would silently merge two categories'
+ * products together).
+ */
+function buildCategorySlugMap(categories: CategoryInfo[]): Map<string, string> {
+  const slugMap = new Map<string, string>()
+  const ownerOfSlug = new Map<string, string>()
+
+  for (const cat of categories) {
+    const slug = nameToSlug(cat.name)
+    slugMap.set(cat.id, slug)
+
+    const existingOwner = ownerOfSlug.get(slug)
+    if (existingOwner && existingOwner !== cat.id) {
+      console.warn(
+        `[bytepay] Category slug collision: "${cat.name}" (id ${cat.id}) and category id ${existingOwner} both slugify to "${slug}" — products in one category may shadow the other on the site.`,
+      )
+    } else {
+      ownerOfSlug.set(slug, cat.id)
+    }
+  }
+
+  return slugMap
 }
 
 function normalisePage(
   data: JsonApiResource[],
   map: Map<string, JsonApiResource>,
+  categorySlugMap: Map<string, string>,
 ): BillingProduct[] {
   return data.map((product): BillingProduct => {
     const attr = product.attributes
 
     const catRef = product.relationships?.category?.data as JsonApiRelRef | null | undefined
-    const categorySlug = catRef ? resolveCategorySlug(catRef.id, map) : ""
+    const categorySlug = catRef ? (categorySlugMap.get(catRef.id) ?? "") : ""
 
     const planRefs = (product.relationships?.plans?.data ?? []) as JsonApiRelRef[]
     const plans = planRefs
@@ -153,16 +261,17 @@ function normalisePage(
 
 async function fetchPage(
   page: number,
+  categorySlugMap: Map<string, string>,
 ): Promise<{ products: BillingProduct[]; hasNext: boolean }> {
-  const url = new URL(`${BYTEPAY_HOST}/api/v1/admin/products`)
+  const { host, token } = getConfig()
+
+  const url = new URL(`${host}/api/v1/admin/products`)
   url.searchParams.set("include", "category,plans,plans.prices")
   url.searchParams.set("filter[hidden]", "0")
+  url.searchParams.set("per_page", String(PAGE_SIZE))
   url.searchParams.set("page", String(page))
 
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${BYTEPAY_TOKEN}` },
-    next: { revalidate: 300 },
-  })
+  const res = await fetchWithRetry(url.toString(), token)
 
   if (!res.ok) {
     throw new Error(`Billing API error ${res.status}: ${res.statusText}`)
@@ -172,7 +281,7 @@ async function fetchPage(
   const map = buildIncludedMap(json.included)
 
   return {
-    products: normalisePage(json.data, map),
+    products: normalisePage(json.data, map, categorySlugMap),
     hasNext: Boolean(json.links?.next),
   }
 }
@@ -181,11 +290,14 @@ async function fetchPage(
 
 /** Fetch every non-hidden product across all pagination pages. */
 export async function fetchAllBillingProducts(): Promise<BillingProduct[]> {
+  const categories = await getCachedCategories()
+  const categorySlugMap = buildCategorySlugMap(categories)
+
   const all: BillingProduct[] = []
   let page = 1
 
   while (true) {
-    const { products, hasNext } = await fetchPage(page)
+    const { products, hasNext } = await fetchPage(page, categorySlugMap)
     all.push(...products)
     if (!hasNext) break
     page++

@@ -37,12 +37,12 @@ export function Services() {
         {/* Service Hub Cards */}
         <div
           className={cn(
-            "grid gap-8 max-w-4xl mx-auto",
+            "grid gap-8 mx-auto",
             activeServices.length === 1
               ? "max-w-xl"
               : activeServices.length === 2
-              ? "sm:grid-cols-2"
-              : "sm:grid-cols-2 lg:grid-cols-3",
+              ? "max-w-3xl sm:grid-cols-2"
+              : "max-w-6xl sm:grid-cols-2 lg:grid-cols-3",
           )}
         >
           {activeServices.map((service) => (
@@ -59,23 +59,23 @@ export function Services() {
               {/* Card header — gradient visual */}
               <div
                 className={cn(
-                  "relative h-44 bg-linear-to-br overflow-hidden flex items-center justify-center",
+                  "relative h-40 sm:h-48 bg-linear-to-br overflow-hidden flex items-center justify-center",
                   service.gradient,
                 )}
               >
                 {/* Large faded background icon */}
-                <service.icon className={cn("absolute w-48 h-48 opacity-[0.07]", service.iconColor)} />
+                <service.icon className={cn("absolute w-52 h-52 opacity-[0.07]", service.iconColor)} />
                 {/* Centred icon badge */}
                 <div className="relative z-10 w-16 h-16 rounded-2xl bg-background/10 border border-white/10 backdrop-blur-sm flex items-center justify-center">
                   <service.icon className={cn("w-8 h-8", service.iconColor)} />
                 </div>
               </div>
 
-              <div className="p-6 flex flex-col flex-1">
+              <div className="p-7 flex flex-col flex-1">
                 {/* Title + starting price */}
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <h3 className="text-xl font-bold">{service.name}</h3>
-                  <span className="text-xs text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full border border-border/50 shrink-0 mt-0.5 inline-flex items-center gap-1">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <h3 className="text-xl font-bold whitespace-nowrap">{service.name}</h3>
+                  <span className="text-xs text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full border border-border/50 shrink-0 inline-flex items-center gap-1">
                     {t("servicesHome.startingFrom")} <Price amount={service.startingPriceGBP} />/mo
                   </span>
                 </div>

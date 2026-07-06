@@ -23,6 +23,9 @@ import {
 } from "@/packages/ui/components/ui/accordion"
 import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
 import type { PublicNode } from "@/packages/core/constants/node-types"
+import { NODE_MONITOR_MAP, LOCATION_MONITOR_MAP } from "@/packages/core/constants/status-mapping"
+import { useNodeStatus } from "@/packages/core/hooks/use-node-status"
+import type { StatusApiMonitor } from "@/app/api/status/route"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { LINKS } from "@/packages/core/constants/links"
@@ -36,24 +39,20 @@ interface ExtendedNode extends PublicNode {
 const STATIC_NODES: ExtendedNode[] = [
   {
     id: 1,
-    name: "NB-GNODE-NC1",
+    name: "NEWC-GAME1",
     locationCode: "Newcastle, UK",
     isMaintenanceMode: false,
     memory: 1310089,
     disk: 1811000,
-    cpu: "AMD Ryzen™ 9 5900X",
-    ramType: "DDR4 ECC",
     uptime: 99.9,
   },
   {
     id: 2,
-    name: "NB-VNODE-HEL1",
+    name: "HEL-VPS1",
     locationCode: "Helsinki, FI",
     isMaintenanceMode: false,
     memory: 65104,
     disk: 512000,
-    cpu: "AMD Ryzen™ 7 1700X",
-    ramType: "DDR4 ECC",
     uptime: 99.8,
   },
 ]
@@ -112,6 +111,22 @@ function formatSize(mib: number): string {
   return `${mib} MiB`
 }
 
+const LIVE_STATE_STYLES: Record<string, { label: string; dot: string; border: string; badge: string }> = {
+  up: { label: "Online", dot: "bg-green-400 animate-pulse", border: "hover:border-green-500/30 hover:shadow-xl hover:shadow-green-500/5", badge: "border-green-500/30 text-green-400 bg-green-500/5" },
+  degraded: { label: "Degraded", dot: "bg-amber-400", border: "hover:border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/5", badge: "border-amber-500/30 text-amber-400 bg-amber-500/5" },
+  maintenance: { label: "Maintenance", dot: "bg-amber-400", border: "hover:border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/5", badge: "border-amber-500/30 text-amber-400 bg-amber-500/5" },
+  down: { label: "Offline", dot: "bg-red-400", border: "hover:border-red-500/30 hover:shadow-xl hover:shadow-red-500/5", badge: "border-red-500/30 text-red-400 bg-red-500/5" },
+}
+
+function resolveNodeState(node: ExtendedNode, live: StatusApiMonitor | null) {
+  if (live && live.status in LIVE_STATE_STYLES) {
+    return LIVE_STATE_STYLES[live.status]
+  }
+  return node.isMaintenanceMode
+    ? { label: "Maintenance", dot: "bg-amber-400", border: "hover:border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/5", badge: "border-amber-500/30 text-amber-400 bg-amber-500/5" }
+    : { label: "Online", dot: "bg-green-400 animate-pulse", border: "hover:border-green-500/30 hover:shadow-xl hover:shadow-green-500/5", badge: "border-green-500/30 text-green-400 bg-green-500/5" }
+}
+
 function groupByCountry(locations: DataCentreLocation[]) {
   const map = new Map<string, DataCentreLocation[]>()
   for (const loc of locations) {
@@ -126,25 +141,26 @@ function groupByCountry(locations: DataCentreLocation[]) {
 }
 
 
-function NodeCard({ node }: { node: ExtendedNode }) {
-  const online = !node.isMaintenanceMode
+function NodeCard({ node, live }: { node: ExtendedNode; live: StatusApiMonitor | null }) {
+  const state = resolveNodeState(node, live)
+  const uptime = live?.uptime30dPct ?? node.uptime
+
   return (
     <Card
       className={cn(
         "relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm transition-all duration-300",
-        online
-          ? "hover:border-green-500/30 hover:shadow-xl hover:shadow-green-500/5"
-          : "hover:border-amber-500/30 hover:shadow-xl hover:shadow-amber-500/5 opacity-80",
+        state.border,
+        state.label !== "Online" && "opacity-80",
       )}
     >
-      <div className={cn("absolute top-0 left-0 right-0 h-0.5", online ? "bg-green-500" : "bg-amber-500")} />
+      <div className={cn("absolute top-0 left-0 right-0 h-0.5", state.dot.includes("green") ? "bg-green-500" : state.dot.includes("red") ? "bg-red-500" : "bg-amber-500")} />
 
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className={cn(
               "shrink-0 w-9 h-9 rounded-xl flex items-center justify-center",
-              online ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-400",
+              state.label === "Online" ? "bg-green-500/10 text-green-400" : state.label === "Offline" ? "bg-red-500/10 text-red-400" : "bg-amber-500/10 text-amber-400",
             )}>
               <Server className="w-4 h-4" />
             </div>
@@ -158,17 +174,9 @@ function NodeCard({ node }: { node: ExtendedNode }) {
               )}
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className={cn(
-              "shrink-0 gap-1.5 text-xs",
-              online
-                ? "border-green-500/30 text-green-400 bg-green-500/5"
-                : "border-amber-500/30 text-amber-400 bg-amber-500/5",
-            )}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full", online ? "bg-green-400 animate-pulse" : "bg-amber-400")} />
-            {online ? "Online" : "Maintenance"}
+          <Badge variant="outline" className={cn("shrink-0 gap-1.5 text-xs", state.badge)}>
+            <span className={cn("w-1.5 h-1.5 rounded-full", state.dot)} />
+            {state.label}
           </Badge>
         </div>
       </CardHeader>
@@ -190,13 +198,21 @@ function NodeCard({ node }: { node: ExtendedNode }) {
             <span className="font-mono font-medium">{node.ramType}</span>
           </div>
         )}
-        {node.uptime !== undefined && (
+        {live?.latency && (
+          <div className="flex items-center justify-between text-xs">
+            <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
+              <Zap className="w-3 h-3" /> Ping
+            </span>
+            <span className="font-mono font-medium">{live.latency.avg}ms avg</span>
+          </div>
+        )}
+        {uptime !== undefined && uptime !== null && (
           <div className="flex items-center justify-between text-xs">
             <span className="flex items-center gap-1.5 text-muted-foreground shrink-0">
               <Activity className="w-3 h-3" /> Uptime
             </span>
-            <span className={cn("font-mono font-medium", node.uptime >= 99.9 ? "text-green-400" : "text-amber-400")}>
-              {node.uptime.toFixed(1)}%
+            <span className={cn("font-mono font-medium", uptime >= 99.9 ? "text-green-400" : "text-amber-400")}>
+              {uptime.toFixed(1)}%
             </span>
           </div>
         )}
@@ -211,10 +227,12 @@ function LocationCountryRow({
   country,
   flag,
   locations,
+  findMonitor,
 }: {
   country: string
   flag: string
   locations: DataCentreLocation[]
+  findMonitor: (name: string) => StatusApiMonitor | null
 }) {
   return (
     <div className="flex items-start gap-4 px-4 py-3 rounded-xl border border-border/40 bg-card/20 backdrop-blur-sm hover:border-border/70 hover:bg-card/40 transition-all duration-200">
@@ -222,21 +240,27 @@ function LocationCountryRow({
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-foreground mb-2">{country}</p>
         <div className="flex flex-wrap gap-1.5">
-          {locations.map((loc) => (
-            <span
-              key={loc.id}
-              className={cn(
-                "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs border",
-                loc.primary
-                  ? "border-primary/40 text-primary bg-primary/8 font-medium"
-                  : "border-border/50 text-muted-foreground bg-muted/30",
-              )}
-            >
-              {loc.city}
-              {loc.area && <span className="opacity-50">· {loc.area}</span>}
-              {loc.primary && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
-            </span>
-          ))}
+          {locations.map((loc) => {
+            const monitorName = LOCATION_MONITOR_MAP[loc.id]
+            const live = monitorName ? findMonitor(monitorName) : null
+            const liveState = live ? LIVE_STATE_STYLES[live.status] : null
+            return (
+              <span
+                key={loc.id}
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs border",
+                  loc.primary
+                    ? "border-primary/40 text-primary bg-primary/8 font-medium"
+                    : "border-border/50 text-muted-foreground bg-muted/30",
+                )}
+              >
+                {liveState && <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", liveState.dot)} />}
+                {loc.city}
+                {loc.area && <span className="opacity-50">· {loc.area}</span>}
+                {loc.primary && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
+              </span>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -282,8 +306,15 @@ const FAQS = [
 
 export function NodesClient() {
   const nodes = STATIC_NODES
-  const onlineCount = nodes.filter((n) => !n.isMaintenanceMode).length
-  const maintenanceCount = nodes.filter((n) => n.isMaintenanceMode).length
+  const { findMonitor } = useNodeStatus()
+  const nodeLiveStates = nodes.map((node) => {
+    const monitorName = NODE_MONITOR_MAP[node.name]
+    return monitorName ? findMonitor(monitorName) : null
+  })
+  const onlineCount = nodeLiveStates.filter(
+    (live, i) => (live ? live.status === "up" : !nodes[i].isMaintenanceMode),
+  ).length
+  const maintenanceCount = nodes.length - onlineCount
   const hydrated = useSyncExternalStore(() => () => {}, () => true, () => false)
 
   return (
@@ -341,8 +372,8 @@ export function NodesClient() {
             <div className="h-px flex-1 bg-border/40" />
           </div>
           <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {nodes.map((node) => (
-              <NodeCard key={node.id} node={node} />
+            {nodes.map((node, i) => (
+              <NodeCard key={node.id} node={node} live={nodeLiveStates[i]} />
             ))}
           </div>
         </section>
@@ -384,6 +415,7 @@ export function NodesClient() {
                       country={country}
                       flag={flag}
                       locations={locations}
+                      findMonitor={findMonitor}
                     />
                   ))}
                 </div>
