@@ -9,6 +9,7 @@
 export const NODE_MONITOR_MAP: Record<string, string> = {
   "NEWC-GAME1": "NEWC-GAME1",
   "NEWY-GAME1": "NEWY-GAME1",
+  "FLUXRP-FIVEM": "FLUXRP-FIVEM",
   "HEL-VPS1": "HEL-VPS1",
 }
 
