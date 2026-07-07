@@ -1,8 +1,3 @@
-import type { GamePlanSpec } from "@/packages/core/types/servers/game";
-
-/** Palworld hosting is coming soon — no plans yet. */
-export const PALWORLD_PLANS: GamePlanSpec[] = []
-
 /** Static features shared across all Palworld plans (for future use). */
 export const PALWORLD_PLAN_STATIC_FEATURES = [
   "AMD Ryzen™ 9 5900X",

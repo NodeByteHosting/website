@@ -278,7 +278,7 @@ export default function HeroGraphic() {
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-background/60 border border-border/40 backdrop-blur-sm">
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: accent }} />
           <span className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground">
-            Global Network · 3+ Data Center Partners
+            Global Network · 10+ Data Center Partners
           </span>
         </div>
         <div className="flex gap-4">

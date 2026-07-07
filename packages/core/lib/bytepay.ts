@@ -126,9 +126,11 @@ function nameToSlug(name: string): string {
     .replace(/^-|-$/g, "")
 }
 
-interface CategoryInfo {
+export interface CategoryInfo {
   id: string
   name: string
+  slug: string
+  description: string | null
   parentId: string | null
 }
 
@@ -155,9 +157,12 @@ async function fetchAllCategories(): Promise<CategoryInfo[]> {
 
     const json: JsonApiResponse = await res.json()
     for (const cat of json.data) {
+      const name = (cat.attributes.name as string) ?? ""
       all.push({
         id: cat.id,
-        name: (cat.attributes.name as string) ?? "",
+        name,
+        slug: nameToSlug(name),
+        description: (cat.attributes.description as string | null) ?? null,
         parentId: cat.attributes.parent_id != null ? String(cat.attributes.parent_id) : null,
       })
     }
@@ -173,6 +178,56 @@ const getCachedCategories = unstable_cache(fetchAllCategories, ["billing-categor
   revalidate: 600,
 })
 
+export interface CategoryHub {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  children: CategoryInfo[]
+}
+
+/**
+ * Group the flat category list into hubs (top-level categories with no
+ * parent) and their direct children (the leaf categories products actually
+ * belong to). Powers live discovery of "which games/VPS lines/dedicated
+ * tiers exist" instead of hardcoding them per page.
+ */
+async function fetchCategoryTree(): Promise<CategoryHub[]> {
+  const categories = await getCachedCategories()
+  const byParent = new Map<string, CategoryInfo[]>()
+
+  for (const cat of categories) {
+    if (!cat.parentId) continue
+    if (!byParent.has(cat.parentId)) byParent.set(cat.parentId, [])
+    byParent.get(cat.parentId)!.push(cat)
+  }
+
+  return categories
+    .filter((cat) => !cat.parentId)
+    .map((hub) => ({
+      id: hub.id,
+      name: hub.name,
+      slug: hub.slug,
+      description: hub.description,
+      children: byParent.get(hub.id) ?? [],
+    }))
+}
+
+export const getCachedCategoryTree = unstable_cache(fetchCategoryTree, ["billing-category-tree"], {
+  revalidate: 600,
+})
+
+/**
+ * Find a hub by its slugified name — accepts one or more acceptable aliases
+ * (e.g. "vps-hosting" or "vps") since the exact parent category name is
+ * whatever's configured in Paymenter.
+ */
+export async function getCategoryHub(hubSlugOrAliases: string | string[]): Promise<CategoryHub | null> {
+  const aliases = Array.isArray(hubSlugOrAliases) ? hubSlugOrAliases : [hubSlugOrAliases]
+  const tree = await getCachedCategoryTree()
+  return tree.find((hub) => aliases.includes(hub.slug)) ?? null
+}
+
 /**
  * Build category id → slug from the authoritative category list, warning on
  * any two categories whose names slugify to the same value (since site pages
@@ -184,7 +239,7 @@ function buildCategorySlugMap(categories: CategoryInfo[]): Map<string, string> {
   const ownerOfSlug = new Map<string, string>()
 
   for (const cat of categories) {
-    const slug = nameToSlug(cat.name)
+    const slug = cat.slug
     slugMap.set(cat.id, slug)
 
     const existingOwner = ownerOfSlug.get(slug)

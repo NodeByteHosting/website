@@ -8,7 +8,10 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import type { Metadata } from "next"
-import { GAME_OPTIONS } from "@/packages/core/constants/game"
+import { getCategoryHub } from "@/packages/core/lib/bytepay"
+import { GAME_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
+import { getGamePlans } from "@/packages/core/products/billing-service"
+import { resolveGameDisplayConfig } from "@/packages/core/products/catalog-config"
 
 const ICON_MAP: Record<string, LucideIcon> = { Blocks, Gamepad2, Sparkles, Leaf, Pickaxe, Wrench }
 
@@ -22,27 +25,36 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function GamesPage() {
   const t = await getTranslations()
+  const hub = await getCategoryHub(GAME_HUB_SLUGS)
+  const children = hub?.children ?? []
 
-  const games = GAME_OPTIONS.map((g) => ({
-    ...g,
-    comingSoon: g.comingSoon ?? false,
-    icon: ICON_MAP[g.iconName],
-    description: t(`games.${g.slug}.description`),
-    tag: t(`games.${g.slug}.tag`),
-    features: [
-      t(`games.${g.slug}.features.0`),
-      t(`games.${g.slug}.features.1`),
-      t(`games.${g.slug}.features.2`),
-      t(`games.${g.slug}.features.3`),
-    ],
-  }))
+  const games = await Promise.all(
+    children.map(async (category) => {
+      const config = resolveGameDisplayConfig(category)
+      const plans = await getGamePlans(category.slug)
+      const comingSoon = plans.length === 0
+      const startingPriceGBP = comingSoon ? 0 : Math.min(...plans.map((p) => p.priceGBP))
+      return {
+        slug: category.slug,
+        name: config.name,
+        description: config.description,
+        banner: config.banner,
+        tag: config.tag,
+        tagColor: config.tagColor,
+        icon: ICON_MAP[config.iconName],
+        features: config.heroFeatures,
+        comingSoon,
+        startingPriceGBP,
+      }
+    }),
+  )
 
   return (
     <section className="relative overflow-hidden pt-32 sm:pt-36 pb-24 sm:pb-32">
       {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
-      
+
       {/* Animated orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] animate-pulse" />
@@ -71,7 +83,7 @@ export default async function GamesPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {games.map((game) => (
             <Card
-              key={game.name}
+              key={game.slug}
               className={cn(
                 "group relative overflow-hidden border-border/50 bg-card/30 backdrop-blur-sm",
                 "hover:border-primary/30 transition-all duration-300",
@@ -89,7 +101,7 @@ export default async function GamesPage() {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-card to-transparent" />
-                
+
                 {/* Tag */}
                 <div className={cn(
                   "absolute top-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium",
@@ -124,7 +136,7 @@ export default async function GamesPage() {
 
                 {/* Features */}
                 <ul className="space-y-2 mb-6 flex-1">
-                  {game.features.map((feature, i) => (
+                  {game.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Check className="w-4 h-4 text-primary shrink-0" />
                       {feature}

@@ -14,9 +14,13 @@
 export interface ParsedSpecs {
   cpu?: number
   ramGB?: number
+  /** RAM generation if the description names one, e.g. "DDR3"/"DDR4"/"DDR5" — omitted when unspecified. */
+  ramType?: string
   storageGB?: number
   /** Raw storage label extracted from the description, e.g. "2 × 1 TB NVMe SSD (RAID 1)" */
   storageDescription?: string
+  /** Which storage keyword the description actually used — "generic" when it only said e.g. "40 GB Storage Array" with no drive type. */
+  storageType?: "nvme" | "ssd" | "hdd" | "generic"
   bandwidth?: { amount: number; unit: "MB" | "GB" | "TB" } | null
   uplink?: { amount: number; unit: "Mbps" | "Gbps" }
   cpuModel?: string
@@ -66,11 +70,19 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
       if (new RegExp(`\\b${name}[- ]?[Cc]ore\\b`, 'i').test(text)) { cpu = count; break }
     }
   }
+  if (!cpu) {
+    // "2 vCPU", "4 vCPUs" — common cloud/VPS-style core count phrasing
+    const m = text.match(/\b(\d+)\s*vCPUs?\b/i)
+    if (m) cpu = parseInt(m[1])
+  }
 
   // ── RAM ────────────────────────────────────────────────────────────────────
   // "2 GB DDR4 RAM", "4 GB ECC RAM", "8GB DDR4 RAM", "1 GB RAM"
-  const ramMatch = text.match(/(\d+)\s*GB\s+(?:\w+\s+)*?RAM\b/i)
+  // "4 GB High-Speed DDR4 RAM" — hyphenated adjectives allowed between the size and "RAM"
+  const ramMatch = text.match(/(\d+)\s*GB\s+(?:[\w-]+\s+)*?RAM\b/i)
   const ramGB = ramMatch ? parseInt(ramMatch[1]) : undefined
+  const ramTypeMatch = ramMatch ? ramMatch[0].match(/DDR\s?([345])/i) : null
+  const ramType = ramTypeMatch ? `DDR${ramTypeMatch[1]}` : undefined
 
   // ── Storage ────────────────────────────────────────────────────────────────
   // "25 GB SSD", "40 GB NVMe SSD", "100 GB SSD Storage", "40GB Disk Storage"
@@ -85,6 +97,17 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
     : storageMatchTB
       ? parseInt(storageMatchTB[1]) * 1024
       : undefined
+
+  const storageMatchText = storageMatchGB?.[0] ?? storageMatchTB?.[0]
+  const storageType: ParsedSpecs["storageType"] = storageMatchText
+    ? /nvme/i.test(storageMatchText)
+      ? "nvme"
+      : /ssd/i.test(storageMatchText)
+        ? "ssd"
+        : /hdd/i.test(storageMatchText)
+          ? "hdd"
+          : "generic"
+    : undefined
 
   // Raw storage label for multi-drive dedicated configs
   let storageDescription: string | undefined
@@ -145,7 +168,17 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
     if (m) { description = m[1].trim(); break }
   }
 
-  return { cpu, ramGB, storageGB, storageDescription, bandwidth, uplink, cpuModel, hardware, description }
+  return { cpu, ramGB, ramType, storageGB, storageDescription, storageType, bandwidth, uplink, cpuModel, hardware, description }
+}
+
+/** Human-friendly storage type label — falls back to "Storage Array" when the description didn't name a drive type. */
+export function formatStorageType(type: ParsedSpecs["storageType"]): string {
+  switch (type) {
+    case "nvme": return "NVMe SSD Storage"
+    case "ssd": return "SSD Storage"
+    case "hdd": return "HDD Storage"
+    default: return "Storage Array"
+  }
 }
 
 /**

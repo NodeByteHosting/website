@@ -14,6 +14,8 @@ import { ThemeProvider } from "@/packages/ui/components/theme-provider"
 import { CurrencyProvider } from "@/packages/core/hooks/use-currency"
 import { LocaleProvider } from "@/packages/core/hooks/use-locale"
 import { LayoutChrome } from "@/packages/ui/components/layout-chrome"
+import { getCategoryHub } from "@/packages/core/lib/bytepay"
+import { GAME_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -93,6 +95,12 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
 
+  // Never let a billing-panel outage take down every page on the site — the
+  // nav just falls back to no games submenu entries if this fails.
+  const gamesNav = await getCategoryHub(GAME_HUB_SLUGS)
+    .then((hub) => (hub?.children ?? []).map((c) => ({ slug: c.slug, name: c.name })))
+    .catch(() => [])
+
   const htmlClass = [geist.variable, geistMono.variable, themeClass].filter(Boolean).join(" ")
 
   return (
@@ -148,7 +156,7 @@ export default async function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <CurrencyProvider>
               <LocaleProvider initialLocale={locale as any}>
-                <LayoutChrome>
+                <LayoutChrome gamesNav={gamesNav}>
                   {children}
                 </LayoutChrome>
               </LocaleProvider>

@@ -1,18 +1,19 @@
 "use client"
 
 import { Card } from "@/packages/ui/components/ui/card"
-import { 
-  CheckCircle2, 
-  Sparkles, 
-  Settings, 
-  Cpu, 
-  Shield, 
-  Zap, 
-  HardDrive, 
-  Users, 
-  Server, 
-  Map, 
-  Globe 
+import {
+  CheckCircle2,
+  Sparkles,
+  Settings,
+  Cpu,
+  Shield,
+  Zap,
+  HardDrive,
+  Users,
+  Server,
+  Map,
+  Globe,
+  Gamepad2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
@@ -28,6 +29,7 @@ const iconMap = {
   Map: Map,
   Globe: Globe,
   Sparkles: Sparkles,
+  Gamepad2: Gamepad2,
 }
 
 interface Feature {

@@ -16,11 +16,17 @@
  */
 export interface GamePlanSpec {
   id: string
+  /** Raw product name from the billing panel — used as the display name for auto-generated (non-curated) game pages */
+  name?: string
   description?: string
   cpuModel?: string
   priceGBP: number
   ramGB: number
+  /** RAM generation if the description names one, e.g. "DDR4" — omitted when unspecified */
+  ramType?: string
   storageGB: number
+  /** Human-friendly storage type, e.g. "NVMe SSD Storage" or "Storage Array" when no drive type was named */
+  storageLabel?: string
   bandwidth: { amount: number; unit: "MB" | "GB" | "TB" } | null
   uplink?: { amount: number; unit: "Mbps" | "Gbps" }
   ddos?: { layers: number[]; autoOn: boolean }

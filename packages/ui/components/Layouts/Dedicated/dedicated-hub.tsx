@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Star,
   Lock,
+  PackageX,
 } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Input } from "@/packages/ui/components/ui/input"
@@ -300,7 +301,13 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
 
         {/* ── Plan grid ────────────────────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto">
-          {filtered.length === 0 ? (
+          {plans.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 border border-destructive/20 rounded-2xl bg-card/20">
+              <PackageX className="w-10 h-10 text-destructive/60" />
+              <p className="font-medium">No dedicated servers in stock right now</p>
+              <p className="text-sm text-muted-foreground">Check back soon, or get in touch for a custom configuration.</p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 border border-border/40 rounded-2xl bg-card/20">
               <Search className="w-10 h-10 text-muted-foreground/40" />
               <p className="font-medium">No servers match your filters</p>

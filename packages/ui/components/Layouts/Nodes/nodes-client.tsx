@@ -48,6 +48,15 @@ const STATIC_NODES: ExtendedNode[] = [
   },
   {
     id: 2,
+    name: "NEWY-GAME1",
+    locationCode: "New York, USA",
+    isMaintenanceMode: false,
+    memory: 65104,
+    disk: 512000,
+    uptime: 99.8,
+  },
+  {
+    id: 3,
     name: "HEL-VPS1",
     locationCode: "Helsinki, FI",
     isMaintenanceMode: false,
@@ -97,6 +106,7 @@ const LOCATIONS: DataCentreLocation[] = [
   // Americas — United States
   { id: "hil", city: "Seattle",       area: "Hillsboro, OR",     country: "United States",  flag: "🇺🇸", region: "Americas" },
   { id: "vhv", city: "Washington DC", area: "Vint Hill, VA",     country: "United States",  flag: "🇺🇸", region: "Americas" },
+  { id: "newy", city: "New York",     area: "Secaucus, NJ",      country: "United States",  flag: "🇺🇸", region: "Americas" },
   // Asia-Pacific
   { id: "sgp", city: "Singapore",     country: "Singapore",      flag: "🇸🇬", region: "Asia-Pacific" },
   { id: "syd", city: "Sydney",        country: "Australia",      flag: "🇦🇺", region: "Asia-Pacific" },
@@ -351,7 +361,7 @@ export function NodesClient() {
               { label: "Total Nodes", value: nodes.length },
               { label: "Online", value: onlineCount, color: "text-green-400" },
               { label: "In Maintenance", value: maintenanceCount, color: "text-amber-400" },
-              { label: "Data Center Partners", value: "3+" },
+              { label: "Data Center Partners", value: "10+" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className={cn("text-2xl font-bold tabular-nums", stat.color)}>{stat.value}</div>
