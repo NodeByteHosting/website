@@ -1,31 +1,3 @@
-import type { GamePlanSpec } from "@/packages/core/types/servers/game";
-
-/** Hytale is not yet released — plans are placeholder/early-access pricing. */
-export const HYTALE_PLANS: GamePlanSpec[] = [
-  {
-    id: "starter",
-    priceGBP: 5,
-    ramGB: 4,
-    storageGB: 40,
-    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-starter",
-  },
-  {
-    id: "standard",
-    priceGBP: 7.5,
-    ramGB: 6,
-    storageGB: 60,
-    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-standard",
-  },
-  {
-    id: "performance",
-    priceGBP: 10,
-    ramGB: 8,
-    storageGB: 80,
-    popular: true,
-    url: "https://billing.nodebyte.host/products/hytale-hosting/hytale-performance",
-  },
-]
-
 /**
  * Hytale doesn't have translation keys yet — names/descriptions are stored
  * here directly instead of being keyed through i18n.

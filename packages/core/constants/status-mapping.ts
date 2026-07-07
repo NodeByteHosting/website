@@ -8,6 +8,7 @@
 /** Website node `name` (STATIC_NODES) → status.nodebyte.host monitor `name`. */
 export const NODE_MONITOR_MAP: Record<string, string> = {
   "NEWC-GAME1": "NEWC-GAME1",
+  "NEWY-GAME1": "NEWY-GAME1",
   "HEL-VPS1": "HEL-VPS1",
 }
 
@@ -23,7 +24,8 @@ export const LOCATION_MONITOR_MAP: Record<string, string> = {
   fra: "Frankfurt, DE",
   hel: "Helsinki, FI",
   tor: "Toronto, ON",
-  vhv: "Ashburn, VA", // Vint Hill, VA is in the same Northern Virginia / DC-metro area
+  vhv: "Ashburn, VA",
+  newy: "New York, USA",
   sgp: "Singapore, Singapore",
   syd: "Sydney, Australia",
   mum: "Mumbai, India",

@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, Blocks, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network } from "lucide-react"
+import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -20,7 +20,12 @@ import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
 import { SiDiscord } from "react-icons/si"
 
-export function Navigation() {
+interface NavigationProps {
+  /** Live game categories discovered from the billing panel, fetched server-side in app/layout.tsx. */
+  gamesNav?: { slug: string; name: string }[]
+}
+
+export function Navigation({ gamesNav = [] }: NavigationProps) {
   const t = useTranslations()
   const mountedRef = useRef(false)
   
@@ -53,27 +58,13 @@ export function Navigation() {
   ]
 
   const services = [
-    {
-      title: t("services.minecraft.title"),
-      href: "/games/minecraft",
-      description: t("services.minecraft.description"),
-      icon: Blocks,
-      section: "game",
-    },
-    {
-      title: t("services.rust.title"),
-      href: "/games/rust",
-      description: t("services.rust.description"),
+    ...gamesNav.map((game) => ({
+      title: game.name,
+      href: `/games/${game.slug}`,
+      description: `${game.name} server hosting`,
       icon: Gamepad2,
-      section: "game",
-    },
-    {
-      title: t("services.hytale.title"),
-      href: "/games/hytale",
-      description: t("services.hytale.description"),
-      icon: Gamepad2,
-      section: "game",
-    },
+      section: "game" as const,
+    })),
     {
       title: t("services.gameServers.title"),
       href: "/games",

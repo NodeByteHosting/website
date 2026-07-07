@@ -3,14 +3,44 @@ import { Card } from "@/packages/ui/components/ui/card"
 import { Layers, ArrowRight, Check } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import { SERVICE_CATEGORIES } from "@/packages/core/constants/services"
 import { Price } from "@/packages/ui/components/ui/price"
+import { getCategoryHub } from "@/packages/core/lib/bytepay"
+import { getGamePlans, getVpsPlans, getDedicatedPlans } from "@/packages/core/products/billing-service"
+import { GAME_HUB_SLUGS, VPS_HUB_SLUGS, DEDICATED_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
 
-export function Services() {
-  const t = useTranslations()
+/** Live starting price (min across all of a hub's children's plans), falling back to the static config value if a hub has no live pricing yet or the billing panel is unreachable. */
+async function getLiveStartingPrice(
+  hubSlugs: string[],
+  getPlans: (categorySlug: string) => Promise<{ priceGBP: number }[]>,
+): Promise<number | null> {
+  try {
+    const hub = await getCategoryHub(hubSlugs)
+    if (!hub) return null
+    const plansByCategory = await Promise.all(hub.children.map((c) => getPlans(c.slug)))
+    const prices = plansByCategory.flat().map((p) => p.priceGBP)
+    return prices.length ? Math.min(...prices) : null
+  } catch {
+    return null
+  }
+}
 
-  const activeServices = SERVICE_CATEGORIES.filter((s) => s.enabled)
+const HUB_PRICE_RESOLVERS: Record<string, () => Promise<number | null>> = {
+  "game-servers": () => getLiveStartingPrice(GAME_HUB_SLUGS, getGamePlans),
+  "vps": () => getLiveStartingPrice(VPS_HUB_SLUGS, getVpsPlans),
+  "dedicated": () => getLiveStartingPrice(DEDICATED_HUB_SLUGS, getDedicatedPlans),
+}
+
+export async function Services() {
+  const t = await getTranslations()
+
+  const activeServices = await Promise.all(
+    SERVICE_CATEGORIES.filter((s) => s.enabled).map(async (service) => {
+      const livePrice = await HUB_PRICE_RESOLVERS[service.id]?.()
+      return { ...service, startingPriceGBP: livePrice ?? service.startingPriceGBP }
+    }),
+  )
 
   return (
     <section id="services" className="py-24 sm:py-32 relative overflow-hidden">

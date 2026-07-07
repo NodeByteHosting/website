@@ -1,8 +1,3 @@
-import type { GamePlanSpec } from "@/packages/core/types/servers/game";
-
-/** Terraria hosting is coming soon — no plans yet. */
-export const TERRARIA_PLANS: GamePlanSpec[] = []
-
 /** Static features shared across all Terraria plans (for future use). */
 export const TERRARIA_PLAN_STATIC_FEATURES = [
   "AMD Ryzen™ 9 5900X",

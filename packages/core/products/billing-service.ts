@@ -10,7 +10,7 @@ import {
   getStockStatus,
   getBillingUrl,
 } from "@/packages/core/lib/bytepay"
-import { parseDescriptionSpecs, parseProductName } from "@/packages/core/lib/spec-parser"
+import { parseDescriptionSpecs, parseProductName, formatStorageType } from "@/packages/core/lib/spec-parser"
 import { POPULAR_SLUGS, DEFAULT_DDOS } from "@/packages/core/constants/product-overrides"
 import type { BillingProduct } from "@/packages/core/lib/bytepay"
 
@@ -57,8 +57,12 @@ export async function getGamePlans(categorySlug: string): Promise<GamePlanSpec[]
     return [
       {
         id: product.slug,
+        name: product.name,
+        description: parsed.description,
         ramGB: parsed.ramGB,
+        ramType: parsed.ramType,
         storageGB: parsed.storageGB,
+        storageLabel: formatStorageType(parsed.storageType),
         bandwidth: parsed.bandwidth ?? null,
         popular: POPULAR_SLUGS.has(`${categorySlug}/${product.slug}`),
         priceGBP: getGbpPrice(product),

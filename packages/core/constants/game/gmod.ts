@@ -1,8 +1,3 @@
-import type { GamePlanSpec } from "@/packages/core/types/servers/game";
-
-/** Garry's Mod hosting is coming soon — no plans yet. */
-export const GMOD_PLANS: GamePlanSpec[] = []
-
 /** Static features shared across all Garry's Mod plans (for future use). */
 export const GMOD_PLAN_STATIC_FEATURES = [
   "AMD Ryzen™ 9 5900X",
