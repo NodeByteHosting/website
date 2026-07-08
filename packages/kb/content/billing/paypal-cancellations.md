@@ -7,7 +7,7 @@ lastUpdated: 2026-07-08
 order: 2
 ---
 
-# Decommissioning Services & PayPal Cancelations
+# PayPal Cancelations
 
 When you submit a cancellation request for a NodeByte service, our system immediately flags the instance to stop future invoice generation. However, if you originally checked out using an automated **PayPal Billing Agreement**, PayPal’s internal subscription system will continue pushing automated renewals until the token is explicitly revoked within your personal wallet.
 
