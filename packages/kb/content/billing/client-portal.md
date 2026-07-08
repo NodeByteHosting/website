@@ -1,259 +1,90 @@
 ---
 title: Client Portal Overview
-description: Learn how to navigate and use the NodeByte client portal for managing your account and services.
-tags: [billing, whmcs, account, portal]
+description: A complete guide to navigating the NodeByte client portal, managing active services, and handling core account settings.
+tags: [billing, account, client portal, navigation]
 author: NodeByte Team
-lastUpdated: 2025-12-21
+lastUpdated: 2026-07-08
 order: 1
 ---
 
 # Client Portal Overview
 
-The NodeByte Client Portal is where you'll manage your account, services, invoices, and support tickets.
+The NodeByte Client Portal is the central management dashboard for your infrastructure. Within this panel, you can monitor your active hosting deployments, process invoices, adjust account profiles, and open technical support tickets.
 
-## Accessing the Portal
+## Portal Access
 
-Visit [billing.nodebyte.host](https://billing.nodebyte.host) to access the client portal.
+You can access the dashboard securely at **[billing.nodebyte.host](https://billing.nodebyte.host)**.
 
-### First Time Login
+### First-Time Authentication
+If you are logging in for the first time following a purchase:
+1. Navigate to the portal landing page.
+2. Click **Login**. to start the authorization flow
+3. Enter the email address and password credentials specified during checkout.
+4. Complete any required multi-factor verification steps.
 
-If you've just created an account:
+### Password Recovery
+If you lose your login credentials:
+1. Click the **Forgot Password?** link on the authentication block.
+2. Input your registered administrative email address.
+3. Check your inbox for an automated reset token.
+4. Click the link within the email to set a new secure password.
 
-1. Go to [billing.nodebyte.host](https://billing.nodebyte.host)
-2. Click **Login**
-3. Enter the email and password you used during registration
-4. Complete any verification if prompted
+## Dashboard Layout
 
-### Forgot Password?
+Upon logging in, your main overview screen maps account data into four primary sections:
 
-1. Click **Forgot Password?** on the login page
-2. Enter your registered email address
-3. Check your inbox for the reset link
-4. Create a new secure password
-
-## Dashboard Overview
-
-After logging in, you'll see your main dashboard:
-
-| Section | Description |
-|---------|-------------|
-| **Your Active Products/Services** | All your current services |
-| **Recent Invoices** | Latest billing information |
-| **Recent Support Tickets** | Your support history |
-| **Announcements** | Important updates from NodeByte |
+| Section | Functional Scope |
+| :--- | :--- |
+| **Active Products & Services** | Displays your currently provisioned virtual environments and hardware nodes. |
+| **Recent Invoices** | Lists pending renewals, outstanding bills, and completed transactions. |
+| **Recent Support Tickets** | Tracks open, answered, or closed technical escalation logs. |
+| **System Announcements** | Houses critical platform notifications, network updates, and maintenance schedules. (**NOTE**: there is no designated section for these they will be displayed in plain view on the dashboard home) |
 
 ## Managing Services
 
-### Viewing Your Services
-
-1. Click **Services** → **My Services**
-2. You'll see all your active, pending, and cancelled services
-3. Click on any service for details
-
-### Service Details
-
-Each service page shows:
-
-- **Status** - Active, Suspended, Pending, etc.
-- **Billing Cycle** - Monthly, Quarterly, Annually
-- **Next Due Date** - When payment is due
-- **Product/Service** - Your plan details
-- **Quick Actions** - Manage, Upgrade, Request Cancellation
-
-### Accessing the Game Panel
-
-From your service page:
-
-1. Look for **Login to Game Panel** or similar button
-2. This will redirect you to [panel.nodebyte.host](https://panel.nodebyte.host)
-3. Use the same credentials or the ones provided in your welcome email
-
-## Invoices & Payments
-
-### Viewing Invoices
-
-1. Click **Billing** → **My Invoices**
-2. See all invoices: Paid, Unpaid, Cancelled
-
-### Invoice Statuses
-
-| Status | Meaning |
-|--------|---------|
-| **Paid** | Payment received |
-| **Unpaid** | Awaiting payment |
-| **Overdue** | Payment past due date |
-| **Cancelled** | Invoice voided |
-
-### Payment Methods
-
-We accept various payment methods:
-
-- 💳 Credit/Debit Cards (Visa, Mastercard, Amex)
-- 🅿️ PayPal
-- ₿ Cryptocurrency (Bitcoin, Ethereum, etc.)
-
-### Adding Funds
-
-You can add funds to your account balance:
-
-1. Go to **Billing** → **Add Funds**
-2. Enter the amount
-3. Choose payment method
-4. Complete the transaction
-
-Account credit is automatically applied to future invoices.
-
-## Support Tickets
-
-### Opening a Ticket
-
-1. Click **Support** → **Open Ticket**
-2. Choose a department:
-   - **General Support** - General questions
-   - **Technical Support** - Server issues
-   - **Billing** - Payment/invoice issues
-   - **Sales** - Pre-sales questions
-3. Enter a descriptive subject
-4. Provide detailed information
-5. Attach files if needed
-6. Click **Submit**
-
-### Ticket Best Practices
-
-For faster resolution:
-
-- ✅ Include your server name/IP
-- ✅ Describe the issue clearly
-- ✅ Include error messages or screenshots
-- ✅ List steps you've already tried
-- ❌ Don't open duplicate tickets
-- ❌ Don't include sensitive passwords in tickets
-
-### Viewing Ticket History
-
-1. Click **Support** → **Tickets**
-2. View all Open, Answered, and Closed tickets
-3. Click any ticket to view the full conversation
-
-## Account Settings
-
-### Profile Information
-
-1. Click on your name → **Edit Account Details**
-2. Update:
-   - Name and Company
-   - Email Address
-   - Phone Number
-   - Billing Address
-
-### Changing Password
-
-1. Go to **Hello, Name!** → **Change Password**
-2. Enter your current password
-3. Enter and confirm your new password
-4. Click **Save Changes**
-
-### Security Settings
-
-We recommend enabling additional security:
-
-1. Go to **Security Settings**
-2. Enable **Two-Factor Authentication** (2FA)
-3. Download backup codes
-4. Store them safely
-
-## Service Management
-
-### Upgrading Your Plan
-
-Need more resources?
-
-1. Go to **Services** → **My Services**
-2. Select your service
-3. Click **Upgrade/Downgrade**
-4. Choose your new plan
-5. Pay the prorated difference
-
-### Requesting Cancellation
-
-To cancel a service:
-
-1. Go to **Services** → **My Services**
-2. Select the service
-3. Click **Request Cancellation**
-4. Choose:
-   - **Immediate** - Cancel now
-   - **End of Billing Period** - Cancel when paid period ends
-5. Provide a reason (optional)
-6. Confirm cancellation
-
-> **Note:** Cancellation requests are reviewed by our team. You'll receive confirmation via email.
-
-**For PayPal Customers:**
-This is important to do as failing to do this will result in you still being charged. Our Finance Team check the cancellions and cancel them on your behalf, but this may not always be the case.
-
-1. Log into your payal
-2. Click on the settings icon (Gear) at the top right of the page
-3. Go to the "Payments" tab
-4. Search for "NodeByte LTD"
-5. Cancel the pre-approved service.
-
-Once done you will no longer be charged for any services. 
-
-### Service Renewal
-
-Services renew automatically if:
-
-- You have a payment method on file
-- You have sufficient account credit
-
-To ensure uninterrupted service:
-- Keep payment details updated
-- Pay invoices before the due date
-- Consider adding account credit
-
-## Affiliate Program
-
-Earn money by referring others:
-
-1. Go to **Affiliates**
-2. Get your unique referral link
-3. Share with friends and communities
-4. Earn commission on successful referrals
-
-## Email Notifications
-
-Control what emails you receive:
-
-1. Go to **Email History** to see past emails
-2. Important emails include:
-   - Invoice notifications
-   - Service status changes
-   - Support ticket updates
-   - Promotional offers
-
-## Common Questions
-
-### Why is my service suspended?
-
-Common reasons:
-- Overdue invoice
-- Terms of Service violation
-- Abuse report
-
-**Solution:** Check your invoices and pay any outstanding balances, or open a support ticket.
-
-### How do I get my Game Panel password?
-
-Your panel credentials were sent in your welcome email. If lost:
-1. Open a support ticket
-2. Request a password reset
-3. We'll verify your identity and assist
-
-### Can I change my billing email?
-
-Yes! Update it in Account Details. Verification may be required.
-
----
-
-Need help with billing? Open a [support ticket](https://billing.nodebyte.host/submitticket.php) or email [billing@nodebyte.host](mailto:billing@nodebyte.host).
+### Inspecting Your Deployments
+To view the status of your infrastructure allocations, navigate to **Services** in the sidebar and select **My Services**. This ledger tracks the lifecycle state of each deployment, including `Active`, `Suspended`, `Pending`, or `Cancelled`. Clicking on an individual service open its granular management area.
+
+### Accessing the Game Control Panel
+While billing and account modifications occur inside the Client Portal, your server files, terminal console, and application configurations are housed inside our isolated game panel.
+
+1. Locate the **View Server** button within your active service page.
+2. The portal will securely redirect your session to **[panel.nodebyte.host](https://panel.nodebyte.host)**.
+3. Authenticate using the single-sign-on link or the standalone panel credentials provided in your initial deployment welcome email.
+
+## Invoices and Payment Processing
+
+### Auditing Financial Records
+To view your complete transaction history, navigate to **Billing** → **My Invoices**. Invoices will show one of the following statuses:
+
+* **Paid:** Payment has been processed and verified. The service remains online.
+* **Unpaid:** An invoice has generated and is awaiting manual payment or an automated card debit.
+* **Overdue:** The payment deadline has passed. The attached service is nearing automated suspension.
+* **Cancelled:** The invoice has been voided or resolved by the billing team.
+
+### Supported Settlement Gateways
+NodeByte utilizes two primary payment processors for all store transactions:
+* **Stripe Engine:** Handles secure credit and debit card processing (Visa, Mastercard, American Express, Discover) along with supported digital wallets.
+* **PayPal:** Supports manual one-time express checkouts or automatic recurring billing agreements.
+
+## Technical Support Tickets
+
+### Submitting an Escalation
+If you encounter a platform anomaly, infrastructure fault, or billing question, you can open a direct communication lane with our team:
+
+1. Navigate to **Support** → **Open Ticket**.
+2. Select the department best suited to your request:
+   * **Technical Support:** Server crashes, network routing anomalies, panel errors, or hardware issues.
+   * **Billing:** Invoice adjustments, payment clearance issues, or subscription modifications.
+   * **Sales:** Custom resource configurations and deployment pre-sales questions.
+3. Provide a clear, concise subject line.
+4. Detail the operational issue inside the message body, attaching logs or error traces where applicable.
+5. Click **Submit**.
+
+### Support Guidelines
+To ensure a rapid resolution time, please observe the following technical best practices:
+* Include the specific server ID or assigned IP address in your message body.
+* List the exact diagnostic steps you have already performed.
+* Paste raw console errors or log blocks instead of paraphrasing the issue.
+* Avoid opening multiple tickets for a same running issue, as doing so fragments our engineering queue.
+* Do not paste administrative root passwords in plain text inside a ticket body.
