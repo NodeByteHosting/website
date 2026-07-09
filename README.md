@@ -5,7 +5,6 @@ A modern hosting management platform built with **Next.js** and a **Go (Fiber) b
 [![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL%203.0%20only-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16+-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Go](https://img.shields.io/badge/Go-Fiber_Backend-00ADD8?logo=go)](https://gofiber.io/)
 
 ## Features
 
