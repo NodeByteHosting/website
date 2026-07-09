@@ -1,6 +1,6 @@
 # NodeByte Hosting Platform
 
-A modern hosting management platform built with **Next.js** and a **Go (Fiber) backend**. Manage game servers (Minecraft, Rust, Hytale), VPS nodes, and billing from a unified admin dashboard.
+A modern hosting website built with **Next.js**.
 
 [![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL%203.0%20only-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16+-black?logo=next.js)](https://nextjs.org/)
