@@ -1,5 +1,5 @@
 ---
-title: VPS Server Management Overview
+title: VPS Server Management
 description: An introduction to navigating your VPS instance controls, resource monitoring, and identifying your management interface.
 tags: [vps, vds, virtfusion, api, management]
 author: NodeByte Team
@@ -7,7 +7,7 @@ lastUpdated: 2026-07-09
 order: 1
 ---
 
-# VPS Server Management Overview
+# Managing your VPS/VDS Server
 
 NodeByte delivers unmanaged virtual private servers and virtual dedicated servers utilizing two distinct backend execution frameworks: native hardware nodes virtualized via **VirtFusion**, and partner configurations powered by custom **billing panel API extensions**. 
 
