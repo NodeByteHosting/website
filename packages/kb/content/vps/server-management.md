@@ -7,7 +7,7 @@ lastUpdated: 2026-07-09
 order: 1
 ---
 
-# Managing your VPS/VDS Server
+# Managing your Server
 
 NodeByte delivers unmanaged virtual private servers and virtual dedicated servers utilizing two distinct backend execution frameworks: native hardware nodes virtualized via **VirtFusion**, and partner configurations powered by custom **billing panel API extensions**. 
 
