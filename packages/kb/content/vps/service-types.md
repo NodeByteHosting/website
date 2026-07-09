@@ -4,7 +4,7 @@ description: Understand where your server's control deck is located based on whe
 tags: [vps, vds, management, virtfusion, api]
 author: NodeByte Team
 lastUpdated: 2026-07-09
-order: 12
+order: 2
 ---
 
 NodeByte operates a hybrid infrastructure model. Depending on the specific service lineup, tier, or region you deploy, your server will either be managed directly within the NodeByte Client Portal using custom API extensions or routed to an external dedicated virtualization panel.
