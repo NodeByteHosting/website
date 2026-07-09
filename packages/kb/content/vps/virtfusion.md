@@ -4,7 +4,7 @@ description: An introduction to navigating your VPS instance controls, resource 
 tags: [vps, vds, virtfusion, console, management]
 author: NodeByte Team
 lastUpdated: 2026-07-09
-order: 13
+order: 3
 ---
 
 For services designated as panel-managed, your virtual environment runs on top of our isolated VirtFusion virtualization layer. The management panel allows you to interact directly with your instance kernel, audit resource metrics, and perform hardware-level power operations without relying on technical support intervention.
