@@ -31,6 +31,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import type { GamePlanSpec } from "@/packages/core/types/servers/game"
 import { Price } from "@/packages/ui/components/ui/price"
+import { SUPPORTED_GAMES } from "@/packages/core/constants/supported-games"
 
 type SortKey = "default" | "asc" | "desc"
 
@@ -224,6 +225,16 @@ export function GameHub({ plans }: GameHubProps) {
           <p className="text-lg text-muted-foreground">
             One set of plans for every game we support. Pick a tier below, then choose which game to deploy at checkout.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            {SUPPORTED_GAMES.map((game) => (
+              <span
+                key={game}
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border border-border/50 bg-muted/30 text-muted-foreground"
+              >
+                {game}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* ── Filter bar ───────────────────────────────────────────────────── */}
