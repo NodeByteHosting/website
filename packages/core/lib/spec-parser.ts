@@ -33,23 +33,52 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim()
 }
 
-/** Split stripped text into individual bullet lines for more reliable matching. */
-function bulletLines(text: string): string[] {
+/**
+ * Split into individual bullet lines. Paymenter descriptions are usually a
+ * `<ul><li>` list (one bullet per `<li>`); older ones instead separate
+ * bullets with a "•" character or bare newlines. Insert a line break at each
+ * list-item/paragraph/`<br>` boundary before stripping tags so line-based
+ * extraction below sees one bullet per line regardless of which format the
+ * description actually uses.
+ */
+function bulletLines(html: string): string[] {
+  const withBreaks = html
+    .replace(/<\/(li|p|div|h[1-6])>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+  const text = withBreaks
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/[ \t]+/g, " ")
   return text
     .split(/[•\n]/)
     .map((s) => s.trim())
     .filter(Boolean)
 }
 
+/** First "<number> GB|TB" in a line, converted to GB (TB × 1024). Returns undefined if the line has none. */
+function firstSizeGB(line: string): number | undefined {
+  const m = line.match(/(\d+)\s*(GB|TB)\b/i)
+  if (!m) return undefined
+  const amount = parseInt(m[1])
+  return /tb/i.test(m[2]) ? amount * 1024 : amount
+}
+
 export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
   if (!html) return {}
 
   const text = stripHtml(html)
-  const lines = bulletLines(text)
+  const lines = bulletLines(html)
 
   // ── CPU cores ──────────────────────────────────────────────────────────────
   // "1 Core of Ryzen 7 Power", "2 Cores of Ryzen 7", "2 Ampere® Altra® ARM64 Cores"
-  // Fallback: "8 cores and 16 threads", "Octa-Core", "Quad-Core"
+  // "ELITE Resource Allocation: 8 Dedicated/Pinned Physical Cores and 16 threads"
+  // Fallback: "8 cores and 16 threads", "Octa-Core", "Quad-Core", "2 vCPU"
+  //
+  // Deliberately NOT a "grab any number near the word core/cpu" fallback —
+  // descriptions also state the CPU *model* number in the same breath
+  // ("Ryzen™ 9 5900X", "Core Ultra 7 265"), and a wrong core count is worse
+  // than none: it ships incorrect specs instead of just dropping the plan
+  // (which surfaces via warnDroppedProduct so it gets fixed at the source).
   const NAMED_CORES: Record<string, number> = { mono: 1, dual: 2, quad: 4, hexa: 6, octa: 8, deca: 10, dodeca: 12 }
   let cpu: number | undefined
   for (const line of lines) {
@@ -60,9 +89,18 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
     }
   }
   if (!cpu) {
-    // "8 cores and 16 threads" — number before "cores" anywhere in text
-    const m = text.match(/\b(\d+)\s+[Cc]ores?\b/)
-    if (m) cpu = parseInt(m[1])
+    // Number and "Cores" in the same bullet but not at the start of it — e.g.
+    // "ELITE Resource Allocation: 8 Dedicated/Pinned Physical Cores and 16
+    // threads". Allow up to 4 filler words between the number and "Cores",
+    // bounded per-line so it can't reach into an unrelated bullet.
+    // Requires the plural "Cores", not "Core" — singular "Core" shows up in
+    // non-count marketing phrases too ("Ryzen™ 9 5900X Core Processing",
+    // "Core Ultra 7 265"), where the preceding number is a CPU model number,
+    // not a core count, and guessing wrong is worse than leaving it unset.
+    for (const line of lines) {
+      const m = line.match(/(\d+)\s+(?:[\w/.-]+\s+){0,4}?[Cc]ores\b/)
+      if (m) { cpu = parseInt(m[1]); break }
+    }
   }
   if (!cpu) {
     // "Octa-Core", "Quad-Core" etc
@@ -77,47 +115,39 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
   }
 
   // ── RAM ────────────────────────────────────────────────────────────────────
-  // "2 GB DDR4 RAM", "4 GB ECC RAM", "8GB DDR4 RAM", "1 GB RAM"
-  // "4 GB High-Speed DDR4 RAM" — hyphenated adjectives allowed between the size and "RAM"
-  const ramMatch = text.match(/(\d+)\s*GB\s+(?:[\w-]+\s+)*?RAM\b/i)
-  const ramGB = ramMatch ? parseInt(ramMatch[1]) : undefined
-  const ramTypeMatch = ramMatch ? ramMatch[0].match(/DDR\s?([345])/i) : null
+  // Any bullet mentioning "RAM" or "memory" is classified as the RAM line;
+  // the first GB figure in that line is the amount, wherever it sits.
+  // "2 GB DDR4 RAM", "4 GB ECC RAM", "RAM: 16GB of fast memory"
+  const ramLine = lines.find((line) => /\bram\b|\bmemory\b/i.test(line))
+  const ramGB = ramLine ? firstSizeGB(ramLine) : undefined
+  const ramTypeMatch = ramLine ? ramLine.match(/DDR\s?([345])/i) : null
   const ramType = ramTypeMatch ? `DDR${ramTypeMatch[1]}` : undefined
 
   // ── Storage ────────────────────────────────────────────────────────────────
-  // "25 GB SSD", "40 GB NVMe SSD", "100 GB SSD Storage", "40GB Disk Storage"
-  // "80 GB Local NVMe Storage" (no SSD/HDD/Disk keyword)
-  // Also handles TB drives: "2 x 1 TB NVMe SSD", "4 x 16 TB SATA HDD"
-  const storageMatchGB = text.match(/(\d+)\s*GB\s+(?:Local\s+)?(?:NVMe\s+)?(?:SSD|Disk|HDD|Storage)\b/i)
-  const storageMatchTB = !storageMatchGB
-    ? text.match(/(\d+)\s*TB\s+(?:NVMe\s+|Enterprise\s+|SATA\s+)?(?:SSD|HDD|Disk)/i)
-    : null
-  const storageGB = storageMatchGB
-    ? parseInt(storageMatchGB[1])
-    : storageMatchTB
-      ? parseInt(storageMatchTB[1]) * 1024
-      : undefined
+  // Any bullet mentioning a storage-ish keyword is classified as the storage
+  // line; the first GB/TB figure in it is the amount. Tolerates arbitrary
+  // wording/ordering — "80 GB Local NVMe Storage", "Storage: 80GB of blazing
+  // SSD space", "2 x 1 TB NVMe SSD (RAID 1)" all resolve the same way.
+  const storageLine = lines.find((line) => /\b(?:ssd|hdd|nvme|storage|disk|drive)\b/i.test(line))
+  const storageGB = storageLine ? firstSizeGB(storageLine) : undefined
 
-  const storageMatchText = storageMatchGB?.[0] ?? storageMatchTB?.[0]
-  const storageType: ParsedSpecs["storageType"] = storageMatchText
-    ? /nvme/i.test(storageMatchText)
+  const storageType: ParsedSpecs["storageType"] = storageLine
+    ? /nvme/i.test(storageLine)
       ? "nvme"
-      : /ssd/i.test(storageMatchText)
+      : /ssd/i.test(storageLine)
         ? "ssd"
-        : /hdd/i.test(storageMatchText)
+        : /hdd/i.test(storageLine)
           ? "hdd"
           : "generic"
     : undefined
 
   // Raw storage label for multi-drive dedicated configs
-  let storageDescription: string | undefined
-  for (const line of lines) {
-    if (/\b(?:NVMe|SSD|HDD)\b/i.test(line)) {
-      const beforeColon = line.split(':')[0].trim()
-      if (beforeColon.length > 4 && beforeColon.length < 80) storageDescription = beforeColon
-      break
-    }
-  }
+  const storageDescription = storageLine
+    ? (() => {
+        const beforeColon = storageLine.split(':')[0].trim()
+        return beforeColon.length > 4 && beforeColon.length < 80 ? beforeColon : undefined
+      })()
+    : undefined
 
   // ── Uplink ─────────────────────────────────────────────────────────────────
   // "1 Gbps Network Port", "4 Gbps"
@@ -146,7 +176,9 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
   let cpuModel: string | undefined
   let hardware: ParsedSpecs["hardware"]
 
-  const ryzenMatch = text.match(/AMD\s+Ryzen[™™]?\s+\d+(?:\s+(?:PRO\s+)?\d+\w*)?/i)
+  // "AMD Ryzen™ 9 5900X", "Ryzen 3700X" (single model token, no series digit,
+  // "AMD" prefix not always stated — "Ryzen" alone is unambiguously AMD)
+  const ryzenMatch = text.match(/(?:AMD\s+)?Ryzen[™™]?\s+(?:\d+\s+)?(?:PRO\s+)?\d+\w*/i)
   const ampereMatch = text.match(/Ampere[®®]?\s+Altra[®®]?(?:\s+ARM64)?/i)
   // Intel: Xeon, Core Ultra, Core i-series
   const intelMatch = text.match(/Intel[®®]?\s+(?:Core[™™]?\s+Ultra\s+\d+(?:\s+\d+)?|Core[™™]?\s+i\d+[- ]\d+\w*|Xeon[®®]?(?:\s+\w+)*)/i)

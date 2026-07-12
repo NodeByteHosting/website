@@ -92,7 +92,7 @@ function PlanCard({ plan }: { plan: VpsPlanSpec }) {
   return (
     <div
       className={cn(
-        "relative rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
+        "relative h-full flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
         "hover:shadow-xl hover:shadow-primary/5",
         plan.popular
           ? "border-primary/40 hover:border-primary/60"
@@ -108,7 +108,7 @@ function PlanCard({ plan }: { plan: VpsPlanSpec }) {
         </div>
       )}
 
-      <div className="p-5 space-y-4">
+      <div className="p-5 flex flex-col flex-1 gap-4">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="space-y-1.5">
@@ -186,7 +186,7 @@ function PlanCard({ plan }: { plan: VpsPlanSpec }) {
         <Button
           size="sm"
           variant={outOfStock ? "outline" : "default"}
-          className="w-full gap-2 rounded-lg"
+          className="w-full gap-2 rounded-lg mt-auto"
           disabled={outOfStock}
           asChild={!outOfStock}
         >

@@ -226,7 +226,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link 
+                <Link
                   href="/contact"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -234,7 +234,15 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a 
+                <Link
+                  href="/partners"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("footer.company.partners")}
+                </Link>
+              </li>
+              <li>
+                <a
                   href="https://find-and-update.company-information.service.gov.uk/company/15432941"
                   target="_blank"
                   rel="noopener noreferrer"

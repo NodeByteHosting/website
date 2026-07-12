@@ -17,6 +17,7 @@ const staticRoutes: Array<{
   { path: "/vps/amd",      priority: 0.9, changeFrequency: "weekly"  },
   { path: "/vps/intel",    priority: 0.8, changeFrequency: "monthly" },
   { path: "/about",        priority: 0.6, changeFrequency: "monthly" },
+  { path: "/partners",     priority: 0.5, changeFrequency: "monthly" },
   { path: "/contact",      priority: 0.7, changeFrequency: "monthly" },
   { path: "/changelog",    priority: 0.5, changeFrequency: "weekly"  },
   { path: "/kb",           priority: 0.7, changeFrequency: "weekly"  },
