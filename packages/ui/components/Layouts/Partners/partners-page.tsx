@@ -2,7 +2,8 @@
 
 import { Card } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
-import { Handshake, Award, ArrowRight, ExternalLink, MessageCircle, Sparkles } from "lucide-react"
+import { Badge } from "@/packages/ui/components/ui/badge"
+import { Handshake, Award, Users, ArrowRight, ExternalLink, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -32,27 +33,15 @@ function PartnerCard({ entry }: { entry: PartnerEntry }) {
               <h3 className="font-semibold truncate">{entry.name}</h3>
               <ExternalLink className="w-3.5 h-3.5 text-muted-foreground shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
+            {entry.category && (
+              <Badge variant="outline" className="mt-1 text-xs font-normal border-border/50 text-muted-foreground bg-muted/30">
+                {entry.category}
+              </Badge>
+            )}
           </div>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">{entry.description}</p>
       </a>
-    </Card>
-  )
-}
-
-function EmptyTierCard({ label, applyHref }: { label: string; applyHref: string }) {
-  return (
-    <Card className="border-dashed border-border/50 bg-card/20 p-8 text-center">
-      <Sparkles className="w-8 h-8 mx-auto mb-3 text-primary/60" />
-      <p className="text-muted-foreground mb-4">
-        No {label} yet — want to be the first?
-      </p>
-      <Button variant="outline" size="sm" className="rounded-full gap-2" asChild>
-        <Link href={applyHref}>
-          Apply Now
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
-      </Button>
     </Card>
   )
 }
@@ -63,16 +52,15 @@ function TierSection({
   badge,
   icon: Icon,
   entries,
-  emptyLabel,
 }: {
   tier: PartnerTier
   title: string
   badge: string
   icon: typeof Handshake
   entries: PartnerEntry[]
-  emptyLabel: string
 }) {
   const filtered = entries.filter((e) => e.tier === tier)
+  if (filtered.length === 0) return null
 
   return (
     <section className="py-16 sm:py-20 relative overflow-hidden">
@@ -85,17 +73,11 @@ function TierSection({
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">{title}</h2>
         </div>
 
-        {filtered.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {filtered.map((entry) => (
-              <PartnerCard key={entry.id} entry={entry} />
-            ))}
-          </div>
-        ) : (
-          <div className="max-w-md mx-auto">
-            <EmptyTierCard label={emptyLabel} applyHref="/kb/partners/apply" />
-          </div>
-        )}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {filtered.map((entry) => (
+            <PartnerCard key={entry.id} entry={entry} />
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -151,7 +133,6 @@ export function PartnersPage() {
         badge={t("partnersPage.sponsors.badge")}
         icon={Award}
         entries={PARTNERS}
-        emptyLabel={t("partnersPage.sponsors.emptyLabel")}
       />
 
       <TierSection
@@ -160,7 +141,14 @@ export function PartnersPage() {
         badge={t("partnersPage.partners.badge")}
         icon={Handshake}
         entries={PARTNERS}
-        emptyLabel={t("partnersPage.partners.emptyLabel")}
+      />
+
+      <TierSection
+        tier="community"
+        title={t("partnersPage.communities.title")}
+        badge={t("partnersPage.communities.badge")}
+        icon={Users}
+        entries={PARTNERS}
       />
 
       {/* CTA */}
