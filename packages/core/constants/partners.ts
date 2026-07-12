@@ -32,12 +32,12 @@ export const PARTNERS: PartnerEntry[] = [
     description: "Placeholder entry — replace with a real sponsor in packages/core/constants/partners.ts.",
   },
   {
-    id: "placeholder-partner-1",
-    name: "Placeholder Community",
+    id: "embrly",
+    name: "Emberly",
     tier: "partner",
-    logo: "/partners/placeholder.svg",
-    url: "https://nodebyte.host",
-    description: "Placeholder entry — replace with a real partner in packages/core/constants/partners.ts.",
+    logo: "https://embrly.ca/icon.svg",
+    url: "https://embrly.ca",
+    description: "The open-source platform for secure file sharing and team collaboration. Upload, manage, and share content with custom domains, rich embeds, and built-in talent discovery.",
   },
   {
     id: "placeholder-partner-2",
