@@ -204,13 +204,21 @@ async function fetchCategoryTree(): Promise<CategoryHub[]> {
 
   return categories
     .filter((cat) => !cat.parentId)
-    .map((hub) => ({
-      id: hub.id,
-      name: hub.name,
-      slug: hub.slug,
-      description: hub.description,
-      children: byParent.get(hub.id) ?? [],
-    }))
+    .map((hub) => {
+      const children = byParent.get(hub.id) ?? []
+      return {
+        id: hub.id,
+        name: hub.name,
+        slug: hub.slug,
+        description: hub.description,
+        // A hub with no sub-categories in Paymenter IS the leaf its products
+        // belong to directly (e.g. bare-metal servers filed straight under
+        // "Dedicated Servers" with no tiers underneath yet) — treat it as
+        // its own single child so pages that iterate `hub.children` still
+        // find those products instead of seeing an empty list.
+        children: children.length > 0 ? children : [{ id: hub.id, name: hub.name, slug: hub.slug, description: hub.description, parentId: null }],
+      }
+    })
 }
 
 export const getCachedCategoryTree = unstable_cache(fetchCategoryTree, ["billing-category-tree"], {
@@ -221,11 +229,28 @@ export const getCachedCategoryTree = unstable_cache(fetchCategoryTree, ["billing
  * Find a hub by its slugified name — accepts one or more acceptable aliases
  * (e.g. "vps-hosting" or "vps") since the exact parent category name is
  * whatever's configured in Paymenter.
+ *
+ * Falls back to a substring match (a hub whose slug *contains* one of the
+ * aliases) if no exact match is found, so a rename like "VPS Servers" →
+ * "VPS Plans 2026" doesn't silently empty out the whole section — it just
+ * warns, since the fallback match is a guess rather than a guarantee.
  */
 export async function getCategoryHub(hubSlugOrAliases: string | string[]): Promise<CategoryHub | null> {
   const aliases = Array.isArray(hubSlugOrAliases) ? hubSlugOrAliases : [hubSlugOrAliases]
   const tree = await getCachedCategoryTree()
-  return tree.find((hub) => aliases.includes(hub.slug)) ?? null
+
+  const exact = tree.find((hub) => aliases.includes(hub.slug))
+  if (exact) return exact
+
+  const fuzzy = tree.find((hub) => aliases.some((alias) => hub.slug.includes(alias)))
+  if (fuzzy) {
+    console.warn(
+      `[bytepay] No category exactly matched hub aliases [${aliases.join(", ")}] — falling back to "${fuzzy.name}" (slug "${fuzzy.slug}") via substring match. Rename the Paymenter category, or add its slug to the alias list, to make this exact.`,
+    )
+    return fuzzy
+  }
+
+  return null
 }
 
 /**

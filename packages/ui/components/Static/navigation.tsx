@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network } from "lucide-react"
+import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network, Handshake } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -20,12 +20,7 @@ import { useTranslations } from "next-intl"
 import { LINKS } from "@/packages/core/constants/links"
 import { SiDiscord } from "react-icons/si"
 
-interface NavigationProps {
-  /** Live game categories discovered from the billing panel, fetched server-side in app/layout.tsx. */
-  gamesNav?: { slug: string; name: string }[]
-}
-
-export function Navigation({ gamesNav = [] }: NavigationProps) {
+export function Navigation() {
   const t = useTranslations()
   const mountedRef = useRef(false)
   
@@ -43,6 +38,12 @@ export function Navigation({ gamesNav = [] }: NavigationProps) {
       icon: Network,
     },
     {
+      title: t("company.partners.title"),
+      href: "/partners",
+      description: t("company.partners.description"),
+      icon: Handshake,
+    },
+    {
       title: t("company.contact.title"),
       href: "/contact",
       description: t("company.contact.description"),
@@ -58,33 +59,23 @@ export function Navigation({ gamesNav = [] }: NavigationProps) {
   ]
 
   const services = [
-    ...gamesNav.map((game) => ({
-      title: game.name,
-      href: `/games/${game.slug}`,
-      description: `${game.name} server hosting`,
-      icon: Gamepad2,
-      section: "game" as const,
-    })),
     {
       title: t("services.gameServers.title"),
       href: "/games",
       description: t("services.gameServers.description"),
-      icon: Server,
-      section: "game",
+      icon: Gamepad2,
     },
     {
       title: t("services.allVps.title"),
       href: "/vps",
       description: t("services.allVps.description"),
       icon: Server,
-      section: "vps",
     },
     {
       title: t("services.dedicated.title"),
       href: "/dedicated",
       description: t("services.dedicated.description"),
       icon: Cpu,
-      section: "dedicated",
     },
   ]
 
@@ -332,62 +323,12 @@ export function Navigation({ gamesNav = [] }: NavigationProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="w-[320px] p-2"
+                    className="w-[280px] p-2"
                     sideOffset={8}
                     onMouseEnter={cancelClose}
                     onMouseLeave={() => closeDropdown(setServicesOpen)}
                   >
-                    {/* Game Servers section */}
-                    <div className="px-2 pt-1 pb-0.5">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Game Servers</p>
-                    </div>
-                    {services.filter(s => s.section === "game").map((service) => (
-                      <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
-                        <Link
-                          href={service.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                            <service.icon className="h-4 w-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="font-medium text-sm text-foreground">{service.title}</span>
-                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                              {service.description}
-                            </p>
-                          </div>
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                    {/* VPS section divider */}
-                    <div className="border-t border-border/50 mx-2 my-1" />
-                    <div className="px-2 pb-0.5">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">VPS Servers</p>
-                    </div>
-                    {services.filter(s => s.section === "vps").map((service) => (
-                      <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
-                        <Link
-                          href={service.href}
-                          className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/60 group cursor-pointer w-full"
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                            <service.icon className="h-4 w-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="font-medium text-sm text-foreground">{service.title}</span>
-                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                              {service.description}
-                            </p>
-                          </div>
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                    {/* Dedicated section divider */}
-                    <div className="border-t border-border/50 mx-2 my-1" />
-                    <div className="px-2 pb-0.5">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Dedicated Servers</p>
-                    </div>
-                    {services.filter(s => s.section === "dedicated").map((service) => (
+                    {services.map((service) => (
                       <DropdownMenuItem key={service.title} asChild className="p-0 focus:bg-transparent">
                         <Link
                           href={service.href}
@@ -607,56 +548,10 @@ export function Navigation({ gamesNav = [] }: NavigationProps) {
               </button>
               <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-out",
-                mobileServicesOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                mobileServicesOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
               )}>
                 <div className="pl-2 pr-1 py-2 space-y-1">
-                  {/* Game Servers */}
-                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pt-1 pb-0.5">Game Servers</p>
-                  {services.filter(s => s.section === "game").map((service) => (
-                    <Link
-                      key={service.title}
-                      href={service.href}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <service.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm">{service.title}</div>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {service.description}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    </Link>
-                  ))}
-                  {/* VPS Servers */}
-                  <div className="border-t border-border/40 mx-2 my-1" />
-                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pb-0.5">VPS Servers</p>
-                  {services.filter(s => s.section === "vps").map((service) => (
-                    <Link
-                      key={service.title}
-                      href={service.href}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors group"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <service.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm">{service.title}</div>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {service.description}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    </Link>
-                  ))}
-                  {/* Dedicated Servers */}
-                  <div className="border-t border-border/40 mx-2 my-1" />
-                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest px-3 pb-0.5">Dedicated Servers</p>
-                  {services.filter(s => s.section === "dedicated").map((service) => (
+                  {services.map((service) => (
                     <Link
                       key={service.title}
                       href={service.href}
