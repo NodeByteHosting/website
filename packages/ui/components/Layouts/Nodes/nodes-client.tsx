@@ -23,7 +23,7 @@ import {
 } from "@/packages/ui/components/ui/accordion"
 import { Alert, AlertDescription } from "@/packages/ui/components/ui/alert"
 import type { PublicNode } from "@/packages/core/constants/node-types"
-import { NODE_MONITOR_MAP, LOCATION_MONITOR_MAP } from "@/packages/core/constants/status-mapping"
+import { NODE_DISPLAY_OVERRIDES, LOCATION_MONITOR_MAP } from "@/packages/core/constants/status-mapping"
 import { useNodeStatus } from "@/packages/core/hooks/use-node-status"
 import type { StatusApiMonitor } from "@/app/api/status/route"
 import { cn } from "@/lib/utils"
@@ -36,35 +36,20 @@ interface ExtendedNode extends PublicNode {
   uptime?: number
 }
 
-const STATIC_NODES: ExtendedNode[] = [
-  {
-    id: 1,
-    name: "NEWC-GAME1",
-    locationCode: "Newcastle, UK",
-    isMaintenanceMode: false,
-    memory: 1310089,
-    disk: 1811000,
-    uptime: 99.9,
-  },
-  {
-    id: 2,
-    name: "NEWY-GAME1",
-    locationCode: "New York, USA",
-    isMaintenanceMode: false,
-    memory: 65104,
-    disk: 512000,
-    uptime: 99.8,
-  },
-  {
-    id: 3,
-    name: "HEL-VPS1",
-    locationCode: "Helsinki, FI",
-    isMaintenanceMode: false,
-    memory: 65104,
-    disk: 512000,
-    uptime: 99.8,
-  },
-]
+/** Build the node list from names discovered live from the status page, filling in any known display extras. */
+function buildNodes(nodeNames: string[]): ExtendedNode[] {
+  return nodeNames.map((name, i) => {
+    const overrides = NODE_DISPLAY_OVERRIDES[name] ?? {}
+    return {
+      id: i + 1,
+      name,
+      locationCode: overrides.locationCode ?? "",
+      isMaintenanceMode: false,
+      cpu: overrides.cpu,
+      ramType: overrides.ramType,
+    }
+  })
+}
 
 // ─── Location data ───────────────────────────────────────────────────────────
 
@@ -314,13 +299,15 @@ const FAQS = [
 
 // ─── Main export ─────────────────────────────────────────────────────────────
 
-export function NodesClient() {
-  const nodes = STATIC_NODES
+interface NodesClientProps {
+  /** Node monitor names discovered live from the status page's "Nodes" group. */
+  nodeNames: string[]
+}
+
+export function NodesClient({ nodeNames }: NodesClientProps) {
+  const nodes = buildNodes(nodeNames)
   const { findMonitor } = useNodeStatus()
-  const nodeLiveStates = nodes.map((node) => {
-    const monitorName = NODE_MONITOR_MAP[node.name]
-    return monitorName ? findMonitor(monitorName) : null
-  })
+  const nodeLiveStates = nodes.map((node) => findMonitor(node.name))
   const onlineCount = nodeLiveStates.filter(
     (live, i) => (live ? live.status === "up" : !nodes[i].isMaintenanceMode),
   ).length
@@ -381,11 +368,19 @@ export function NodesClient() {
             </p>
             <div className="h-px flex-1 bg-border/40" />
           </div>
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {nodes.map((node, i) => (
-              <NodeCard key={node.id} node={node} live={nodeLiveStates[i]} />
-            ))}
-          </div>
+          {nodes.length > 0 ? (
+            <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              {nodes.map((node, i) => (
+                <NodeCard key={node.id} node={node} live={nodeLiveStates[i]} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center space-y-2 border border-border/40 rounded-2xl bg-card/20 max-w-2xl mx-auto">
+              <Server className="w-8 h-8 text-muted-foreground/40" />
+              <p className="font-medium">Node status is temporarily unavailable</p>
+              <p className="text-sm text-muted-foreground">Check the status page directly for the latest info.</p>
+            </div>
+          )}
         </section>
 
         {/* ── Locations */}

@@ -1,21 +1,26 @@
 /**
- * Partners & sponsors shown on /partners.
+ * Partners, sponsors, and communities shown on /partners.
  *
- * Add or remove entries here — the page groups them by `tier` automatically
- * and shows an empty-state invite for any tier with zero entries, so this
- * file can be edited freely without touching the page component.
+ * Add or remove entries here — the page groups them by `tier` into their own
+ * section automatically, hiding any tier with zero entries, so this file can
+ * be edited freely without touching the page component.
  *
- * There's no real partner/sponsor data yet — the entries below are clearly
- * marked placeholders. Replace them (or delete down to an empty array) once
- * real partners sign on.
+ *  - "sponsor" / "partner": companies and projects we have a business
+ *    relationship with.
+ *  - "community": servers/communities we host or sponsor for free or at a
+ *    discount (Minecraft servers, Discord communities, etc). Set `category`
+ *    to a short label like "Minecraft Server" or "Discord Community" — it
+ *    renders as a badge on the card.
  */
 
-export type PartnerTier = "sponsor" | "partner"
+export type PartnerTier = "sponsor" | "partner" | "community"
 
 export interface PartnerEntry {
   id: string
   name: string
   tier: PartnerTier
+  /** Short badge label, e.g. "Minecraft Server", "Discord Community". Optional — mainly useful for the community tier. */
+  category?: string
   /** Path under /public, e.g. "/partners/example.svg" */
   logo: string
   url: string
@@ -24,27 +29,61 @@ export interface PartnerEntry {
 
 export const PARTNERS: PartnerEntry[] = [
   {
+    id: "poliberry",
+    name: "Poliberry",
+    tier: "partner",
+    logo: "/partners/poliberry.png",
+    url: "https://poliberry.com",
+    description: "Poliberry is a technology company building tools and services to better connect people online and empowering developers to build the next big thing.",
+  },
+  {
     id: "embrly",
     name: "Emberly",
     tier: "partner",
-    logo: "https://embrly.ca/icon.svg",
+    logo: "/partners/emberly.svg",
     url: "https://embrly.ca",
     description: "The open-source platform for secure file sharing and team collaboration. Upload, manage, and share content with custom domains, rich embeds, and built-in talent discovery.",
+  },
+  {
+    id: "clovrme",
+    name: "Clover",
+    tier: "partner",
+    logo: "/partners/clovrme.svg",
+    url: "https://clovr.me",
+    description: "A profile page that's fully yours custom themes, music, animated backgrounds, and all your links in one place.",
   },
   {
     id: "octo",
     name: "Octoflow",
     tier: "partner",
-    logo: "https://octoflow.ca/logo.png",
+    logo: "/partners/octoflow.png",
     url: "https://octoflow.ca",
     description: "Keep your team connected to every commit, pull request, and deployment without ever leaving your Discord server.",
   },
   {
-    id: "poliberry",
-    name: "Poliberry",
+    id: "antiraid",
+    name: "AntiRaid",
     tier: "partner",
-    logo: "/partners/Frame_1552.png",
-    url: "https://poliberry.com",
-    description: "Poliberry is a technology company building tools and services to better connect people online and empowering developers to build the next big thing.",
+    logo: "/partners/antiraid.webp",
+    url: "https://antiraid.xyz",
+    description: "From basic moderation to advanced threat protection, AntiRaid handles it all so you can focus on growing your community.",
+  },
+  {
+    id: "smphub",
+    name: "SMP Hub",
+    tier: "community",
+    category: "Minecraft Community",
+    logo: "/partners/smphub.webp",
+    url: "https://discord.gg/d6sXpA7gXJ",
+    description: "The premier directory designed to connect the Minecraft community.",
+  },
+  {
+    id: "blizzardsmp",
+    name: "Blizzard SMP",
+    tier: "community",
+    category: "Minecraft Community",
+    logo: "/partners/blizzardsmp.webp",
+    url: "https://discord.gg/mvQ9VqZ4D",
+    description: "A warm, active community with a cool name and even cooler players.",
   },
 ]

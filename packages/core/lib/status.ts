@@ -108,6 +108,21 @@ export function findMonitor(snapshot: StatusSnapshot | null, name: string): Stat
   return snapshot.monitors.find((m) => m.name.trim().toLowerCase() === target) ?? null
 }
 
+/**
+ * Names of individual node monitors under the "Nodes" status group — this is
+ * the live source of truth for which nodes exist on /nodes. Excludes the
+ * "group"-type aggregate rollups (e.g. "Game Servers", "VPS Servers") that
+ * summarise the individual node monitors rather than representing one.
+ * Add a node on status.nodebyte.host under the "Nodes" group and it appears
+ * here automatically — no website code change needed.
+ */
+export function getNodeMonitorNames(snapshot: StatusSnapshot | null): string[] {
+  if (!snapshot) return []
+  return snapshot.monitors
+    .filter((m) => m.group_name === "Nodes" && m.type !== "group")
+    .map((m) => m.name)
+}
+
 /** Compute fast/avg/slow latency (ms) from a monitor's recent heartbeats. */
 export function computeLatencyStats(monitor: StatusMonitor): { fast: number; avg: number; slow: number } | null {
   const samples = monitor.heartbeats
