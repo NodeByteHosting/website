@@ -33,10 +33,18 @@ export const PARTNERS: PartnerEntry[] = [
   },
   {
     id: "octo",
-    name: "octoflow",
+    name: "Octoflow",
     tier: "partner",
     logo: "https://octoflow.ca/logo.png",
     url: "https://octoflow.ca",
     description: "Keep your team connected to every commit, pull request, and deployment without ever leaving your Discord server.",
+  },
+  {
+    id: "poliberry",
+    name: "Poliberry",
+    tier: "partner",
+    logo: "https://embrly.ca/ibNxG/0VQyey.png",
+    url: "https://discord.gg/bepCYns2Vt",
+    description: "Poliberry is a technology company building tools and services to better connect people online and empowering developers to build the next big thing.",
   },
 ]
