@@ -11,6 +11,7 @@ import {
   Zap,
   X,
   ArrowRight,
+  ChevronDown,
   Star,
   Lock,
   PackageX,
@@ -24,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/packages/ui/components/ui/select"
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import type { DedicatedPlanSpec } from "@/packages/core/types/servers/dedicated"
@@ -48,6 +51,7 @@ function formatStorage(plan: DedicatedPlanSpec): string {
 
 function PlanCard({ plan }: { plan: DedicatedPlanSpec }) {
   const outOfStock = plan.stock === "out_of_stock"
+  const [infoOpen, setInfoOpen] = useState(false)
 
   return (
     <div
@@ -145,6 +149,29 @@ function PlanCard({ plan }: { plan: DedicatedPlanSpec }) {
             </span>
           ))}
         </div>
+
+        {/* Server info */}
+        <Collapsible open={infoOpen} onOpenChange={setInfoOpen}>
+          <CollapsibleTrigger asChild>
+            <button
+              type="button"
+              className="flex w-full items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <span>{infoOpen ? "Hide" : "View"} Server Info</span>
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", infoOpen && "rotate-180")} />
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-3 space-y-2 border-t border-border/40 mt-3">
+            <PlanInfoRow
+              label="Setup Fee"
+              value={plan.setupFeeGBP > 0 ? <Price amount={plan.setupFeeGBP} prices={plan.setupFees} /> : "None"}
+            />
+            {plan.uplink && (
+              <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />
+            )}
+            {plan.location && <PlanInfoRow label="Location" value={plan.location} />}
+          </CollapsibleContent>
+        </Collapsible>
 
         <Button
           size="sm"

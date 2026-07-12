@@ -19,6 +19,10 @@ export interface VpsPlanSpec {
   description?: string
   cpuModel?: string
   priceGBP: number
+  /** One-time setup fee in GBP (0 if none). */
+  setupFeeGBP: number
+  /** Native one-time setup fees per currency code. */
+  setupFees?: Record<string, number>
   cpu: number
   ramGB: number
   storageGB: number

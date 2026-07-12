@@ -10,9 +10,6 @@ const staticRoutes: Array<{
 }> = [
   { path: "",              priority: 1.0, changeFrequency: "weekly"  },
   { path: "/games",        priority: 0.9, changeFrequency: "weekly"  },
-  { path: "/games/minecraft", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/games/rust",   priority: 0.9, changeFrequency: "weekly"  },
-  { path: "/games/hytale", priority: 0.8, changeFrequency: "monthly" },
   { path: "/vps",          priority: 0.9, changeFrequency: "weekly"  },
   { path: "/vps/amd",      priority: 0.9, changeFrequency: "weekly"  },
   { path: "/vps/intel",    priority: 0.8, changeFrequency: "monthly" },

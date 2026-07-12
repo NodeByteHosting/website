@@ -429,6 +429,30 @@ export function getPricesMap(product: BillingProduct): Record<string, number> {
   return map
 }
 
+/** Resolve the GBP one-time setup fee from the product's recurring plan (0 if none). */
+export function getSetupFeeGBP(product: BillingProduct): number {
+  const plan =
+    product.plans.find((p) => p.type === "recurring" && p.billingPeriod === 1 && p.billingUnit === "month")
+    ?? product.plans.find((p) => p.type === "recurring")
+    ?? product.plans[0]
+  if (!plan) return 0
+  return plan.prices.find((p) => p.currencyCode === "GBP")?.setupFee ?? 0
+}
+
+/** Return a map of currency code → one-time setup fee from the product's recurring plan. */
+export function getSetupFeesMap(product: BillingProduct): Record<string, number> {
+  const plan =
+    product.plans.find((p) => p.type === "recurring" && p.billingPeriod === 1 && p.billingUnit === "month")
+    ?? product.plans.find((p) => p.type === "recurring")
+    ?? product.plans[0]
+  if (!plan) return {}
+  const map: Record<string, number> = {}
+  for (const price of plan.prices) {
+    map[price.currencyCode] = price.setupFee
+  }
+  return map
+}
+
 /** Map billing stock to the website StockStatus type. */
 export function getStockStatus(
   product: BillingProduct,

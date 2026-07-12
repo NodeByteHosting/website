@@ -1,6 +1,0 @@
-export * from "./minecraft"
-export * from "./rust"
-export * from "./hytale"
-export * from "./terraria"
-export * from "./gmod"
-export * from "./palworld"
