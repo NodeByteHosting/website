@@ -49,13 +49,6 @@ export function Navigation() {
       description: t("company.contact.description"),
       icon: Mail,
     },
-    {
-      title: t("company.github.title"),
-      href: "https://github.com/nodebyte",
-      description: t("company.github.description"),
-      icon: ExternalLink,
-      external: true,
-    },
   ]
 
   const services = [

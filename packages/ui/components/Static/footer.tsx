@@ -242,17 +242,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://find-and-update.company-information.service.gov.uk/company/15432941"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 group"
-                >
-                  {t("footer.company.companyInfo")}
-                  <ExternalLink className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-50 group-hover:translate-x-0 transition-all" />
-                </a>
-              </li>
-              <li>
                 <Link 
                   href="/changelog"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
