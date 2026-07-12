@@ -29,6 +29,14 @@ export interface PartnerEntry {
 
 export const PARTNERS: PartnerEntry[] = [
   {
+    id: "fyfeweb",
+    name: "FyfeWeb",
+    tier: "partner",
+    logo: "/partners/fyfeweb.png",
+    url: "https://fyfeweb.com",
+    description: "From a single website to racks of your own hardware: one provider, one network, one support team.",
+  },
+  {
     id: "poliberry",
     name: "Poliberry",
     tier: "partner",
