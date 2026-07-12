@@ -18,9 +18,15 @@ export interface GamePlanSpec {
   id: string
   /** Raw product name from the billing panel — used as the display name for auto-generated (non-curated) game pages */
   name?: string
+  /** Paymenter category slug this plan was fetched from, e.g. "minecraft" — plans are shown in one unified grid regardless, this is just for search/de-duplication. */
+  category: string
   description?: string
   cpuModel?: string
   priceGBP: number
+  /** One-time setup fee in GBP (0 if none). */
+  setupFeeGBP: number
+  /** Native one-time setup fees per currency code. */
+  setupFees?: Record<string, number>
   ramGB: number
   /** RAM generation if the description names one, e.g. "DDR4" — omitted when unspecified */
   ramType?: string

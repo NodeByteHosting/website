@@ -19,6 +19,10 @@ export interface DedicatedPlanSpec {
   cpuModel?: string
   hardware?: "amd" | "intel"
   priceGBP: number
+  /** One-time setup fee in GBP (0 if none). */
+  setupFeeGBP: number
+  /** Native one-time setup fees per currency code. */
+  setupFees?: Record<string, number>
   /** Physical CPU cores. May be undefined if not listed in the product description. */
   cores?: number
   ramGB: number
