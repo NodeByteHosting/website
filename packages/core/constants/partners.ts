@@ -77,6 +77,15 @@ export const PARTNERS: PartnerEntry[] = [
     description: "From basic moderation to advanced threat protection, AntiRaid handles it all so you can focus on growing your community.",
   },
   {
+    id: "fluxrp",
+    name: "Flux.LT",
+    tier: "community",
+    category: "FiveM Community",
+    logo: "/partners/fluxrp.png",
+    url: "https://discord.gg/XAKudt7C82",
+    description: "Lithuania's premier FiveM roleplay community, bringing immersive story-driven RP and a tight-knit Baltic player base together.",
+  },
+  {
     id: "smphub",
     name: "SMP Hub",
     tier: "community",
