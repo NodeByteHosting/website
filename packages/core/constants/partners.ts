@@ -43,8 +43,8 @@ export const PARTNERS: PartnerEntry[] = [
     id: "poliberry",
     name: "Poliberry",
     tier: "partner",
-    logo: "https://embrly.ca/ibNxG/0VQyey.png",
-    url: "https://discord.gg/bepCYns2Vt",
+    logo: "/partners/Frame_1552.png",
+    url: "https://poliberry.com",
     description: "Poliberry is a technology company building tools and services to better connect people online and empowering developers to build the next big thing.",
   },
 ]
