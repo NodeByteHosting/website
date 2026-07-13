@@ -32,11 +32,24 @@ import { cn } from "@/lib/utils"
 import type { DedicatedPlanSpec } from "@/packages/core/types/servers/dedicated"
 import { Price } from "@/packages/ui/components/ui/price"
 
-type SortKey = "default" | "asc" | "desc"
+type SortKey =
+  | "default"
+  | "price-asc" | "price-desc"
+  | "ram-asc" | "ram-desc"
+  | "storage-asc" | "storage-desc"
+  | "cpu-asc" | "cpu-desc"
 
 function formatBandwidth(plan: DedicatedPlanSpec): string {
   if (!plan.bandwidth) return "Unmetered"
   return `${plan.bandwidth.amount} ${plan.bandwidth.unit}`
+}
+
+/** Sort by a possibly-undefined numeric field — plans missing it (not listed in their description) always sort last, regardless of direction. */
+function compareNullable(a: number | undefined, b: number | undefined, dir: 1 | -1): number {
+  if (a == null && b == null) return 0
+  if (a == null) return 1
+  if (b == null) return -1
+  return (a - b) * dir
 }
 
 function formatStorage(plan: DedicatedPlanSpec): string {
@@ -204,7 +217,13 @@ interface DedicatedHubProps {
 export function DedicatedHub({ plans }: DedicatedHubProps) {
   const [search, setSearch] = useState("")
   const [hardware, setHardware] = useState<"amd" | "intel" | "ALL">("ALL")
+  const [ram, setRam] = useState<number | "ALL">("ALL")
+  const [priceMin, setPriceMin] = useState("")
+  const [priceMax, setPriceMax] = useState("")
   const [sort, setSort] = useState<SortKey>("default")
+
+  // Derived from live plan data, not the server name — reliable regardless of naming.
+  const availableRam = Array.from(new Set(plans.map((p) => p.ramGB))).sort((a, b) => a - b)
 
   const filtered = (() => {
     let result = [...plans]
@@ -218,16 +237,31 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
       )
     }
     if (hardware !== "ALL") result = result.filter((p) => p.hardware === hardware)
-    if (sort === "asc") result.sort((a, b) => a.priceGBP - b.priceGBP)
-    if (sort === "desc") result.sort((a, b) => b.priceGBP - a.priceGBP)
+    if (ram !== "ALL") result = result.filter((p) => p.ramGB === ram)
+    const min = parseFloat(priceMin)
+    const max = parseFloat(priceMax)
+    if (!isNaN(min)) result = result.filter((p) => p.priceGBP >= min)
+    if (!isNaN(max)) result = result.filter((p) => p.priceGBP <= max)
+    if (sort === "price-asc") result.sort((a, b) => a.priceGBP - b.priceGBP)
+    if (sort === "price-desc") result.sort((a, b) => b.priceGBP - a.priceGBP)
+    if (sort === "ram-asc") result.sort((a, b) => a.ramGB - b.ramGB)
+    if (sort === "ram-desc") result.sort((a, b) => b.ramGB - a.ramGB)
+    if (sort === "storage-asc") result.sort((a, b) => compareNullable(a.storageGB, b.storageGB, 1))
+    if (sort === "storage-desc") result.sort((a, b) => compareNullable(a.storageGB, b.storageGB, -1))
+    if (sort === "cpu-asc") result.sort((a, b) => compareNullable(a.cores, b.cores, 1))
+    if (sort === "cpu-desc") result.sort((a, b) => compareNullable(a.cores, b.cores, -1))
     return result
   })()
 
-  const hasActiveFilters = hardware !== "ALL" || search !== ""
+  const hasActiveFilters =
+    hardware !== "ALL" || ram !== "ALL" || priceMin !== "" || priceMax !== "" || search !== ""
 
   function clearFilters() {
     setSearch("")
     setHardware("ALL")
+    setRam("ALL")
+    setPriceMin("")
+    setPriceMax("")
     setSort("default")
   }
 
@@ -291,15 +325,40 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
               />
             </div>
             <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="w-44 bg-card/30 border-border/50">
+              <SelectTrigger className="w-48 bg-card/30 border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="default">Sort: Default</SelectItem>
-                <SelectItem value="asc">Price: Low → High</SelectItem>
-                <SelectItem value="desc">Price: High → Low</SelectItem>
+                <SelectItem value="price-asc">Price: Low → High</SelectItem>
+                <SelectItem value="price-desc">Price: High → Low</SelectItem>
+                <SelectItem value="ram-asc">RAM: Low → High</SelectItem>
+                <SelectItem value="ram-desc">RAM: High → Low</SelectItem>
+                <SelectItem value="storage-asc">Storage: Low → High</SelectItem>
+                <SelectItem value="storage-desc">Storage: High → Low</SelectItem>
+                <SelectItem value="cpu-asc">CPU Cores: Low → High</SelectItem>
+                <SelectItem value="cpu-desc">CPU Cores: High → Low</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-1.5">
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Min £"
+                value={priceMin}
+                onChange={(e) => setPriceMin(e.target.value)}
+                className="w-24 bg-card/30 border-border/50"
+              />
+              <span className="text-muted-foreground text-sm">–</span>
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Max £"
+                value={priceMax}
+                onChange={(e) => setPriceMax(e.target.value)}
+                className="w-24 bg-card/30 border-border/50"
+              />
+            </div>
 
             {/* Hardware filter */}
             <div className="flex gap-1.5">
@@ -325,6 +384,37 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
                 <X className="w-3.5 h-3.5" /> Clear
               </Button>
             )}
+          </div>
+
+          {/* RAM tier row */}
+          <div className="flex flex-wrap gap-1.5 items-center">
+            <button
+              type="button"
+              onClick={() => setRam("ALL")}
+              className={cn(
+                "px-3 py-1 rounded-full text-xs font-medium border transition-all",
+                ram === "ALL"
+                  ? "border-primary/50 bg-primary/10 text-primary"
+                  : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+              )}
+            >
+              All RAM
+            </button>
+            {availableRam.map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRam(ram === r ? "ALL" : r)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-xs font-medium border transition-all",
+                  ram === r
+                    ? "border-primary/50 bg-primary/10 text-primary"
+                    : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+                )}
+              >
+                {r} GB
+              </button>
+            ))}
           </div>
         </div>
 
