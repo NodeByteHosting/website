@@ -191,8 +191,9 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
   // "AMD" prefix not always stated — "Ryzen" alone is unambiguously AMD)
   const ryzenMatch = text.match(/(?:AMD\s+)?Ryzen[™™]?\s+(?:\d+\s+)?(?:PRO\s+)?\d+\w*/i)
   const ampereMatch = text.match(/Ampere[®®]?\s+Altra[®®]?(?:\s+ARM64)?/i)
-  // Intel: Xeon, Core Ultra, Core i-series
-  const intelMatch = text.match(/Intel[®®]?\s+(?:Core[™™]?\s+Ultra\s+\d+(?:\s+\d+)?|Core[™™]?\s+i\d+[- ]\d+\w*|Xeon[®®]?(?:\s+\w+)*)/i)
+  // Intel: Xeon, Core Ultra, Core i-series — "Core" isn't always stated
+  // ("Intel i9-9900K" as shorthand for "Intel Core i9-9900K")
+  const intelMatch = text.match(/Intel[®®]?\s+(?:Core[™™]?\s+Ultra\s+\d+(?:\s+\d+)?|(?:Core[™™]?\s+)?i\d+[- ]\d+\w*|Xeon[®®]?(?:\s+\w+)*)/i)
 
   if (ryzenMatch) { cpuModel = ryzenMatch[0].trim(); hardware = "amd" }
   else if (/\bamd\b/i.test(text)) { hardware = "amd" }
@@ -215,10 +216,16 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
   // "Flexible Regional Hosting: ... choose between Newcastle, UK or New York,
   // US ..." — pull "City, XX" style place names out of any bullet mentioning
   // location/region, joining multiple choices with " / ".
+  // "Flexible Regional Hosting: ... Newcastle, UK or New York, US ..." (code)
+  // "Premium Central EU Infrastructure: Provisioned in Falkenstein, Germany
+  // ..." (full country name) — the trigger keyword and the place format both
+  // vary, so cast a wider net on both.
   let location: string | undefined
-  const locationLine = lines.find((line) => /\blocation|\bregion/i.test(line))
+  const locationLine = lines.find((line) =>
+    /\blocation|\bregion|\binfrastructure|\bprovisioned|\bhosted|\bdata\s*cent(?:er|re)/i.test(line),
+  )
   if (locationLine) {
-    const places = locationLine.match(/\b[A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)*,\s*[A-Z]{2,3}\b/g)
+    const places = locationLine.match(/\b[A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)*,\s*[A-Z][a-zA-Z]+\b/g)
     if (places && places.length > 0) location = places.join(" / ")
   }
 

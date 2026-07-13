@@ -76,7 +76,12 @@ const SERIES_META: Record<string, { label: string; fullName: string; chip: strin
 
 type Lineup = keyof typeof LINEUP_META
 type Series = string
-type SortKey = "default" | "asc" | "desc"
+type SortKey =
+  | "default"
+  | "price-asc" | "price-desc"
+  | "ram-asc" | "ram-desc"
+  | "storage-asc" | "storage-desc"
+  | "cpu-asc" | "cpu-desc"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -250,11 +255,17 @@ export function VpsHub({ plans }: VpsHubProps) {
   const [lineup, setLineup] = useState<Lineup | "ALL">("ALL")
   const [series, setSeries] = useState<Series | "ALL">("ALL")
   const [hardware, setHardware] = useState<"amd" | "intel" | "arm" | "ALL">("ALL")
+  const [ram, setRam] = useState<number | "ALL">("ALL")
+  const [priceMin, setPriceMin] = useState("")
+  const [priceMax, setPriceMax] = useState("")
   const [sort, setSort] = useState<SortKey>("default")
 
-  // Derive which lineups/series actually exist in the plan list
+  // Derive which lineups/series/RAM tiers actually exist in the plan list —
+  // reliable even for plans whose names don't follow the LINEUP-SERIES-RAM
+  // convention, since it's built from the live data, not assumed from it.
   const availableLineups = Array.from(new Set(plans.flatMap((p) => p.lineup ? [p.lineup] : []))) as Lineup[]
   const availableSeries = Array.from(new Set(plans.flatMap((p) => p.series ? [p.series] : []))) as Series[]
+  const availableRam = Array.from(new Set(plans.map((p) => p.ramGB))).sort((a, b) => a - b)
 
   const filtered = (() => {
     let result = [...plans]
@@ -270,18 +281,34 @@ export function VpsHub({ plans }: VpsHubProps) {
     if (lineup !== "ALL") result = result.filter((p) => p.lineup === lineup)
     if (series !== "ALL") result = result.filter((p) => p.series === series)
     if (hardware !== "ALL") result = result.filter((p) => p.hardware === hardware)
-    if (sort === "asc") result.sort((a, b) => a.priceGBP - b.priceGBP)
-    if (sort === "desc") result.sort((a, b) => b.priceGBP - a.priceGBP)
+    if (ram !== "ALL") result = result.filter((p) => p.ramGB === ram)
+    const min = parseFloat(priceMin)
+    const max = parseFloat(priceMax)
+    if (!isNaN(min)) result = result.filter((p) => p.priceGBP >= min)
+    if (!isNaN(max)) result = result.filter((p) => p.priceGBP <= max)
+    if (sort === "price-asc") result.sort((a, b) => a.priceGBP - b.priceGBP)
+    if (sort === "price-desc") result.sort((a, b) => b.priceGBP - a.priceGBP)
+    if (sort === "ram-asc") result.sort((a, b) => a.ramGB - b.ramGB)
+    if (sort === "ram-desc") result.sort((a, b) => b.ramGB - a.ramGB)
+    if (sort === "storage-asc") result.sort((a, b) => a.storageGB - b.storageGB)
+    if (sort === "storage-desc") result.sort((a, b) => b.storageGB - a.storageGB)
+    if (sort === "cpu-asc") result.sort((a, b) => a.cpu - b.cpu)
+    if (sort === "cpu-desc") result.sort((a, b) => b.cpu - a.cpu)
     return result
   })()
 
-  const hasActiveFilters = lineup !== "ALL" || series !== "ALL" || hardware !== "ALL" || search !== ""
+  const hasActiveFilters =
+    lineup !== "ALL" || series !== "ALL" || hardware !== "ALL" || ram !== "ALL" ||
+    priceMin !== "" || priceMax !== "" || search !== ""
 
   function clearFilters() {
     setSearch("")
     setLineup("ALL")
     setSeries("ALL")
     setHardware("ALL")
+    setRam("ALL")
+    setPriceMin("")
+    setPriceMax("")
     setSort("default")
   }
 
@@ -328,15 +355,40 @@ export function VpsHub({ plans }: VpsHubProps) {
               />
             </div>
             <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="w-44 bg-card/30 border-border/50">
+              <SelectTrigger className="w-48 bg-card/30 border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="default">Sort: Default</SelectItem>
-                <SelectItem value="asc">Price: Low → High</SelectItem>
-                <SelectItem value="desc">Price: High → Low</SelectItem>
+                <SelectItem value="price-asc">Price: Low → High</SelectItem>
+                <SelectItem value="price-desc">Price: High → Low</SelectItem>
+                <SelectItem value="ram-asc">RAM: Low → High</SelectItem>
+                <SelectItem value="ram-desc">RAM: High → Low</SelectItem>
+                <SelectItem value="storage-asc">Storage: Low → High</SelectItem>
+                <SelectItem value="storage-desc">Storage: High → Low</SelectItem>
+                <SelectItem value="cpu-asc">CPU Cores: Low → High</SelectItem>
+                <SelectItem value="cpu-desc">CPU Cores: High → Low</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-1.5">
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Min £"
+                value={priceMin}
+                onChange={(e) => setPriceMin(e.target.value)}
+                className="w-24 bg-card/30 border-border/50"
+              />
+              <span className="text-muted-foreground text-sm">–</span>
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Max £"
+                value={priceMax}
+                onChange={(e) => setPriceMax(e.target.value)}
+                className="w-24 bg-card/30 border-border/50"
+              />
+            </div>
             {hasActiveFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1.5 text-muted-foreground">
                 <X className="w-3.5 h-3.5" /> Clear
@@ -349,6 +401,37 @@ export function VpsHub({ plans }: VpsHubProps) {
             <span className="flex items-center gap-1.5 text-xs text-muted-foreground mr-1">
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
             </span>
+
+            {/* RAM tier — derived from live plan data, always reliable regardless of naming */}
+            <button
+              type="button"
+              onClick={() => setRam("ALL")}
+              className={cn(
+                "px-3 py-1 rounded-full text-xs font-medium border transition-all",
+                ram === "ALL"
+                  ? "border-primary/50 bg-primary/10 text-primary"
+                  : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+              )}
+            >
+              All RAM
+            </button>
+            {availableRam.map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRam(ram === r ? "ALL" : r)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-xs font-medium border transition-all",
+                  ram === r
+                    ? "border-primary/50 bg-primary/10 text-primary"
+                    : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+                )}
+              >
+                {r} GB
+              </button>
+            ))}
+
+            <span className="w-px h-4 bg-border/50 mx-1" />
 
             {/* Hardware brand */}
             {(["ALL", "amd", "intel", "arm"] as const).map((h) => (
