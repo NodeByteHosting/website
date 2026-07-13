@@ -6,6 +6,7 @@
  */
 export const SUPPORTED_GAMES = [
   "Minecraft",
-  "Rust",
   "Hytale",
+  "Palworld",
+  "Rust",
 ] as const

@@ -16,6 +16,10 @@
 export interface DedicatedPlanSpec {
   id: string
   description?: string
+  /** Number of databases included, e.g. "3x MySQL Databases" → 3. */
+  databases?: number
+  /** Whether the description mentions automatic/included backups. */
+  backups?: boolean
   cpuModel?: string
   hardware?: "amd" | "intel"
   priceGBP: number
