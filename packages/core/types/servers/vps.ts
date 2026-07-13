@@ -17,6 +17,10 @@
 export interface VpsPlanSpec {
   id: string
   description?: string
+  /** Number of databases included, e.g. "3x MySQL Databases" → 3. */
+  databases?: number
+  /** Whether the description mentions automatic/included backups. */
+  backups?: boolean
   cpuModel?: string
   priceGBP: number
   /** One-time setup fee in GBP (0 if none). */

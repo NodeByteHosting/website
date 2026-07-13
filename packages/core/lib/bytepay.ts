@@ -211,12 +211,19 @@ async function fetchCategoryTree(): Promise<CategoryHub[]> {
         name: hub.name,
         slug: hub.slug,
         description: hub.description,
-        // A hub with no sub-categories in Paymenter IS the leaf its products
-        // belong to directly (e.g. bare-metal servers filed straight under
-        // "Dedicated Servers" with no tiers underneath yet) — treat it as
-        // its own single child so pages that iterate `hub.children` still
-        // find those products instead of seeing an empty list.
-        children: children.length > 0 ? children : [{ id: hub.id, name: hub.name, slug: hub.slug, description: hub.description, parentId: null }],
+        // Products can be filed directly on the hub category itself — either
+        // because it has no sub-categories at all yet (e.g. bare-metal
+        // servers filed straight under "Dedicated Servers"), or because it
+        // has real sub-categories but *also* some generic products of its
+        // own (e.g. unified "GAME-BASE"/"GAME-PLUS" tiers filed directly on
+        // "Game Servers" alongside its existing Minecraft/Rust/Hytale
+        // children). Always include the hub itself as a leaf, in addition to
+        // any real children, so pages that iterate `hub.children` never miss
+        // hub-level products.
+        children: [
+          { id: hub.id, name: hub.name, slug: hub.slug, description: hub.description, parentId: null },
+          ...children,
+        ],
       }
     })
 }

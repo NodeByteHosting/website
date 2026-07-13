@@ -49,7 +49,7 @@ function PlanCard({ plan }: { plan: GamePlanSpec }) {
   return (
     <div
       className={cn(
-        "relative h-full flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
+        "relative flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
         "hover:shadow-xl hover:shadow-primary/5",
         plan.popular
           ? "border-primary/40 hover:border-primary/60"
@@ -143,6 +143,9 @@ function PlanCard({ plan }: { plan: GamePlanSpec }) {
             {plan.uplink && (
               <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />
             )}
+            {plan.location && <PlanInfoRow label="Locations" value={plan.location} />}
+            {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
+            {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
           </CollapsibleContent>
         </Collapsible>
 
@@ -288,7 +291,7 @@ export function GameHub({ plans }: GameHubProps) {
               <p className="text-xs text-muted-foreground mb-4">
                 Showing {filtered.length} of {plans.length} plan{plans.length !== 1 ? "s" : ""}
               </p>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid items-start sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}

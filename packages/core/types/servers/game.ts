@@ -21,6 +21,10 @@ export interface GamePlanSpec {
   /** Paymenter category slug this plan was fetched from, e.g. "minecraft" — plans are shown in one unified grid regardless, this is just for search/de-duplication. */
   category: string
   description?: string
+  /** Number of databases included, e.g. "3x MySQL Databases" → 3. */
+  databases?: number
+  /** Whether the description mentions automatic/included backups. */
+  backups?: boolean
   cpuModel?: string
   priceGBP: number
   /** One-time setup fee in GBP (0 if none). */

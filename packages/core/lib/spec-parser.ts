@@ -27,6 +27,12 @@ export interface ParsedSpecs {
   hardware?: "amd" | "intel" | "arm"
   /** Short description extracted from the first bullet's subtitle. */
   description?: string
+  /** Location(s) named in a "location"/"region" bullet, e.g. "Newcastle, UK / New York, US" — omitted if none named. */
+  location?: string
+  /** Number of databases included, e.g. "3x MySQL Databases" → 3. */
+  databases?: number
+  /** Whether the description mentions automatic/included backups. */
+  backups?: boolean
 }
 
 function stripHtml(html: string): string {
@@ -48,10 +54,15 @@ function bulletLines(html: string): string[] {
   const text = withBreaks
     .replace(/<[^>]*>/g, " ")
     .replace(/&amp;/g, "&")
+    .replace(/&gt;/g, ">")
+    .replace(/&lt;/g, "<")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&nbsp;/g, " ")
     .replace(/[ \t]+/g, " ")
   return text
     .split(/[•\n]/)
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/^>\s*/, ""))
     .filter(Boolean)
 }
 
@@ -200,7 +211,27 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
     if (m) { description = m[1].trim(); break }
   }
 
-  return { cpu, ramGB, ramType, storageGB, storageDescription, storageType, bandwidth, uplink, cpuModel, hardware, description }
+  // ── Location ───────────────────────────────────────────────────────────────
+  // "Flexible Regional Hosting: ... choose between Newcastle, UK or New York,
+  // US ..." — pull "City, XX" style place names out of any bullet mentioning
+  // location/region, joining multiple choices with " / ".
+  let location: string | undefined
+  const locationLine = lines.find((line) => /\blocation|\bregion/i.test(line))
+  if (locationLine) {
+    const places = locationLine.match(/\b[A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)*,\s*[A-Z]{2,3}\b/g)
+    if (places && places.length > 0) location = places.join(" / ")
+  }
+
+  // ── Databases ──────────────────────────────────────────────────────────────
+  // "3x MySQL Databases", "5x MySQL Databases Included", "10 isolated MySQL databases"
+  let databases: number | undefined
+  const dbMatch = text.match(/\b(\d+)x?\s+(?:isolated\s+)?(?:MySQL\s+|PostgreSQL\s+|SQL\s+)?[Dd]atabases?\b/)
+  if (dbMatch) databases = parseInt(dbMatch[1])
+
+  // ── Backups ────────────────────────────────────────────────────────────────
+  const backups = /\bbackups?\b/i.test(text) || undefined
+
+  return { cpu, ramGB, ramType, storageGB, storageDescription, storageType, bandwidth, uplink, cpuModel, hardware, description, location, databases, backups }
 }
 
 /** Human-friendly storage type label — falls back to "Storage Array" when the description didn't name a drive type. */

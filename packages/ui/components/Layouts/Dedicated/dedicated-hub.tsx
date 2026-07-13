@@ -56,7 +56,7 @@ function PlanCard({ plan }: { plan: DedicatedPlanSpec }) {
   return (
     <div
       className={cn(
-        "relative h-full flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
+        "relative flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
         "hover:shadow-xl hover:shadow-primary/5",
         plan.popular
           ? "border-primary/40 hover:border-primary/60"
@@ -170,6 +170,8 @@ function PlanCard({ plan }: { plan: DedicatedPlanSpec }) {
               <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />
             )}
             {plan.location && <PlanInfoRow label="Location" value={plan.location} />}
+            {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
+            {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
           </CollapsibleContent>
         </Collapsible>
 
@@ -346,7 +348,7 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
               <p className="text-xs text-muted-foreground mb-4">
                 Showing {filtered.length} of {plans.length} server{plans.length !== 1 ? "s" : ""}
               </p>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid items-start sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}
