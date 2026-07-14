@@ -177,7 +177,7 @@ interface GameHubProps {
 
 export function GameHub({ plans }: GameHubProps) {
   const [search, setSearch] = useState("")
-  const [sort, setSort] = useState<SortKey>("default")
+  const [sort, setSort] = useState<SortKey>("asc")
 
   const filtered = (() => {
     let result = [...plans]
@@ -198,7 +198,7 @@ export function GameHub({ plans }: GameHubProps) {
 
   function clearFilters() {
     setSearch("")
-    setSort("default")
+    setSort("asc")
   }
 
   return (

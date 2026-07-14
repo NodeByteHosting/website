@@ -28,6 +28,7 @@ import {
 } from "@/packages/ui/components/ui/select"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
 import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
+import { FilterChipRow, FilterChip } from "@/packages/ui/components/ui/filter-chip"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import type { VpsPlanSpec } from "@/packages/core/types/servers/vps"
@@ -258,7 +259,8 @@ export function VpsHub({ plans }: VpsHubProps) {
   const [ram, setRam] = useState<number | "ALL">("ALL")
   const [priceMin, setPriceMin] = useState("")
   const [priceMax, setPriceMax] = useState("")
-  const [sort, setSort] = useState<SortKey>("default")
+  const [sort, setSort] = useState<SortKey>("price-asc")
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Derive which lineups/series/RAM tiers actually exist in the plan list —
   // reliable even for plans whose names don't follow the LINEUP-SERIES-RAM
@@ -297,9 +299,11 @@ export function VpsHub({ plans }: VpsHubProps) {
     return result
   })()
 
-  const hasActiveFilters =
-    lineup !== "ALL" || series !== "ALL" || hardware !== "ALL" || ram !== "ALL" ||
-    priceMin !== "" || priceMax !== "" || search !== ""
+  const activeFilterCount = [
+    lineup !== "ALL", series !== "ALL", hardware !== "ALL", ram !== "ALL",
+    priceMin !== "", priceMax !== "",
+  ].filter(Boolean).length
+  const hasActiveFilters = activeFilterCount > 0 || search !== ""
 
   function clearFilters() {
     setSearch("")
@@ -309,7 +313,7 @@ export function VpsHub({ plans }: VpsHubProps) {
     setRam("ALL")
     setPriceMin("")
     setPriceMax("")
-    setSort("default")
+    setSort("price-asc")
   }
 
   return (
@@ -343,7 +347,7 @@ export function VpsHub({ plans }: VpsHubProps) {
 
         {/* ── Filter bar ───────────────────────────────────────────────────── */}
         <div className="max-w-5xl mx-auto space-y-3">
-          {/* Search + Sort row */}
+          {/* Search + Sort + Filters toggle row */}
           <div className="flex gap-3 flex-wrap">
             <div className="relative flex-1 min-w-[220px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -355,7 +359,7 @@ export function VpsHub({ plans }: VpsHubProps) {
               />
             </div>
             <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="w-48 bg-card/30 border-border/50">
+              <SelectTrigger className="w-full sm:w-48 bg-card/30 border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -370,25 +374,21 @@ export function VpsHub({ plans }: VpsHubProps) {
                 <SelectItem value="cpu-desc">CPU Cores: High → Low</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-1.5">
-              <Input
-                type="number"
-                inputMode="decimal"
-                placeholder="Min £"
-                value={priceMin}
-                onChange={(e) => setPriceMin(e.target.value)}
-                className="w-24 bg-card/30 border-border/50"
-              />
-              <span className="text-muted-foreground text-sm">–</span>
-              <Input
-                type="number"
-                inputMode="decimal"
-                placeholder="Max £"
-                value={priceMax}
-                onChange={(e) => setPriceMax(e.target.value)}
-                className="w-24 bg-card/30 border-border/50"
-              />
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFiltersOpen((v) => !v)}
+              className="gap-1.5 bg-card/30 border-border/50"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filters
+              {activeFilterCount > 0 && (
+                <Badge variant="secondary" className="ml-0.5 h-4 min-w-4 px-1 text-[10px]">
+                  {activeFilterCount}
+                </Badge>
+              )}
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", filtersOpen && "rotate-180")} />
+            </Button>
             {hasActiveFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1.5 text-muted-foreground">
                 <X className="w-3.5 h-3.5" /> Clear
@@ -396,104 +396,79 @@ export function VpsHub({ plans }: VpsHubProps) {
             )}
           </div>
 
-          {/* Filter chips row */}
-          <div className="flex flex-wrap gap-2 items-center">
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground mr-1">
-              <SlidersHorizontal className="w-3.5 h-3.5" /> Filter:
-            </span>
+          {/* Collapsible filter groups */}
+          <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <CollapsibleContent>
+              <div className="rounded-xl border border-border/50 bg-card/20 p-4 space-y-3">
+                <FilterChipRow label="Price">
+                  <div className="flex items-center gap-1.5">
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="Min £"
+                      value={priceMin}
+                      onChange={(e) => setPriceMin(e.target.value)}
+                      className="w-24 h-7 bg-card/30 border-border/50 text-xs"
+                    />
+                    <span className="text-muted-foreground text-sm">–</span>
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="Max £"
+                      value={priceMax}
+                      onChange={(e) => setPriceMax(e.target.value)}
+                      className="w-24 h-7 bg-card/30 border-border/50 text-xs"
+                    />
+                  </div>
+                </FilterChipRow>
 
-            {/* RAM tier — derived from live plan data, always reliable regardless of naming */}
-            <button
-              type="button"
-              onClick={() => setRam("ALL")}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-medium border transition-all",
-                ram === "ALL"
-                  ? "border-primary/50 bg-primary/10 text-primary"
-                  : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-              )}
-            >
-              All RAM
-            </button>
-            {availableRam.map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRam(ram === r ? "ALL" : r)}
-                className={cn(
-                  "px-3 py-1 rounded-full text-xs font-medium border transition-all",
-                  ram === r
-                    ? "border-primary/50 bg-primary/10 text-primary"
-                    : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+                <FilterChipRow label="RAM">
+                  <FilterChip active={ram === "ALL"} onClick={() => setRam("ALL")}>All RAM</FilterChip>
+                  {availableRam.map((r) => (
+                    <FilterChip key={r} active={ram === r} onClick={() => setRam(ram === r ? "ALL" : r)}>
+                      {r} GB
+                    </FilterChip>
+                  ))}
+                </FilterChipRow>
+
+                <FilterChipRow label="Hardware">
+                  {(["ALL", "amd", "intel", "arm"] as const).map((h) => (
+                    <FilterChip key={h} active={hardware === h} onClick={() => setHardware(h)}>
+                      {h === "ALL" ? "All Hardware" : h === "amd" ? "AMD" : h === "intel" ? "Intel" : "ARM"}
+                    </FilterChip>
+                  ))}
+                </FilterChipRow>
+
+                {availableLineups.length > 0 && (
+                  <FilterChipRow label="Lineup">
+                    {(Object.entries(LINEUP_META) as [Lineup, typeof LINEUP_META[Lineup]][]).map(([key, meta]) => (
+                      availableLineups.includes(key) ? (
+                        <FilterChip key={key} active={lineup === key} onClick={() => setLineup(lineup === key ? "ALL" : key)}>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", meta.dot)} />
+                            {meta.label}
+                          </span>
+                        </FilterChip>
+                      ) : null
+                    ))}
+                  </FilterChipRow>
                 )}
-              >
-                {r} GB
-              </button>
-            ))}
 
-            <span className="w-px h-4 bg-border/50 mx-1" />
-
-            {/* Hardware brand */}
-            {(["ALL", "amd", "intel", "arm"] as const).map((h) => (
-              <button
-                key={h}
-                type="button"
-                onClick={() => setHardware(h)}
-                className={cn(
-                  "px-3 py-1 rounded-full text-xs font-medium border transition-all",
-                  hardware === h
-                    ? "border-primary/50 bg-primary/10 text-primary"
-                    : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
+                {availableSeries.length > 0 && (
+                  <FilterChipRow label="Series">
+                    {availableSeries.map((s) => {
+                      const meta = SERIES_META[s]
+                      return (
+                        <FilterChip key={s} active={series === s} onClick={() => setSeries(series === s ? "ALL" : s)}>
+                          {meta ? `${meta.label} · ${meta.chip}` : s}
+                        </FilterChip>
+                      )
+                    })}
+                  </FilterChipRow>
                 )}
-              >
-                {h === "ALL" ? "All Hardware" : h === "amd" ? "AMD" : h === "intel" ? "Intel" : "ARM"}
-              </button>
-            ))}
-
-            <span className="w-px h-4 bg-border/50 mx-1" />
-
-            {/* Lineup chips */}
-            {(Object.entries(LINEUP_META) as [Lineup, typeof LINEUP_META[Lineup]][]).map(([key, meta]) => (
-              availableLineups.includes(key) ? (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setLineup(lineup === key ? "ALL" : key)}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border transition-all",
-                    lineup === key
-                      ? "border-primary/50 bg-primary/10 text-primary"
-                      : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-                  )}
-                >
-                  <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", meta.dot)} />
-                  {meta.label}
-                </button>
-              ) : null
-            ))}
-
-            <span className="w-px h-4 bg-border/50 mx-1" />
-
-            {/* Series chips — only show series that exist in the plans */}
-            {availableSeries.map((s) => {
-              const meta = SERIES_META[s]
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSeries(series === s ? "ALL" : s)}
-                  className={cn(
-                    "px-3 py-1 rounded-full text-xs font-mono font-medium border transition-all",
-                    series === s
-                      ? "border-primary/50 bg-primary/10 text-primary"
-                      : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-                  )}
-                >
-                  {meta ? `${meta.label} · ${meta.chip}` : s}
-                </button>
-              )
-            })}
-          </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         {/* ── Plan grid ────────────────────────────────────────────────────── */}
