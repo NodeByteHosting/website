@@ -51,14 +51,17 @@ function bulletLines(html: string): string[] {
   const withBreaks = html
     .replace(/<\/(li|p|div|h[1-6])>/gi, "\n")
     .replace(/<br\s*\/?>/gi, "\n")
+  // Unescape "&amp;" last — it must never run before the other entities, or
+  // e.g. a literal "&amp;gt;" in the source (an escaped ampersand followed by
+  // "gt;") would double-unescape into ">" instead of the correct "&gt;".
   const text = withBreaks
     .replace(/<[^>]*>/g, " ")
-    .replace(/&amp;/g, "&")
     .replace(/&gt;/g, ">")
     .replace(/&lt;/g, "<")
     .replace(/&quot;/g, '"')
     .replace(/&#0?39;/g, "'")
     .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
     .replace(/[ \t]+/g, " ")
   return text
     .split(/[•\n]/)

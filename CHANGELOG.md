@@ -5,6 +5,67 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.0] - 2026-07-13
+
+### Added
+
+- **Unified Game Server Hosting** — `/games` now shows one flat plan grid for every supported game instead of a separate curated page per game; game selection moves to a Paymenter checkout config option
+  - `packages/ui/components/Layouts/Games/game-hub.tsx` — new hub component (search, sort, plan grid) matching the VPS/Dedicated hub pattern
+  - `app/games/page.tsx` — rewritten to flatten `getGamePlans()` across every child of the Game Servers hub instead of rendering one curated card per category
+  - `GamePlanSpec.category` field added (which Paymenter category a plan came from, for search/de-dup — not used for grouping)
+  - `packages/core/constants/supported-games.ts` — manually maintained `SUPPORTED_GAMES` list shown as badges on the `/games` hero; there's no admin API to read Paymenter's config-option choices live, so this is hand-kept in sync with the checkout dropdown
+  - Removed: `/games/[slug]` dynamic route, `packages/core/products/catalog-config.ts`, `packages/core/constants/game/*` curated per-game content, and the 4 now-unused `Games` layout components (`game-hero`, `game-features`, `game-pricing`, `game-faq`)
+
+- **Partners & Sponsors Page** — new `/partners` page
+  - `packages/core/constants/partners.ts` — maintainable data file; entries have a `sponsor` / `partner` / `community` tier and an optional `category` badge (e.g. "Minecraft Server", "FiveM Community")
+  - `packages/ui/components/Layouts/Partners/partners-page.tsx` — hero, one section per tier (a tier with zero entries doesn't render at all rather than showing an empty state), CTA linking to the existing KB partner program docs
+  - Nav "Company" dropdown, footer "Company" column, and `sitemap.ts` all link to `/partners`
+
+- **Expandable "Server Info" panel** on every Game/VPS/Dedicated plan card — a "View Server Info" toggle reveals Setup Fee, CPU Model, Uplink, DDoS layers, Location, Databases, and Backups, all parsed live from the Paymenter product description
+  - `packages/ui/components/ui/plan-info-row.tsx` — shared label/value row, built on the existing Radix `Collapsible` primitive
+  - `getSetupFeeGBP` / `getSetupFeesMap` (`bytepay.ts`) — one-time setup fee per plan, mirroring the existing price helpers
+  - `location` / `databases` / `backups` extraction (`spec-parser.ts`) — e.g. "3x MySQL Databases", "Newcastle, UK or New York, US", "Automatic Daily Backups"
+
+- **VPS/Dedicated Hub — richer filtering & sorting**
+  - RAM tier filter chips, built live from the RAM values actually present in the plan list (reliable regardless of naming convention)
+  - Price range (min/max) filter
+  - Sort extended from price-only to price / RAM / storage / CPU cores, each ascending or descending; default sort is now price ascending on Games, VPS, and Dedicated
+  - `packages/ui/components/ui/filter-chip.tsx` — shared `FilterChipRow` / `FilterChip`, replacing duplicated chip markup in both hubs
+  - Filter bar redesigned: Search + Sort + a "Filters" toggle (with an active-filter-count badge) in one compact row; the actual filter chips live in a collapsible panel grouped into labeled rows (Price / RAM / Hardware / Lineup / Series) instead of one long wrapped cluster — considerably shorter on mobile
+
+- **Live node discovery** — `/nodes` now reads its node list from status.nodebyte.host's "Nodes" monitor group instead of a hardcoded array, so adding a node to the status page is enough for it to appear on the site
+  - `getNodeMonitorNames()` (`lib/status.ts`) — filters the status snapshot to the "Nodes" group, excluding aggregate "group"-type rollups
+  - `NODE_DISPLAY_OVERRIDES` (`constants/status-mapping.ts`) replaces `NODE_MONITOR_MAP` — a small optional table for location/hardware details the status API doesn't carry, keyed by monitor name
+
+### Changed
+
+- **Category hub discovery hardened** (`bytepay.ts`)
+  - `getCategoryHub` now falls back to substring matching (with a console warning) if no exact alias match is found, so a category rename in Paymenter degrades gracefully instead of silently emptying a whole section
+  - A hub always includes itself as a leaf alongside its real sub-categories, not only when it has none — fixes products filed directly on a hub (e.g. the new generic `GAME-BASE`/`GAME-PLUS` tiers, filed on "Game Servers" itself alongside its Minecraft/Rust/Hytale children) being invisible on the site
+  - `fetchWithRetry` — every billing panel request now has a 10s timeout and retries transient failures (429/5xx/network errors) with backoff, honouring `Retry-After`; `per_page` increased to reduce pagination round-trips; missing `BYTEPAY_HOST`/`BYTEPAY_TOKEN` now throws a clear error instead of building a URL like `undefined/api/...`
+
+- **`spec-parser.ts` rewritten to classify description lines by topic instead of matching one exact phrase shape** — tolerates much more variation in how a product description is worded
+  - Fixed a real bug along the way: `bulletLines()` wasn't splitting on `<li>` boundaries, so line-based extraction was silently reading across bullet points in Paymenter's default `<ul><li>` description format
+  - CPU brand detection broadened: "Ryzen" no longer requires an "AMD" prefix, "Intel i9-9900K" no longer requires the word "Core"
+  - CPU core count now also catches "8 Dedicated/Pinned Physical Cores" (number not at the start of the bullet) via a bounded per-line pattern, without guessing wrong on CPU model numbers like "Ryzen™ 9 5900X"
+  - Storage detection catches "Local NVMe Storage" and similar phrasing lacking an explicit SSD/HDD/Disk keyword
+  - Location extraction handles both "Newcastle, UK" (short code) and "Falkenstein, Germany" (full country name) styles, triggered by a wider set of keywords (location/region/infrastructure/provisioned/hosted/data centre)
+
+- **Nav Services dropdown simplified** to 3 flat links (Game Servers / VPS Servers / Dedicated Servers), replacing the old sectioned mega-menu with a per-game submenu; the now-dead `gamesNav` prop chain (`app/layout.tsx` → `layout-chrome.tsx` → `navigation.tsx`) was removed along with the billing-panel fetch it required on every page load
+
+- **Dropped-product alerting** — `getGamePlans` / `getVpsPlans` / `getDedicatedPlans` now log a warning when a live, non-hidden product fails to parse its required specs (instead of silently vanishing from the site), and the dev-only `/api/billing-debug` route lists every such product with its missing fields
+
+### Fixed
+
+- **Plan card layout bug** — `h-full` on plan cards was silently fighting the grid's `items-start` sizing, clipping the "Order Now" button on a collapsed sibling card whenever another card's Server Info panel was expanded; removed, cards now size purely to their own content
+- Card grids no longer visually stretch every card in a row to match the tallest (expanded) one — `items-start` added to the Game/VPS/Dedicated plan grids
+
+### Security
+
+- **Double-unescaping in `spec-parser.ts`'s HTML entity decoding** (CodeQL `js/double-escaping`) — `bulletLines()` unescaped `&amp;` → `&` *before* `&gt;`/`&lt;`/`&quot;`/`&#39;`, so a properly double-escaped literal like `&amp;gt;` (meant to render as the text `&gt;`) was silently corrupted into `>` instead. Fixed by unescaping `&amp;` last, matching the standard safe-unescaping order — the escape character itself must always be resolved after every other entity that depends on it.
+
+---
+
 ## [3.6.0] - 2026-07-04
 
 ### Added

@@ -107,11 +107,11 @@ Please include:
 
 ## Version Support
 
-| Version | Status | Support Until |
-|---------|--------|---------------|
-| 3.2.x   | Current | TBD |
-| 3.1.x   | Security Only | TBD |
-| < 3.1   | Unsupported | - |
+| Version | Status        | Support Until |
+|---------|---------------|---------------|
+| 3.7.x   | Current       | 3.8.x Release |
+| 3.6.x   | Security Only | ~ Aug 2026    |
+| < 3.5   | Unsupported   | End of life   |
 
 **Note**: Versions older than the current major version may have limited security support.
 
