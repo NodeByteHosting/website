@@ -9,6 +9,7 @@ import {
   Network,
   Shield,
   Zap,
+  SlidersHorizontal,
   X,
   ArrowRight,
   ChevronDown,
@@ -17,6 +18,7 @@ import {
   PackageX,
 } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
+import { Badge } from "@/packages/ui/components/ui/badge"
 import { Input } from "@/packages/ui/components/ui/input"
 import {
   Select,
@@ -27,6 +29,7 @@ import {
 } from "@/packages/ui/components/ui/select"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
 import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
+import { FilterChipRow, FilterChip } from "@/packages/ui/components/ui/filter-chip"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import type { DedicatedPlanSpec } from "@/packages/core/types/servers/dedicated"
@@ -220,7 +223,8 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
   const [ram, setRam] = useState<number | "ALL">("ALL")
   const [priceMin, setPriceMin] = useState("")
   const [priceMax, setPriceMax] = useState("")
-  const [sort, setSort] = useState<SortKey>("default")
+  const [sort, setSort] = useState<SortKey>("price-asc")
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Derived from live plan data, not the server name — reliable regardless of naming.
   const availableRam = Array.from(new Set(plans.map((p) => p.ramGB))).sort((a, b) => a - b)
@@ -253,8 +257,10 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
     return result
   })()
 
-  const hasActiveFilters =
-    hardware !== "ALL" || ram !== "ALL" || priceMin !== "" || priceMax !== "" || search !== ""
+  const activeFilterCount = [
+    hardware !== "ALL", ram !== "ALL", priceMin !== "", priceMax !== "",
+  ].filter(Boolean).length
+  const hasActiveFilters = activeFilterCount > 0 || search !== ""
 
   function clearFilters() {
     setSearch("")
@@ -262,7 +268,7 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
     setRam("ALL")
     setPriceMin("")
     setPriceMax("")
-    setSort("default")
+    setSort("price-asc")
   }
 
   return (
@@ -325,7 +331,7 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
               />
             </div>
             <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="w-48 bg-card/30 border-border/50">
+              <SelectTrigger className="w-full sm:w-48 bg-card/30 border-border/50">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -340,45 +346,21 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
                 <SelectItem value="cpu-desc">CPU Cores: High → Low</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-1.5">
-              <Input
-                type="number"
-                inputMode="decimal"
-                placeholder="Min £"
-                value={priceMin}
-                onChange={(e) => setPriceMin(e.target.value)}
-                className="w-24 bg-card/30 border-border/50"
-              />
-              <span className="text-muted-foreground text-sm">–</span>
-              <Input
-                type="number"
-                inputMode="decimal"
-                placeholder="Max £"
-                value={priceMax}
-                onChange={(e) => setPriceMax(e.target.value)}
-                className="w-24 bg-card/30 border-border/50"
-              />
-            </div>
-
-            {/* Hardware filter */}
-            <div className="flex gap-1.5">
-              {(["ALL", "amd", "intel"] as const).map((h) => (
-                <button
-                  key={h}
-                  type="button"
-                  onClick={() => setHardware(h)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
-                    hardware === h
-                      ? "border-primary/50 bg-primary/10 text-primary"
-                      : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-                  )}
-                >
-                  {h === "ALL" ? "All Hardware" : h.toUpperCase()}
-                </button>
-              ))}
-            </div>
-
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFiltersOpen((v) => !v)}
+              className="gap-1.5 bg-card/30 border-border/50"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              Filters
+              {activeFilterCount > 0 && (
+                <Badge variant="secondary" className="ml-0.5 h-4 min-w-4 px-1 text-[10px]">
+                  {activeFilterCount}
+                </Badge>
+              )}
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", filtersOpen && "rotate-180")} />
+            </Button>
             {hasActiveFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1.5 text-muted-foreground">
                 <X className="w-3.5 h-3.5" /> Clear
@@ -386,36 +368,50 @@ export function DedicatedHub({ plans }: DedicatedHubProps) {
             )}
           </div>
 
-          {/* RAM tier row */}
-          <div className="flex flex-wrap gap-1.5 items-center">
-            <button
-              type="button"
-              onClick={() => setRam("ALL")}
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-medium border transition-all",
-                ram === "ALL"
-                  ? "border-primary/50 bg-primary/10 text-primary"
-                  : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-              )}
-            >
-              All RAM
-            </button>
-            {availableRam.map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRam(ram === r ? "ALL" : r)}
-                className={cn(
-                  "px-3 py-1 rounded-full text-xs font-medium border transition-all",
-                  ram === r
-                    ? "border-primary/50 bg-primary/10 text-primary"
-                    : "border-border/50 text-muted-foreground hover:border-border hover:text-foreground",
-                )}
-              >
-                {r} GB
-              </button>
-            ))}
-          </div>
+          <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <CollapsibleContent>
+              <div className="rounded-xl border border-border/50 bg-card/20 p-4 space-y-3">
+                <FilterChipRow label="Price">
+                  <div className="flex items-center gap-1.5">
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="Min £"
+                      value={priceMin}
+                      onChange={(e) => setPriceMin(e.target.value)}
+                      className="w-24 h-7 bg-card/30 border-border/50 text-xs"
+                    />
+                    <span className="text-muted-foreground text-sm">–</span>
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="Max £"
+                      value={priceMax}
+                      onChange={(e) => setPriceMax(e.target.value)}
+                      className="w-24 h-7 bg-card/30 border-border/50 text-xs"
+                    />
+                  </div>
+                </FilterChipRow>
+
+                <FilterChipRow label="RAM">
+                  <FilterChip active={ram === "ALL"} onClick={() => setRam("ALL")}>All RAM</FilterChip>
+                  {availableRam.map((r) => (
+                    <FilterChip key={r} active={ram === r} onClick={() => setRam(ram === r ? "ALL" : r)}>
+                      {r} GB
+                    </FilterChip>
+                  ))}
+                </FilterChipRow>
+
+                <FilterChipRow label="Hardware">
+                  {(["ALL", "amd", "intel"] as const).map((h) => (
+                    <FilterChip key={h} active={hardware === h} onClick={() => setHardware(h)}>
+                      {h === "ALL" ? "All Hardware" : h.toUpperCase()}
+                    </FilterChip>
+                  ))}
+                </FilterChipRow>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         {/* ── Plan grid ────────────────────────────────────────────────────── */}
