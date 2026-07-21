@@ -1,29 +1,19 @@
 /**
- * Server-side only — STATUS_TOKEN is never sent to the browser.
- *
- * Fetches monitor data from the status.nodebyte.host public status API
- * and normalises it into the flat, typed shape the website needs.
+ * Server-side fetch for nodebytestat.us's public status API — fully public,
+ * no auth required. Normalises it into the flat, typed shape the website
+ * needs.
  */
 
 export type MonitorStatus = "up" | "down" | "degraded" | "maintenance" | "paused" | "unknown"
-export type MonitorType = "http" | "tcp" | "smtp" | "ping" | "group"
-
-export interface StatusHeartbeat {
-  checked_at: number
-  status: "up" | "down" | "maintenance" | "unknown"
-  latency_ms: number | null
-}
 
 export interface StatusMonitor {
-  id: number
+  id: string
   name: string
-  type: MonitorType
+  /** Name of the monitor's immediate parent group, e.g. "Game Nodes", "Data Centres > Europe". */
   group_name: string | null
-  subgroup_name: string | null
   status: MonitorStatus
   last_checked_at: number | null
   last_latency_ms: number | null
-  heartbeats: StatusHeartbeat[]
   uptime_30d_pct: number | null
 }
 
@@ -33,66 +23,97 @@ export interface StatusSnapshot {
   monitors: StatusMonitor[]
 }
 
-function getConfig(): { host: string; token: string | undefined } {
+type ComponentStatus = "OPERATIONAL" | "DEGRADED_PERFORMANCE" | "PARTIAL_OUTAGE" | "MAJOR_OUTAGE" | "UNDER_MAINTENANCE"
+type Indicator = "NONE" | "MINOR" | "MAJOR" | "CRITICAL"
+
+interface RawComponent {
+  id: string
+  name: string
+  status: ComponentStatus
+  groupId: string | null
+  uptimePct: number | null
+  monitor: { lastStatus: string | null; lastResponseMs: number | null; lastCheckedAt: string | null } | null
+}
+
+interface RawGroup {
+  id: string
+  name: string
+  parentId: string | null
+  components: RawComponent[]
+  children: RawGroup[]
+}
+
+interface RawStatusResponse {
+  status: { indicator: Indicator; description: string }
+  groups: RawGroup[]
+  components: RawComponent[]
+}
+
+const COMPONENT_STATUS_MAP: Record<ComponentStatus, MonitorStatus> = {
+  OPERATIONAL: "up",
+  DEGRADED_PERFORMANCE: "degraded",
+  PARTIAL_OUTAGE: "down",
+  MAJOR_OUTAGE: "down",
+  UNDER_MAINTENANCE: "maintenance",
+}
+
+const INDICATOR_MAP: Record<Indicator, MonitorStatus> = {
+  NONE: "up",
+  MINOR: "degraded",
+  MAJOR: "down",
+  CRITICAL: "down",
+}
+
+function getConfig(): { host: string } {
   const host = process.env.STATUS_API_URL
   if (!host) {
     throw new Error("Status API misconfigured: STATUS_API_URL must be set.")
   }
-  return { host, token: process.env.STATUS_TOKEN }
+  return { host }
 }
 
-async function fetchStatusJson(host: string, token: string | undefined): Promise<Record<string, unknown>> {
-  const res = await fetch(`${host}/api/v1/public/status`, {
-    headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    next: { revalidate: 30 },
-  })
-
-  if (res.status === 503 && token) {
-    // The status app's edge proxy refuses to forward the Authorization header
-    // upstream until its own UPTIMER_API_SENSITIVE_ORIGIN is configured. Fall
-    // back to the unauthenticated public payload rather than failing outright.
-    const body = await res.clone().json().catch(() => null)
-    if (body?.error?.code === "API_ORIGIN_UNTRUSTED_FOR_SENSITIVE_HEADERS") {
-      return fetchStatusJson(host, undefined)
+/** Walk the group tree (including nested children) into a flat id → display-path map, e.g. "Europe" under "Data Centres" becomes "Data Centres > Europe". */
+function buildGroupNameMap(groups: RawGroup[], parentPath = ""): Map<string, string> {
+  const map = new Map<string, string>()
+  for (const group of groups) {
+    const path = parentPath ? `${parentPath} > ${group.name}` : group.name
+    map.set(group.id, path)
+    for (const [id, name] of buildGroupNameMap(group.children, path)) {
+      map.set(id, name)
     }
   }
-
-  if (!res.ok) {
-    throw new Error(`Status API returned ${res.status}`)
-  }
-
-  return res.json()
+  return map
 }
 
 /** Fetch the current status snapshot. Returns null on any failure so callers can fall back to static data. */
 export async function fetchStatusSnapshot(): Promise<StatusSnapshot | null> {
   try {
-    const { host, token } = getConfig()
-    const data = await fetchStatusJson(host, token)
-    const rawMonitors = Array.isArray(data.monitors) ? (data.monitors as Record<string, unknown>[]) : []
+    const { host } = getConfig()
+    const res = await fetch(`${host}/api/status`, {
+      headers: { Accept: "application/json" },
+      next: { revalidate: 30 },
+    })
 
-    const monitors: StatusMonitor[] = rawMonitors.map((m) => ({
-      id: m.id as number,
-      name: m.name as string,
-      type: m.type as MonitorType,
-      group_name: (m.group_name as string | null) ?? null,
-      subgroup_name: (m.subgroup_name as string | null) ?? null,
-      status: m.status as MonitorStatus,
-      last_checked_at: (m.last_checked_at as number | null) ?? null,
-      last_latency_ms: (m.last_latency_ms as number | null) ?? null,
-      heartbeats: Array.isArray(m.heartbeats) ? (m.heartbeats as StatusHeartbeat[]) : [],
-      uptime_30d_pct:
-        m.uptime_30d && typeof (m.uptime_30d as Record<string, unknown>).uptime_pct === "number"
-          ? ((m.uptime_30d as Record<string, unknown>).uptime_pct as number)
-          : null,
+    if (!res.ok) {
+      throw new Error(`Status API returned ${res.status}`)
+    }
+
+    const data: RawStatusResponse = await res.json()
+    const groupNames = buildGroupNameMap(data.groups)
+
+    const monitors: StatusMonitor[] = data.components.map((c) => ({
+      id: c.id,
+      name: c.name,
+      group_name: c.groupId ? (groupNames.get(c.groupId) ?? null) : null,
+      status: COMPONENT_STATUS_MAP[c.status] ?? "unknown",
+      last_checked_at: c.monitor?.lastCheckedAt ? Math.floor(Date.parse(c.monitor.lastCheckedAt) / 1000) : null,
+      last_latency_ms: c.monitor?.lastResponseMs ?? null,
+      uptime_30d_pct: c.uptimePct,
     }))
 
     return {
-      generated_at: data.generated_at as number,
-      overall_status: data.overall_status as MonitorStatus,
+      generated_at: Math.floor(Date.now() / 1000),
+      overall_status: INDICATOR_MAP[data.status.indicator] ?? "unknown",
       monitors,
     }
   } catch (error) {
@@ -109,30 +130,24 @@ export function findMonitor(snapshot: StatusSnapshot | null, name: string): Stat
 }
 
 /**
- * Names of individual node monitors under the "Nodes" status group — this is
- * the live source of truth for which nodes exist on /nodes. Excludes the
- * "group"-type aggregate rollups (e.g. "Game Servers", "VPS Servers") that
- * summarise the individual node monitors rather than representing one.
- * Add a node on status.nodebyte.host under the "Nodes" group and it appears
- * here automatically — no website code change needed.
+ * Names of individual node monitors — any monitor whose immediate group name
+ * ends in "Nodes" (e.g. "Game Nodes", "VPS Nodes"). This is the live source
+ * of truth for which nodes exist on /nodes. Add a node under a "*Nodes"
+ * group on nodebytestat.us and it appears here automatically — no website
+ * code change needed.
  */
 export function getNodeMonitorNames(snapshot: StatusSnapshot | null): string[] {
   if (!snapshot) return []
   return snapshot.monitors
-    .filter((m) => m.group_name === "Nodes" && m.type !== "group")
+    .filter((m) => {
+      const leafGroup = m.group_name?.split(" > ").pop()?.trim()
+      return leafGroup?.toLowerCase().endsWith("nodes") ?? false
+    })
     .map((m) => m.name)
 }
 
-/** Compute fast/avg/slow latency (ms) from a monitor's recent heartbeats. */
+/** Single-sample "latency" — the new status API only exposes the most recent check, not a rolling history. */
 export function computeLatencyStats(monitor: StatusMonitor): { fast: number; avg: number; slow: number } | null {
-  const samples = monitor.heartbeats
-    .map((h) => h.latency_ms)
-    .filter((ms): ms is number => typeof ms === "number")
-
-  if (samples.length === 0) return null
-
-  const fast = Math.min(...samples)
-  const slow = Math.max(...samples)
-  const avg = Math.round(samples.reduce((sum, ms) => sum + ms, 0) / samples.length)
-  return { fast, avg, slow }
+  if (monitor.last_latency_ms == null) return null
+  return { fast: monitor.last_latency_ms, avg: monitor.last_latency_ms, slow: monitor.last_latency_ms }
 }

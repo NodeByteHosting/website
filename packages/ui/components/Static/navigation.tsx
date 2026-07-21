@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network, Handshake } from "lucide-react"
+import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Network, Handshake, Cloud } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -30,6 +30,13 @@ export function Navigation() {
       href: "/about",
       description: t("company.about.description"),
       icon: Users,
+    },
+    {
+      title: t("company.lookingGlass.title"),
+      href: "https://lg.nodebyte.host/",
+      description: t("company.lookingGlass.description"),
+      icon: Sparkles,
+      external: true,
     },
     {
       title: t("company.network.title"),
@@ -69,6 +76,12 @@ export function Navigation() {
       href: "/dedicated",
       description: t("services.dedicated.description"),
       icon: Cpu,
+    },
+    {
+      title: t("services.objectStorage.title"),
+      href: "/object-storage",
+      description: t("services.objectStorage.description"),
+      icon: Cloud,
     },
   ]
 

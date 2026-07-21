@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { ImageResponse } from 'next/og'
 
 export const OG_SIZE = { width: 1200, height: 630 } as const
@@ -24,6 +25,11 @@ export const OG_CONFIGS = {
     headline: ['Game Server', 'Hosting.'] as const,
     description: 'Minecraft, Rust, Hytale and more — one-click deployment with mod support included.',
     features: ['Minecraft', 'Rust', 'Hytale', 'Mod Support', 'DDoS Protected'],
+  },
+  brand: {
+    headline: ['Brand &', 'Press Kit.'] as const,
+    description: 'Logo files, color palettes, and usage guidelines for partners and press.',
+    features: ['Logo Assets', '47 Themes', 'Templates', 'Usage Guide'],
   },
 } satisfies Record<string, OGConfig>
 
@@ -53,74 +59,98 @@ function LogoMark({ size, clipId }: { size: number; clipId: string }) {
   )
 }
 
+/** The atmospheric layer shared by every generated image — bg color, radial glows, top accent bar, ghost logo watermark, bottom URL. */
+function OGBackdrop({ clipId, children }: { clipId: string; children?: ReactNode }) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        position: 'relative',
+        background: '#040d1a',
+        overflow: 'hidden',
+        fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
+      }}
+    >
+      {/* Blue radial glow — top right */}
+      <div
+        style={{
+          position: 'absolute',
+          top: -180,
+          right: -80,
+          width: 600,
+          height: 600,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 65%)',
+          display: 'flex',
+        }}
+      />
+
+      {/* Purple radial glow — bottom left */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: -180,
+          left: -60,
+          width: 500,
+          height: 500,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(91,0,239,0.08) 0%, transparent 65%)',
+          display: 'flex',
+        }}
+      />
+
+      {/* Top accent bar */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: 'linear-gradient(90deg, #3b82f6 0%, #5b00ef 50%, #803cee 100%)',
+          display: 'flex',
+        }}
+      />
+
+      {/* Ghost logo watermark — right side */}
+      <div
+        style={{
+          position: 'absolute',
+          right: -90,
+          top: 75,
+          display: 'flex',
+          opacity: 0.055,
+        }}
+      >
+        <LogoMark size={480} clipId={clipId} />
+      </div>
+
+      {/* Bottom — URL */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 32,
+          left: 80,
+          color: 'rgba(58,90,120,0.38)',
+          fontSize: 13,
+          letterSpacing: 1.5,
+          display: 'flex',
+        }}
+      >
+        nodebyte.host
+      </div>
+
+      {children}
+    </div>
+  )
+}
+
 export function makeOGImage(config: OGConfig): ImageResponse {
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          position: 'relative',
-          background: '#040d1a',
-          overflow: 'hidden',
-          fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
-        }}
-      >
-        {/* Blue radial glow — top right */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -180,
-            right: -80,
-            width: 600,
-            height: 600,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 65%)',
-            display: 'flex',
-          }}
-        />
-
-        {/* Purple radial glow — bottom left */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: -180,
-            left: -60,
-            width: 500,
-            height: 500,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(91,0,239,0.08) 0%, transparent 65%)',
-            display: 'flex',
-          }}
-        />
-
-        {/* Top accent bar */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 3,
-            background: 'linear-gradient(90deg, #3b82f6 0%, #5b00ef 50%, #803cee 100%)',
-            display: 'flex',
-          }}
-        />
-
-        {/* Ghost logo watermark — right side */}
-        <div
-          style={{
-            position: 'absolute',
-            right: -90,
-            top: 75,
-            display: 'flex',
-            opacity: 0.055,
-          }}
-        >
-          <LogoMark size={480} clipId="og-lg-clip" />
-        </div>
-
+      <OGBackdrop clipId="og-lg-clip">
         {/* Main content */}
         <div
           style={{
@@ -248,22 +278,64 @@ export function makeOGImage(config: OGConfig): ImageResponse {
             ))}
           </div>
         </div>
+      </OGBackdrop>
+    ),
+    {
+      width: OG_SIZE.width,
+      height: OG_SIZE.height,
+    },
+  )
+}
 
-        {/* Bottom — URL */}
+/**
+ * A blank branded canvas — same backdrop (glows, top accent bar, ghost logo
+ * watermark) as the real OG images, but with no headline/description/feature
+ * copy baked in. Downloadable from /brand as a starting template partners
+ * and press can drop their own text onto.
+ */
+export function makeOGBackgroundTemplate(): ImageResponse {
+  return new ImageResponse(
+    (
+      <OGBackdrop clipId="og-template-clip">
         <div
           style={{
-            position: 'absolute',
-            bottom: 32,
-            left: 80,
-            color: 'rgba(58,90,120,0.38)',
-            fontSize: 13,
-            letterSpacing: 1.5,
             display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            position: 'absolute',
+            top: 56,
+            left: 80,
           }}
         >
-          nodebyte.host
+          <LogoMark size={50} clipId="og-template-sm-clip" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <span
+              style={{
+                color: '#e4f0ff',
+                fontSize: 15,
+                fontWeight: 700,
+                letterSpacing: 4,
+                textTransform: 'uppercase',
+                display: 'flex',
+              }}
+            >
+              NodeByte Hosting
+            </span>
+            <span
+              style={{
+                color: '#2a4460',
+                fontSize: 13,
+                fontWeight: 400,
+                fontStyle: 'italic',
+                letterSpacing: 0.2,
+                display: 'flex',
+              }}
+            >
+              Built for Humans. Powered by Bytes.
+            </span>
+          </div>
         </div>
-      </div>
+      </OGBackdrop>
     ),
     {
       width: OG_SIZE.width,

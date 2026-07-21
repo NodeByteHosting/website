@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default async function DedicatedPage() {
   const hub = await getCategoryHub(DEDICATED_HUB_SLUGS)
-  const children = hub?.children ?? []
+  const categorySlugs = hub?.children.map((c) => c.slug) ?? []
 
-  const plansByCategory = await Promise.all(children.map((c) => getDedicatedPlans(c.slug)))
+  const plansByCategory = await Promise.all(categorySlugs.map((slug) => getDedicatedPlans(slug)))
   const plans = plansByCategory.flat()
 
   return <DedicatedHub plans={plans} />
