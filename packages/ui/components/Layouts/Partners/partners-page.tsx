@@ -3,7 +3,7 @@
 import { Card } from "@/packages/ui/components/ui/card"
 import { Button } from "@/packages/ui/components/ui/button"
 import { Badge } from "@/packages/ui/components/ui/badge"
-import { Handshake, Award, Users, ArrowRight, ExternalLink, MessageCircle } from "lucide-react"
+import { Handshake, Award, Users, ArrowRight, ExternalLink, MessageCircle, Palette } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -175,6 +175,12 @@ export function PartnersPage() {
                   </Link>
                 </Button>
               </div>
+              <p className="text-sm text-muted-foreground mt-6">
+                Need our logo or brand colors?{" "}
+                <Link href="/brand" className="text-primary hover:underline inline-flex items-center gap-1">
+                  <Palette className="w-3.5 h-3.5" /> Visit the Brand & Press Kit
+                </Link>
+              </p>
             </div>
           </Card>
         </div>

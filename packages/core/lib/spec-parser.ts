@@ -47,7 +47,7 @@ function stripHtml(html: string): string {
  * extraction below sees one bullet per line regardless of which format the
  * description actually uses.
  */
-function bulletLines(html: string): string[] {
+export function bulletLines(html: string): string[] {
   const withBreaks = html
     .replace(/<\/(li|p|div|h[1-6])>/gi, "\n")
     .replace(/<br\s*\/?>/gi, "\n")
@@ -69,11 +69,11 @@ function bulletLines(html: string): string[] {
     .filter(Boolean)
 }
 
-/** First "<number> GB|TB" in a line, converted to GB (TB × 1024). Returns undefined if the line has none. */
-function firstSizeGB(line: string): number | undefined {
-  const m = line.match(/(\d+)\s*(GB|TB)\b/i)
+/** First "<number> GB|TB" in a line (comma thousands separators allowed, e.g. "1,000 GB"), converted to GB (TB × 1024). Returns undefined if the line has none. */
+export function firstSizeGB(line: string): number | undefined {
+  const m = line.match(/([\d,]+)\s*(GB|TB)\b/i)
   if (!m) return undefined
-  const amount = parseInt(m[1])
+  const amount = parseInt(m[1].replace(/,/g, ""))
   return /tb/i.test(m[2]) ? amount * 1024 : amount
 }
 
@@ -270,4 +270,67 @@ export function parseProductName(name: string): {
   const lineup = LINEUPS.includes(parts[0] as Lineup) ? (parts[0] as Lineup) : undefined
   const series = parts[1] ?? undefined
   return { sku, lineup, series }
+}
+
+export interface ObjectStorageSpecs {
+  storageGB?: number
+  /** Raw value text for the storage bullet, e.g. "1,000 GB SSD-Cached Storage". */
+  storageValue?: string
+  storageType?: ParsedSpecs["storageType"]
+  /** Access key/credential allowance, e.g. "Max 5 active credentials", "Unlimited". */
+  accessKeys?: string
+  /** Monthly egress allowance, e.g. "1 TB Free (Overage just $0.01/GB)". */
+  egress?: string
+  /** API request pricing/limits, e.g. "100% Free (Unlimited GET, PUT, LIST)". */
+  apiRequests?: string
+  /** Auto-archive/lifecycle policy, e.g. "14 Days (Files transition automatically)". */
+  archivePolicy?: string
+  /** Remaining plain-text bullets not matched to a labeled field above. */
+  features: string[]
+}
+
+const OBJECT_STORAGE_LABELS: Record<string, keyof ObjectStorageSpecs> = {
+  "storage limit": "storageValue",
+  "access keys": "accessKeys",
+  "monthly egress": "egress",
+  "egress": "egress",
+  "api requests": "apiRequests",
+  "auto-archive threshold": "archivePolicy",
+}
+
+/**
+ * Parses object storage plan bullets, which follow a "Label: value" pattern
+ * for the structured fields (Storage Limit, Access Keys, Monthly Egress, API
+ * Requests, Auto-Archive Threshold) followed by plain marketing bullets.
+ */
+export function parseObjectStorageSpecs(html: string | null): ObjectStorageSpecs {
+  const result: ObjectStorageSpecs = { features: [] }
+  if (!html) return result
+
+  for (const line of bulletLines(html)) {
+    const m = line.match(/^([^:]{2,40}):\s*(.+)$/)
+    const key = m ? OBJECT_STORAGE_LABELS[m[1].trim().toLowerCase()] : undefined
+
+    if (m && key) {
+      const value = m[2].trim()
+      if (key === "storageValue") {
+        result.storageValue = value
+        result.storageGB = firstSizeGB(value)
+        result.storageType = /nvme/i.test(value)
+          ? "nvme"
+          : /ssd/i.test(value)
+            ? "ssd"
+            : /hdd/i.test(value)
+              ? "hdd"
+              : "generic"
+      } else {
+        (result as unknown as Record<string, string>)[key] = value
+      }
+      continue
+    }
+
+    result.features.push(line)
+  }
+
+  return result
 }

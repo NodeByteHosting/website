@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache"
 import type { GamePlanSpec } from "@/packages/core/types/servers/game"
 import type { VpsPlanSpec } from "@/packages/core/types/servers/vps"
 import type { DedicatedPlanSpec } from "@/packages/core/types/servers/dedicated"
+import type { ObjectStoragePlanSpec } from "@/packages/core/types/servers/object-storage"
 import {
   fetchAllBillingProducts,
   getProductsByCategory,
@@ -12,7 +13,7 @@ import {
   getStockStatus,
   getBillingUrl,
 } from "@/packages/core/lib/bytepay"
-import { parseDescriptionSpecs, parseProductName, formatStorageType } from "@/packages/core/lib/spec-parser"
+import { parseDescriptionSpecs, parseProductName, parseObjectStorageSpecs, formatStorageType } from "@/packages/core/lib/spec-parser"
 import { POPULAR_SLUGS, DEFAULT_DDOS } from "@/packages/core/constants/product-overrides"
 import type { BillingProduct } from "@/packages/core/lib/bytepay"
 
@@ -172,6 +173,46 @@ export async function getVpsPlans(categorySlug: string): Promise<VpsPlanSpec[]> 
         stock: getStockStatus(product),
         url: getBillingUrl(categorySlug, product.slug),
       } satisfies VpsPlanSpec,
+    ]
+  })
+}
+
+/**
+ * Returns live-priced object storage plans for the given billing category slug.
+ * Storage size, access keys, egress, and API request policy are parsed from
+ * the billing panel description automatically. Plans missing a storage size
+ * are skipped.
+ */
+export async function getObjectStoragePlans(categorySlug: string): Promise<ObjectStoragePlanSpec[]> {
+  const all = await getCachedProducts()
+  return getProductsByCategory(all, categorySlug).flatMap((product) => {
+    const parsed = parseObjectStorageSpecs(product.description)
+
+    if (!parsed.storageGB) {
+      warnDroppedProduct(product, categorySlug, ["storageGB"])
+      return []
+    }
+
+    return [
+      {
+        id: product.slug,
+        name: product.name,
+        description: parsed.storageValue,
+        storageGB: parsed.storageGB,
+        storageLabel: formatStorageType(parsed.storageType),
+        accessKeys: parsed.accessKeys,
+        egress: parsed.egress,
+        apiRequests: parsed.apiRequests,
+        archivePolicy: parsed.archivePolicy,
+        features: parsed.features,
+        popular: POPULAR_SLUGS.has(`${categorySlug}/${product.slug}`),
+        priceGBP: getGbpPrice(product),
+        prices: getPricesMap(product),
+        setupFeeGBP: getSetupFeeGBP(product),
+        setupFees: getSetupFeesMap(product),
+        stock: getStockStatus(product),
+        url: getBillingUrl(categorySlug, product.slug),
+      } satisfies ObjectStoragePlanSpec,
     ]
   })
 }

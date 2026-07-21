@@ -9,3 +9,4 @@
 export const GAME_HUB_SLUGS = ["game-servers", "games"]
 export const VPS_HUB_SLUGS = ["vps-hosting", "vps", "vps-servers"]
 export const DEDICATED_HUB_SLUGS = ["dedicated-servers", "dedicated", "dedi"]
+export const OBJECT_STORAGE_HUB_SLUGS = ["object-storage", "storage"]

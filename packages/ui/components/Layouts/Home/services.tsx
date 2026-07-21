@@ -7,10 +7,10 @@ import { getTranslations } from "next-intl/server"
 import { SERVICE_CATEGORIES } from "@/packages/core/constants/services"
 import { Price } from "@/packages/ui/components/ui/price"
 import { getCategoryHub } from "@/packages/core/lib/bytepay"
-import { getGamePlans, getVpsPlans, getDedicatedPlans } from "@/packages/core/products/billing-service"
-import { GAME_HUB_SLUGS, VPS_HUB_SLUGS, DEDICATED_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
+import { getGamePlans, getVpsPlans, getDedicatedPlans, getObjectStoragePlans } from "@/packages/core/products/billing-service"
+import { GAME_HUB_SLUGS, VPS_HUB_SLUGS, DEDICATED_HUB_SLUGS, OBJECT_STORAGE_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
 
-/** Live starting price (min across all of a hub's children's plans), falling back to the static config value if a hub has no live pricing yet or the billing panel is unreachable. */
+/** Live starting price (min across all of a hub's children's plans — getCategoryHub already includes the hub itself as a leaf), falling back to the static config value if a hub has no live pricing yet or the billing panel is unreachable. */
 async function getLiveStartingPrice(
   hubSlugs: string[],
   getPlans: (categorySlug: string) => Promise<{ priceGBP: number }[]>,
@@ -30,6 +30,7 @@ const HUB_PRICE_RESOLVERS: Record<string, () => Promise<number | null>> = {
   "game-servers": () => getLiveStartingPrice(GAME_HUB_SLUGS, getGamePlans),
   "vps": () => getLiveStartingPrice(VPS_HUB_SLUGS, getVpsPlans),
   "dedicated": () => getLiveStartingPrice(DEDICATED_HUB_SLUGS, getDedicatedPlans),
+  "object-storage": () => getLiveStartingPrice(OBJECT_STORAGE_HUB_SLUGS, getObjectStoragePlans),
 }
 
 export async function Services() {

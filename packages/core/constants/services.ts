@@ -1,4 +1,4 @@
-import { Gamepad2, Server, Cpu, type LucideIcon } from "lucide-react"
+import { Gamepad2, Server, Cpu, Cloud, type LucideIcon } from "lucide-react"
 
 /**
  * ServiceCategory defines a top-level service hub offered by NodeByte.
@@ -86,6 +86,25 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
       "IPMI out-of-band access",
       "Enterprise storage",
       "Enterprise DDoS protection",
+    ],
+    enabled: true,
+  },
+  {
+    id: "object-storage",
+    name: "Object Storage",
+    description:
+      "S3 API compatible cloud storage with generous free egress, self-service access keys, and 99.99% enterprise-grade reliability.",
+    href: "/object-storage",
+    icon: Cloud,
+    gradient: "from-emerald-600/25 via-emerald-500/8 to-transparent",
+    iconColor: "text-emerald-400",
+    accentBorder: "hover:border-emerald-400/40",
+    startingPriceGBP: 4,
+    highlights: [
+      "S3 API compatible",
+      "Self-service access keys",
+      "Generous free egress",
+      "99.99% reliability",
     ],
     enabled: true,
   },
