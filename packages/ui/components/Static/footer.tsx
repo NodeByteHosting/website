@@ -119,10 +119,11 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "/vps", label: t("footer.services.vpsServers") },
                 { href: "/games", label: t("footer.services.gameServers") },
+                { href: "/vps", label: t("footer.services.vpsServers") },
                 { href: "/dedicated", label: t("footer.services.dedicatedServers") },
-                { href: "https://lg.nodebyte.host", label: t("footer.services.systemStatus") },
+                { href: "/object-storage", label: t("footer.services.objectStorage") },
+                { href: "/nodes", label: t("footer.services.nodes") },
               ].map((link) => (
                 <li key={link.label}>
                   {link.href.startsWith("http") ? (
@@ -160,6 +161,7 @@ export function Footer() {
                 { href: LINKS.billing.root, label: t("footer.resources.billingPanel") },
                 { href: "https://panel.nodebyte.host", label: t("footer.resources.gamePanel") },
                 { href: "https://vps.nodebyte.host", label: t("footer.resources.vpsPanel") },
+                { href: LINKS.status, label: t("footer.resources.systemStatus") },
               ].map((link) => (
                 <li key={link.label}>
                   {link.href.startsWith("http") ? (
@@ -193,6 +195,7 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
+                { href: "https://nodebyte.co.uk/legal/service-agreement", label: t("footer.legalLinks.sla") },
                 { href: "https://nodebyte.co.uk/legal/terms", label: t("footer.legalLinks.terms") },
                 { href: "https://nodebyte.co.uk/legal/privacy", label: t("footer.legalLinks.privacy") },
                 { href: "https://nodebyte.co.uk/legal/payment-policy", label: t("footer.legalLinks.refund") },
@@ -242,7 +245,15 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link 
+                <Link
+                  href="/brand"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("footer.company.brand")}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/changelog"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >

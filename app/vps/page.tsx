@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default async function VpsPage() {
   const hub = await getCategoryHub(VPS_HUB_SLUGS)
-  const children = hub?.children ?? []
+  const categorySlugs = hub?.children.map((c) => c.slug) ?? []
 
-  const plansByCategory = await Promise.all(children.map((c) => getVpsPlans(c.slug)))
+  const plansByCategory = await Promise.all(categorySlugs.map((slug) => getVpsPlans(slug)))
   const plans = plansByCategory.flat()
 
   return <VpsHub plans={plans} />

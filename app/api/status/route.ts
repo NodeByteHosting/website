@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
-import { computeLatencyStats, fetchStatusSnapshot, type MonitorStatus, type MonitorType } from "@/packages/core/lib/status"
+import { computeLatencyStats, fetchStatusSnapshot, type MonitorStatus } from "@/packages/core/lib/status"
 
 export const revalidate = 30
 
 export interface StatusApiMonitor {
   name: string
-  type: MonitorType
   groupName: string | null
-  subgroupName: string | null
   status: MonitorStatus
   uptime30dPct: number | null
   latency: { fast: number; avg: number; slow: number } | null
@@ -32,9 +30,7 @@ export async function GET() {
 
   const monitors: StatusApiMonitor[] = snapshot.monitors.map((m) => ({
     name: m.name,
-    type: m.type,
     groupName: m.group_name,
-    subgroupName: m.subgroup_name,
     status: m.status,
     uptime30dPct: m.uptime_30d_pct,
     latency: computeLatencyStats(m),
