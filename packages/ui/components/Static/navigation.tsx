@@ -513,7 +513,7 @@ export function Navigation() {
               </button>
               <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-out",
-                mobileCompanyOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+                mobileCompanyOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
               )}>
                 <div className="pl-2 pr-1 py-2 space-y-1">
                   {company.map((item) => (
@@ -554,7 +554,7 @@ export function Navigation() {
               </button>
               <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-out",
-                mobileServicesOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+                mobileServicesOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
               )}>
                 <div className="pl-2 pr-1 py-2 space-y-1">
                   {services.map((service) => (

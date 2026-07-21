@@ -5,6 +5,38 @@ All notable changes to the NodeByte Hosting website will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] - 2026-07-20
+
+### Added
+
+- **Object Storage Hosting** — new `/object-storage` product category backed by live Paymenter billing data, following the same hub pattern as VPS/Dedicated
+  - `packages/core/types/servers/object-storage.ts` — `ObjectStoragePlanSpec` interface (storage limit, access keys, egress, API requests, auto-archive policy, feature bullets)
+  - `packages/core/lib/spec-parser.ts` — `parseObjectStorageSpecs()`, a label/value bullet parser distinct from the CPU/RAM-oriented `parseDescriptionSpecs()` used by Game/VPS/Dedicated
+  - `packages/core/products/billing-service.ts` — `getObjectStoragePlans(categorySlug)`
+  - `packages/ui/components/Layouts/ObjectStorage/object-storage-hub.tsx` — search/sort/filter listing with storage, access key, egress, and archive policy rows
+  - `packages/core/constants/catalog-hubs.ts` — `OBJECT_STORAGE_HUB_SLUGS`
+  - Navigation, footer, sitemap, and homepage service cards all updated to include Object Storage alongside Game/VPS/Dedicated
+- **Status page migrated to our own status platform** — the site's live status integration (`/nodes`, footer status badge) now reads from our self-hosted status API (`nodebytestat.us/api/status`) instead of the previous third-party-hosted status page, with no auth required
+  - `packages/core/lib/status.ts` — rewritten around the new API's `ComponentStatus`/`Indicator` shape; node discovery now walks the API's recursive `groups` tree instead of a hardcoded monitor map
+  - `packages/core/constants/status-mapping.ts` — `NODE_DISPLAY_OVERRIDES` / `LOCATION_MONITOR_MAP` keep location metadata the new API doesn't carry
+- **Brand & Press Kit page** (`/brand`) — logo downloads (SVG/PNG) with usage guidelines, the full color palette across all 47 themes (click-to-copy hex values), typography specimen, and official name/voice reference for partners, advertisers, and press
+  - Downloadable background template (`/brand/background`) reusing the site's existing OG-image generator (`app/_og/image-generator.tsx`) so the template always matches our real social preview cards
+- **Footer reorganized** — Services now lists every live product (including Object Storage and Network & Nodes); Resources gained a genuine System Status link (previously only a small badge); Company gained the new Brand & Press page; the old link mislabeled "System Status" that actually pointed at the network looking-glass tool was corrected
+
+### Changed
+
+- Homepage service cards switched from a cramped 4-column grid back to 3 columns, giving each card more room to breathe
+- VPS/Dedicated/Object Storage "no results" empty states now distinguish "nothing in stock" (destructive styling, no Clear Filters button) from "your filters excluded everything" (neutral styling, Clear Filters button) — previously both cases showed the same generic "no matches" message even when a category was genuinely empty
+
+### Fixed
+
+- **Plan count duplication** — VPS, Dedicated, and Object Storage were double-counting the hub category against itself (`getCategoryHub()` already includes the hub as a leaf inside `hub.children`; page-level code was additionally prepending `hub.slug`), showing e.g. "8 of 8 plans" for 4 real products. Fixed across all three hub pages and the homepage's live starting-price resolver
+- **Object Storage plan sizes displaying as long floats** (e.g. "1.953125 TB") — the display formatter divided by 1024 against plan sizes that were defined in round decimal GB (2000 GB, 2500 GB); switched to a 1000-based conversion so these render as clean "2 TB" / "2.5 TB"
+- **Mobile nav "Company" section cut off items** — its expand animation was capped at a fixed `max-h-[300px]`, too short for 5 menu items; raised to match the other sections
+- VPS hub category discovery — `VPS_HUB_SLUGS` didn't include the live Paymenter category's actual slug (`vps-servers`), so `/vps` rendered empty despite correctly configured billing data
+
+---
+
 ## [3.7.0] - 2026-07-13
 
 ### Added
