@@ -76,6 +76,11 @@ export function AboutPage() {
       title: t("aboutPage.timeline.vpsLaunch.title"),
       description: t("aboutPage.timeline.vpsLaunch.description"),
     },
+    {
+      year: "Q3/4 - 2026",
+      title: t("aboutPage.timeline.dedicatedAndStorage.title"),
+      description: t("aboutPage.timeline.dedicatedAndStorage.description"),
+    },
   ]
 
   return (

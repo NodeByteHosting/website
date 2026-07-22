@@ -39,7 +39,9 @@ import { Price } from "@/packages/ui/components/ui/price"
 type SortKey = "default" | "price-asc" | "price-desc" | "storage-asc" | "storage-desc"
 
 function formatStorage(gb: number): string {
-  return gb >= 1024 ? `${gb / 1024} TB` : `${gb} GB`
+  if (gb < 1000) return `${gb} GB`
+  const tb = Math.round((gb / 1000) * 100) / 100
+  return `${tb} TB`
 }
 
 // ─── PlanCard ─────────────────────────────────────────────────────────────────
