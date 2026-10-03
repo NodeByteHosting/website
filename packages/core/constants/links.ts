@@ -7,7 +7,7 @@
 export const BILLING_URL = "https://billing.nodebyte.host"
 
 export const LINKS = {
-  discord:           "https://discord.gg/nodebyte",
+  discord:           "https://discord.gg/Bg3Sf5fqa4",
   github:            "https://github.com/NodeByteHosting",
   githubWebsite:     "https://github.com/NodeByteHosting/website",
   githubDiscussions: "https://github.com/orgs/NodeByteHosting/discussions",
