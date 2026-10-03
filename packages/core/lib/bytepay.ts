@@ -7,6 +7,8 @@
 
 import { unstable_cache } from "next/cache"
 
+import { BILLING_URL } from "@/packages/core/constants/links"
+
 function getConfig(): { host: string; token: string } {
   const host = process.env.BYTEPAY_HOST
   const token = process.env.BYTEPAY_TOKEN
@@ -470,5 +472,5 @@ export function getStockStatus(
 
 /** Build the billing portal order URL for a product. */
 export function getBillingUrl(categorySlug: string, productSlug: string): string {
-  return `https://billing.nodebyte.host/products/${categorySlug}/${productSlug}`
+  return `${BILLING_URL}/store/${categorySlug}/${productSlug}`
 }

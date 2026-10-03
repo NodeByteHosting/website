@@ -3,6 +3,9 @@
  * Update here once instead of hunting through every component.
  */
 
+/** The NodeByte billing panel (nodebyte-bp). Store pages are /store/{category}/{product}. */
+export const BILLING_URL = "https://billing.nodebyte.host"
+
 export const LINKS = {
   discord:           "https://discord.gg/nodebyte",
   github:            "https://github.com/NodeByteHosting",
@@ -14,20 +17,20 @@ export const LINKS = {
   network:           "https://lg.nodebyte.host",
   contact:           "/contact",
   billing: {
-    root:             "https://billing.nodebyte.host",
-    store:            "https://billing.nodebyte.host",
-    login:            "https://billing.nodebyte.host/login",
-    submitTicket:     "https://billing.nodebyte.host/tickets/create",
-    freeTrial:        "https://billing.nodebyte.host/products/free-trial",
-    amdVps:           "https://billing.nodebyte.host/products/amdvps",
-    intelVps:         "https://billing.nodebyte.host/products/intelvps",
-    minecraftHosting: "https://billing.nodebyte.host/products/minecraft-server-hosting",
-    hytaleHosting:    "https://billing.nodebyte.host/products/hytale-hosting",
-    rustHosting:      "https://billing.nodebyte.host/products/rust-hosting",
-    minecraft:        "https://billing.nodebyte.host/products/minecraft",
-    rust:             "https://billing.nodebyte.host/products/rust",
-    terrariaHosting:  "https://billing.nodebyte.host/products/terraria-server-hosting",
-    gmodHosting:      "https://billing.nodebyte.host/products/garrys-mod-server-hosting",
-    palworldHosting:  "https://billing.nodebyte.host/products/palworld-server-hosting",
+    root:             BILLING_URL,
+    store:            `${BILLING_URL}/store`,
+    login:            `${BILLING_URL}/login`,
+    submitTicket:     `${BILLING_URL}/tickets/new`,
+    freeTrial:        `${BILLING_URL}/store/free-trial`,
+    amdVps:           `${BILLING_URL}/store/amdvps`,
+    intelVps:         `${BILLING_URL}/store/intelvps`,
+    minecraftHosting: `${BILLING_URL}/store/minecraft-server-hosting`,
+    hytaleHosting:    `${BILLING_URL}/store/hytale-hosting`,
+    rustHosting:      `${BILLING_URL}/store/rust-hosting`,
+    minecraft:        `${BILLING_URL}/store/minecraft`,
+    rust:             `${BILLING_URL}/store/rust`,
+    terrariaHosting:  `${BILLING_URL}/store/terraria-server-hosting`,
+    gmodHosting:      `${BILLING_URL}/store/garrys-mod-server-hosting`,
+    palworldHosting:  `${BILLING_URL}/store/palworld-server-hosting`,
   },
 } as const
