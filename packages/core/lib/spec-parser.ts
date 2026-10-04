@@ -333,3 +333,58 @@ export function parseObjectStorageSpecs(html: string | null): ObjectStorageSpecs
 
   return result
 }
+
+export interface BotSpecs {
+  worksWith?: string
+  ramMB?: number
+  vcpu?: number
+  storageGB?: number
+  backups?: number
+  features: string[]
+}
+
+export function parseBotSpecs(html: string | null): BotSpecs {
+  const result: BotSpecs = { features: [] }
+  if (!html) return result
+
+  for (const line of bulletLines(html)) {
+    const worksWith = line.match(/^works with\s*:?\s*(.+)$/i)
+    if (worksWith) {
+      result.worksWith = worksWith[1].trim()
+      continue
+    }
+
+    const ram = line.match(/([\d.]+)\s*(MB|GB)\s*(?:of\s+)?RAM\b/i)
+    if (ram && result.ramMB == null) {
+      const amount = parseFloat(ram[1])
+      result.ramMB = /gb/i.test(ram[2]) ? Math.round(amount * 1024) : Math.round(amount)
+      continue
+    }
+
+    const cpu = line.match(/([\d.]+)\s*v(?:CPU|Core)s?\b/i)
+    if (cpu && result.vcpu == null) {
+      result.vcpu = parseFloat(cpu[1])
+      continue
+    }
+
+    if (/storage|disk|ssd|nvme/i.test(line) && result.storageGB == null) {
+      const size = line.match(/([\d.]+)\s*(MB|GB|TB)\b/i)
+      if (size) {
+        const amount = parseFloat(size[1])
+        const unit = size[2].toUpperCase()
+        result.storageGB = unit === "TB" ? amount * 1024 : unit === "MB" ? amount / 1024 : amount
+        continue
+      }
+    }
+
+    const backups = line.match(/(\d+)\s*Backups?\b/i)
+    if (backups && result.backups == null) {
+      result.backups = parseInt(backups[1])
+      continue
+    }
+
+    result.features.push(line)
+  }
+
+  return result
+}

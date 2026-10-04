@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/packages/ui/components/ui/dropdown-menu"
-import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Handshake, Cloud } from "lucide-react"
+import { Server, Gamepad2, ExternalLink, ChevronRight, ChevronDown, Book, Mail, Users, Sparkles, Cpu, Handshake, Cloud, Bot } from "lucide-react"
 import { ThemeToggle } from "@/packages/ui/components/theme-toggle"
 import { CurrencySelector } from "@/packages/ui/components/ui/price"
 import { LanguageSelector } from "@/packages/ui/components/ui/language-selector"
@@ -76,6 +76,12 @@ export function Navigation() {
       href: "/object-storage",
       description: t("services.objectStorage.description"),
       icon: Cloud,
+    },
+    {
+      title: t("services.discordBots.title"),
+      href: "/discord-bots",
+      description: t("services.discordBots.description"),
+      icon: Bot,
     },
   ]
 

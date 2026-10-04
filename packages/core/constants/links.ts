@@ -32,6 +32,5 @@ export const LINKS = {
     terrariaHosting:  `${BILLING_URL}/store/terraria-server-hosting`,
     gmodHosting:      `${BILLING_URL}/store/garrys-mod-server-hosting`,
     palworldHosting:  `${BILLING_URL}/store/palworld-server-hosting`,
-    discordBots:      `${BILLING_URL}/store/discord-bots`,
   },
 } as const

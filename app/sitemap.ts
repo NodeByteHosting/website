@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next"
 
 const BASE_URL = "https://nodebyte.host"
 
-// Static routes with their priorities and change frequencies
 const staticRoutes: Array<{
   path: string
   priority: number
@@ -11,6 +10,9 @@ const staticRoutes: Array<{
   { path: "",              priority: 1.0, changeFrequency: "weekly"  },
   { path: "/games",        priority: 0.9, changeFrequency: "weekly"  },
   { path: "/vps",          priority: 0.9, changeFrequency: "weekly"  },
+  { path: "/dedicated",    priority: 0.9, changeFrequency: "weekly"  },
+  { path: "/object-storage", priority: 0.8, changeFrequency: "weekly"  },
+  { path: "/discord-bots", priority: 0.8, changeFrequency: "weekly"  },
   { path: "/about",        priority: 0.6, changeFrequency: "monthly" },
   { path: "/partners",     priority: 0.5, changeFrequency: "monthly" },
   { path: "/contact",      priority: 0.7, changeFrequency: "monthly" },
