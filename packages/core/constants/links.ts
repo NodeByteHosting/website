@@ -14,7 +14,7 @@ export const LINKS = {
   twitter:           "https://twitter.com/NodeByteHosting",
   trustpilot:        "https://uk.trustpilot.com/review/nodebyte.host",
   status:            "https://nodebytestat.us",
-  network:           "https://lg.nodebyte.host",
+  lookingGlass:      `${BILLING_URL}/looking-glass`,
   contact:           "/contact",
   billing: {
     root:             BILLING_URL,
@@ -32,5 +32,6 @@ export const LINKS = {
     terrariaHosting:  `${BILLING_URL}/store/terraria-server-hosting`,
     gmodHosting:      `${BILLING_URL}/store/garrys-mod-server-hosting`,
     palworldHosting:  `${BILLING_URL}/store/palworld-server-hosting`,
+    discordBots:      `${BILLING_URL}/store/discord-bots`,
   },
 } as const

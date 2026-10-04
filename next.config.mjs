@@ -18,6 +18,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      { source: "/nodes", destination: "https://billing.nodebyte.host/looking-glass", permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

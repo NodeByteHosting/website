@@ -11,8 +11,6 @@ import {
   Zap,
   X,
   ArrowRight,
-  ChevronDown,
-  Star,
   Gamepad2,
   PackageX,
 } from "lucide-react"
@@ -25,10 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/packages/ui/components/ui/select"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { PlanCard as PlanCardShell } from "@/packages/ui/components/ui/plan-card"
 import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
 import Link from "next/link"
-import { cn } from "@/lib/utils"
 import type { GamePlanSpec } from "@/packages/core/types/servers/game"
 import { Price } from "@/packages/ui/components/ui/price"
 import { SUPPORTED_GAMES } from "@/packages/core/constants/supported-games"
@@ -40,136 +37,42 @@ function formatBandwidth(plan: GamePlanSpec): string {
   return `${plan.bandwidth.amount} ${plan.bandwidth.unit}`
 }
 
-// ─── PlanCard ─────────────────────────────────────────────────────────────────
-
 function PlanCard({ plan }: { plan: GamePlanSpec }) {
-  const outOfStock = plan.stock === "out_of_stock"
-  const [infoOpen, setInfoOpen] = useState(false)
-
   return (
-    <div
-      className={cn(
-        "relative flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
-        "hover:shadow-xl hover:shadow-primary/5",
-        plan.popular
-          ? "border-primary/40 hover:border-primary/60"
-          : "border-border/50 hover:border-border",
-        outOfStock && "opacity-60",
-      )}
-    >
-      {plan.popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-lg shadow-primary/20">
-          <Star className="w-3 h-3" />
-          Most Popular
-        </div>
-      )}
-
-      <div className="p-5 flex flex-col flex-1 gap-4">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="space-y-1.5">
-            <p className="font-mono text-base font-bold tracking-tight">
-              {plan.name ?? plan.id}
-            </p>
-            {plan.description && (
-              <p className="text-xs text-muted-foreground line-clamp-2">{plan.description}</p>
-            )}
-          </div>
-          <div className="text-right shrink-0">
-            <Price amount={plan.priceGBP} prices={plan.prices} className="text-2xl font-bold tabular-nums" />
-            <p className="text-xs text-muted-foreground">/month</p>
-          </div>
-        </div>
-
-        {outOfStock && (
-          <div className="flex flex-wrap gap-1.5">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-destructive/30 text-destructive bg-destructive/10">
-              Out of Stock
-            </span>
-          </div>
-        )}
-
-        <div className="border-t border-border/40" />
-
-        {/* Specs grid */}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-          <div className="flex items-center gap-2 text-sm">
-            <MemoryStick className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">
-              {plan.ramGB} GB {plan.ramType ? plan.ramType : ""} RAM
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <HardDrive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.storageGB} GB {plan.storageLabel ?? "Storage"}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm col-span-2">
-            <Network className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{formatBandwidth(plan)}</span>
-          </div>
-        </div>
-
-        {/* Included features */}
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
-          {[
-            { icon: Shield, text: "DDoS Protection" },
-            { icon: Zap, text: "Instant Setup" },
-            { icon: Server, text: "Control Panel" },
-          ].map(({ icon: Icon, text }) => (
-            <span key={text} className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Icon className="w-3 h-3 text-primary" />
-              {text}
-            </span>
-          ))}
-        </div>
-
-        {/* Server info */}
-        <Collapsible open={infoOpen} onOpenChange={setInfoOpen}>
-          <CollapsibleTrigger asChild>
-            <button
-              type="button"
-              className="flex w-full items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <span>{infoOpen ? "Hide" : "View"} Server Info</span>
-              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", infoOpen && "rotate-180")} />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-3 space-y-2 border-t border-border/40 mt-3">
-            <PlanInfoRow
-              label="Setup Fee"
-              value={plan.setupFeeGBP > 0 ? <Price amount={plan.setupFeeGBP} prices={plan.setupFees} /> : "None"}
-            />
-            {plan.cpuModel && <PlanInfoRow label="CPU Model" value={plan.cpuModel} />}
-            {plan.uplink && (
-              <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />
-            )}
-            {plan.location && <PlanInfoRow label="Locations" value={plan.location} />}
-            {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
-            {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
-          </CollapsibleContent>
-        </Collapsible>
-
-        <Button
-          size="sm"
-          variant={outOfStock ? "outline" : "default"}
-          className="w-full gap-2 rounded-lg mt-auto"
-          disabled={outOfStock}
-          asChild={!outOfStock}
-        >
-          {outOfStock ? (
-            <span>Out of Stock</span>
-          ) : (
-            <a href={plan.url} target="_blank" rel="noopener noreferrer">
-              Order Now <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-          )}
-        </Button>
-      </div>
-    </div>
+    <PlanCardShell
+      name={plan.name ?? plan.id}
+      subtitle={plan.description}
+      priceGBP={plan.priceGBP}
+      prices={plan.prices}
+      popular={plan.popular}
+      outOfStock={plan.stock === "out_of_stock"}
+      url={plan.url}
+      specs={[
+        { icon: MemoryStick, value: `${plan.ramGB} GB`, label: plan.ramType ? `${plan.ramType} RAM` : "RAM" },
+        { icon: HardDrive, value: `${plan.storageGB} GB`, label: plan.storageLabel ?? "Storage" },
+        { icon: Network, value: formatBandwidth(plan), label: "Bandwidth" },
+      ]}
+      features={[
+        { icon: Shield, text: "DDoS Protection" },
+        { icon: Zap, text: "Instant Setup" },
+        { icon: Server, text: "Control Panel" },
+      ]}
+      info={
+        <>
+          <PlanInfoRow
+            label="Setup Fee"
+            value={plan.setupFeeGBP > 0 ? <Price amount={plan.setupFeeGBP} prices={plan.setupFees} /> : "None"}
+          />
+          {plan.cpuModel && <PlanInfoRow label="CPU Model" value={plan.cpuModel} />}
+          {plan.uplink && <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />}
+          {plan.location && <PlanInfoRow label="Locations" value={plan.location} />}
+          {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
+          {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
+        </>
+      }
+    />
   )
 }
-
-// ─── Hub ─────────────────────────────────────────────────────────────────────
 
 interface GameHubProps {
   plans: GamePlanSpec[]
@@ -203,7 +106,6 @@ export function GameHub({ plans }: GameHubProps) {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background pointer-events-none" />
       <div className="absolute inset-0 text-foreground/2 bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
       <div
@@ -213,7 +115,6 @@ export function GameHub({ plans }: GameHubProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 sm:pt-36 pb-24 sm:pb-32 space-y-12">
 
-        {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <div className="text-center space-y-5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary">
             <Gamepad2 className="w-4 h-4" />
@@ -240,7 +141,6 @@ export function GameHub({ plans }: GameHubProps) {
           </div>
         </div>
 
-        {/* ── Filter bar ───────────────────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex gap-3 flex-wrap">
             <div className="relative flex-1 min-w-[220px]">
@@ -271,7 +171,6 @@ export function GameHub({ plans }: GameHubProps) {
           </div>
         </div>
 
-        {/* ── Plan grid ────────────────────────────────────────────────────── */}
         <div className="max-w-5xl mx-auto">
           {plans.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 border border-destructive/20 rounded-2xl bg-card/20">
@@ -291,7 +190,7 @@ export function GameHub({ plans }: GameHubProps) {
               <p className="text-xs text-muted-foreground mb-4">
                 Showing {filtered.length} of {plans.length} plan{plans.length !== 1 ? "s" : ""}
               </p>
-              <div className="grid items-start sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}
@@ -300,7 +199,6 @@ export function GameHub({ plans }: GameHubProps) {
           )}
         </div>
 
-        {/* ── Custom / Enterprise CTA ───────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto">
           <div className="rounded-2xl border border-border/50 bg-card/20 backdrop-blur-sm p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

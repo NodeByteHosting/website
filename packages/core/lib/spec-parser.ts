@@ -123,8 +123,7 @@ export function parseDescriptionSpecs(html: string | null): ParsedSpecs {
     }
   }
   if (!cpu) {
-    // "2 vCPU", "4 vCPUs" — common cloud/VPS-style core count phrasing
-    const m = text.match(/\b(\d+)\s*vCPUs?\b/i)
+    const m = text.match(/\b(\d+)\s*v(?:CPU|Core)s?\b/i)
     if (m) cpu = parseInt(m[1])
   }
 

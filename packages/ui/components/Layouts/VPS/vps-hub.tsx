@@ -13,7 +13,6 @@ import {
   X,
   ArrowRight,
   ChevronDown,
-  Star,
   PackageX,
 } from "lucide-react"
 import { Button } from "@/packages/ui/components/ui/button"
@@ -26,7 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/packages/ui/components/ui/select"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { Collapsible, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { PlanCard as PlanCardShell } from "@/packages/ui/components/ui/plan-card"
 import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
 import { FilterChipRow, FilterChip } from "@/packages/ui/components/ui/filter-chip"
 import Link from "next/link"
@@ -62,8 +62,6 @@ const LINEUP_META = {
   },
 } as const
 
-// ─── Series metadata ──────────────────────────────────────────────────────────
-
 const SERIES_META: Record<string, { label: string; fullName: string; chip: string; brand: string }> = {
   RG1:  { label: "RG1",  fullName: "Ryzen 1000 Series",    chip: "1700X",  brand: "amd"   },
   RG3:  { label: "RG3",  fullName: "Ryzen 5000 Series",    chip: "5900X",  brand: "amd"   },
@@ -84,168 +82,74 @@ type SortKey =
   | "storage-asc" | "storage-desc"
   | "cpu-asc" | "cpu-desc"
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
 function formatBandwidth(plan: VpsPlanSpec): string {
   if (!plan.bandwidth) return "Unmetered"
   return `${plan.bandwidth.amount} ${plan.bandwidth.unit}`
 }
 
-// ─── PlanCard ─────────────────────────────────────────────────────────────────
-
 function PlanCard({ plan }: { plan: VpsPlanSpec }) {
   const lineup = plan.lineup ? LINEUP_META[plan.lineup] ?? null : null
   const series = plan.series ? SERIES_META[plan.series] ?? null : null
-  const outOfStock = plan.stock === "out_of_stock"
-  const [infoOpen, setInfoOpen] = useState(false)
 
   return (
-    <div
-      className={cn(
-        "relative flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
-        "hover:shadow-xl hover:shadow-primary/5",
-        plan.popular
-          ? "border-primary/40 hover:border-primary/60"
-          : "border-border/50 hover:border-border",
-        outOfStock && "opacity-60",
-      )}
-    >
-      {/* Popular ribbon */}
-      {plan.popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-lg shadow-primary/20">
-          <Star className="w-3 h-3" />
-          Most Popular
-        </div>
-      )}
-
-      <div className="p-5 flex flex-col flex-1 gap-4">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="space-y-1.5">
-            <p className="font-mono text-base font-bold tracking-tight">
-              {plan.sku ?? plan.id}
-            </p>
-            {plan.cpuModel && (
-              <p className="text-xs text-muted-foreground">{plan.cpuModel}</p>
+    <PlanCardShell
+      name={plan.sku ?? plan.id}
+      subtitle={plan.cpuModel}
+      priceGBP={plan.priceGBP}
+      prices={plan.prices}
+      popular={plan.popular}
+      outOfStock={plan.stock === "out_of_stock"}
+      url={plan.url}
+      badges={
+        (lineup || series) && (
+          <>
+            {lineup && (
+              <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border", lineup.color)}>
+                <span className={cn("w-1.5 h-1.5 rounded-full", lineup.dot)} />
+                {lineup.label}
+              </span>
             )}
-          </div>
-          <div className="text-right shrink-0">
-            <Price amount={plan.priceGBP} prices={plan.prices} className="text-2xl font-bold tabular-nums" />
-            <p className="text-xs text-muted-foreground">/month</p>
-          </div>
-        </div>
-
-        {/* Badges */}
-        <div className="flex flex-wrap gap-1.5">
-          {lineup && (
-            <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border", lineup.color)}>
-              <span className={cn("w-1.5 h-1.5 rounded-full", lineup.dot)} />
-              {lineup.label}
-            </span>
-          )}
-          {series && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border border-border/50 text-muted-foreground bg-muted/30">
-              {series.label} · {series.chip}
-            </span>
-          )}
-          {outOfStock && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-destructive/30 text-destructive bg-destructive/10">
-              Out of Stock
-            </span>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-border/40" />
-
-        {/* Specs grid */}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-          <div className="flex items-center gap-2 text-sm">
-            <Cpu className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.cpu} vCPU</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Server className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.ramGB} GB</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <HardDrive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{plan.storageGB} GB</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Network className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{formatBandwidth(plan)}</span>
-          </div>
-        </div>
-
-        {/* Included features */}
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
-          {[
-            { icon: Shield, text: "DDoS Protection" },
-            { icon: Zap, text: "KVM" },
-            { icon: Server, text: "Full Root" },
-          ].map(({ icon: Icon, text }) => (
-            <span key={text} className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Icon className="w-3 h-3 text-primary" />
-              {text}
-            </span>
-          ))}
-        </div>
-
-        {/* Server info */}
-        <Collapsible open={infoOpen} onOpenChange={setInfoOpen}>
-          <CollapsibleTrigger asChild>
-            <button
-              type="button"
-              className="flex w-full items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <span>{infoOpen ? "Hide" : "View"} Server Info</span>
-              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", infoOpen && "rotate-180")} />
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-3 space-y-2 border-t border-border/40 mt-3">
+            {series && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border border-border/50 text-muted-foreground bg-muted/30">
+                {series.label} · {series.chip}
+              </span>
+            )}
+          </>
+        )
+      }
+      specs={[
+        { icon: Cpu, value: `${plan.cpu}`, label: "vCPU" },
+        { icon: Server, value: `${plan.ramGB} GB`, label: "RAM" },
+        { icon: HardDrive, value: `${plan.storageGB} GB`, label: "Storage" },
+        { icon: Network, value: formatBandwidth(plan), label: "Bandwidth" },
+      ]}
+      features={[
+        { icon: Shield, text: "DDoS Protection" },
+        { icon: Zap, text: "KVM" },
+        { icon: Server, text: "Full Root" },
+      ]}
+      info={
+        <>
+          <PlanInfoRow
+            label="Setup Fee"
+            value={plan.setupFeeGBP > 0 ? <Price amount={plan.setupFeeGBP} prices={plan.setupFees} /> : "None"}
+          />
+          {series && <PlanInfoRow label="Hardware Series" value={series.fullName} />}
+          {plan.uplink && <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />}
+          {plan.ddos && (
             <PlanInfoRow
-              label="Setup Fee"
-              value={plan.setupFeeGBP > 0 ? <Price amount={plan.setupFeeGBP} prices={plan.setupFees} /> : "None"}
+              label="DDoS Layers"
+              value={`L${plan.ddos.layers.join("/")}${plan.ddos.autoOn ? " · Always-on" : ""}`}
             />
-            {series && <PlanInfoRow label="Hardware Series" value={series.fullName} />}
-            {plan.uplink && (
-              <PlanInfoRow label="Uplink" value={`${plan.uplink.amount} ${plan.uplink.unit}`} />
-            )}
-            {plan.ddos && (
-              <PlanInfoRow
-                label="DDoS Layers"
-                value={`L${plan.ddos.layers.join("/")}${plan.ddos.autoOn ? " · Always-on" : ""}`}
-              />
-            )}
-            {plan.location && <PlanInfoRow label="Location" value={plan.location} />}
-            {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
-            {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
-          </CollapsibleContent>
-        </Collapsible>
-
-        {/* CTA */}
-        <Button
-          size="sm"
-          variant={outOfStock ? "outline" : "default"}
-          className="w-full gap-2 rounded-lg mt-auto"
-          disabled={outOfStock}
-          asChild={!outOfStock}
-        >
-          {outOfStock ? (
-            <span>Out of Stock</span>
-          ) : (
-            <a href={plan.url} target="_blank" rel="noopener noreferrer">
-              Order Now <ArrowRight className="w-3.5 h-3.5" />
-            </a>
           )}
-        </Button>
-      </div>
-    </div>
+          {plan.location && <PlanInfoRow label="Location" value={plan.location} />}
+          {plan.databases != null && <PlanInfoRow label="Databases" value={`${plan.databases}x MySQL`} />}
+          {plan.backups && <PlanInfoRow label="Backups" value="Automatic" />}
+        </>
+      }
+    />
   )
 }
-
-// ─── Hub ─────────────────────────────────────────────────────────────────────
 
 interface VpsHubProps {
   plans: VpsPlanSpec[]
@@ -262,9 +166,6 @@ export function VpsHub({ plans }: VpsHubProps) {
   const [sort, setSort] = useState<SortKey>("price-asc")
   const [filtersOpen, setFiltersOpen] = useState(false)
 
-  // Derive which lineups/series/RAM tiers actually exist in the plan list —
-  // reliable even for plans whose names don't follow the LINEUP-SERIES-RAM
-  // convention, since it's built from the live data, not assumed from it.
   const availableLineups = Array.from(new Set(plans.flatMap((p) => p.lineup ? [p.lineup] : []))) as Lineup[]
   const availableSeries = Array.from(new Set(plans.flatMap((p) => p.series ? [p.series] : []))) as Series[]
   const availableRam = Array.from(new Set(plans.map((p) => p.ramGB))).sort((a, b) => a - b)
@@ -318,7 +219,6 @@ export function VpsHub({ plans }: VpsHubProps) {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background pointer-events-none" />
       <div className="absolute inset-0 text-foreground/[0.02] bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
       <div
@@ -328,7 +228,6 @@ export function VpsHub({ plans }: VpsHubProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 sm:pt-36 pb-24 sm:pb-32 space-y-12">
 
-        {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <div className="text-center space-y-5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary">
             <Server className="w-4 h-4" />
@@ -345,9 +244,7 @@ export function VpsHub({ plans }: VpsHubProps) {
           </p>
         </div>
 
-        {/* ── Filter bar ───────────────────────────────────────────────────── */}
         <div className="max-w-5xl mx-auto space-y-3">
-          {/* Search + Sort + Filters toggle row */}
           <div className="flex gap-3 flex-wrap">
             <div className="relative flex-1 min-w-[220px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -396,7 +293,6 @@ export function VpsHub({ plans }: VpsHubProps) {
             )}
           </div>
 
-          {/* Collapsible filter groups */}
           <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
             <CollapsibleContent>
               <div className="rounded-xl border border-border/50 bg-card/20 p-4 space-y-3">
@@ -471,7 +367,6 @@ export function VpsHub({ plans }: VpsHubProps) {
           </Collapsible>
         </div>
 
-        {/* ── Plan grid ────────────────────────────────────────────────────── */}
         <div className="max-w-5xl mx-auto">
           {plans.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 border border-destructive/20 rounded-2xl bg-card/20">
@@ -491,7 +386,7 @@ export function VpsHub({ plans }: VpsHubProps) {
               <p className="text-xs text-muted-foreground mb-4">
                 Showing {filtered.length} of {plans.length} plans
               </p>
-              <div className="grid items-start sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filtered.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}
@@ -500,7 +395,6 @@ export function VpsHub({ plans }: VpsHubProps) {
           )}
         </div>
 
-        {/* ── Custom plans CTA ─────────────────────────────────────────────── */}
         <div className="max-w-5xl mx-auto">
           <div className="rounded-2xl border border-border/50 bg-card/20 backdrop-blur-sm p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
