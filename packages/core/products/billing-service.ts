@@ -52,6 +52,7 @@ export async function getGamePlans(categorySlug: string): Promise<GamePlanSpec[]
         id: product.slug,
         name: product.name,
         category: categorySlug,
+        cpu: parsed.cpu,
         location: parsed.location,
         description: parsed.description,
         databases: parsed.databases,
