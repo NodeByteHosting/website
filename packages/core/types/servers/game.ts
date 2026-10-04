@@ -1,41 +1,18 @@
-/**
- * Shared interface for all game hosting plan specs.
- * following the same pattern (more or less) as VpsPlanSpec.
- * @param {string} id - Unique plan slug, used as URL path segment and translation key
- * @param {string} [description] - Short marketing description for the plan card
- * @param {string} [cpuModel] - CPU model name e.g. "AMD Ryzen™ 9 5900X"
- * @param {number} priceGBP - Monthly price in GBP (base currency)
- * @param {number} ramGB - Allocated RAM in gigabytes
- * @param {number} storageGB - Allocated SSD storage in gigabytes
- * @param {{ amount: number; unit: "MB" | "GB" | "TB" } | null} bandwidth - Bandwidth allowance; null = unmetered
- * @param {{ amount: number; unit: "Mbps" | "Gbps" }} [uplink] - Port speed; defaults to platform default if omitted
- * @param {{ layers: number[]; autoOn: boolean }} [ddos] - DDoS protection layers and mitigation mode
- * @param {string} [location] - Data centre location e.g. "Newcastle, United Kingdom"
- * @param {boolean} [popular] - Highlights the plan as a recommended/popular choice
- * @param {string} [url] - Direct order URL on the billing portal
- */
 export interface GamePlanSpec {
   id: string
-  /** Raw product name from the billing panel — used as the display name for auto-generated (non-curated) game pages */
   name?: string
-  /** Paymenter category slug this plan was fetched from, e.g. "minecraft" — plans are shown in one unified grid regardless, this is just for search/de-duplication. */
   category: string
   description?: string
-  /** Number of databases included, e.g. "3x MySQL Databases" → 3. */
+  cpu?: number
   databases?: number
-  /** Whether the description mentions automatic/included backups. */
   backups?: boolean
   cpuModel?: string
   priceGBP: number
-  /** One-time setup fee in GBP (0 if none). */
   setupFeeGBP: number
-  /** Native one-time setup fees per currency code. */
   setupFees?: Record<string, number>
   ramGB: number
-  /** RAM generation if the description names one, e.g. "DDR4" — omitted when unspecified */
   ramType?: string
   storageGB: number
-  /** Human-friendly storage type, e.g. "NVMe SSD Storage" or "Storage Array" when no drive type was named */
   storageLabel?: string
   bandwidth: { amount: number; unit: "MB" | "GB" | "TB" } | null
   uplink?: { amount: number; unit: "Mbps" | "Gbps" }
@@ -43,8 +20,6 @@ export interface GamePlanSpec {
   location?: string
   popular?: boolean
   url?: string
-  /** Availability status. Defaults to "in_stock" when omitted. */
   stock?: "in_stock" | "out_of_stock" | "coming_soon"
-  /** Native billing prices per currency code, e.g. { GBP: 4, EUR: 4.59, USD: 5.37 } */
   prices?: Record<string, number>
 }

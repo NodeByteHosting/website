@@ -5,6 +5,7 @@ import {
   Server,
   Search,
   MemoryStick,
+  Cpu,
   HardDrive,
   Network,
   Shield,
@@ -48,6 +49,7 @@ function PlanCard({ plan }: { plan: GamePlanSpec }) {
       outOfStock={plan.stock === "out_of_stock"}
       url={plan.url}
       specs={[
+        ...(plan.cpu ? [{ icon: Cpu, value: `${plan.cpu}`, label: plan.cpu === 1 ? "vCPU" : "vCPUs" }] : []),
         { icon: MemoryStick, value: `${plan.ramGB} GB`, label: plan.ramType ? `${plan.ramType} RAM` : "RAM" },
         { icon: HardDrive, value: `${plan.storageGB} GB`, label: plan.storageLabel ?? "Storage" },
         { icon: Network, value: formatBandwidth(plan), label: "Bandwidth" },
