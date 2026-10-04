@@ -129,23 +129,6 @@ export function findMonitor(snapshot: StatusSnapshot | null, name: string): Stat
   return snapshot.monitors.find((m) => m.name.trim().toLowerCase() === target) ?? null
 }
 
-/**
- * Names of individual node monitors — any monitor whose immediate group name
- * ends in "Nodes" (e.g. "Game Nodes", "VPS Nodes"). This is the live source
- * of truth for which nodes exist on /nodes. Add a node under a "*Nodes"
- * group on nodebytestat.us and it appears here automatically — no website
- * code change needed.
- */
-export function getNodeMonitorNames(snapshot: StatusSnapshot | null): string[] {
-  if (!snapshot) return []
-  return snapshot.monitors
-    .filter((m) => {
-      const leafGroup = m.group_name?.split(" > ").pop()?.trim()
-      return leafGroup?.toLowerCase().endsWith("nodes") ?? false
-    })
-    .map((m) => m.name)
-}
-
 /** Single-sample "latency" — the new status API only exposes the most recent check, not a rolling history. */
 export function computeLatencyStats(monitor: StatusMonitor): { fast: number; avg: number; slow: number } | null {
   if (monitor.last_latency_ms == null) return null

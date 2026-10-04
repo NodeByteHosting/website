@@ -10,7 +10,6 @@ import { getCategoryHub } from "@/packages/core/lib/bytepay"
 import { getGamePlans, getVpsPlans, getDedicatedPlans, getObjectStoragePlans } from "@/packages/core/products/billing-service"
 import { GAME_HUB_SLUGS, VPS_HUB_SLUGS, DEDICATED_HUB_SLUGS, OBJECT_STORAGE_HUB_SLUGS } from "@/packages/core/constants/catalog-hubs"
 
-/** Live starting price (min across all of a hub's children's plans — getCategoryHub already includes the hub itself as a leaf), falling back to the static config value if a hub has no live pricing yet or the billing panel is unreachable. */
 async function getLiveStartingPrice(
   hubSlugs: string[],
   getPlans: (categorySlug: string) => Promise<{ priceGBP: number }[]>,
@@ -48,7 +47,6 @@ export async function Services() {
       <div className="absolute inset-0 bg-linear-to-b from-background via-primary/2 to-background" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
         <div className="text-center mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary">
             <Layers className="w-4 h-4" />
@@ -65,15 +63,16 @@ export async function Services() {
           </p>
         </div>
 
-        {/* Service Hub Cards */}
         <div
           className={cn(
             "grid gap-8 mx-auto",
             activeServices.length === 1
               ? "max-w-xl"
               : activeServices.length === 2
-              ? "max-w-3xl sm:grid-cols-2"
-              : "max-w-6xl sm:grid-cols-2 lg:grid-cols-3",
+                ? "max-w-3xl sm:grid-cols-2"
+                : activeServices.length % 3 === 0
+                  ? "max-w-6xl sm:grid-cols-2 lg:grid-cols-3"
+                  : "max-w-5xl sm:grid-cols-2 2xl:max-w-7xl 2xl:grid-cols-4",
           )}
         >
           {activeServices.map((service) => (
@@ -87,35 +86,30 @@ export async function Services() {
                 "flex flex-col",
               )}
             >
-              {/* Card header — gradient visual */}
               <div
                 className={cn(
                   "relative h-40 sm:h-48 bg-linear-to-br overflow-hidden flex items-center justify-center",
                   service.gradient,
                 )}
               >
-                {/* Large faded background icon */}
                 <service.icon className={cn("absolute w-52 h-52 opacity-[0.07]", service.iconColor)} />
-                {/* Centred icon badge */}
                 <div className="relative z-10 w-16 h-16 rounded-2xl bg-background/10 border border-white/10 backdrop-blur-sm flex items-center justify-center">
                   <service.icon className={cn("w-8 h-8", service.iconColor)} />
                 </div>
               </div>
 
               <div className="p-7 flex flex-col flex-1">
-                {/* Title + starting price */}
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <h3 className="text-xl font-bold whitespace-nowrap">{service.name}</h3>
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 mb-3">
+                  <h3 className="text-xl font-bold">{service.name}</h3>
                   <span className="text-xs text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-full border border-border/50 shrink-0 inline-flex items-center gap-1">
                     {t("servicesHome.startingFrom")} <Price amount={service.startingPriceGBP} />/mo
                   </span>
                 </div>
 
-                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{service.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-3 min-h-[4.5rem]">{service.description}</p>
 
-                {/* Highlights */}
                 <ul className="space-y-2 mb-6 flex-1">
-                  {service.highlights.map((highlight, i) => (
+                  {service.highlights.map((highlight) => (
                     <li key={highlight} className="flex items-center gap-2.5 text-sm text-muted-foreground">
                       <Check className={cn("w-4 h-4 shrink-0", service.iconColor)} />
                       {highlight}
@@ -134,7 +128,6 @@ export async function Services() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
             {t("servicesHome.customSolution")}{" "}

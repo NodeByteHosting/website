@@ -58,7 +58,7 @@ export function Contact() {
       title: t("contact.ticket.title"),
       description: t("contact.ticket.description"),
       icon: Headphones,
-      href: "https://billing.nodebyte.host/tickets/create",
+      href: LINKS.billing.submitTicket,
       cta: t("contact.ticket.button"),
       color: "bg-accent/10 text-accent",
       hoverColor: "hover:bg-accent hover:text-accent-foreground",

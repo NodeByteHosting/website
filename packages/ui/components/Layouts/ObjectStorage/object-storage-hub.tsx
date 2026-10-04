@@ -14,7 +14,6 @@ import {
   X,
   ArrowRight,
   ChevronDown,
-  Star,
   Check,
   PackageX,
 } from "lucide-react"
@@ -28,7 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/packages/ui/components/ui/select"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { Collapsible, CollapsibleContent } from "@/packages/ui/components/ui/collapsible"
+import { PlanCard as PlanCardShell, type PlanSpec } from "@/packages/ui/components/ui/plan-card"
 import { PlanInfoRow } from "@/packages/ui/components/ui/plan-info-row"
 import { FilterChipRow, FilterChip } from "@/packages/ui/components/ui/filter-chip"
 import Link from "next/link"
@@ -42,139 +42,46 @@ function formatStorage(gb: number): string {
   return gb >= 1024 ? `${gb / 1024} TB` : `${gb} GB`
 }
 
-// ─── PlanCard ─────────────────────────────────────────────────────────────────
-
 function PlanCard({ plan }: { plan: ObjectStoragePlanSpec }) {
-  const outOfStock = plan.stock === "out_of_stock"
-  const [infoOpen, setInfoOpen] = useState(false)
+  const specs: PlanSpec[] = [
+    { icon: HardDrive, value: formatStorage(plan.storageGB), label: plan.storageLabel ?? "Storage" },
+  ]
+  if (plan.accessKeys) specs.push({ icon: Key, value: plan.accessKeys, label: "Access Keys" })
+  if (plan.egress) specs.push({ icon: ArrowLeftRight, value: plan.egress, label: "Egress" })
+  if (plan.apiRequests) specs.push({ icon: Zap, value: plan.apiRequests, label: "API Requests" })
+  if (plan.archivePolicy) specs.push({ icon: Archive, value: plan.archivePolicy, label: "Auto-Archive" })
 
   return (
-    <div
-      className={cn(
-        "relative flex flex-col rounded-2xl border bg-card/30 backdrop-blur-sm transition-all duration-300",
-        "hover:shadow-xl hover:shadow-primary/5",
-        plan.popular
-          ? "border-primary/40 hover:border-primary/60"
-          : "border-border/50 hover:border-border",
-        outOfStock && "opacity-60",
-      )}
-    >
-      {plan.popular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-lg shadow-primary/20">
-          <Star className="w-3 h-3" />
-          Most Popular
-        </div>
-      )}
-
-      <div className="p-5 flex flex-col flex-1 gap-4">
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div className="space-y-1.5">
-            <p className="font-mono text-base font-bold tracking-tight uppercase">
-              {plan.name ?? plan.id.replace(/-/g, " ")}
-            </p>
-            {plan.storageLabel && (
-              <p className="text-xs text-muted-foreground">{plan.storageLabel}</p>
-            )}
-          </div>
-          <div className="text-right shrink-0">
-            <Price amount={plan.priceGBP} prices={plan.prices} className="text-2xl font-bold tabular-nums" />
-            <p className="text-xs text-muted-foreground">/month</p>
-          </div>
-        </div>
-
-        {outOfStock && (
-          <span className="self-start inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-destructive/30 text-destructive bg-destructive/10">
-            Out of Stock
-          </span>
-        )}
-
-        <div className="border-t border-border/40" />
-
-        {/* Specs grid */}
-        <div className="grid grid-cols-1 gap-y-2">
-          <div className="flex items-center gap-2 text-sm">
-            <HardDrive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            <span className="font-medium">{formatStorage(plan.storageGB)} Storage</span>
-          </div>
-          {plan.accessKeys && (
-            <div className="flex items-center gap-2 text-sm">
-              <Key className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-              <span className="font-medium">{plan.accessKeys}</span>
-            </div>
-          )}
-          {plan.egress && (
-            <div className="flex items-center gap-2 text-sm">
-              <ArrowLeftRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-              <span className="font-medium">{plan.egress}</span>
-            </div>
-          )}
-          {plan.archivePolicy && (
-            <div className="flex items-center gap-2 text-sm">
-              <Archive className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-              <span className="font-medium">Auto-Archive: {plan.archivePolicy}</span>
-            </div>
-          )}
-          {plan.apiRequests && (
-            <div className="flex items-center gap-2 text-sm">
-              <Zap className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-              <span className="font-medium">{plan.apiRequests}</span>
-            </div>
-          )}
-        </div>
-
-        {plan.features.length > 0 && (
-          <>
-            <div className="border-t border-border/40" />
-            <ul className="space-y-1.5">
-              {plan.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                  <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        {plan.setupFeeGBP > 0 && (
-          <Collapsible open={infoOpen} onOpenChange={setInfoOpen}>
-            <CollapsibleTrigger asChild>
-              <button
-                type="button"
-                className="flex w-full items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span>{infoOpen ? "Hide" : "View"} Plan Info</span>
-                <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", infoOpen && "rotate-180")} />
-              </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-3 space-y-2 border-t border-border/40 mt-3">
-              <PlanInfoRow label="Setup Fee" value={<Price amount={plan.setupFeeGBP} prices={plan.setupFees} />} />
-            </CollapsibleContent>
-          </Collapsible>
-        )}
-
-        <Button
-          size="sm"
-          variant={outOfStock ? "outline" : "default"}
-          className="w-full gap-2 rounded-lg mt-auto"
-          disabled={outOfStock}
-          asChild={!outOfStock}
-        >
-          {outOfStock ? (
-            <span>Out of Stock</span>
-          ) : (
-            <a href={plan.url} target="_blank" rel="noopener noreferrer">
-              Order Now <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-          )}
-        </Button>
-      </div>
-    </div>
+    <PlanCardShell
+      name={plan.name ?? plan.id.replace(/-/g, " ")}
+      subtitle={plan.description}
+      priceGBP={plan.priceGBP}
+      prices={plan.prices}
+      popular={plan.popular}
+      outOfStock={plan.stock === "out_of_stock"}
+      url={plan.url}
+      specs={specs}
+      infoLabel="Plan Info"
+      extra={
+        plan.features.length > 0 && (
+          <ul className="space-y-1.5">
+            {plan.features.map((feature) => (
+              <li key={feature} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      info={
+        plan.setupFeeGBP > 0 && (
+          <PlanInfoRow label="Setup Fee" value={<Price amount={plan.setupFeeGBP} prices={plan.setupFees} />} />
+        )
+      }
+    />
   )
 }
-
-// ─── Hub ─────────────────────────────────────────────────────────────────────
 
 interface ObjectStorageHubProps {
   plans: ObjectStoragePlanSpec[]
@@ -226,7 +133,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-background to-background pointer-events-none" />
       <div className="absolute inset-0 text-foreground/2 bg-[linear-gradient(currentColor_1px,transparent_1px),linear-gradient(90deg,currentColor_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_10%,black_40%,transparent_100%)] pointer-events-none" />
       <div
@@ -236,7 +142,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32 sm:pt-36 pb-24 sm:pb-32 space-y-12">
 
-        {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <div className="text-center space-y-5 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary">
             <Cloud className="w-4 h-4" />
@@ -252,7 +157,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
             S3 API compatible cloud storage with generous free egress and self-service access keys. Works with rclone, Cyberduck, AWS CLI, SDKs, and Docker.
           </p>
 
-          {/* Key differentiators */}
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             {[
               { icon: Cloud, text: "S3 API Compatible" },
@@ -271,7 +175,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
           </div>
         </div>
 
-        {/* ── Filter bar ───────────────────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex gap-3 flex-wrap items-center">
             <div className="relative flex-1 min-w-[220px]">
@@ -355,7 +258,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
           </Collapsible>
         </div>
 
-        {/* ── Plan grid ────────────────────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto">
           {plans.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3 border border-destructive/20 rounded-2xl bg-card/20">
@@ -375,7 +277,7 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
               <p className="text-xs text-muted-foreground mb-4">
                 Showing {filtered.length} of {plans.length} plan{plans.length !== 1 ? "s" : ""}
               </p>
-              <div className="grid items-start sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((plan) => (
                   <PlanCard key={plan.id} plan={plan} />
                 ))}
@@ -384,7 +286,6 @@ export function ObjectStorageHub({ plans }: ObjectStorageHubProps) {
           )}
         </div>
 
-        {/* ── Custom / Enterprise CTA ───────────────────────────────────────── */}
         <div className="max-w-4xl mx-auto">
           <div className="rounded-2xl border border-border/50 bg-card/20 backdrop-blur-sm p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

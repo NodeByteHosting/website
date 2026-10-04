@@ -26,6 +26,11 @@ export const OG_CONFIGS = {
     description: 'Minecraft, Rust, Hytale and more — one-click deployment with mod support included.',
     features: ['Minecraft', 'Rust', 'Hytale', 'Mod Support', 'DDoS Protected'],
   },
+  discordBots: {
+    headline: ['Discord Bot', 'Hosting.'] as const,
+    description: 'Always-on hosting for Discord bots, with backups, DDoS protection and instant setup.',
+    features: ['Node.js', 'Python', 'Java', 'Go & Rust', 'Backups'],
+  },
   brand: {
     headline: ['Brand &', 'Press Kit.'] as const,
     description: 'Logo files, color palettes, and usage guidelines for partners and press.',

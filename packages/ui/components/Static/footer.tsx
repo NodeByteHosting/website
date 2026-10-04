@@ -123,7 +123,7 @@ export function Footer() {
                 { href: "/vps", label: t("footer.services.vpsServers") },
                 { href: "/dedicated", label: t("footer.services.dedicatedServers") },
                 { href: "/object-storage", label: t("footer.services.objectStorage") },
-                { href: "/nodes", label: t("footer.services.nodes") },
+                { href: "/discord-bots", label: t("footer.services.discordBots") },
               ].map((link) => (
                 <li key={link.label}>
                   {link.href.startsWith("http") ? (

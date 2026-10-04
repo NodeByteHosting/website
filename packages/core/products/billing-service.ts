@@ -3,6 +3,7 @@ import type { GamePlanSpec } from "@/packages/core/types/servers/game"
 import type { VpsPlanSpec } from "@/packages/core/types/servers/vps"
 import type { DedicatedPlanSpec } from "@/packages/core/types/servers/dedicated"
 import type { ObjectStoragePlanSpec } from "@/packages/core/types/servers/object-storage"
+import type { DiscordBotPlanSpec } from "@/packages/core/types/servers/discord-bot"
 import {
   fetchAllBillingProducts,
   getProductsByCategory,
@@ -13,22 +14,16 @@ import {
   getStockStatus,
   getBillingUrl,
 } from "@/packages/core/lib/bytepay"
-import { parseDescriptionSpecs, parseProductName, parseObjectStorageSpecs, formatStorageType } from "@/packages/core/lib/spec-parser"
+import { parseBotSpecs, parseDescriptionSpecs, parseProductName, parseObjectStorageSpecs, formatStorageType } from "@/packages/core/lib/spec-parser"
 import { POPULAR_SLUGS, DEFAULT_DDOS } from "@/packages/core/constants/product-overrides"
 import type { BillingProduct } from "@/packages/core/lib/bytepay"
 
 const getCachedProducts = unstable_cache(
   fetchAllBillingProducts,
-  ["billing-products"],
+  ["billing-public-products"],
   { revalidate: 300 },
 )
 
-/**
- * A live, non-hidden product is visible in Paymenter but got filtered out
- * because its description didn't parse into the specs the site needs.
- * Logged so a wording change (e.g. a new storage phrasing) surfaces
- * immediately instead of being discovered by a customer.
- */
 function warnDroppedProduct(
   product: BillingProduct,
   categorySlug: string,
@@ -39,11 +34,6 @@ function warnDroppedProduct(
   )
 }
 
-/**
- * Returns live-priced game plans for the given billing category slug.
- * RAM and storage are parsed from the billing panel description automatically.
- * Plans whose descriptions don't contain the required specs are skipped.
- */
 export async function getGamePlans(categorySlug: string): Promise<GamePlanSpec[]> {
   const all = await getCachedProducts()
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
@@ -77,17 +67,12 @@ export async function getGamePlans(categorySlug: string): Promise<GamePlanSpec[]
         setupFeeGBP: getSetupFeeGBP(product),
         setupFees: getSetupFeesMap(product),
         stock: getStockStatus(product),
-        url: getBillingUrl(categorySlug, product.slug),
+        url: getBillingUrl(product),
       } satisfies GamePlanSpec,
     ]
   })
 }
 
-/**
- * Returns live-priced dedicated server plans for the given billing category slug.
- * All specs are parsed from the billing panel description automatically.
- * Plans missing cores/ram/storage in their description are skipped.
- */
 export async function getDedicatedPlans(categorySlug: string): Promise<DedicatedPlanSpec[]> {
   const all = await getCachedProducts()
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
@@ -119,18 +104,12 @@ export async function getDedicatedPlans(categorySlug: string): Promise<Dedicated
         setupFeeGBP: getSetupFeeGBP(product),
         setupFees: getSetupFeesMap(product),
         stock: getStockStatus(product),
-        url: getBillingUrl(categorySlug, product.slug),
+        url: getBillingUrl(product),
       } satisfies DedicatedPlanSpec,
     ]
   })
 }
 
-/**
- * Returns live-priced VPS plans for the given billing category slug.
- * All specs are parsed from the billing panel description automatically.
- * Series→location mapping and popular flags come from product-overrides.ts.
- * Plans missing cpu/ram/storage in their description are skipped.
- */
 export async function getVpsPlans(categorySlug: string): Promise<VpsPlanSpec[]> {
   const all = await getCachedProducts()
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
@@ -171,18 +150,12 @@ export async function getVpsPlans(categorySlug: string): Promise<VpsPlanSpec[]> 
         setupFeeGBP: getSetupFeeGBP(product),
         setupFees: getSetupFeesMap(product),
         stock: getStockStatus(product),
-        url: getBillingUrl(categorySlug, product.slug),
+        url: getBillingUrl(product),
       } satisfies VpsPlanSpec,
     ]
   })
 }
 
-/**
- * Returns live-priced object storage plans for the given billing category slug.
- * Storage size, access keys, egress, and API request policy are parsed from
- * the billing panel description automatically. Plans missing a storage size
- * are skipped.
- */
 export async function getObjectStoragePlans(categorySlug: string): Promise<ObjectStoragePlanSpec[]> {
   const all = await getCachedProducts()
   return getProductsByCategory(all, categorySlug).flatMap((product) => {
@@ -211,8 +184,40 @@ export async function getObjectStoragePlans(categorySlug: string): Promise<Objec
         setupFeeGBP: getSetupFeeGBP(product),
         setupFees: getSetupFeesMap(product),
         stock: getStockStatus(product),
-        url: getBillingUrl(categorySlug, product.slug),
+        url: getBillingUrl(product),
       } satisfies ObjectStoragePlanSpec,
+    ]
+  })
+}
+
+export async function getDiscordBotPlans(categorySlug: string): Promise<DiscordBotPlanSpec[]> {
+  const all = await getCachedProducts()
+  return getProductsByCategory(all, categorySlug).flatMap((product) => {
+    const parsed = parseBotSpecs(product.description)
+
+    if (!parsed.ramMB) {
+      warnDroppedProduct(product, categorySlug, ["ramMB"])
+      return []
+    }
+
+    return [
+      {
+        id: product.slug,
+        name: product.name,
+        worksWith: parsed.worksWith,
+        ramMB: parsed.ramMB,
+        vcpu: parsed.vcpu,
+        storageGB: parsed.storageGB,
+        backups: parsed.backups,
+        features: parsed.features,
+        popular: POPULAR_SLUGS.has(`${categorySlug}/${product.slug}`),
+        priceGBP: getGbpPrice(product),
+        prices: getPricesMap(product),
+        setupFeeGBP: getSetupFeeGBP(product),
+        setupFees: getSetupFeesMap(product),
+        stock: getStockStatus(product),
+        url: getBillingUrl(product),
+      } satisfies DiscordBotPlanSpec,
     ]
   })
 }
