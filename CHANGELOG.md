@@ -2,8 +2,7 @@
 
 All notable changes to the NodeByte Hosting website will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [3.8.0] - 2026-07-20
 
@@ -94,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- **Double-unescaping in `spec-parser.ts`'s HTML entity decoding** (CodeQL `js/double-escaping`) — `bulletLines()` unescaped `&amp;` → `&` *before* `&gt;`/`&lt;`/`&quot;`/`&#39;`, so a properly double-escaped literal like `&amp;gt;` (meant to render as the text `&gt;`) was silently corrupted into `>` instead. Fixed by unescaping `&amp;` last, matching the standard safe-unescaping order — the escape character itself must always be resolved after every other entity that depends on it.
+- **Double-unescaping in `spec-parser.ts`'s HTML entity decoding** (CodeQL `js/double-escaping`) — `bulletLines()` unescaped `&amp;` → `&` _before_ `&gt;`/`&lt;`/`&quot;`/`&#39;`, so a properly double-escaped literal like `&amp;gt;` (meant to render as the text `&gt;`) was silently corrupted into `>` instead. Fixed by unescaping `&amp;` last, matching the standard safe-unescaping order — the escape character itself must always be resolved after every other entity that depends on it.
 
 ---
 
@@ -162,15 +161,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.4] - 2026-05-30
 
 ### Added
+
 - **Google Ads Integration** — Google tag (`AW-16740819749`) installed via `next/script` with `strategy="afterInteractive"` in the root layout; fires after hydration without blocking render
   - `packages/core/lib/gtag.ts` — central utility exporting `GOOGLE_ADS_ID`, `CONVERSION_IDS` map, and ready-to-call `conversions.*()` helpers for all 10 goals (begin checkout, subscribe, purchase, submit lead form, page view, sign-up, get directions, request quote, outbound click, contact)
   - `packages/ui/components/google-ads-pageview.tsx` — client component that re-fires the page-view conversion on every App Router route change via `usePathname`
 
 ### Changed
+
 - **`About`, `Features`, `Services` converted to Server Components** — `"use client"` directive removed from all three home page sections; none use client-only APIs, state, or effects, so they now render as HTML on the server, reducing the client JS bundle and improving TTI
 - **Currency rates — localStorage TTL cache** — `CurrencyProvider` now checks `localStorage` for a cached rates response before fetching `/api/currency/rates`; cache TTL is 1 hour (matching the API's `s-maxage`), so repeat page loads within the hour skip the network request entirely
 
 ### Fixed
+
 - **Canvas globe — per-frame string allocation** — the dot-grid draw loop in `hero-graphic.tsx` was creating a new `` `rgba(150,175,215,${a})` `` string for every dot on every 60 fps frame (~500+ allocations/frame); replaced with a precomputed 32-entry `DOT_ALPHA_TABLE` lookup built once at module load time
 
 ---
@@ -178,12 +180,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.3] - 2026-04-17
 
 ### Added
+
 - **Contact Page — Support Ticket Channel** — third support channel card added to `contact.tsx` pointing to `https://billing.nodebyte.host/tickets/create`
   - Uses `Headphones` icon with `bg-accent/10 text-accent` colour scheme
   - Grid widened from `md:grid-cols-2 max-w-4xl` to `md:grid-cols-3 max-w-5xl`
   - `contact.ticket.features` translation keys added to `translations/messages/en-US.json` and `translations/templates/en.json`
 
 ### Changed
+
 - **Contact Page — Card Button Alignment** — support channel card inner div converted to `flex flex-col h-full`; feature list gains `flex-1` so the CTA button is always pinned to the bottom of every card regardless of content height
 - **Contact Page — GitHub Card Icon Colour** — icon box class corrected from `bg-muted text-foreground` to `bg-foreground/10 text-foreground` to match the `bg-color/10 text-color` pattern used by all other channel cards
 - **Navigation — Dropdown Hover Colours** — row hover background changed from `hover:bg-accent/10` to `hover:bg-muted/60` across all three desktop dropdowns (Company, Services, Resources); icon box hover changed from solid `group-hover:bg-primary group-hover:text-primary-foreground` to a subtle `group-hover:bg-primary/20`; title text given explicit `text-foreground` to prevent blending on saturated themes
@@ -192,6 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Navigation — Mobile Resources Links** — mobile Resources items now render as `<Link>` for internal routes and `<a target="_blank">` for external ones instead of always using `<a target="_blank">`
 
 ### Fixed
+
 - **Theme Colour Contrast — Emerald / Amber / Teal** — `--primary` and `--accent` lightness values were too high (0.58–0.68) while `--primary-foreground` / `--accent-foreground` remained near-black (0.10–0.12), producing illegible black-on-dark text on buttons and icon boxes
   - Emerald: `--primary` `0.58 → 0.42`, `--accent` `0.62 → 0.48`, foregrounds `0.10 → 0.98`
   - Amber: `--primary` `0.62 → 0.46`, `--accent` `0.68 → 0.52`, foregrounds `0.12 → 0.98`
@@ -203,6 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.2] - 2026-03-19
 
 ### Added
+
 - **17 New Themes** — CSS variable definitions added to `app/globals.css` for all new theme entries
   - **Popular**: `kanagawa` (Kanagawa dark, blue/red), `everforest` (green earth tones), `monokai` (classic editor dark)
   - **Palette**: `cobalt` (deep navy/blue), `sakura` (dark pink/rose), `copper` (warm amber/brown), `abyss` (near-black deep ocean)
@@ -224,6 +230,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Static `images: ["/og.png"]` entries removed from root layout `openGraph` and `twitter` metadata
 
 ### Changed
+
 - **Dynamic Imports Removed** — `next/dynamic` replaced with static `import` across all page-level components; eliminates unnecessary client-side code splitting for SSR-compatible components
   - `app/games/minecraft/page.tsx`, `app/games/rust/page.tsx`, `app/games/hytale/page.tsx` — `GamePricing` now statically imported
   - `app/vps/amd/page.tsx`, `app/vps/intel/page.tsx` — `VpsPricing` now statically imported
@@ -244,9 +251,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Game Hero / Games Index icon map** — `Radio` and `Mountain` icons replaced with `Pickaxe` and `Wrench` to match updated FiveM/RedM config icons
 
 ### Removed
+
 - **FiveM & RedM standalone pages** (`app/games/fivem/page.tsx`, `app/games/redm/page.tsx`) — removed; these games are surfaced via the index `comingSoon` state without individual pages until plans are live and can not be offered via pre-made solutions. Will offer game tier vps plans instead!
 
 ### Fixed
+
 - **Theme CSS Class Name** — `4thofjuly` renamed to `fourthjuly` throughout toggle registry and CSS; CSS class names cannot begin with a digit
 
 ---
@@ -254,9 +263,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.1] - 2026-03-17
 
 ### Fixed
+
 - **Login Page Crash** — `ArrowLeft` (Lucide) was removed from `login-form-multistep.tsx` imports when magic links were disabled, but is still used by the "Back" button in the password step; import restored to fix `ReferenceError: ArrowLeft is not defined` at runtime
 
 ### Removed
+
 - **v3.4.2 Changelog Reference**: changes were sufficient enough to do a major bump to v3.5.0 instead.
 
 ---
@@ -264,6 +275,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.0] - 2026-03-17
 
 ### Added
+
 - **New Game Pages: FiveM, RedM, Palworld** — Three new hosting pages, all in "Coming Soon" state
   - `/games/fivem` — FiveM GTA roleplay hosting; features txAdmin, OneSync Infinity, custom script/MLO support
   - `/games/redm` — RedM RDR2 roleplay hosting; features VORP/RedEM:R framework support, custom map streaming
@@ -309,6 +321,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **VPS Knowledge Base Category** (`packages/kb/content/vps/_meta.json`) — new KB category for VPS guides
 
 ### Changed
+
 - **Game Pages Refactored** — Minecraft, Rust, and Hytale pages rewritten to consume shared constants
   - Inline plan/feature/FAQ arrays replaced with `MINECRAFT_PLANS` / `RUST_PLANS` / `HYTALE_PLANS` + `applyGamePlanOverrides()`
   - Feature and FAQ data driven from `*_FEATURE_KEYS` / `*_FAQ_KEYS` arrays mapped against translations
@@ -326,6 +339,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hero Graphic** — `"Global Network · 9+ Locations"` updated to `"Global Network · 3+ Data Center Partners"`
 
 ### Removed
+
 - **`packages/auth/components/login-form.tsx`** — legacy single-step login form removed; multi-step form (`LoginFormMultiStep`) is the only login form
 - **`packages/core/constants/minecraft/`** — old standalone Minecraft constants folder (`plans.ts`, `features.ts`, `faqs.ts`) removed; replaced by `packages/core/constants/game/minecraft.ts`
 - **`packages/core/constants/rust/`** — old standalone Rust constants folder removed; replaced by `packages/core/constants/game/rust.ts`
@@ -336,10 +350,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-
 ## [3.4.1] - 2026-03-16
 
 ### Added
+
 - **Progressive Web App (PWA) Support** - Full PWA implementation via `@serwist/next` + `serwist`
   - `app/sw.ts` service worker with precaching of all static pages/assets at build time
   - Runtime caching via Serwist `defaultCache` (covers API responses, images, fonts with best-practice strategies)
@@ -378,6 +392,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Canonical URL** — `alternates: { canonical: "/" }` added to root layout metadata
 
 ### Changed
+
 - **`next.config.mjs`** — Serwist plugin wraps the config chain (`withSerwist(withNextIntl(nextConfig))`)
 - **`next.config.mjs`** — Fixed silent bug: `images` key was defined twice; redundant `remotePatterns` block removed (superseded by `unoptimized: true`)
 - **Root Layout Keywords** — expanded to include VPS-specific terms: `amd vps`, `intel vps`, `kvm vps`, `nvme ssd`, `root access vps`, `nodebyte`
@@ -387,6 +402,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.4.0] - 2026-03-16
 
 ### Added
+
 - **VPS Pricing Component** - New `VpsPricing` component at `packages/ui/components/Layouts/VPS/vps-pricing.tsx`
   - Gradient header cards with AMD (red) and Intel (blue) variant colour schemes matching the VPS index page style
   - Plan cards show: gradient icon header, plan name + starting price, description, CPU model chip, Check-icon spec list, and CTA button
@@ -414,6 +430,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `gamePage.pricing.filters.*`: same filter keys for game pricing
 
 ### Changed
+
 - **VPS AMD & Intel Pages Restructured** - Both pages rewritten as thin ~48-line server components
   - Now use `VpsHero` + `VpsPricing` + `GameFeatures` + `GameFAQ` layout pattern (consistent with game pages)
   - All plan data, feature keys, FAQ keys, and spec data driven from `packages/core/constants/vps/`
@@ -428,11 +445,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LINKS.billing.amdVps`** - Corrected to `https://billing.nodebyte.host/store/vps-hosting`
 
 ### Fixed
+
 - **Pre-existing Tailwind v4 class warnings** in `game-pricing.tsx` — replaced `bg-gradient-to-b/r` with `bg-linear-to-b/r` and `via-primary/[0.02]` with `via-primary/2`
 
 ## [3.3.0] - 2026-03-01
 
 ### Added
+
 - **Admin Locations Page** - View and sync Pterodactyl panel locations
   - Stats cards showing total locations, descriptions, and node counts
   - Searchable data table with short code, long name, and associated nodes
@@ -478,6 +497,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Consistent error handling and loading states across all admin operations
 
 ### Fixed
+
 - **Nested Form Hydration Error** - Fixed React hydration mismatch on account page
   - Converted nested `<form>` inside profile form to `<div>` with `onClick` handler
   - Email change submission now works without triggering DOM nesting warnings
@@ -498,6 +518,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.2.0] - 2025-12-24
 
 ### Added
+
 - **GitHub Token Management**: Move GitHub personal access token from environment variables to secure database storage
   - GitHub token section in admin settings with show/hide toggle
   - Token is hidden with asterisks and cannot be viewed once set
@@ -607,6 +628,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Graceful handling of missing properties (shows nothing if not available)
 
 ### Changed
+
 - **GitHub Release API**: Updated to fetch GitHub token from database first, then fallback to environment variable
 - **Admin Users Table**: Restructured table with fixed layout to prevent content overflow on mobile
 - **Admin Users Status Badges**: Full badge text now displays on mobile with vertical stacking when multiple badges present
@@ -643,6 +665,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Prevents Prisma validation errors when syncing server owners
 
 ### Fixed
+
 - **Admin Users Table Mobile Overflow**: Fixed table content breaking off-screen on mobile devices
 - **Admin Users Email Display**: Email now shown under username on mobile instead of separate column
 - **User menu now properly detects admin users on mobile**
@@ -654,6 +677,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Servers Admin Panel Display**: Fixed servers table to properly display resource data from database schema
 
 ### Security
+
 - **GitHub Token Protection**: Token is encrypted-ready in database and cannot be viewed once set (hidden with asterisks)
 - **Credential Encryption Ready**: Database structure prepared for future encryption of sensitive fields (API keys, tokens)
 - **Admin-Only Access**: All settings management restricted to authenticated admin users via middleware
@@ -669,8 +693,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Role updates require authentication and authorization verification
 
 ## Removed
-- **Dockerfile**: was using it to force docker to pull the latest version of our translations, but the `nixpacks.toml` now does this instead
 
+- **Dockerfile**: was using it to force docker to pull the latest version of our translations, but the `nixpacks.toml` now does this instead
 
 ## [3.1.0] - 2025-12-22
 
@@ -747,6 +771,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Game FAQ Component**: Reusable FAQ accordion for game-specific questions
 
 ### Changed
+
 - **Packages**: Updated next.js to version `16.0.10` to address the latest CVE
 - **Project Structure**: Reorganized codebase into `packages/` directory for better modularity
   - `packages/core/` - Shared hooks (`use-currency`, `use-locale`, `use-mobile`, `use-toast`) and utilities (`currency`, `translations`, `utils`)

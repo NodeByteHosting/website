@@ -1,0 +1,12 @@
+{
+  "title": "Rust Servers",
+  "description": "Guides and tutorials for setting up and managing Rust game servers",
+  "icon": "Gamepad2",
+  "pages": [
+    "getting-started",
+    "oxide-installation",
+    "add-additional-ports",
+    "connect-to-server",
+    "enabling-rust+"
+  ]
+}

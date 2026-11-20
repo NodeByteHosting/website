@@ -9,6 +9,7 @@ Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md). By contribut
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18 or higher (or Bun)
 - Git
 - PostgreSQL 14+
@@ -17,17 +18,20 @@ Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md). By contribut
 ### Setting Up Development Environment
 
 1. **Fork the repository**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/website.git
    cd website
    ```
 
 2. **Add upstream remote**
+
    ```bash
    git remote add upstream https://github.com/NodeByteHosting/website.git
    ```
 
 3. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -35,12 +39,14 @@ Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md). By contribut
    ```
 
 4. **Set up environment**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your local database URL and other config
    ```
 
 5. **Set up database**
+
    ```bash
    npx prisma migrate dev
    ```
@@ -55,6 +61,7 @@ Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md). By contribut
 ### Creating a Branch
 
 Use clear, descriptive branch names following this format:
+
 ```
 feature/short-description
 bugfix/short-description
@@ -64,6 +71,7 @@ test/short-description
 ```
 
 Examples:
+
 - `feature/webhook-support`
 - `bugfix/settings-save-error`
 - `docs/webhook-integration`
@@ -92,6 +100,7 @@ Fixes #123
 ```
 
 **Types:**
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -102,6 +111,7 @@ Fixes #123
 - `chore`: Build, CI, or dependency updates
 
 **Example:**
+
 ```
 feat(webhooks): add support for custom webhook types
 
@@ -115,6 +125,7 @@ Closes #456
 ## Coding Standards
 
 ### TypeScript
+
 - Use strict TypeScript (`strict: true`)
 - Export types explicitly
 - Avoid `any` type - use `unknown` or generics
@@ -136,6 +147,7 @@ export async function sendWebhook(
 ```
 
 ### React Components
+
 - Use functional components with hooks
 - Keep components focused and reusable
 - Use TypeScript for prop types
@@ -168,6 +180,7 @@ export function Button({
 ```
 
 ### File Organization
+
 ```
 packages/core/lib/
   ├── [feature]/ or [feature].ts - Grouped by feature
@@ -179,6 +192,7 @@ app/api/[domain]/
 ```
 
 ### Naming Conventions
+
 - `camelCase` for variables and functions
 - `PascalCase` for components and classes
 - `UPPER_SNAKE_CASE` for constants
@@ -186,23 +200,26 @@ app/api/[domain]/
 - Use descriptive names (avoid `data`, `temp`, `x`)
 
 ### Error Handling
+
 ```typescript
 try {
   // Operation
 } catch (error) {
-  console.error("[Feature] Failed to do something:", error)
-  return { success: false, error: String(error) }
+  console.error("[Feature] Failed to do something:", error);
+  return { success: false, error: String(error) };
 }
 ```
 
 ## Testing
 
 ### Running Tests
+
 ```bash
 npm run test
 ```
 
 ### Writing Tests
+
 - Write tests for new features
 - Include edge cases
 - Keep tests focused on one thing
@@ -212,24 +229,25 @@ npm run test
 describe("dispatchWebhook", () => {
   it("should send webhook to Discord", async () => {
     // Arrange
-    const webhook = { url: "...", name: "test" }
-    
+    const webhook = { url: "...", name: "test" };
+
     // Act
-    const result = await dispatchWebhook(webhook, embed)
-    
+    const result = await dispatchWebhook(webhook, embed);
+
     // Assert
-    expect(result.success).toBe(true)
-  })
+    expect(result.success).toBe(true);
+  });
 
   it("should handle connection errors gracefully", async () => {
     // Test error handling
-  })
-})
+  });
+});
 ```
 
 ## Documentation
 
 ### Code Comments
+
 ```typescript
 // GOOD: Explains why, not what
 // Webhooks are sent asynchronously to avoid blocking requests
@@ -241,24 +259,26 @@ const success = true
 ```
 
 ### README Updates
+
 - Keep main README.md up to date
 - Document new features with examples
 - Include configuration options
 - Link to detailed guides
 
 ### API Documentation
+
 ```typescript
 /**
  * Get system settings
- * 
+ *
  * @endpoint GET /api/admin/settings
  * @requires admin authentication
- * 
+ *
  * @returns {Object} Settings object with:
  *   - pterodactylUrl: string
  *   - registrationEnabled: boolean
  *   - discordWebhooks: array
- * 
+ *
  * @example
  * const response = await fetch('/api/admin/settings')
  * const settings = await response.json()
@@ -270,12 +290,14 @@ const success = true
 ### Before Submitting
 
 1. **Update your branch**
+
    ```bash
    git fetch upstream
    git rebase upstream/master
    ```
 
 2. **Test everything**
+
    ```bash
    npm run lint
    npm run type-check
@@ -294,30 +316,37 @@ Use this template:
 
 ```markdown
 ## Description
+
 Brief summary of what this PR does.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Related Issues
+
 Fixes #(issue number)
 
 ## Changes Made
+
 - Change 1
 - Change 2
 
 ## Testing
+
 - [ ] Added/updated tests
 - [ ] Manually tested locally
 - [ ] Tested in production environment
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Comments added for complex logic
@@ -338,13 +367,16 @@ Add screenshots for UI changes
 ## Releases
 
 ### Version Numbers
+
 We follow [Semantic Versioning](https://semver.org/):
+
 - `MAJOR.MINOR.PATCH` (e.g., 3.2.0)
 - MAJOR: Breaking changes
 - MINOR: New features (backward compatible)
 - PATCH: Bug fixes
 
 ### Release Process
+
 1. Update version in `package.json`
 2. Update `CHANGELOG.md` with all changes
 3. Create release commit: `chore: release v3.2.0`

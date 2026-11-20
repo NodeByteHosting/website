@@ -37,6 +37,7 @@ If you witness or experience unacceptable behavior, please report it to our mode
 **Email**: conduct@nodebyte.host
 
 **Please include:**
+
 - A description of the incident
 - Who was involved
 - When it occurred
@@ -91,6 +92,7 @@ If you believe a decision was made in error, you may appeal to:
 **Email**: conduct-appeals@nodebyte.host
 
 Include:
+
 - Original decision you're appealing
 - Why you believe it was incorrect
 - Additional context or evidence
@@ -109,7 +111,7 @@ Could you consider caching the results? Here's an example of how it could work..
 ### Unacceptable Community Interaction
 
 ```
-"This code is garbage. You clearly have no idea what you're doing. 
+"This code is garbage. You clearly have no idea what you're doing.
 Get better at programming before submitting PRs."
 ```
 
