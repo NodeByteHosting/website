@@ -7,7 +7,7 @@ export const LINKS = {
   bytepanel: "https://bytepanel.nodebyte.host",
   discord: "https://discord.gg/Bg3Sf5fqa4",
   email: "support@nodebyte.host",
-  freeTrial: `${BILLING_URL}/store/free-trial`,
+  freeTrial: `${BILLING_URL}/free-trial`,
   github: "https://github.com/NodeByteHosting",
   login: `${BILLING_URL}/login`,
   status: "https://nodebytestat.us",
