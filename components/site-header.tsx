@@ -8,6 +8,7 @@ import { CurrencyMenu } from "./currency";
 import { Logo } from "./logo";
 import { DesktopNav, MobileNav } from "./site-nav";
 import type { NavPrices } from "./site-nav";
+import { ThemeToggle } from "./theme-toggle";
 
 const loadPrices = async (): Promise<NavPrices> => {
   const [games, fivem, vps, storage, bots] = await Promise.all([
@@ -39,7 +40,8 @@ export const SiteHeader = async () => {
           <DesktopNav prices={prices} />
         </div>
         <div className="flex items-center gap-2">
-          <div className="hidden sm:block">
+          <div className="hidden items-center gap-1 sm:flex">
+            <ThemeToggle />
             <CurrencyMenu />
           </div>
           <a

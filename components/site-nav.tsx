@@ -21,6 +21,7 @@ import { buttonStyles, cn } from "@/lib/ui";
 import { CurrencyPicker, Price } from "./currency";
 import { Logo } from "./logo";
 import { ProductIcon } from "./product-icon";
+import { ThemeToggle } from "./theme-toggle";
 
 export type NavPrices = Partial<Record<ProductHref, Prices | null>>;
 
@@ -333,6 +334,10 @@ export const MobileNav = ({ prices }: { prices: NavPrices }) => {
                 ))}
               </div>
               <CurrencyPicker />
+              <div className="flex items-center justify-between rounded-xl border px-4 py-2">
+                <span className="text-sm font-medium">Appearance</span>
+                <ThemeToggle />
+              </div>
             </div>
 
             <div className="border-t p-4">
