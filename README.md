@@ -2,19 +2,16 @@
 
 A modern hosting website built with **Next.js**.
 
-[![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL%203.0%20only-blue.svg)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16+-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?logo=typescript)](https://www.typescriptlang.org/)
-
+[![License: AGPL-3.0-only](https://img.shields.io/badge/License-AGPL%203.0%20only-blue.svg)](LICENSE) [![Next.js](https://img.shields.io/badge/Next.js-16+-black?logo=next.js)](https://nextjs.org/) [![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 22+ or Bun
 - Go backend service (see backend repository)
 - Pterodactyl Game Panel (for game server hosting)
 - Discord Server (for webhooks, optional.
-
 
 ## Development
 
@@ -47,6 +44,7 @@ Contributions are welcome. Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md)
 For security vulnerabilities, please see [SECURITY.md](.github/SECURITY.md) for responsible disclosure procedures. Do not open public issues for security vulnerabilities.
 
 Key security measures:
+
 - JWT-based authentication with token validation via Go backend
 - Admin-only access control via middleware
 - API key masking in the admin UI
@@ -59,6 +57,7 @@ Key security measures:
 This project is licensed under the **GNU Affero General Public License v3.0** -- see the [LICENSE](./LICENSE) file for details.
 
 You are free to use, modify, and distribute this software, provided that:
+
 - Source code is disclosed
 - License and copyright notice are included
 - Derivative works use the same license
@@ -66,12 +65,15 @@ You are free to use, modify, and distribute this software, provided that:
 ## Support
 
 ### Resources
+
 - [Knowledge Base](https://nodebyte.host/kb)
 
 ### Community
+
 - [Discord Server](https://discord.gg/nodebyte)
 - [Twitter/X](https://x.com/NodeByteHosting)
 - [Email Support](mailto:support@nodebyte.host)
 
 ### Issue Tracking
+
 Report bugs and feature requests on [GitHub Issues](https://github.com/NodeByteHosting/website/issues).

@@ -1,0 +1,13 @@
+{
+  "title": "Hytale Servers",
+  "description": "Guides and tutorials for setting up and managing Hytale servers.",
+  "icon": "Gamepad2",
+  "pages": [
+    "setting-up-hytale",
+    "setting-server-name",
+    "setting-server-password",
+    "operating-yourself",
+    "add-mods-and-plugins",
+    "setting-motd"
+  ]
+}

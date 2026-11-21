@@ -24,6 +24,7 @@ Complete guide for deploying the NodeByte Website (Next.js) on Ubuntu using syst
 ## Prerequisites
 
 ### Required Software
+
 - Ubuntu 20.04 LTS or 22.04 LTS
 - Node.js 18+
 - npm or yarn
@@ -31,10 +32,12 @@ Complete guide for deploying the NodeByte Website (Next.js) on Ubuntu using syst
 - Git
 
 ### Required Accounts
+
 - Cloudflare account with domain configured
 - Access to server with sudo privileges
 
 ### Domain Assumptions
+
 - Website: `yourdomain.com` and `www.yourdomain.com`
 
 ---
@@ -42,6 +45,7 @@ Complete guide for deploying the NodeByte Website (Next.js) on Ubuntu using syst
 ## System Setup
 
 ### 1. Update System
+
 ```bash
 sudo apt update
 sudo apt upgrade -y
@@ -50,6 +54,7 @@ sudo apt upgrade -y
 ### 2. Install Dependencies
 
 #### Node.js 18+
+
 ```bash
 # Add NodeSource repository for Node.js 18.x
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -63,22 +68,26 @@ npm --version
 ```
 
 #### Nginx
+
 ```bash
 sudo apt install -y nginx
 ```
 
 #### Additional Tools
+
 ```bash
 sudo apt install -y git curl wget htop ufw
 ```
 
 ### 3. Create Deploy User
+
 ```bash
 sudo useradd -m -s /bin/bash deploy
 sudo usermod -aG sudo deploy
 ```
 
 ### 4. Setup Firewall
+
 ```bash
 sudo ufw enable
 sudo ufw allow 22/tcp
@@ -87,6 +96,7 @@ sudo ufw allow 443/tcp
 ```
 
 ### 5. Create Application Directory
+
 ```bash
 sudo mkdir -p /var/www/nodebyte/website
 sudo chown -R deploy:deploy /var/www/nodebyte
@@ -97,6 +107,7 @@ sudo chown -R deploy:deploy /var/www/nodebyte
 ## Website Deployment
 
 ### 1. Clone Repository
+
 ```bash
 cd /var/www/nodebyte
 sudo -u deploy git clone <website-repo-url> website
@@ -105,12 +116,14 @@ sudo -u deploy git checkout development  # or your desired branch
 ```
 
 ### 2. Setup Environment Variables
+
 ```bash
 sudo -u deploy cp .env.example .env
 sudo -u deploy nano .env
 ```
 
 Configure `.env`:
+
 ```env
 # Environment
 NODE_ENV=production
@@ -129,6 +142,7 @@ NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 cd /var/www/nodebyte/website
 
@@ -140,6 +154,7 @@ sudo -u deploy npm list --depth=0
 ```
 
 ### 4. Build Application
+
 ```bash
 cd /var/www/nodebyte/website
 
@@ -187,6 +202,7 @@ WantedBy=multi-user.target
 ```
 
 ### 6. Enable and Start Service
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable nodebyte-website
@@ -267,8 +283,8 @@ server {
     gzip on;
     gzip_vary on;
     gzip_min_length 1024;
-    gzip_types text/plain text/css text/xml text/javascript 
-               application/x-javascript application/xml+rss 
+    gzip_types text/plain text/css text/xml text/javascript
+               application/x-javascript application/xml+rss
                application/javascript application/json
                image/svg+xml;
 
@@ -362,6 +378,7 @@ sudo chown root:root /etc/ssl/certs/yourdomain.com.crt /etc/ssl/private/yourdoma
 ```
 
 ### 3. Enable Nginx Site
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/nodebyte-website /etc/nginx/sites-enabled/
 
@@ -400,6 +417,7 @@ sudo systemctl enable nginx
 ## Monitoring
 
 ### View Service Logs
+
 ```bash
 # Real-time logs
 sudo journalctl -u nodebyte-website -f
@@ -415,11 +433,13 @@ sudo journalctl -u nodebyte-website -p err
 ```
 
 ### Service Status
+
 ```bash
 sudo systemctl status nodebyte-website
 ```
 
 ### Application Health
+
 ```bash
 # Test local endpoint
 curl http://localhost:3000
@@ -432,6 +452,7 @@ curl -I -k https://yourdomain.com
 ```
 
 ### System Resources
+
 ```bash
 # CPU/Memory usage
 htop -p $(pgrep -f "npm start")
@@ -447,6 +468,7 @@ ps aux | grep node
 ```
 
 ### Nginx Logs
+
 ```bash
 # Access logs
 tail -f /var/log/nginx/website-access.log
@@ -517,11 +539,13 @@ sudo systemctl status nodebyte-website --no-pager
 ```
 
 Make executable:
+
 ```bash
 chmod +x /home/deploy/update-website.sh
 ```
 
 ### Rollback
+
 ```bash
 cd /var/www/nodebyte/website
 
@@ -538,6 +562,7 @@ sudo systemctl restart nodebyte-website
 ```
 
 ### Clear Cache and Rebuild
+
 ```bash
 cd /var/www/nodebyte/website
 
@@ -677,7 +702,7 @@ In `next.config.mjs`, enable standalone output:
 
 ```javascript
 export default {
-  output: 'standalone',
+  output: "standalone",
   // ... other config
 };
 ```

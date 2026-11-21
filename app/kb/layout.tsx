@@ -1,15 +1,13 @@
-import { ReactNode } from "react";
-import { Navigation } from "@/packages/ui/components/Static/navigation";
-import { Footer } from "@/packages/ui/components/Static/footer";
+import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import type { ReactNode } from "react";
 
-interface KBLayoutProps {
-  children: ReactNode;
-}
+import { baseOptions } from "@/lib/layout.shared";
+import { source } from "@/lib/source";
 
-export default function KBLayout({ children }: KBLayoutProps) {
-  return (
-    <>
-      <main className="pt-16">{children}</main>
-    </>
-  );
-}
+const Layout = ({ children }: { children: ReactNode }) => (
+  <DocsLayout tree={source.getPageTree()} {...baseOptions()}>
+    {children}
+  </DocsLayout>
+);
+
+export default Layout;

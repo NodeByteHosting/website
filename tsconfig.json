@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "target": "ES6",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -23,21 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@/components/*": [
-        "./packages/ui/components/*"
-      ],
-      "@/hooks/*": [
-        "./packages/core/hooks/*"
-      ],
-      "@/i18n/*": [
-        "./packages/i18n/*"
-      ],
-      "@/lib/*": [
-        "./packages/core/lib/*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -45,11 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next\\dev/types/**/*.ts",
-    ".next\\dev/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "../int_docs/WEBHOOK_QUICK_REFERENCE.ts"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  ],
+  "exclude": ["node_modules", "out"]
 }

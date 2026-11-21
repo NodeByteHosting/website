@@ -1,0 +1,13 @@
+{
+  "title": "Billing & Account",
+  "description": "Guides for managing your NodeByte account, billing, and services",
+  "icon": "CreditCard",
+  "pages": [
+    "client-portal",
+    "paypal-cancellations",
+    "account-credits",
+    "service-suspensions",
+    "payment-methods",
+    "subscriptions"
+  ]
+}

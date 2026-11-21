@@ -1,0 +1,13 @@
+{
+  "title": "Game Servers",
+  "description": "Guides and tutorials for setting up and managing your game servers.",
+  "icon": "Server",
+  "pages": [
+    "quick-start",
+    "game-panel",
+    "---Games---",
+    "minecraft",
+    "rust",
+    "hytale"
+  ]
+}

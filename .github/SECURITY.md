@@ -9,6 +9,7 @@ If you discover a security vulnerability in NodeByte Hosting, please **do not** 
 Email: **security@nodebyte.host**
 
 Please include:
+
 - Description of the vulnerability
 - Steps to reproduce (if applicable)
 - Affected versions
@@ -89,18 +90,21 @@ Please include:
 ## Known Security Considerations
 
 ### API Key Protection
+
 - API keys (Pterodactyl, GitHub, Crowdin, Resend) are masked as `••••••••••••••••••••` in the UI
 - Keys are stored in the database, not in `.env` files
 - Once saved, keys cannot be viewed again (only reset)
 - The system uses string comparison to prevent saving masked values
 
 ### Session Management
+
 - Sessions are encrypted and stored server-side
 - Session cookies have `httpOnly` and `secure` flags
 - Session expiration is configurable
 - All admin operations require valid session
 
 ### Maintenance Mode
+
 - Non-admin users are redirected to `/maintenance` page
 - Admins can bypass maintenance mode
 - Login and session endpoints still work during maintenance
@@ -108,7 +112,7 @@ Please include:
 ## Version Support
 
 | Version | Status        | Support Until |
-|---------|---------------|---------------|
+| ------- | ------------- | ------------- |
 | 3.7.x   | Current       | 3.8.x Release |
 | 3.6.x   | Security Only | ~ Aug 2026    |
 | < 3.5   | Unsupported   | End of life   |
@@ -118,6 +122,7 @@ Please include:
 ## Security Disclosure
 
 We appreciate responsible disclosure and will:
+
 - Acknowledge receipt of your report
 - Work on a fix without public disclosure
 - Release a patch update
@@ -126,6 +131,7 @@ We appreciate responsible disclosure and will:
 ## Security Headers
 
 The platform implements:
+
 - Content Security Policy (CSP)
 - X-Content-Type-Options: nosniff
 - X-Frame-Options: SAMEORIGIN
@@ -135,6 +141,7 @@ The platform implements:
 ## Compliance
 
 This project aims to follow:
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [CWE/SANS Top 25](https://cwe.mitre.org/top25/)
 - Security best practices for Next.js applications
@@ -142,6 +149,7 @@ This project aims to follow:
 ## Incident Response
 
 If a security incident occurs:
+
 1. We will acknowledge the incident
 2. Work on immediate mitigation
 3. Prepare a security patch

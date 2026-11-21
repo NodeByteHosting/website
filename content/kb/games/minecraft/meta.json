@@ -1,0 +1,16 @@
+{
+  "title": "Minecraft Servers",
+  "description": "Guides and tutorials for setting up and managing Minecraft servers",
+  "icon": "Gamepad2",
+  "pages": [
+    "server-software",
+    "installing-plugins",
+    "installing-mods",
+    "player-manager",
+    "version-changer",
+    "diagnosing-lag",
+    "server-backups",
+    "server-optimizations",
+    "troubleshooting"
+  ]
+}
