@@ -36,7 +36,12 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
     <body className="flex min-h-screen flex-col antialiased">
       <RootProvider
         search={{ SearchDialog: KbSearch }}
-        theme={{ defaultTheme: "dark" }}
+        theme={{
+          defaultTheme: "dark",
+          enableSystem: false,
+          hotKey: false,
+          storageKey: "nb-theme",
+        }}
       >
         <CurrencyProvider>{children}</CurrencyProvider>
       </RootProvider>
